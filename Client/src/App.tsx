@@ -4,7 +4,7 @@ function App() {
   return (
     <>
       <div>
-        <Button variant="contained" color="primary">
+        <Button variant="contained" color="secondary">
           Text
         </Button>
       </div>
