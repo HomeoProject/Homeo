@@ -1,0 +1,9 @@
+node_modules/
+package.json
+README.md
+.eslintrc.cjs
+.prettierrc.json
+package-lock.json
+tsconfig.json
+tsconfig.node.json
+vite.config.ts
