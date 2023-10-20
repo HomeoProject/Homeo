@@ -24,10 +24,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - run: cd Client
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
 
     - name: Check code formatting with Prettier
       run: |
-        npx prettier --check "Client/**"
+        npx prettier --check .
