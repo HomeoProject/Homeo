@@ -42,4 +42,4 @@ const theme: Theme = createTheme({
   palette,
 })
 
-export default theme
+export default theme as Theme
