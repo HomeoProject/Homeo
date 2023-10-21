@@ -1,0 +1,32 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+
+spring:
+  application:
+    name: ApiGateway
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+
+springdoc:
+  enable-native-support: true
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
+    urls:
+      - url: /api-docs
+        name: API Gateway Service
+      - url: /userservice/api-docs
+        name: User Service

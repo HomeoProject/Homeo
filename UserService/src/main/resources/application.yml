@@ -1,0 +1,28 @@
+server:
+  port: 8081
+  error:
+    include-message: always
+
+spring:
+  application:
+    name: UserService
+
+openapi:
+  service:
+    title: UserService
+    version: 1.0.0
+    url: http://localhost:8080
+springdoc:
+  api-docs:
+    path: /userservice/api-docs
+  swagger-ui:
+    path: /userservice/swagger-ui
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    org.springframework.security: DEBUG
