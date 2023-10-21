@@ -2,7 +2,7 @@ import tinycolor from 'tinycolor2'
 import { createTheme } from '@mui/material/styles'
 
 const primaryColor: string = '#1CBE8E'
-const warningColor: string = '#a51f1f'
+const errorColor: string = '#a51f1f'
 const secondaryColor: string = '#d8ac79'
 
 function lighten(color: string, amount: number) {
@@ -30,9 +30,9 @@ const palette = {
     dark: darken(secondaryColor, 0.1),
     contrastText: '#fff',
   },
-  warning: {
-    main: warningColor,
-    dark: darken(warningColor, 0.05),
+  error: {
+    main: errorColor,
+    dark: darken(errorColor, 0.05),
     contrastText: '#fff',
   },
 }

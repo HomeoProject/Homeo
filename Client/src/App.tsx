@@ -1,14 +1,15 @@
-import Button from '@mui/material/Button'
+import './Style/scss/App.scss'
+import HomePage from './Pages/HomePage'
+import Header from './Components/Header'
+import Footer from './Components/Footer'
 
 function App() {
   return (
-    <>
-      <div>
-        <Button variant="contained" color="secondary">
-          Text
-        </Button>
-      </div>
-    </>
+    <div className="App">
+      <Header />
+      <HomePage />
+      <Footer />
+    </div>
   )
 }
 
