@@ -1,4 +1,5 @@
 import tinycolor from 'tinycolor2'
+import { Theme } from '@mui/material/styles';
 import { createTheme } from '@mui/material/styles'
 
 const primaryColor: string = '#1CBE8E'
@@ -37,8 +38,8 @@ const palette = {
   },
 }
 
-const theme = createTheme({
+const theme: Theme = createTheme({
   palette,
 })
 
-export default theme
+export default theme;
