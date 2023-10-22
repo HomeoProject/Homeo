@@ -1,6 +1,15 @@
 version: "3.8"
 
 services:
+  homeo-apigateway:
+    container_name: homeo-apigateway
+    build: ../ApiGateway
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    depends_on:
+      - homeo-eureka
+
   homeo-eureka:
     container_name: homeo-eureka
     build: ../Eureka
