@@ -1,6 +1,15 @@
 version: "3.8"
 
 services:
+  homeo-userservice:
+    container_name: homeo-userservice
+    build: ../UserService
+    ports:
+      - 8081:8081
+    restart: unless-stopped
+    depends_on:
+      - homeo-apigateway
+
   homeo-apigateway:
     container_name: homeo-apigateway
     build: ../ApiGateway
