@@ -1,6 +1,13 @@
 version: "3.8"
 
 services:
+  homeo-eureka:
+    container_name: homeo-eureka
+    build: ../Eureka
+    ports:
+      - 8761:8761
+    restart: unless-stopped
+
   homeo-postgres:
     container_name: homeo-postgres
     build: ../Postgres
