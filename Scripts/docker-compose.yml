@@ -30,9 +30,9 @@ services:
     container_name: homeo-postgres
     build: ../Postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      PGDATA: /data/homeo-postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: ${PGDATA}
     volumes:
       - homeo-postgres:/data/homeo-postgres
     ports:
@@ -43,13 +43,13 @@ services:
     image: quay.io/keycloak/keycloak:22.0.4
     container_name: homeo-keycloak
     environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
-      - KC_DB=postgres
-      - KC_DB_URL_HOST=homeo-postgres
-      - KC_DB_URL_DATABASE=keycloak
-      - KC_DB_USERNAME=postgres
-      - KC_DB_PASSWORD=password
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: ${KC_DB}
+      KC_DB_URL_HOST: ${KC_DB_URL_HOST}
+      KC_DB_URL_DATABASE: ${KC_DB_URL_DATABASE}
+      KC_DB_USERNAME: ${KC_DB_USERNAME}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
     ports:
       - 8079:8080
     command: start-dev
