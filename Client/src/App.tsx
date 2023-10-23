@@ -10,10 +10,10 @@ function App() {
       <Header />
       <HomePage />
       <Footer />
-      <div style={{display: 'flex', gap: '50px'}}>
-        <UserCard/>
-        <UserCard/>
-        <UserCard/>
+      <div style={{ display: 'flex', gap: '50px' }}>
+        <UserCard />
+        <UserCard />
+        <UserCard />
       </div>
     </div>
   )
