@@ -4,7 +4,7 @@ import { ThemeProvider } from '@mui/material/styles'
 import theme from './Style/themes/themes'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <ThemeProvider theme={theme}>
-    <App />
-  </ThemeProvider>
+    <ThemeProvider theme={theme}>
+        <App />
+    </ThemeProvider>
 )

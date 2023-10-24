@@ -7,50 +7,50 @@ import logoSmall from '../Assets/logoSmall.png'
 import AccountMenu from './AccountMenu'
 
 const Header = () => {
-  const [logoIcon, setLogoIcon] = useState('')
-  const [screenSize, setScreenSize] = useState('')
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth)
-  const breakpoint = 800
-  useEffect(() => {
-    const handleResize = () => setScreenWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    if (screenWidth < breakpoint) {
-      setLogoIcon(logoSmall)
-      setScreenSize('small')
-    } else {
-      setLogoIcon(logo)
-      setScreenSize('normal')
-    }
-  }, [screenWidth])
+    const [logoIcon, setLogoIcon] = useState('')
+    const [screenSize, setScreenSize] = useState('')
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth)
+    const breakpoint = 800
+    useEffect(() => {
+        const handleResize = () => setScreenWidth(window.innerWidth)
+        window.addEventListener('resize', handleResize)
+        if (screenWidth < breakpoint) {
+            setLogoIcon(logoSmall)
+            setScreenSize('small')
+        } else {
+            setLogoIcon(logo)
+            setScreenSize('normal')
+        }
+    }, [screenWidth])
 
-  return (
-    <div className="Header">
-      <a className={`header-logo-${screenSize}`} href="/">
-        <img src={logoIcon} alt="logo" />
-      </a>
-      {screenSize === 'normal' ? (
-        <div className="header-nav-normal">
-          <div className="header-nav-normal-right">
-            <Link href="#" underline="hover" fontSize={'22px'}>
-              {'Adverts'}
-            </Link>
-            <Link href="#" underline="hover" fontSize={'22px'}>
-              {'About Us'}
-            </Link>
-            <Link href="#" underline="hover" fontSize={'22px'}>
-              {'Contact'}
-            </Link>
-          </div>
-          <AccountMenu />
+    return (
+        <div className="Header">
+            <a className={`header-logo-${screenSize}`} href="/">
+                <img src={logoIcon} alt="logo" />
+            </a>
+            {screenSize === 'normal' ? (
+                <div className="header-nav-normal">
+                    <div className="header-nav-normal-right">
+                        <Link href="#" underline="hover" fontSize={'22px'}>
+                            {'Adverts'}
+                        </Link>
+                        <Link href="#" underline="hover" fontSize={'22px'}>
+                            {'About Us'}
+                        </Link>
+                        <Link href="#" underline="hover" fontSize={'22px'}>
+                            {'Contact'}
+                        </Link>
+                    </div>
+                    <AccountMenu />
+                </div>
+            ) : (
+                <div className="header-nav-small">
+                    <HeaderDrawer />
+                    <AccountMenu />
+                </div>
+            )}
         </div>
-      ) : (
-        <div className="header-nav-small">
-          <HeaderDrawer />
-          <AccountMenu />
-        </div>
-      )}
-    </div>
-  )
+    )
 }
 
 export default Header

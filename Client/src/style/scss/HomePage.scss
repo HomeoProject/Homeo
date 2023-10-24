@@ -1,11 +1,61 @@
 @import 'Variables.scss';
 
 .HomePage {
-  width: calc(100% - 40px);
-  height: calc(100vh - 200px);
-  max-width: 1355px;
-  background-color: $main-background-color;
-  padding: 0 20px;
-  border-left: 1px solid grey;
-  border-right: 1px solid grey;
+    width: calc(100% - 40px);
+    height: calc(100vh - 200px); //for now
+    max-width: 1355px;
+    background-color: $main-background-color;
+    padding: 0 20px;
+    // border-left: 1px solid grey;
+    // border-right: 1px solid grey;
+
+    > .home-page-main-wrapper {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+
+        > .home-page-main {
+            > .home-page-main-title {
+                font-size: 30px;
+            }
+
+            > .home-page-main-intro {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 20px;
+                // border: 1px solid black;
+                margin-top: 10px;
+                border-radius: 20px;
+                box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+
+                > img {
+                    height: 150px;
+                    width: 150px;
+                    object-fit: cover;
+                    border-radius: 20px;
+                }
+
+                > .home-page-main-intro-sub {
+                    display: flex;
+                    flex-direction: column;
+                    padding: 20px;
+
+                    > b {
+                        margin: 0;
+                        font-size: 20px;
+                    }
+
+                    > p {
+                        margin: 0;
+                    }
+                }
+            }
+        }
+
+        > .home-page-instruction {
+            display: flex;
+            padding-left: 40px;
+        }
+    }
 }
