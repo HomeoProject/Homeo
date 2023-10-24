@@ -1,6 +1,11 @@
 @import '../Variables.scss';
 
 .dialog {
+  .MuiPaper-root{
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
   .MuiDialog-container {
     justify-content: center;
     .MuiDialog-paper {
@@ -9,10 +14,15 @@
     }
   }
 }
-
+.before-simple-dialog {
+  min-height: 1000px;
+  overflow-y: hidden;
+}
 .SimpleDialog {
   display: flex;
   font-family: Arial, Helvetica, sans-serif;
+  overflow: hidden;
+  min-height: 500px;
   .simple-dialog-container {
     width: 500px;
     border-radius: 10px;

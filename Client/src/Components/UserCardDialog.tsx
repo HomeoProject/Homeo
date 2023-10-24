@@ -1,3 +1,5 @@
+import {useRef, useState} from 'react'
+
 import UserCard from './UserCard'
 import '../style/scss/components/UserCardDialog.scss'
 
@@ -15,8 +17,21 @@ export interface SimpleDialogProps {
   handleClose: () => void
 }
 
-function SimpleDialog(props: SimpleDialogProps) {
+const SimpleDialog = (props: SimpleDialogProps) => {
   const { open, handleClose } = props
+  const accrodionRef = useRef<HTMLDivElement>(null)
+  const cardsRef = useRef<HTMLDivElement>(null)
+  const [openAccordion, setOpenAccordion] = useState(false)
+
+  const handleOpenAccrordion = () => {
+    if(!openAccordion) {
+      accrodionRef.current?.scrollIntoView({ behavior: 'smooth' }) 
+    } else {
+      cardsRef.current?.scrollIntoView({ behavior: 'smooth'})
+    }
+
+    setOpenAccordion(!openAccordion)
+  }
 
   return (
     <Dialog
@@ -25,12 +40,14 @@ function SimpleDialog(props: SimpleDialogProps) {
       maxWidth={'xl'}
       className="dialog"
     >
-      <div className="SimpleDialog">
+      <div className='before-simple-dialog'>
+      <div className="SimpleDialog" ref={cardsRef}>
         <UserCard />
         <Card
           sx={{
             margin: '185px 0 0 20px',
             padding: '15px 30px 15px 30px',
+            height: '335px',
           }}
         >
           <div className="simple-dialog-container">
@@ -69,11 +86,14 @@ function SimpleDialog(props: SimpleDialogProps) {
         </Card>
       </div>
       <div className="accordion">
-        <Accordion sx={{ width: '880px' }}>
+        <Accordion sx={{ width: '880px' }} ref={accrodionRef}>
           <AccordionSummary>
             <div className="accordion-summary">
-              <Button variant="contained" color="secondary">
-                <ExpandMoreIcon />
+              <Button variant="contained" color="secondary" onClick={handleOpenAccrordion}>
+                <ExpandMoreIcon sx={{
+                  transition: '0.2s ease-in-out', 
+                  transform: (openAccordion) ? 'rotate(180deg)' : ''
+                  }}/>
               </Button>
             </div>
           </AccordionSummary>
@@ -98,6 +118,7 @@ function SimpleDialog(props: SimpleDialogProps) {
           </AccordionDetails>
         </Accordion>
       </div>
+      </div> 
     </Dialog>
   )
 }
