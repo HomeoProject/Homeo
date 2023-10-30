@@ -11,6 +11,7 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import Button from '@mui/material/Button'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import TextField from '@mui/material/TextField'
+import SendIcon from '@mui/icons-material/Send';
 
 export interface SimpleDialogProps {
   open: boolean
@@ -99,21 +100,43 @@ const SimpleDialog = (props: SimpleDialogProps) => {
           </AccordionSummary>
           <AccordionDetails>
             <div className="accordion-form">
-              <TextField
-                id="outlined-basic"
-                label="Outlined"
-                variant="outlined"
-              />
-              <TextField
-                id="outlined-basic"
-                label="Outlined"
-                variant="outlined"
-              />
-              <TextField
-                id="outlined-basic"
-                label="Outlined"
-                variant="outlined"
-              />
+              <div className='accordion-form-person'>
+                <TextField
+                  label="Name"
+                  variant="outlined"
+                />
+                <TextField
+                  label="Surname"
+                  variant="outlined"
+                />
+                <TextField
+                  label="Phone Number"
+                  variant="outlined"
+                />
+                <TextField
+                  label="Adres"
+                  variant="outlined"
+                />
+                <div className='accordion-form-person-adres-details'>
+                  <TextField
+                    label="City"
+                    variant="outlined"
+                  />
+                  <TextField
+                    label="Postal code"
+                    variant="outlined"
+                  />
+                </div>
+              </div>
+              <div className="accordion-form-details">
+                <TextField
+                  label="Description of your problem"
+                  variant="outlined"
+                />
+                <Button variant='contained'>
+                  Send <SendIcon/>
+                </Button>
+              </div>
             </div>
           </AccordionDetails>
         </Accordion>

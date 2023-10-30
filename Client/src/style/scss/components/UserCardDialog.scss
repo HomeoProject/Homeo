@@ -48,7 +48,23 @@
     position: sticky;
   }
   .accordion-form {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 10px;
+    .accordion-form-person {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      .accordion-form-person-adres-details {
+        display: flex;
+        width: 100%;
+        gap: 10px;
+      }
+    }
+    .accordion-form-details {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
   }
 }
