@@ -1,4 +1,5 @@
 @import 'Variables.scss';
+@import url('https://fonts.googleapis.com/css?family=Gabarito&display=swap');
 
 .HomePage {
     width: calc(100% - 40px);
@@ -6,17 +7,67 @@
     max-width: 1355px;
     background-color: $main-background-color;
     padding: 0 20px;
-    // border-left: 1px solid grey;
-    // border-right: 1px solid grey;
 
     > .home-page-main-wrapper {
         display: flex;
         justify-content: center;
         padding: 20px;
+        padding-top: 0;
+        margin-top: 20px;
+
+        @media (max-width: 780px) {
+            flex-direction: column;
+        }
 
         > .home-page-main {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
             > .home-page-main-title {
-                font-size: 30px;
+                font-size: $font-size-large;
+                margin: 0;
+                margin-bottom: 15px;
+            }
+
+            > .home-page-main-search-wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 20px;
+
+                > .home-page-main-search {
+                    outline: none;
+                    border: none;
+                    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
+                    width: 100%;
+                    height: 50px;
+                    padding: 0;
+                    border-top-left-radius: 10px;
+                    border-bottom-left-radius: 10px;
+                    border: none;
+                    padding-left: 15px;
+
+                    &::placeholder {
+                        font-family: Gabarito;
+                        font-size: $font-size-small;
+                    }
+                }
+
+                > .home-page-main-search-button {
+                    width: 50px;
+                    height: 50px;
+                    border-top-right-radius: 10px;
+                    border-bottom-right-radius: 10px;
+                    border: none;
+                    outline: none;
+                    background-color: white;
+                    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
             }
 
             > .home-page-main-intro {
@@ -24,16 +75,28 @@
                 align-items: center;
                 justify-content: space-between;
                 padding: 20px;
-                // border: 1px solid black;
-                margin-top: 10px;
-                border-radius: 20px;
-                box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+                border-radius: 10px;
+                box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
 
-                > img {
-                    height: 150px;
-                    width: 150px;
-                    object-fit: cover;
-                    border-radius: 20px;
+                &:not(:last-child) {
+                    margin-bottom: 20px;
+                }
+
+                @media (max-width: 780px) {
+                    margin-bottom: 20px;
+                }
+
+                > .home-page-main-intro-icon {
+                    width: 40px;
+                    height: 40px;
+                    border: 1px solid black;
+                    padding: 10px;
+                    border-radius: 50%;
+
+                    @media (max-width: 500px) {
+                        width: 25px;
+                        height: 25px;
+                    }
                 }
 
                 > .home-page-main-intro-sub {
@@ -41,13 +104,45 @@
                     flex-direction: column;
                     padding: 20px;
 
+                    @media (max-width: 500px) {
+                        padding: 10px;
+                    }
+
+                    > .home-page-main-intro-sub-special {
+                        display: flex;
+                        align-items: center;
+
+                        > .title-green {
+                            color: $primary-color;
+                        }
+
+                        > b {
+                            margin: 0;
+                            font-size: $font-size-normal;
+                        }
+
+                        > p {
+                            margin: 0;
+                            font-size: $font-size-small;
+
+                            @media (max-width: 500px) {
+                                // display: none;
+                            }
+                        }
+                    }
+
                     > b {
                         margin: 0;
-                        font-size: 20px;
+                        font-size: $font-size-normal;
                     }
 
                     > p {
                         margin: 0;
+                        font-size: $font-size-small;
+
+                        @media (max-width: 500px) {
+                            // display: none;
+                        }
                     }
                 }
             }
@@ -55,7 +150,15 @@
 
         > .home-page-instruction {
             display: flex;
-            padding-left: 40px;
+            align-items: center;
+            padding: 0 5px;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
+            border-radius: 10px;
+            margin-left: 30px;
+
+            @media (max-width: 780px) {
+                margin-left: 0;
+            }
         }
     }
 }
