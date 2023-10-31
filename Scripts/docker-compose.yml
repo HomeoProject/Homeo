@@ -18,6 +18,16 @@ services:
     restart: unless-stopped
     depends_on:
       - homeo-eureka
+      - homeo-redis-apigateway
+
+  homeo-redis-apigateway:
+    image: redis:alpine
+    container_name: homeo-redis-apigateway
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD_APIGATEWAY}
+    ports:
+      - 6380:6379
+    restart: unless-stopped
 
   homeo-eureka:
     container_name: homeo-eureka
@@ -38,23 +48,6 @@ services:
     ports:
       - 5432:5432
     restart: unless-stopped
-
-  homeo-keycloak:
-    image: quay.io/keycloak/keycloak:22.0.4
-    container_name: homeo-keycloak
-    environment:
-      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      KC_DB: ${KC_DB}
-      KC_DB_URL_HOST: ${KC_DB_URL_HOST}
-      KC_DB_URL_DATABASE: ${KC_DB_URL_DATABASE}
-      KC_DB_USERNAME: ${KC_DB_USERNAME}
-      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
-    ports:
-      - 8079:8080
-    command: start-dev
-    depends_on:
-      - homeo-postgres
 
 volumes:
   homeo-postgres:
