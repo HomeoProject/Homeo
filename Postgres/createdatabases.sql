@@ -1,2 +1,0 @@
--- Keycloak
-CREATE DATABASE keycloak;
