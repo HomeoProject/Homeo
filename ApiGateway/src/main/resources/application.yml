@@ -6,6 +6,19 @@ server:
 spring:
   application:
     name: ApiGateway
+  data:
+    redis:
+      database: 0
+      host: localhost
+      port: 6380
+      password: ${REDIS_PASSWORD_APIGATEWAY}
+      connect-timeout: 60000
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
 
 eureka:
   client:
