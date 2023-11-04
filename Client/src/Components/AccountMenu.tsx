@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import Settings from '@mui/icons-material/Settings'
 import Logout from '@mui/icons-material/Logout'
+import avatarImg from '../Assets/avatar.jpg'
 
 const AccountMenu = () => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -37,7 +38,10 @@ const AccountMenu = () => {
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                     >
-                        <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+                        <Avatar
+                            sx={{ width: 40, height: 40 }}
+                            src={avatarImg}
+                        ></Avatar>
                     </IconButton>
                 </Tooltip>
             </Box>
@@ -77,7 +81,7 @@ const AccountMenu = () => {
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
                 <MenuItem onClick={handleClose}>
-                    <Avatar /> Profile
+                    <Avatar src={avatarImg} /> Profile
                 </MenuItem>
                 <Divider />
                 <MenuItem onClick={handleClose}>
