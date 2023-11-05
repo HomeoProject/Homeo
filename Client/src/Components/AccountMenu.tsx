@@ -9,9 +9,12 @@ import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import Settings from '@mui/icons-material/Settings'
 import Logout from '@mui/icons-material/Logout'
-import avatarImg from '../Assets/avatar.jpg'
+import { useAuth0 } from '@auth0/auth0-react'
+import Skeleton from '@mui/material/Skeleton'
 
 const AccountMenu = () => {
+    const { logout, user, isLoading } = useAuth0()
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -19,6 +22,11 @@ const AccountMenu = () => {
     }
     const handleClose = () => {
         setAnchorEl(null)
+    }
+
+    const handleLogout = () => {
+        setAnchorEl(null)
+        logout()
     }
     return (
         <React.Fragment>
@@ -38,10 +46,17 @@ const AccountMenu = () => {
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                     >
-                        <Avatar
-                            sx={{ width: 40, height: 40 }}
-                            src={avatarImg}
-                        ></Avatar>
+                        {isLoading ? (
+                            <Skeleton variant="circular">
+                                <Avatar sx={{ width: 40, height: 40 }} />
+                            </Skeleton>
+                        ) : (
+                            <Avatar
+                                sx={{ width: 40, height: 40 }}
+                                src={user?.picture}
+                                alt={user?.name}
+                            />
+                        )}
                     </IconButton>
                 </Tooltip>
             </Box>
@@ -51,6 +66,7 @@ const AccountMenu = () => {
                 open={open}
                 onClose={handleClose}
                 onClick={handleClose}
+                disableScrollLock={true}
                 PaperProps={{
                     elevation: 0,
                     sx: {
@@ -68,7 +84,7 @@ const AccountMenu = () => {
                             display: 'block',
                             position: 'absolute',
                             top: 0,
-                            right: 14,
+                            right: 25,
                             width: 10,
                             height: 10,
                             bgcolor: 'background.paper',
@@ -81,7 +97,7 @@ const AccountMenu = () => {
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
                 <MenuItem onClick={handleClose}>
-                    <Avatar src={avatarImg} /> Profile
+                    <Avatar src={user?.picture} alt={user?.name} /> Profile
                 </MenuItem>
                 <Divider />
                 <MenuItem onClick={handleClose}>
@@ -90,7 +106,7 @@ const AccountMenu = () => {
                     </ListItemIcon>
                     Settings
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={handleLogout}>
                     <ListItemIcon>
                         <Logout fontSize="small" />
                     </ListItemIcon>
