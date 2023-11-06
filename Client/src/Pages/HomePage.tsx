@@ -3,8 +3,6 @@ import ConstructionRoundedIcon from '@mui/icons-material/ConstructionRounded'
 import GrassRoundedIcon from '@mui/icons-material/GrassRounded'
 import HomePageTimeline from '../Components/HomePageTimeline'
 import SearchIcon from '@mui/icons-material/Search'
-// import ContractorImg from '../Assets/contractor.jpg'
-// import LawnMowerImg from '../Assets/lawnMower.jpg'
 
 const HomePage = () => {
     const verifiedContractorsCount: number = 8836

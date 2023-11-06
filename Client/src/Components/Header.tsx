@@ -5,8 +5,14 @@ import Link from '@mui/material/Link'
 import logo from '../Assets/logo.png'
 import logoSmall from '../Assets/logoSmall.png'
 import AccountMenu from './AccountMenu'
+import { useAuth0 } from '@auth0/auth0-react'
+import LoginButton from './LoginButton'
 
 const Header = () => {
+    const { isAuthenticated } = useAuth0()
+
+    console.log(isAuthenticated)
+
     const [logoIcon, setLogoIcon] = useState(logo)
     const [logoClass, setLogoClass] = useState('')
     const [screenSize, setScreenSize] = useState('')
@@ -49,12 +55,16 @@ const Header = () => {
                             {'Contact'}
                         </Link>
                     </div>
-                    <AccountMenu />
+                    <div className="header-nav-user-wrapper">
+                        {!isAuthenticated ? <LoginButton /> : <AccountMenu />}
+                    </div>
                 </div>
             ) : (
                 <div className="header-nav-small">
                     <HeaderDrawer />
-                    <AccountMenu />
+                    <div className="header-nav-user-wrapper">
+                        {!isAuthenticated ? <LoginButton /> : <AccountMenu />}
+                    </div>
                 </div>
             )}
         </div>

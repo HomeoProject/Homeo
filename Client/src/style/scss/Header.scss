@@ -40,11 +40,23 @@
             gap: 30px;
             padding-right: 10px;
         }
+
+        > .header-nav-user-wrapper {
+            width: 86px;
+            display: flex;
+            justify-content: flex-end;
+        }
     }
 
     > .header-nav-small {
         display: flex;
         align-items: center;
         justify-content: center;
+
+        > .header-nav-user-wrapper {
+            width: 86px;
+            display: flex;
+            justify-content: flex-end;
+        }
     }
 }
