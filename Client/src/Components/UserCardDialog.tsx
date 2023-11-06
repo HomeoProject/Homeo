@@ -43,7 +43,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
     >
       <div className='before-simple-dialog'>
       <div className="SimpleDialog" ref={cardsRef}>
-        <UserCard />
+        <UserCard isDialog={true}/>
         <Card
           sx={{
             margin: '185px 0 0 20px',
@@ -90,7 +90,8 @@ const SimpleDialog = (props: SimpleDialogProps) => {
         <Accordion sx={{ width: '880px' }} ref={accrodionRef}>
           <AccordionSummary>
             <div className="accordion-summary">
-              <Button variant="contained" color="secondary" onClick={handleOpenAccrordion}>
+              <Button variant="contained" color="primary" onClick={handleOpenAccrordion} sx={{fontWeight: 700}}>
+                I want to hire you
                 <ExpandMoreIcon sx={{
                   transition: '0.2s ease-in-out', 
                   transform: (openAccordion) ? 'rotate(180deg)' : ''
@@ -100,42 +101,43 @@ const SimpleDialog = (props: SimpleDialogProps) => {
           </AccordionSummary>
           <AccordionDetails>
             <div className="accordion-form">
-              <div className='accordion-form-person'>
-                <TextField
-                  label="Name"
-                  variant="outlined"
-                />
-                <TextField
-                  label="Surname"
-                  variant="outlined"
-                />
-                <TextField
-                  label="Phone Number"
-                  variant="outlined"
-                />
-                <TextField
-                  label="Adres"
-                  variant="outlined"
-                />
-                <div className='accordion-form-person-adres-details'>
-                  <TextField
-                    label="City"
-                    variant="outlined"
-                  />
-                  <TextField
-                    label="Postal code"
-                    variant="outlined"
-                  />
+              <div className='accordion-form-description'>
+                <div className='accordion-form-description-value'>
+                  <span>
+                  Here you write a{' '}
+                    <span className='accordion-form-description-value-bold'>
+                    description
+                    </span>
+                  {' '}of your problem. In it, you should try to explain 
+                  what you need as precise as possible. Remember - the more information 
+                  about the problem you provide, the better chances you your problem
+                  will be fixed!
+                  </span>
                 </div>
               </div>
               <div className="accordion-form-details">
                 <TextField
                   label="Description of your problem"
                   variant="outlined"
+                  multiline
+                  minRows={6}
                 />
-                <Button variant='contained'>
-                  Send <SendIcon/>
-                </Button>
+                <div>
+                  <input type="checkbox" />
+                  <span>
+                    I have read and agreed to the Terms and Conditions
+                    <span>
+                      *
+                    </span>
+                  </span>
+                </div>
+                <div>
+                  <Button variant='contained' sx={{fontWeight: 700, width: '100%'}}>
+                    <span className='accordion-form-details-button'>
+                      Send <SendIcon fontSize='small' sx={{padding: '0 0 0 5px'}}/>
+                    </span>
+                  </Button>
+                </div>
               </div>
             </div>
           </AccordionDetails>

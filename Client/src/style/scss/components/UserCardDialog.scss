@@ -24,7 +24,7 @@
   overflow: hidden;
   min-height: 500px;
   .simple-dialog-container {
-    width: 500px;
+    max-width: 500px;
     border-radius: 10px;
     > .simple-dialog-container-row {
       display: flex;
@@ -40,6 +40,7 @@
 }
 
 .accordion {
+  font-family: Arial, Helvetica, sans-serif;
   padding: 20px 0 0 0;
   .accordion-summary {
     display: flex;
@@ -49,22 +50,29 @@
   }
   .accordion-form {
     display: grid;
-    grid-template-columns: repeat(2, auto);
-    gap: 10px;
-    .accordion-form-person {
+    padding: 10px 50px 50px 50px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 30px;
+    .accordion-form-description {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      .accordion-form-person-adres-details {
-        display: flex;
-        width: 100%;
-        gap: 10px;
+      // padding: 10px 0 0 0;
+      .accordion-form-description-value {
+        font-size: 22px;
+        .accordion-form-description-value-bold {
+          font-weight: 700;
+        }
       }
     }
     .accordion-form-details {
       display: flex;
       flex-direction: column;
       gap: 10px;
+      .accordion-form-details-button {
+        display: flex;
+        align-items: center;
+      }
     }
   }
 }

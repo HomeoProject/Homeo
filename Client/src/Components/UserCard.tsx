@@ -10,7 +10,7 @@ import StarOutlineIcon from '@mui/icons-material/StarOutline'
 import SmartphoneIcon from '@mui/icons-material/Smartphone'
 import '../style/scss/components/UserCard.scss'
 
-const UserCard = () => {
+const UserCard = ({isDialog}) => {
   const [open, setOpen] = useState(false)
 
   const handleClickOpen = () => {
@@ -69,13 +69,23 @@ const UserCard = () => {
             </div>
           </div>
           <div className="user-card-container-footer">
-            <Button
+            {isDialog ? (
+              <Button
               variant="contained"
-              sx={{ width: '100%' }}
+              sx={{ width: '100%' , fontWeight: 700}}
               onClick={handleClickOpen}
-            >
+              >
+              Go to profile
+            </Button>
+            ) : (
+              <Button
+              variant="contained"
+              sx={{ width: '100%' , fontWeight: 700}}
+              onClick={handleClickOpen}
+              >
               More
             </Button>
+            )}
           </div>
         </div>
       </Card>
