@@ -1,58 +1,58 @@
 @import '../Variables.scss';
 
 .UserCard {
-  width: 300px;
-  > .user-card-avatar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    margin-left: auto;
-    margin-right: auto;
-    left: 0;
-    right: 0;
-    top: 60px;
-    width: 170px;
-    height: 170px;
-    position: relative;
-    background-clip: padding-box;
-    border: solid 8px $primary-color;
-    border-radius: 90px;
-    z-index: 10;
-    img {
-      max-width: 100%;
-      max-height: 100%;
-      border: 2px solid $primary-color;
-      border-radius: 90px;
-    }
-  }
-  .user-card-container {
-    font-family: Arial, Helvetica, sans-serif;
-    padding-top: 50px;
-    > .user-card-container-user-section {
-      display: flex;
-      flex-direction: column;
-      > .user-card-container-user-section-name {
-        font-size: 40px;
-        font-weight: 600;
-      }
-      > .user-card-container-user-section-title {
-        font-size: 18px;
-        padding-left: 2px;
-        color: rgb(167, 167, 167);
-      }
-    }
-    > .user-card-container-info-section {
-      padding: 10px 0px 10px 0px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      > .user-card-container-info-section-row {
+    width: 300px;
+    > .user-card-avatar {
         display: flex;
+        justify-content: center;
         align-items: center;
-        font-size: 17px;
-        gap: 7px;
-      }
+        position: absolute;
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
+        top: 60px;
+        width: 170px;
+        height: 170px;
+        position: relative;
+        background-clip: padding-box;
+        border: solid 8px $primary-color;
+        border-radius: 90px;
+        z-index: 10;
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            border: 2px solid $primary-color;
+            border-radius: 90px;
+        }
     }
-  }
+    .user-card-container {
+        font-family: Arial, Helvetica, sans-serif;
+        padding-top: 50px;
+        > .user-card-container-user-section {
+            display: flex;
+            flex-direction: column;
+            > .user-card-container-user-section-name {
+                font-size: 40px;
+                font-weight: 600;
+            }
+            > .user-card-container-user-section-title {
+                font-size: 18px;
+                padding-left: 2px;
+                color: rgb(167, 167, 167);
+            }
+        }
+        > .user-card-container-info-section {
+            padding: 10px 0px 10px 0px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            > .user-card-container-info-section-row {
+                display: flex;
+                align-items: center;
+                font-size: 17px;
+                gap: 7px;
+            }
+        }
+    }
 }
