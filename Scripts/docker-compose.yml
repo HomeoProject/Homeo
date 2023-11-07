@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  homeo-userservice:
+    container_name: homeo-userservice
+    build: ../UserService
+    ports:
+      - 8081:8081
+    restart: unless-stopped
+    depends_on:
+      - homeo-apigateway
+
+  homeo-apigateway:
+    container_name: homeo-apigateway
+    build: ../ApiGateway
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    depends_on:
+      - homeo-eureka
+      - homeo-redis-apigateway
+
+  homeo-redis-apigateway:
+    image: redis:alpine
+    container_name: homeo-redis-apigateway
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD_APIGATEWAY}
+    ports:
+      - 6380:6379
+    restart: unless-stopped
+
+  homeo-eureka:
+    container_name: homeo-eureka
+    build: ../Eureka
+    ports:
+      - 8761:8761
+    restart: unless-stopped
+
+  homeo-postgres:
+    container_name: homeo-postgres
+    build: ../Postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: ${PGDATA}
+    volumes:
+      - homeo-postgres:/data/homeo-postgres
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+
+volumes:
+  homeo-postgres:

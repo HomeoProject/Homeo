@@ -6,16 +6,28 @@ server:
 spring:
   application:
     name: ApiGateway
+  data:
+    redis:
+      database: 0
+      host: localhost
+      port: 6380
+      password: ${REDIS_PASSWORD_APIGATEWAY}
+      connect-timeout: 60000
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://homeo-eureka:8761/eureka
 
 logging:
   level:
     org.springframework.security: DEBUG
-
 
 springdoc:
   enable-native-support: true
