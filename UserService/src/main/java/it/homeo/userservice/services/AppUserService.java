@@ -1,7 +1,6 @@
 package it.homeo.userservice.services;
 
 import com.auth0.client.mgmt.ManagementAPI;
-import com.auth0.client.mgmt.filter.UserFilter;
 import it.homeo.userservice.dtos.AppUserDto;
 import it.homeo.userservice.exceptions.AppUserNotFoundException;
 import it.homeo.userservice.mappers.AppUserMapper;
