@@ -1,9 +1,12 @@
 package it.homeo.userservice.mappers;
 
 import it.homeo.userservice.dtos.AppUserDto;
+import it.homeo.userservice.dtos.CheckAppUserAfterLoginRequest;
+import it.homeo.userservice.dtos.UpdateAppUserRequest;
 import it.homeo.userservice.models.AppUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 
 /*
@@ -15,4 +18,7 @@ This allows you to easily inject and use the mapping in other Spring components.
 public interface AppUserMapper {
     @Mapping(target = "id", source = "id")
     AppUserDto appUserToAppUserDto(AppUser appUser);
+
+    AppUser checkAppUserAfterLoginRequestToAppUser(CheckAppUserAfterLoginRequest checkAppUserAfterLoginRequest);
+    AppUser updateAppUserRequestToAppUser(UpdateAppUserRequest updateAppUserRequest, @MappingTarget AppUser appUser);
 }

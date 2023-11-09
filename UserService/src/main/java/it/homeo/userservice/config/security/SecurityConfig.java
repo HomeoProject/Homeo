@@ -2,6 +2,7 @@ package it.homeo.userservice.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
@@ -21,6 +22,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         // Example of permission used route
                         // .requestMatchers("/api/user").hasAuthority("admin:permission")
+                        .requestMatchers(HttpMethod.POST, "/api/user").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "api/user/{id}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "api/user/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "api/user/constructor/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "api/user/email/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "api/user/password/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "api/user/approve/{id}").hasAuthority("admin:permission")
+                        .requestMatchers(HttpMethod.PATCH, "api/user/block/{id}").hasAuthority("admin:permission")
                         .anyRequest().permitAll()
                 )
                 .cors(withDefaults())

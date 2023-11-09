@@ -12,6 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 public class AppUser {
+    // Auth0
     @Id
     private String id;
 
@@ -19,13 +20,17 @@ public class AppUser {
 
     private String lastName;
 
+    @Column(unique = true)
     private String phoneNumber;
 
+    // Auth0
     @Column(unique = true)
     private String email;
 
+    // Auth0
     private String avatar;
 
+    // Auth0
     private boolean isBlocked;
 
     private boolean isOnline;
