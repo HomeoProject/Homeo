@@ -56,7 +56,7 @@ class AppUserControllerIntegrationTest {
     @Test
     void shouldGetAppUserById() {
         String id = users.get(0).getId();
-        ResponseEntity<AppUserDto> responseEntity = restTemplate.exchange("/api/user/{id}", HttpMethod.GET, null, AppUserDto.class, id);
+        ResponseEntity<AppUserDto> responseEntity = restTemplate.exchange("/api/users/{id}", HttpMethod.GET, null, AppUserDto.class, id);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isNotNull();
         assertThat(responseEntity.getBody().getId()).isEqualTo(id);
@@ -65,7 +65,7 @@ class AppUserControllerIntegrationTest {
 
     @Test
     void shouldNotFoundAppUserById() {
-        ResponseEntity<AppUserDto> responseEntity = restTemplate.exchange("/api/user/-2", HttpMethod.GET, null, AppUserDto.class);
+        ResponseEntity<AppUserDto> responseEntity = restTemplate.exchange("/api/users/-2", HttpMethod.GET, null, AppUserDto.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
