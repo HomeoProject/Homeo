@@ -1,7 +1,7 @@
 import '../Style/scss/Header.scss'
 import HeaderDrawer from './HeaderDrawer'
 import { useState, useEffect } from 'react'
-import Link from '@mui/material/Link'
+import { Link } from 'react-router-dom'
 import logo from '../Assets/logo.png'
 import logoSmall from '../Assets/logoSmall.png'
 import AccountMenu from './AccountMenu'
@@ -39,19 +39,28 @@ const Header = () => {
 
     return (
         <div className="Header">
-            <a className={`header-logo-${logoClass}`} href="/">
+            <Link className={`header-logo-${logoClass}`} to="/">
                 <img src={logoIcon} alt="logo" />
-            </a>
+            </Link>
             {screenSize === 'normal' ? (
                 <div className="header-nav-normal">
                     <div className="header-nav-normal-right">
-                        <Link href="#" underline="hover" fontSize={'22px'}>
+                        <Link
+                            className="header-nav-normal-right-link"
+                            to="/adverts"
+                        >
                             {'Adverts'}
                         </Link>
-                        <Link href="#" underline="hover" fontSize={'22px'}>
+                        <Link
+                            className="header-nav-normal-right-link"
+                            to="/about"
+                        >
                             {'About Us'}
                         </Link>
-                        <Link href="#" underline="hover" fontSize={'22px'}>
+                        <Link
+                            className="header-nav-normal-right-link"
+                            to="/contact"
+                        >
                             {'Contact'}
                         </Link>
                     </div>
