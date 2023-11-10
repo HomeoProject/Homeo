@@ -1,0 +1,28 @@
+@import './Variables.scss';
+
+body {
+    height: 100vh;
+    background-color: $main-background-color;
+}
+.error-page {
+    width: 100%;
+    height: calc(100vh - 200px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .error-page-logo {
+        scale: 0.8;
+    }
+    .error-page-oops {
+        font-size: 70px;
+        font-weight: 700;
+    }
+    .error-page-message {
+        font-size: 40px;
+    }
+    .error-page-not-found {
+        font-size: 30px;
+        color: rgb(163, 163, 163);
+    }
+}

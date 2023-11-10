@@ -1,13 +1,13 @@
 import './Style/scss/App.scss'
-import HomePage from './Pages/HomePage'
 import Header from './Components/Header'
 import Footer from './Components/Footer'
+import { Outlet } from 'react-router'
 
 function App() {
     return (
         <div className="App">
             <Header />
-            <HomePage />
+            <Outlet />
             <Footer />
         </div>
     )
