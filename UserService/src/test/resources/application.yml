@@ -1,18 +1,7 @@
-server:
-  port: 8081
-  error:
-    include-message: always
-
 spring:
-  application:
-    name: UserService
-  datasource:
-    url: ${POSTGRES_URL}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -39,12 +28,3 @@ springdoc:
     path: /userservice/api-docs
   swagger-ui:
     path: /userservice/swagger-ui
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://homeo-eureka:8761/eureka
-
-logging:
-  level:
-    org.springframework.security: DEBUG
