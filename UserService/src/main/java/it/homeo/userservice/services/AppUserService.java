@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class AppUserService {
+public class AppUserService implements IAppUserService {
     private final ManagementAPI mgmt;
     private final AppUserRepository repository;
     private final AppUserMapper mapper;
@@ -39,9 +39,9 @@ public class AppUserService {
     }
 
     public AppUserDto checkAppUserAfterLogin(CheckAppUserAfterLoginRequest dto) throws Auth0Exception {
-        compareAppUserIdWithTokenId(dto.getId());
+        compareAppUserIdWithTokenId(dto.id());
 
-        Optional<AppUser> optionalAppUser = repository.findById(dto.getId());
+        Optional<AppUser> optionalAppUser = repository.findById(dto.id());
 
         // If the user does not exist in the database, it means that he is logging in for the first time, so we create him and return it nicely :)
         if (optionalAppUser.isEmpty()) {
@@ -53,7 +53,7 @@ public class AppUserService {
 
         // If it exists in the database, we check whether there are any inaccuracies between the Auth0 database and ours, possibly update the user and return dto
         AppUser appUser = optionalAppUser.get();
-        User auth0User = mgmt.users().get(dto.getId(), new UserFilter()).execute().getBody();
+        User auth0User = mgmt.users().get(dto.id(), new UserFilter()).execute().getBody();
 
         boolean shouldSave = false;
 
@@ -100,7 +100,7 @@ public class AppUserService {
         repository.delete(appUser);
     }
 
-    public void updateAppUserIsConstructor(String id, UpdateAppUserIsConstructorRequest dto) {
+    public AppUserDto updateAppUserIsConstructor(String id, UpdateAppUserIsConstructorRequest dto) {
         compareAppUserIdWithTokenId(id);
 
         AppUser appUser = repository.findById(id).orElseThrow(() -> new AppUserNotFoundException(id));
@@ -108,23 +108,27 @@ public class AppUserService {
         // Local DB update
         appUser.setConstructor(dto.isConstructor());
         repository.save(appUser);
+
+        return mapper.appUserToAppUserDto(appUser);
     }
 
-    public void updateAppUserEmail(String id, UpdateAppUserEmailRequest dto) throws Auth0Exception {
+    public AppUserDto updateAppUserEmail(String id, UpdateAppUserEmailRequest dto) throws Auth0Exception {
         compareAppUserIdWithTokenId(id);
 
         AppUser appUser = repository.findById(id).orElseThrow(() -> new AppUserNotFoundException(id));
 
         // Auth0 DB update
         User updatedUser = new User();
-        updatedUser.setEmail(dto.getEmail());
+        updatedUser.setEmail(dto.email());
         mgmt.users().update(id, updatedUser).execute().getBody();
 
         // Local DB update
-        appUser.setEmail(dto.getEmail());
+        appUser.setEmail(dto.email());
         repository.save(appUser);
 
         // TODO Resend email verification email
+
+        return mapper.appUserToAppUserDto(appUser);
     }
 
     public void updateAppUserPassword(String id, UpdateAppUserPasswordRequest dto) throws Auth0Exception {
@@ -132,18 +136,20 @@ public class AppUserService {
 
         // Auth0 DB update
         User updatedUser = new User();
-        updatedUser.setPassword(dto.getPassword().toCharArray());
+        updatedUser.setPassword(dto.password().toCharArray());
         mgmt.users().update(id, updatedUser).execute();
     }
 
-    public void approveAppUser(String id, ApproveAppUserRequest dto) {
+    public AppUserDto approveAppUser(String id, ApproveAppUserRequest dto) {
         AppUser appUser = repository.findById(id).orElseThrow(() -> new AppUserNotFoundException(id));
 
         appUser.setApproved(dto.isApproved());
         repository.save(appUser);
+
+        return mapper.appUserToAppUserDto(appUser);
     }
 
-    public void blockAppUser(String id, BlockAppUserRequest dto) throws Auth0Exception {
+    public AppUserDto blockAppUser(String id, BlockAppUserRequest dto) throws Auth0Exception {
         AppUser appUser = repository.findById(id).orElseThrow(() -> new AppUserNotFoundException(id));
 
         // Auth0 DB update
@@ -154,6 +160,8 @@ public class AppUserService {
         // Local DB update
         appUser.setBlocked(dto.isBlocked());
         repository.save(appUser);
+
+        return mapper.appUserToAppUserDto(appUser);
     }
 
     private void compareAppUserIdWithTokenId(String appUserId) {

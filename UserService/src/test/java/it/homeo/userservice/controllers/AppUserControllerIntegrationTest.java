@@ -59,8 +59,8 @@ class AppUserControllerIntegrationTest {
         ResponseEntity<AppUserDto> responseEntity = restTemplate.exchange("/api/users/{id}", HttpMethod.GET, null, AppUserDto.class, id);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isNotNull();
-        assertThat(responseEntity.getBody().getId()).isEqualTo(id);
-        assertThat(responseEntity.getBody().getCreatedAt()).isNotNull();
+        assertThat(responseEntity.getBody().id()).isEqualTo(id);
+        assertThat(responseEntity.getBody().createdAt()).isNotNull();
     }
 
     @Test

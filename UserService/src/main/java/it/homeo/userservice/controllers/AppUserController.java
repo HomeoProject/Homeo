@@ -2,7 +2,7 @@ package it.homeo.userservice.controllers;
 
 import com.auth0.exception.Auth0Exception;
 import it.homeo.userservice.dtos.*;
-import it.homeo.userservice.services.AppUserService;
+import it.homeo.userservice.services.IAppUserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/users")
 public class AppUserController {
-    private final AppUserService service;
+    private final IAppUserService service;
 
-    public AppUserController(AppUserService service) {
+    public AppUserController(IAppUserService service) {
         this.service = service;
     }
 
@@ -48,15 +48,13 @@ public class AppUserController {
     }
 
     @PatchMapping("/constructor/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateAppUserIsConstructor(@PathVariable String id, @Valid @RequestBody UpdateAppUserIsConstructorRequest dto) {
-        service.updateAppUserIsConstructor(id, dto);
+    public AppUserDto updateAppUserIsConstructor(@PathVariable String id, @Valid @RequestBody UpdateAppUserIsConstructorRequest dto) {
+        return service.updateAppUserIsConstructor(id, dto);
     }
 
     @PatchMapping("/email/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateAppUserEmail(@PathVariable String id, @Valid @RequestBody UpdateAppUserEmailRequest dto) throws Auth0Exception {
-        service.updateAppUserEmail(id, dto);
+    public AppUserDto updateAppUserEmail(@PathVariable String id, @Valid @RequestBody UpdateAppUserEmailRequest dto) throws Auth0Exception {
+        return service.updateAppUserEmail(id, dto);
     }
 
     @PatchMapping("/password/{id}")
@@ -69,9 +67,8 @@ public class AppUserController {
     ADMIN ENDPOINT
      */
     @PatchMapping("/approve/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void approveAppUser(@PathVariable String id, @Valid @RequestBody ApproveAppUserRequest dto) {
-        service.approveAppUser(id, dto);
+    public AppUserDto approveAppUser(@PathVariable String id, @Valid @RequestBody ApproveAppUserRequest dto) {
+        return service.approveAppUser(id, dto);
     }
 
     /*
@@ -81,8 +78,7 @@ public class AppUserController {
     ADMIN ENDPOINT
      */
     @PatchMapping("/block/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void blockAppUser(@PathVariable String id, @Valid @RequestBody BlockAppUserRequest dto) throws Auth0Exception {
-        service.blockAppUser(id, dto);
+    public AppUserDto blockAppUser(@PathVariable String id, @Valid @RequestBody BlockAppUserRequest dto) throws Auth0Exception {
+        return service.blockAppUser(id, dto);
     }
 }

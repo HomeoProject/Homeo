@@ -2,19 +2,17 @@ package it.homeo.userservice.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 
-@Data
-public class UpdateAppUserRequest {
-    @NotBlank
-    @NotNull
-    private String firstName;
+public record UpdateAppUserRequest(
+        @NotBlank
+        @NotNull
+        String firstName,
 
-    @NotBlank
-    @NotNull
-    private String lastName;
+        @NotBlank
+        @NotNull
+        String lastName,
 
-    @NotBlank
-    @NotNull
-    private String phoneNumber;
-}
+        @NotBlank
+        @NotNull
+        String phoneNumber
+) { }
