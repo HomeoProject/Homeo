@@ -28,6 +28,12 @@ const AccountMenu = () => {
         setAnchorEl(null)
         logout()
     }
+
+    const handleUserRedirect = () => {
+        setAnchorEl(null)
+        window.location.href = `/user/${user?.sub}`
+    }
+
     return (
         <React.Fragment>
             <Box
@@ -96,7 +102,7 @@ const AccountMenu = () => {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={handleUserRedirect}>
                     <Avatar src={user?.picture} alt={user?.name} /> Profile
                 </MenuItem>
                 <Divider />

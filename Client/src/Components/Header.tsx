@@ -11,8 +11,6 @@ import LoginButton from './LoginButton'
 const Header = () => {
     const { isAuthenticated } = useAuth0()
 
-    console.log(isAuthenticated)
-
     const [logoIcon, setLogoIcon] = useState(logo)
     const [logoClass, setLogoClass] = useState('')
     const [screenSize, setScreenSize] = useState('')

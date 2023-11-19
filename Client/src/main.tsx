@@ -5,14 +5,14 @@ import HomePage from './Pages/HomePage.tsx'
 import AdvertsPage from './Pages/AdvertsPage.tsx'
 import ContactPage from './Pages/ContactPage.tsx'
 import AboutPage from './Pages/AboutPage.tsx'
+import UserPage from './Pages/UserPage.tsx'
 import { ThemeProvider } from '@mui/material/styles'
 import { Auth0Provider } from '@auth0/auth0-react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import theme from './Style/themes/themes'
 
 const domain: string | undefined = import.meta.env.VITE_REACT_APP_AUTH0_DOMAIN
-const clientId: string | undefined = import.meta.env
-    .VITE_REACT_APP_AUTH0_CLIENT_ID
+const clientId: string | undefined = import.meta.env.VITE_REACT_APP_AUTH0_CLIENT_ID
 
 const router = createBrowserRouter([
     {
@@ -36,6 +36,10 @@ const router = createBrowserRouter([
                 path: '/contact',
                 element: <ContactPage />,
             },
+            {
+                path: '/user/:id',
+                element: <UserPage />,
+            }
         ],
     },
 ])
