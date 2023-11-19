@@ -20,7 +20,7 @@ function App() {
             isBlocked: false
         }
         const response = await axios.post(
-            `http://localhost:8081/api/users`,
+            `http://localhost:8080/api/users`,
             userBody,
             {
                 headers: {
