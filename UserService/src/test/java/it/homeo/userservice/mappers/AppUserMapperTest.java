@@ -32,7 +32,6 @@ class AppUserMapperTest {
         appUser.setBlocked(false);
         appUser.setOnline(true);
         appUser.setApproved(true);
-        appUser.setConstructor(true);
         appUser.setCreatedAt(new Date());
         appUser.setUpdatedAt(new Date());
 
@@ -48,7 +47,6 @@ class AppUserMapperTest {
         assertThat(appUserDto.isBlocked()).isEqualTo(appUser.isBlocked());
         assertThat(appUserDto.isOnline()).isEqualTo(appUser.isOnline());
         assertThat(appUserDto.isApproved()).isEqualTo(appUser.isApproved());
-        assertThat(appUserDto.isConstructor()).isEqualTo(appUser.isConstructor());
         assertThat(appUserDto.createdAt()).isEqualTo(appUser.getCreatedAt());
         assertThat(appUserDto.updatedAt()).isEqualTo(appUser.getUpdatedAt());
     }
@@ -92,7 +90,6 @@ class AppUserMapperTest {
         appUser.setPhoneNumber("123-456-789");
         appUser.setAvatar("avatar-url");
         appUser.setBlocked(false);
-        appUser.setConstructor(true);
         appUser.setCreatedAt(new Date());
         appUser.setUpdatedAt(new Date());
 
@@ -112,7 +109,6 @@ class AppUserMapperTest {
         assertThat(appUserMapped.getPhoneNumber()).isEqualTo(request.phoneNumber());
         assertThat(appUserMapped.getAvatar()).isEqualTo(appUser.getAvatar());
         assertThat(appUserMapped.isBlocked()).isFalse();
-        assertThat(appUserMapped.isConstructor()).isTrue();
         assertThat(appUserMapped.getCreatedAt()).isNotNull();
         assertThat(appUserMapped.getUpdatedAt()).isNotNull();
     }

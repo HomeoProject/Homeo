@@ -12,7 +12,6 @@ public record AppUserDto(
         boolean isBlocked,
         boolean isOnline,
         boolean isApproved,
-        boolean isConstructor,
         Date createdAt,
         Date updatedAt
 ) { }

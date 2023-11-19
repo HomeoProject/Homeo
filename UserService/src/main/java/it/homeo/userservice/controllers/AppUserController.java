@@ -48,8 +48,9 @@ public class AppUserController {
     }
 
     @PatchMapping("/constructor/{id}")
-    public AppUserDto updateAppUserIsConstructor(@PathVariable String id, @Valid @RequestBody UpdateAppUserIsConstructorRequest dto) {
-        return service.updateAppUserIsConstructor(id, dto);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateAppUserIsConstructor(@PathVariable String id, @Valid @RequestBody UpdateAppUserIsConstructorRequest dto) throws Auth0Exception {
+        service.updateAppUserIsConstructor(id, dto);
     }
 
     @PatchMapping("/email/{id}")

@@ -20,7 +20,6 @@ public interface AppUserMapper {
     @Mapping(target = "isBlocked", source = "blocked")
     @Mapping(target = "isOnline", source = "online")
     @Mapping(target = "isApproved", source = "approved")
-    @Mapping(target = "isConstructor", source = "constructor")
     AppUserDto appUserToAppUserDto(AppUser appUser);
 
     AppUser checkAppUserAfterLoginRequestToAppUser(CheckAppUserAfterLoginRequest checkAppUserAfterLoginRequest);

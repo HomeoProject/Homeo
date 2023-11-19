@@ -5,6 +5,7 @@ import com.auth0.client.mgmt.ManagementAPI;
 import com.auth0.client.mgmt.filter.UserFilter;
 import com.auth0.exception.Auth0Exception;
 import com.auth0.json.mgmt.users.User;
+import it.homeo.userservice.config.Auth0RolesConfig;
 import it.homeo.userservice.dtos.*;
 import it.homeo.userservice.exceptions.AppUserNotFoundException;
 import it.homeo.userservice.exceptions.ForbiddenException;
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -22,15 +24,18 @@ public class AppUserService implements IAppUserService {
     private final ManagementAPI mgmt;
     private final AppUserRepository repository;
     private final AppUserMapper mapper;
+    private final Auth0RolesConfig rolesConfig;
 
     public AppUserService(
             ManagementAPI mgmt,
             AppUserRepository repository,
-            AppUserMapper mapper
+            AppUserMapper mapper,
+            Auth0RolesConfig rolesConfig
     ) {
         this.mgmt = mgmt;
         this.repository = repository;
         this.mapper = mapper;
+        this.rolesConfig = rolesConfig;
     }
 
     public AppUserDto getAppUserById(String id) {
@@ -49,7 +54,6 @@ public class AppUserService implements IAppUserService {
             AppUser savedAppUser = repository.save(newAppUser);
             return mapper.appUserToAppUserDto(savedAppUser);
         }
-
 
         // If it exists in the database, we check whether there are any inaccuracies between the Auth0 database and ours, possibly update the user and return dto
         AppUser appUser = optionalAppUser.get();
@@ -100,16 +104,16 @@ public class AppUserService implements IAppUserService {
         repository.delete(appUser);
     }
 
-    public AppUserDto updateAppUserIsConstructor(String id, UpdateAppUserIsConstructorRequest dto) {
+    public void updateAppUserIsConstructor(String id, UpdateAppUserIsConstructorRequest dto) throws Auth0Exception {
         compareAppUserIdWithTokenId(id);
 
-        AppUser appUser = repository.findById(id).orElseThrow(() -> new AppUserNotFoundException(id));
+        // Auth0 DB update
+        if (dto.isConstructor()) {
+            mgmt.users().addRoles(id, Collections.singletonList(rolesConfig.getConstructorRoleId())).execute();
+            return;
+        }
 
-        // Local DB update
-        appUser.setConstructor(dto.isConstructor());
-        repository.save(appUser);
-
-        return mapper.appUserToAppUserDto(appUser);
+        mgmt.users().removeRoles(id, Collections.singletonList(rolesConfig.getConstructorRoleId())).execute();
     }
 
     public AppUserDto updateAppUserEmail(String id, UpdateAppUserEmailRequest dto) throws Auth0Exception {
