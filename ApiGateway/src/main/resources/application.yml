@@ -15,18 +15,16 @@ spring:
       connect-timeout: 60000
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_UNIQUE
+        - AddResponseHeader=Access-Control-Allow-Origin, *
       globalcors:
         cors-configurations:
-          "[/**]":
-            allowedOrigins: "http://localhost:5173"
+          '[/**]':
+            allowedOrigins: "http://localhost:5173, http://127.0.0.1:5173"
             allowedHeaders: "*"
             allowCredentials: true
-            allowedMethods:
-              - GET
-              - POST
-              - DELETE
-              - PUT
-              - PATCH
+            allowedMethods: "*"
 
 eureka:
   client:
