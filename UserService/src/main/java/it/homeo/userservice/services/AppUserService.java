@@ -71,7 +71,7 @@ public class AppUserService implements IAppUserService {
             shouldSave = true;
         }
 
-        if (appUser.isBlocked() != auth0User.isBlocked()) {
+        if (auth0User.isBlocked() != null && appUser.isBlocked() != auth0User.isBlocked()) {
             appUser.setBlocked(auth0User.isBlocked());
             shouldSave = true;
         }
