@@ -8,7 +8,8 @@ import axios from 'axios'
 import { RawUser } from './types/types'
 
 function App() {
-    const { user, isAuthenticated, getAccessTokenSilently } = useAuth0()
+
+    const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
     // Check if user exists in local database, if not, create it using Auth0 data
     const syncUser = async (token: string) => {
@@ -19,23 +20,23 @@ function App() {
             isBlocked: false,
         }
         const response = await axios.post(
-            `http://localhost:8080/api/users`,
+            `http://localhost:8081/api/users`,
             userBody,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             }
-        )
-        console.log(response.data)
-    }
+        );
+        console.log(response.data);
+    };
 
     useEffect(() => {
         if (user && isAuthenticated) {
             getAccessTokenSilently().then((token) => {
-                syncUser(token)
+                syncUser(token);
                 // console.log(token);
-            })
+            });
         }
     }, [user, isAuthenticated])
 
