@@ -9,23 +9,34 @@ import { RawUser } from './types/types';
 
 function App() {
 
-    const { user, isAuthenticated } = useAuth0();
+    const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
     // Check if user exists in local database, if not, create it using Auth0 data
-    const syncUser = async () => {
+    const syncUser = async (token: string) => {
         const userBody: RawUser = {
             id: user?.sub,
             email: user?.email,
             avatar: user?.picture,
             isBlocked: false
         }
-        const response = await axios.post(`http://localhost:8080/api/users`, userBody);
+        const response = await axios.post(
+            `http://localhost:8081/api/users`,
+            userBody,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
         console.log(response.data);
     };
 
     useEffect(() => {
         if (user && isAuthenticated) {
-            syncUser();
+            getAccessTokenSilently().then((token) => {
+                syncUser(token);
+                // console.log(token);
+            });
         }
     }, [user, isAuthenticated]);
 
