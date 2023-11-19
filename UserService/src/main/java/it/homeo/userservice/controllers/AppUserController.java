@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 // TODO Avatar update with cloud provider
 // TODO Event sourcing with Kafka to search service and isOnline event from notification service
 // TODO Resend verification email after updating
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/users")
 public class AppUserController {
