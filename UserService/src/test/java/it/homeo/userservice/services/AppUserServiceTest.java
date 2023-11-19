@@ -39,8 +39,7 @@ class AppUserServiceTest {
         AppUser appUser = new AppUser();
         appUser.setId(id);
 
-        AppUserDto appUserDto = new AppUserDto();
-        appUserDto.setId(id);
+        AppUserDto appUserDto = new AppUserDto(id, null, null, null, null, null, false, false, false, null, null);
 
         when(repository.findById(id)).thenReturn(Optional.of(appUser));
         when(mapper.appUserToAppUserDto(appUser)).thenReturn(appUserDto);

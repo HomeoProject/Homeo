@@ -59,8 +59,8 @@ class AppUserControllerIntegrationTest {
         ResponseEntity<AppUserDto> responseEntity = restTemplate.exchange("/api/users/{id}", HttpMethod.GET, null, AppUserDto.class, id);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isNotNull();
-        assertThat(responseEntity.getBody().getId()).isEqualTo(id);
-        assertThat(responseEntity.getBody().getCreatedAt()).isNotNull();
+        assertThat(responseEntity.getBody().id()).isEqualTo(id);
+        assertThat(responseEntity.getBody().createdAt()).isNotNull();
     }
 
     @Test
@@ -80,7 +80,6 @@ class AppUserControllerIntegrationTest {
         user1.setBlocked(false);
         user1.setOnline(true);
         user1.setApproved(true);
-        user1.setConstructor(false);
 
         AppUser user2 = new AppUser();
         user2.setId("auth0|user2");
@@ -92,7 +91,6 @@ class AppUserControllerIntegrationTest {
         user2.setBlocked(false);
         user2.setOnline(true);
         user2.setApproved(true);
-        user2.setConstructor(false);
 
         AppUser user3 = new AppUser();
         user3.setId("auth0|user3");
@@ -104,7 +102,6 @@ class AppUserControllerIntegrationTest {
         user3.setBlocked(false);
         user3.setOnline(true);
         user3.setApproved(true);
-        user3.setConstructor(false);
 
         users = repository.saveAll(List.of(user1, user2, user3));
     }

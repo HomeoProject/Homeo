@@ -28,6 +28,9 @@ okta:
     client-id: ${OKTA_MTM_CLIENT_ID}
     client-secret: ${OKTA_MTM_CLIENT_SECRET}
     audience: ${OKTA_MANAGEMENT_API_AUDIENCE}
+  auth0:
+    roles:
+      constructorRoleId: rol_UCL6ZThu4ydr1nYW
 
 openapi:
   service:
