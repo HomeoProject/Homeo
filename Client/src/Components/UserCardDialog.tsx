@@ -129,7 +129,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
                                             try to explain what you need as
                                             precise as possible. Remember - the
                                             more information about the problem
-                                            you provide, the better chances you
+                                            you provide, the better chances
                                             your problem will be fixed!
                                         </span>
                                     </div>
