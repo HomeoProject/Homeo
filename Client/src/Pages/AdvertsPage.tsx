@@ -8,31 +8,36 @@ import '../style/scss/AdvertsPage.scss'
 const AdvertsPage = () => {
     const searchValue = 'search'
 
+    const getCurrentDimension = () => {
+        return window.innerWidth
+    }
+
     const [screenSize, setScreenSize] = useState(getCurrentDimension());
     const [open, setOpen] = useState<boolean>(false)
+    const [filterClicked, setFilterClicked] = useState<number>(0)
 
-    const handleClickOpen = () => {
+    const filters = ['Category', 'Price', 'Rating', 'Experience', 'Language', 'Payment methods', 'Location']
+
+    const handleClickOpen = (index: number) => {
+        setFilterClicked(index)
+        console.log(index)
         setOpen(true)
     }
 
     const handleClose = () => {
         setOpen(false)
     }
-
-  	function getCurrentDimension() {
-    	return window.innerWidth
-  	}
   
-  	useEffect(() => {
-    	const updateDimension = () => {
-      		setScreenSize(getCurrentDimension())
-    	}
-    	window.addEventListener('resize', updateDimension);
-    		
-    	return(() => {
-        	window.removeEventListener('resize', updateDimension);
-    	})
-  	}, [screenSize])
+    useEffect(() => {
+        const updateDimension = () => {
+        setScreenSize(getCurrentDimension())
+        }
+        window.addEventListener('resize', updateDimension);
+            
+    return(() => {
+        window.removeEventListener('resize', updateDimension);
+    })
+    }, [screenSize])
 
     return (
     <div className="AdvertsPage">
@@ -53,34 +58,14 @@ const AdvertsPage = () => {
             <div className='adverts-page-search-filters'>
                 {(screenSize > 800) ? (
                     <>
-                        <div onClick={handleClickOpen} className='adverts-page-search-filters-container'>
-                            <span className='adverts-page-search-filters-container-label'>Category</span>
-                            <ExpandMoreIcon/>
-                        </div>
-                        <div onClick={handleClickOpen} className='adverts-page-search-filters-container'>
-                            <span className='adverts-page-search-filters-container-label'>Price</span>
-                            <ExpandMoreIcon/>
-                        </div>
-                        <div onClick={handleClickOpen} className='adverts-page-search-filters-container'>
-                            <span className='adverts-page-search-filters-container-label'>Rating</span>
-                            <ExpandMoreIcon/>
-                        </div>
-                        <div onClick={handleClickOpen} className='adverts-page-search-filters-container'>
-                            <span className='adverts-page-search-filters-container-label'>Experience</span>
-                            <ExpandMoreIcon/>
-                        </div>
-                        <div onClick={handleClickOpen} className='adverts-page-search-filters-container'>
-                            <span className='adverts-page-search-filters-container-label'>Language</span>
-                            <ExpandMoreIcon/>
-                        </div>
-                        <div onClick={handleClickOpen} className='adverts-page-search-filters-container'>
-                            <span className='adverts-page-search-filters-container-label'>Payment methods</span>
-                            <ExpandMoreIcon/>
-                        </div>
-                        <div onClick={handleClickOpen} className='adverts-page-search-filters-container'>
-                            <span className='adverts-page-search-filters-container-label'>Location</span>
-                            <ExpandMoreIcon/>
-                        </div>
+                        {filters.map((filter, index) => {
+                            return (
+                                <div onClick={() => handleClickOpen(index)} className='adverts-page-search-filters-container'>
+                                    <span className='adverts-page-search-filters-container-label'>{filter}</span>
+                                    <ExpandMoreIcon/>
+                                </div>
+                            )
+                        })}
                     </>
                 ) : (
                     <div className='adverts-page-search-filters-container'>
@@ -101,7 +86,7 @@ const AdvertsPage = () => {
                 <UserCard isDialog={false}/>
             </div>
         </div>
-        <FiltersDialog open={open} handleClose={handleClose}/>
+        <FiltersDialog open={open} handleClose={handleClose} openFilter={filterClicked}/>
     </div>)
 }
 
