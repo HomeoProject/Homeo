@@ -19,6 +19,13 @@ spring:
         format_sql: true
     show-sql: true
 
+okta:
+  oauth2:
+    issuer: ${OKTA_API_ISSUER}
+    audience: ${OKTA_API_AUDIENCE}
+
+categories: Plumber, Painter, Electrician, Renovation, Cleaning, Transport, Garden
+
 openapi:
   service:
     title: CategoryService
