@@ -14,6 +14,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_URL: ${POSTGRES_URL_USERSERVICE}
+      EUREKA_URL: ${EUREKA_URL}
     ports:
       - 8081:8081
     restart: unless-stopped
