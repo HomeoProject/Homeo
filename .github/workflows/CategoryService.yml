@@ -11,6 +11,10 @@ on:
 permissions:
   contents: read
 
+env:
+  OKTA_API_ISSUER: ${{ secrets.OKTA_API_ISSUER }}
+  OKTA_API_AUDIENCE: ${{ secrets.OKTA_API_AUDIENCE }}
+
 jobs:
   build:
 
