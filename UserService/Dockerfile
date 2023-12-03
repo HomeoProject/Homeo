@@ -1,7 +1,9 @@
 FROM gradle:jdk17-alpine AS build
 COPY --chown=gradle:gradle . /home/gradle/UserService
 WORKDIR /home/gradle/UserService
-RUN gradle build --no-daemon
+RUN gradle clean build -x test
+#COPY .env .env
+#RUN export $(grep -v '^#' .env | xargs) && gradle build --no-daemon
 
 FROM openjdk:17-jdk-alpine
 WORKDIR /app

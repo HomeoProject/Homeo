@@ -38,7 +38,16 @@
             display: flex;
             align-items: center;
             gap: 30px;
-            padding-right: 10px;
+            padding-right: 20px;
+            > .header-nav-normal-right-link {
+                font-size: 25px;
+                color: $primary-color;
+                text-decoration: none;
+                transition: 0.2s ease;
+                &:hover {
+                    text-shadow: 4px 4px 14px rgba(204, 203, 203, 1);
+                }
+            }
         }
 
         > .header-nav-user-wrapper {

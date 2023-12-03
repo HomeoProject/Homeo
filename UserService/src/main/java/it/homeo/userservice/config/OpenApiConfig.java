@@ -1,4 +1,4 @@
-package it.homeo.userservice.documentation;
+package it.homeo.userservice.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.models.OpenAPI;
