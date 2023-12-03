@@ -1,6 +1,22 @@
 version: "3.8"
 
 services:
+  homeo-categoryservice:
+    container_name: homeo-categoryservice
+    build: ../CategoryService
+    environment:
+      OKTA_API_ISSUER: ${OKTA_API_ISSUER}
+      OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_URL: ${POSTGRES_URL_CATEGORYSERVICE}
+      EUREKA_URL: ${EUREKA_URL}
+    ports:
+      - 8082:8082
+    restart: unless-stopped
+    depends_on:
+      - homeo-apigateway
+
   homeo-userservice:
     container_name: homeo-userservice
     build: ../UserService
