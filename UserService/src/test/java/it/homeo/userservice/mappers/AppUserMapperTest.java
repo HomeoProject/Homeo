@@ -22,18 +22,7 @@ class AppUserMapperTest {
 
     @Test
     void shouldMapAppUserToAppUserDto() {
-        AppUser appUser = new AppUser();
-        appUser.setId("auth|user1");
-        appUser.setFirstName("John");
-        appUser.setLastName("Doe");
-        appUser.setEmail("john.doe@example.com");
-        appUser.setPhoneNumber("123-456-789");
-        appUser.setAvatar("avatar-url");
-        appUser.setBlocked(false);
-        appUser.setOnline(true);
-        appUser.setApproved(true);
-        appUser.setCreatedAt(new Date());
-        appUser.setUpdatedAt(new Date());
+        AppUser appUser = createSampleUser();
 
         AppUserDto appUserDto = mapper.appUserToAppUserDto(appUser);
 
@@ -59,22 +48,20 @@ class AppUserMapperTest {
 
     @Test
     void shouldMapCheckAppUserAfterLoginRequestToAppUser() {
-        CheckAppUserAfterLoginRequest request = new CheckAppUserAfterLoginRequest(
-                "auth|user1",
-                "john.doe@example.com",
-                "avatar-url",
-                false
-        );
+        CheckAppUserAfterLoginRequest request = CheckAppUserAfterLoginRequest.builder()
+                .id("auth|user1")
+                .email("john.doe@example.com")
+                .avatar("avatar-url")
+                .isBlocked(false)
+                .build();
 
         AppUser appUser = mapper.checkAppUserAfterLoginRequestToAppUser(request);
 
         assertThat(appUser).isNotNull();
-
         assertThat(appUser.getId()).isEqualTo(request.id());
         assertThat(appUser.getEmail()).isEqualTo(request.email());
         assertThat(appUser.getAvatar()).isEqualTo(request.avatar());
         assertThat(appUser.isBlocked()).isEqualTo(request.isBlocked());
-
         assertThat(appUser.getFirstName()).isNull();
         assertThat(appUser.getLastName()).isNull();
         assertThat(appUser.getPhoneNumber()).isNull();
@@ -82,22 +69,13 @@ class AppUserMapperTest {
 
     @Test
     void shouldMapUpdateAppUserRequestToAppUser() {
-        AppUser appUser = new AppUser();
-        appUser.setId("auth|user1");
-        appUser.setFirstName("John");
-        appUser.setLastName("Doe");
-        appUser.setEmail("john.doe@example.com");
-        appUser.setPhoneNumber("123-456-789");
-        appUser.setAvatar("avatar-url");
-        appUser.setBlocked(false);
-        appUser.setCreatedAt(new Date());
-        appUser.setUpdatedAt(new Date());
+        AppUser appUser = createSampleUser();
 
-        UpdateAppUserRequest request = new UpdateAppUserRequest(
-                "Jane",
-                "987-654-321",
-                "Dae"
-        );
+        UpdateAppUserRequest request = UpdateAppUserRequest.builder()
+                .firstName("Jane")
+                .lastName("Dae")
+                .phoneNumber("987-654-321")
+                .build();
 
         AppUser appUserMapped = mapper.updateAppUserRequestToAppUser(request, appUser);
 
@@ -111,5 +89,21 @@ class AppUserMapperTest {
         assertThat(appUserMapped.isBlocked()).isFalse();
         assertThat(appUserMapped.getCreatedAt()).isNotNull();
         assertThat(appUserMapped.getUpdatedAt()).isNotNull();
+    }
+
+    private AppUser createSampleUser() {
+        AppUser appUser = new AppUser();
+        appUser.setId("auth|user1");
+        appUser.setFirstName("John");
+        appUser.setLastName("Doe");
+        appUser.setEmail("john.doe@example.com");
+        appUser.setPhoneNumber("123-456-789");
+        appUser.setAvatar("avatar-url");
+        appUser.setBlocked(false);
+        appUser.setOnline(true);
+        appUser.setApproved(true);
+        appUser.setCreatedAt(new Date());
+        appUser.setUpdatedAt(new Date());
+        return appUser;
     }
 }
