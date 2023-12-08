@@ -1,7 +1,10 @@
 package it.homeo.userservice.dtos;
 
+import lombok.Builder;
+
 import java.util.Date;
 
+@Builder
 public record AppUserDto(
         String id,
         String firstName,
