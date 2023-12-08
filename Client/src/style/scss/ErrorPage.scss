@@ -13,7 +13,7 @@
         align-items: center;
         justify-content: center;
         margin-top: -50px;
-    
+
         .error-page-logo {
             scale: 1;
         }
@@ -39,7 +39,7 @@
         transform: translate(-50%, 0);
         max-width: calc(100% - 40px);
 
-        @media(max-width: 600px) {
+        @media (max-width: 600px) {
             display: none;
         }
     }

@@ -54,7 +54,7 @@ const AccountMenu = () => {
                     >
                         {isLoading ? (
                             <Skeleton variant="circular">
-                                <Avatar sx={{ width: 40, height: 40}} />
+                                <Avatar sx={{ width: 40, height: 40 }} />
                             </Skeleton>
                         ) : (
                             <Avatar

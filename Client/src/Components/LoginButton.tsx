@@ -17,9 +17,9 @@ const LoginButton = () => {
                     fontWeight: 'bold',
                     color: '#1cbe8e',
                     backgroundColor: 'white',
-                    ":hover": {
-                        color: 'white'
-                    }
+                    ':hover': {
+                        color: 'white',
+                    },
                 }}
             >
                 Login

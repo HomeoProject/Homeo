@@ -2,14 +2,17 @@
 
 .Header {
     width: 100%;
-    background: url('https://community.dynatrace.com/html/assets/wave-white.svg'), url('../../Assets//solid-color.png');
+    background: url('https://community.dynatrace.com/html/assets/wave-white.svg'),
+        url('../../Assets//solid-color.png');
     background-repeat: no-repeat, no-repeat;
-    background-size: 100% 65%, 100% 95%;
+    background-size:
+        100% 65%,
+        100% 95%;
     background-position-y: bottom, top;
     padding-bottom: 120px;
     margin-bottom: -120px;
 
-    .header-main { 
+    .header-main {
         width: calc(100% - 40px);
         display: flex;
         align-items: center;
@@ -33,7 +36,7 @@
                 height: 90px;
             }
         }
-    
+
         > .header-logo-small {
             font-size: 30px;
             display: flex;
@@ -48,43 +51,43 @@
                 height: 70px;
             }
         }
-    
+
         > .header-nav-normal {
             display: flex;
             align-items: center;
             margin-top: -90px;
-    
+
             > .header-nav-normal-right {
                 display: flex;
                 align-items: center;
                 gap: 30px;
                 padding-right: 20px;
-    
+
                 > .header-nav-normal-right-link {
                     font-size: 25px;
                     color: white;
                     text-decoration: none;
                     transition: all 0.2s ease;
-    
+
                     &:hover {
                         text-decoration: underline;
                     }
                 }
             }
-    
+
             > .header-nav-user-wrapper {
                 width: 86px;
                 display: flex;
                 justify-content: flex-end;
             }
         }
-    
+
         > .header-nav-small {
             display: flex;
             align-items: center;
             justify-content: center;
             margin-top: -90px;
-    
+
             > .header-nav-user-wrapper {
                 width: 86px;
                 display: flex;

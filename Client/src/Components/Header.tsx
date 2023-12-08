@@ -10,10 +10,6 @@ import homeIcon from '../Assets/icon.png'
 const Header = () => {
     const { isAuthenticated } = useAuth0()
 
-<<<<<<< HEAD
-=======
-    const [logoIcon, setLogoIcon] = useState(logo)
->>>>>>> 644d4fc01752ac6528663e6c0abd7ab35d4d38c3
     const [logoClass, setLogoClass] = useState('')
     const [screenSize, setScreenSize] = useState('')
     const [screenWidth, setScreenWidth] = useState(window.innerWidth)
@@ -37,7 +33,7 @@ const Header = () => {
 
     return (
         <div className="Header">
-            <div className='header-main'>
+            <div className="header-main">
                 <Link className={`header-logo-${logoClass}`} to="/">
                     <img src={homeIcon} alt="logo" />
                     Homeo
@@ -65,14 +61,22 @@ const Header = () => {
                             </Link>
                         </div>
                         <div className="header-nav-user-wrapper">
-                            {!isAuthenticated ? <LoginButton /> : <AccountMenu />}
+                            {!isAuthenticated ? (
+                                <LoginButton />
+                            ) : (
+                                <AccountMenu />
+                            )}
                         </div>
                     </div>
                 ) : (
                     <div className="header-nav-small">
                         <HeaderDrawer />
                         <div className="header-nav-user-wrapper">
-                            {!isAuthenticated ? <LoginButton /> : <AccountMenu />}
+                            {!isAuthenticated ? (
+                                <LoginButton />
+                            ) : (
+                                <AccountMenu />
+                            )}
                         </div>
                     </div>
                 )}

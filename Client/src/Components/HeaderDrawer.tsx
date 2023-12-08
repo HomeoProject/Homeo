@@ -39,7 +39,7 @@ const TemporaryDrawer = () => {
     const list = (anchor: Anchor) => (
         <Box
             sx={{
-                width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250
+                width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250,
             }}
             role="presentation"
             onClick={toggleDrawer(anchor, false)}

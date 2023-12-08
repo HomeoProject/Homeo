@@ -12,7 +12,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import theme from './style/themes/themes.ts'
 
 const domain: string | undefined = import.meta.env.VITE_REACT_APP_AUTH0_DOMAIN
-const clientId: string | undefined = import.meta.env.VITE_REACT_APP_AUTH0_CLIENT_ID
+const clientId: string | undefined = import.meta.env
+    .VITE_REACT_APP_AUTH0_CLIENT_ID
 
 const router = createBrowserRouter([
     {
@@ -39,7 +40,7 @@ const router = createBrowserRouter([
             {
                 path: '/user/:id',
                 element: <UserPage />,
-            }
+            },
         ],
     },
 ])
