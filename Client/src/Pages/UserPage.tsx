@@ -1,4 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
+<<<<<<< HEAD
 import '../style/scss/UserPage.scss';
 import { useParams } from 'react-router-dom';
 import ErrorPage from './ErrorPage';
@@ -21,6 +22,17 @@ const UserPage = () => {
             :
                 !isLoading && <ErrorPage error={"You are not authorized to view this page"} />
         }
+=======
+
+
+const UserPage = () => {
+
+    const { user } = useAuth0();
+
+    return (
+    <div className="UserPage">
+        hello {user?.sub}
+>>>>>>> 644d4fc01752ac6528663e6c0abd7ab35d4d38c3
     </div>
     )
 }

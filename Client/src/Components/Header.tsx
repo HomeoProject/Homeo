@@ -10,6 +10,10 @@ import homeIcon from '../Assets/icon.png'
 const Header = () => {
     const { isAuthenticated } = useAuth0()
 
+<<<<<<< HEAD
+=======
+    const [logoIcon, setLogoIcon] = useState(logo)
+>>>>>>> 644d4fc01752ac6528663e6c0abd7ab35d4d38c3
     const [logoClass, setLogoClass] = useState('')
     const [screenSize, setScreenSize] = useState('')
     const [screenWidth, setScreenWidth] = useState(window.innerWidth)
