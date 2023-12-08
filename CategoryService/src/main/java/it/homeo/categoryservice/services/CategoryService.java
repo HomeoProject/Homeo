@@ -9,8 +9,6 @@ import it.homeo.categoryservice.exceptions.CategoryNotFoundException;
 import it.homeo.categoryservice.mappers.CategoryMapper;
 import it.homeo.categoryservice.models.Category;
 import it.homeo.categoryservice.repositories.CategoryRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,7 +35,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public CategoryDto addCategory(AddCategoryRequestDto dto) {
+    public CategoryDto addCategory(AddCategoryRequestDto dto, String userId) {
         String name = dto.name().toUpperCase();
 
         if (repository.existsByNameIgnoreCase(name)) {
@@ -46,14 +44,14 @@ public class CategoryService implements ICategoryService {
 
         Category category = new Category();
         category.setName(name);
-        category.setCreatedBy(getUserId());
+        category.setCreatedBy(userId);
         category = repository.save(category);
 
         return mapper.categoryToCategoryDto(category);
     }
 
     @Override
-    public CategoryDto updateCategory(Long id, UpdateCategoryRequestDto dto) {
+    public CategoryDto updateCategory(Long id, UpdateCategoryRequestDto dto, String userId) {
         String newName = dto.name().toUpperCase();
 
         if (repository.existsByNameIgnoreCase(newName)) {
@@ -62,7 +60,7 @@ public class CategoryService implements ICategoryService {
 
         Category category = repository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
         category.setName(newName);
-        category.setUpdatedBy(getUserId());
+        category.setUpdatedBy(userId);
         category = repository.save(category);
 
         return mapper.categoryToCategoryDto(category);
@@ -74,8 +72,7 @@ public class CategoryService implements ICategoryService {
         repository.delete(category);
     }
 
-    private String getUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (authentication != null) ? authentication.getName() : null;
+    public Category getCategoryEntityById(Long id) {
+        return repository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
     }
 }

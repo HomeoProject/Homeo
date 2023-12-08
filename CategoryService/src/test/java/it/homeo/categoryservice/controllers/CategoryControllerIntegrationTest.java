@@ -1,5 +1,6 @@
 package it.homeo.categoryservice.controllers;
 
+import it.homeo.categoryservice.config.AuthUtils;
 import it.homeo.categoryservice.dtos.AddCategoryRequestDto;
 import it.homeo.categoryservice.dtos.UpdateCategoryRequestDto;
 import it.homeo.categoryservice.models.Category;
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Testcontainers
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CategoryControllerIntegrationTest {
+class  CategoryControllerIntegrationTest {
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
