@@ -15,7 +15,11 @@ const LoginButton = () => {
                 sx={{
                     fontFamily: 'inherit',
                     fontWeight: 'bold',
-                    color: 'white',
+                    color: '#1cbe8e',
+                    backgroundColor: 'white',
+                    ":hover": {
+                        color: 'white'
+                    }
                 }}
             >
                 Login
