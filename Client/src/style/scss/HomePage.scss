@@ -1,12 +1,12 @@
-@import 'Variables.scss';
+@use './Variables' as v;
 @import url('https://fonts.googleapis.com/css?family=Gabarito&display=swap');
 
 .HomePage {
     width: calc(100% - 40px);
-    height: calc(100vh - 200px); //for now
+    height: calc(100vh - 381px); //for now
     max-width: 1355px;
-    background-color: $main-background-color;
     padding: 0 20px;
+    background-color: v.$main-background-color;
 
     > .home-page-main-wrapper {
         display: flex;
@@ -25,7 +25,7 @@
             justify-content: space-between;
 
             > .home-page-main-title {
-                font-size: $font-size-large;
+                font-size: v.$font-size-large;
                 margin: 0;
                 margin-bottom: 15px;
             }
@@ -49,8 +49,8 @@
                     padding-left: 15px;
 
                     &::placeholder {
-                        font-family: Gabarito;
-                        font-size: $font-size-small;
+                        font-family: v.$font-family;
+                        font-size: v.$font-size-small;
                     }
                 }
 
@@ -113,17 +113,17 @@
                         align-items: center;
 
                         > .title-green {
-                            color: $primary-color;
+                            color: v.$primary-color;
                         }
 
                         > b {
                             margin: 0;
-                            font-size: $font-size-normal;
+                            font-size: v.$font-size-normal;
                         }
 
                         > p {
                             margin: 0;
-                            font-size: $font-size-small;
+                            font-size: v.$font-size-small;
 
                             @media (max-width: 500px) {
                                 // display: none;
@@ -133,12 +133,12 @@
 
                     > b {
                         margin: 0;
-                        font-size: $font-size-normal;
+                        font-size: v.$font-size-normal;
                     }
 
                     > p {
                         margin: 0;
-                        font-size: $font-size-small;
+                        font-size: v.$font-size-small;
 
                         @media (max-width: 500px) {
                             // display: none;

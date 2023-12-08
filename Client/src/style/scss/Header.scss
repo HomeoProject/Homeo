@@ -1,71 +1,98 @@
-@import 'Variables.scss';
+@use './Variables' as v;
 
 .Header {
-    width: calc(100% - 40px);
-    background-color: $main-background-color;
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid rgba(128, 128, 128, 0.199);
-    padding: 0 20px;
+    width: 100%;
+    background: url('https://community.dynatrace.com/html/assets/wave-white.svg'),
+        url('../../Assets//solid-color.png');
+    background-repeat: no-repeat, no-repeat;
+    background-size:
+        100% 65%,
+        100% 95%;
+    background-position-y: bottom, top;
+    padding-bottom: 120px;
+    margin-bottom: -120px;
 
-    > .header-logo-normal {
-        height: 80px;
-        width: 250px;
-
-        > img {
-            height: 80px;
-            width: 250px;
-        }
-    }
-
-    > .header-logo-small {
-        padding: 15px 0;
-        padding-bottom: 18px;
-
-        > img {
-            height: 80px;
-            width: 75px;
-        }
-    }
-
-    > .header-nav-normal {
+    .header-main {
+        width: calc(100% - 40px);
         display: flex;
         align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        height: 200px;
 
-        > .header-nav-normal-right {
+        > .header-logo-normal {
             display: flex;
             align-items: center;
-            gap: 30px;
-            padding-right: 20px;
-            > .header-nav-normal-right-link {
-                font-size: 25px;
-                color: $primary-color;
-                text-decoration: none;
-                transition: 0.2s ease;
-                &:hover {
-                    text-shadow: 4px 4px 14px rgba(204, 203, 203, 1);
-                }
+            font-size: 40px;
+            padding: 0;
+            margin: 0;
+            text-decoration: none;
+            color: white;
+            font-family: v.$font-family;
+            margin-top: -90px;
+
+            > img {
+                width: 90px;
+                height: 90px;
             }
         }
 
-        > .header-nav-user-wrapper {
-            width: 86px;
+        > .header-logo-small {
+            font-size: 30px;
             display: flex;
-            justify-content: flex-end;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            font-family: v.$font-family;
+            margin-top: -90px;
+
+            > img {
+                width: 70px;
+                height: 70px;
+            }
         }
-    }
 
-    > .header-nav-small {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        > .header-nav-user-wrapper {
-            width: 86px;
+        > .header-nav-normal {
             display: flex;
-            justify-content: flex-end;
+            align-items: center;
+            margin-top: -90px;
+
+            > .header-nav-normal-right {
+                display: flex;
+                align-items: center;
+                gap: 30px;
+                padding-right: 20px;
+
+                > .header-nav-normal-right-link {
+                    font-size: 25px;
+                    color: white;
+                    text-decoration: none;
+                    transition: all 0.2s ease;
+
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+
+            > .header-nav-user-wrapper {
+                width: 86px;
+                display: flex;
+                justify-content: flex-end;
+            }
+        }
+
+        > .header-nav-small {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -90px;
+
+            > .header-nav-user-wrapper {
+                width: 86px;
+                display: flex;
+                justify-content: flex-end;
+            }
         }
     }
 }

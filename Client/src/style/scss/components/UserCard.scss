@@ -1,4 +1,4 @@
-@import '../Variables.scss';
+@use './Variables' as v;
 
 .UserCard {
     width: 300px;
@@ -16,13 +16,13 @@
         height: 170px;
         position: relative;
         background-clip: padding-box;
-        border: solid 8px $primary-color;
+        border: solid 8px v.$primary-color;
         border-radius: 90px;
         z-index: 10;
         img {
             max-width: 100%;
             max-height: 100%;
-            border: 2px solid $primary-color;
+            border: 2px solid v.$primary-color;
             border-radius: 90px;
         }
     }
