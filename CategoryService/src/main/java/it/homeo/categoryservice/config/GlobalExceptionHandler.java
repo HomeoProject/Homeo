@@ -1,7 +1,6 @@
 package it.homeo.categoryservice.config;
 
-import it.homeo.categoryservice.exceptions.CategoryAlreadyExistsException;
-import it.homeo.categoryservice.exceptions.CategoryNotFoundException;
+import it.homeo.categoryservice.exceptions.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +13,24 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(UserIdNotFoundException.class)
+    protected ResponseEntity<Object> handleUserIdNotFoundException(UserIdNotFoundException ex, WebRequest request) {
+        CustomError error = new CustomError(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN, ex.getMessage(), LocalDateTime.now());
+        return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
+    }
+
+    @ExceptionHandler(CategoryUserNotFoundException.class)
+    protected ResponseEntity<Object> handleCategoryUserNotFoundException(CategoryUserNotFoundException ex, WebRequest request) {
+        CustomError error = new CustomError(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, ex.getMessage(), LocalDateTime.now());
+        return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(CategoryUserAlreadyExistsException.class)
+    protected ResponseEntity<Object> handleCategoryUserAlreadyExistsException(CategoryUserAlreadyExistsException ex, WebRequest request) {
+        CustomError error = new CustomError(HttpStatus.CONFLICT.value(), HttpStatus.CONFLICT, ex.getMessage(), LocalDateTime.now());
+        return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
 
     @ExceptionHandler(CategoryNotFoundException.class)
     protected ResponseEntity<Object> handleCategoryNotFoundException(CategoryNotFoundException ex, WebRequest request) {

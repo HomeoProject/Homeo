@@ -19,7 +19,7 @@ public class DataInitializerConfig {
         return args -> {
             for (String name : categoriesNames) {
                 try {
-                    service.addCategory(new AddCategoryRequestDto(name));
+                    service.addCategory(new AddCategoryRequestDto(name), null);
                 } catch (CategoryAlreadyExistsException ex) {
                     System.out.println(ex.getMessage());
                 }

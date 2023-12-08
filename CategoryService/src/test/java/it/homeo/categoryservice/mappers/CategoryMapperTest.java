@@ -20,14 +20,13 @@ class CategoryMapperTest {
 
     @Test
     void shouldMapCategoryToCategoryDto() {
-        Category category = new Category(
-                1L,
-                "CategoryName",
-                "User1",
-                "User2",
-                LocalDateTime.now(),
-                LocalDateTime.now()
-        );
+        Category category = new Category();
+        category.setId(1L);
+        category.setName("CategoryName");
+        category.setCreatedBy("User1");
+        category.setUpdatedBy("User2");
+        category.setCreatedAt(LocalDateTime.now());
+        category.setUpdatedAt(LocalDateTime.now());
         CategoryDto dto = mapper.categoryToCategoryDto(category);
         assertThat(dto).isNotNull();
         assertThat(dto.id()).isEqualTo(category.getId());

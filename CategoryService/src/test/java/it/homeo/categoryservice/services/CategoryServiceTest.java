@@ -93,7 +93,9 @@ class CategoryServiceTest {
     @Test
     void shouldAddCategory() {
         AddCategoryRequestDto dto = new AddCategoryRequestDto("categoryName");
-        underTest.addCategory(dto);
+        String userId = "user123";
+
+        underTest.addCategory(dto, userId);
 
         verify(repository).save(categoryArgumentCaptor.capture());
         verify(mapper).categoryToCategoryDto(categoryArgumentCaptor.capture());
@@ -102,10 +104,11 @@ class CategoryServiceTest {
     @Test
     void shouldThrowExceptionWhenAddingDuplicateCategory() {
         AddCategoryRequestDto dto = new AddCategoryRequestDto("duplicateName");
+        String userId = "user123";
 
         when(repository.existsByNameIgnoreCase(anyString())).thenReturn(true);
 
-        assertThrows(CategoryAlreadyExistsException.class, () -> underTest.addCategory(dto));
+        assertThrows(CategoryAlreadyExistsException.class, () -> underTest.addCategory(dto, userId));
 
         verify(repository, never()).save(any(Category.class));
     }
@@ -139,6 +142,7 @@ class CategoryServiceTest {
         Long id = 1L;
         String updatedName = "UpdatedCategoryName";
         UpdateCategoryRequestDto updateDto = new UpdateCategoryRequestDto(updatedName);
+        String userId = "user123";
 
         Category existingCategory = new Category();
         existingCategory.setId(id);
@@ -147,7 +151,7 @@ class CategoryServiceTest {
         when(repository.existsByNameIgnoreCase(updatedName.toUpperCase())).thenReturn(false);
         when(repository.findById(id)).thenReturn(Optional.of(existingCategory));
 
-        underTest.updateCategory(id, updateDto);
+        underTest.updateCategory(id, updateDto, userId);
 
         verify(repository).save(categoryArgumentCaptor.capture());
 
@@ -160,6 +164,7 @@ class CategoryServiceTest {
         Long id = 1L;
         String updatedName = "DuplicateCategoryName";
         UpdateCategoryRequestDto updateDto = new UpdateCategoryRequestDto(updatedName);
+        String userId = "user123";
 
         Category existingCategory = new Category();
         existingCategory.setId(id);
@@ -167,7 +172,7 @@ class CategoryServiceTest {
 
         when(repository.existsByNameIgnoreCase(updatedName.toUpperCase())).thenReturn(true);
 
-        assertThrows(CategoryAlreadyExistsException.class, () -> underTest.updateCategory(id, updateDto));
+        assertThrows(CategoryAlreadyExistsException.class, () -> underTest.updateCategory(id, updateDto, userId));
 
         verify(repository, never()).save(any(Category.class));
     }
@@ -177,11 +182,37 @@ class CategoryServiceTest {
         Long nonExistingCategoryId = 999L;
         String updatedName = "UpdatedCategoryName";
         UpdateCategoryRequestDto updateDto = new UpdateCategoryRequestDto(updatedName);
+        String userId = "user123";
 
         when(repository.findById(nonExistingCategoryId)).thenReturn(Optional.empty());
 
-        assertThrows(CategoryNotFoundException.class, () -> underTest.updateCategory(nonExistingCategoryId, updateDto));
+        assertThrows(CategoryNotFoundException.class, () -> underTest.updateCategory(nonExistingCategoryId, updateDto, userId));
 
         verify(repository, never()).save(any(Category.class));
+    }
+
+    @Test
+    void shouldGetCategoryEntityById() {
+        Long id = 1L;
+        Category category = new Category();
+        category.setId(id);
+
+        when(repository.findById(id)).thenReturn(Optional.of(category));
+
+        Category result = underTest.getCategoryEntityById(id);
+
+        verify(repository).findById(id);
+        assertThat(result).isEqualTo(category);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenGettingNonExistingCategoryEntityById() {
+        Long nonExistingCategoryId = 999L;
+
+        when(repository.findById(nonExistingCategoryId)).thenReturn(Optional.empty());
+
+        assertThrows(CategoryNotFoundException.class, () -> underTest.getCategoryEntityById(nonExistingCategoryId));
+
+        verify(repository).findById(nonExistingCategoryId);
     }
 }

@@ -1,15 +1,14 @@
 package it.homeo.categoryservice.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Category {
     @Id
@@ -25,6 +24,10 @@ public class Category {
 
     @Column(unique = true)
     private String name;
+
+    // By default, this is lazy loading
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CategoryUser> categoryUsers;
 
     private String createdBy;
 
