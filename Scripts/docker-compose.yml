@@ -11,6 +11,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_URL: ${POSTGRES_URL_CATEGORYSERVICE}
       EUREKA_URL: ${EUREKA_URL}
+      KAFKA_BOOTSTRAP_SERVER: ${KAFKA_BOOTSTRAP_SERVER}
     ports:
       - 8082:8082
     restart: unless-stopped
@@ -84,6 +85,7 @@ services:
     ports:
       - 22181:2181
 
+  # Use SASL in production
   kafka:
     image: confluentinc/cp-kafka:latest
     ports:
