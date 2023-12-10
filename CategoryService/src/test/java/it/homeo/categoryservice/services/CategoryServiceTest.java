@@ -6,6 +6,7 @@ import it.homeo.categoryservice.dtos.UpdateCategoryRequestDto;
 import it.homeo.categoryservice.exceptions.CategoryAlreadyExistsException;
 import it.homeo.categoryservice.exceptions.CategoryNotFoundException;
 import it.homeo.categoryservice.mappers.CategoryMapper;
+import it.homeo.categoryservice.messaging.producers.CategoryKafkaProducer;
 import it.homeo.categoryservice.models.Category;
 import it.homeo.categoryservice.repositories.CategoryRepository;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,9 @@ class CategoryServiceTest {
 
     @Mock
     private CategoryMapper mapper;
+
+    @Mock
+    private CategoryKafkaProducer kafkaProducer;
 
     @InjectMocks
     private CategoryService underTest;
@@ -124,6 +128,7 @@ class CategoryServiceTest {
         underTest.deleteCategory(id);
 
         verify(repository).delete(eq(category));
+        verify(kafkaProducer).produceDeleteCategoryEvent(eq(id));
     }
 
     @Test
@@ -135,6 +140,7 @@ class CategoryServiceTest {
         assertThrows(CategoryNotFoundException.class, () -> underTest.deleteCategory(id));
 
         verify(repository, never()).delete(any(Category.class));
+        verify(kafkaProducer, never()).produceDeleteCategoryEvent(anyLong());
     }
 
     @Test

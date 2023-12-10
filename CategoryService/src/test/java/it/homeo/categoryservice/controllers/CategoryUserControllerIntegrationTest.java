@@ -15,13 +15,17 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +43,10 @@ class CategoryUserControllerIntegrationTest {
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
+
+    @Container
+    @ServiceConnection
+    static KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:latest"));
 
     @Autowired
     private MockMvc mockMvc;
@@ -74,6 +82,9 @@ class CategoryUserControllerIntegrationTest {
     void connectionEstablished() {
         assertThat(postgres.isCreated()).isTrue();
         assertThat(postgres.isRunning()).isTrue();
+
+        assertThat(kafka.isCreated()).isTrue();
+        assertThat(kafka.isRunning()).isTrue();
     }
 
     @Test
@@ -93,28 +104,6 @@ class CategoryUserControllerIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/categories/users")
                 .with(jwt()))
                 .andExpect(status().isForbidden());
-    }
-
-    @Test
-    void shouldDeleteUserFromAllCategories() throws Exception {
-        String userId = data.get(0).getUserId();
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/categories/users")
-                        .with(jwt()
-                                .authorities(new SimpleGrantedAuthority("constructor:permission"))
-                                .jwt(token -> token.claim("sub", userId))))
-                .andExpect(status().isNoContent());
-
-        List<CategoryUser> categoryUsers = repository.findByUserId(userId);
-        assertThat(categoryUsers).isEmpty();
-    }
-
-    @Test
-    void shouldNotDeleteUserFromAllCategoriesWhenNotAuthenticated() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/categories/users"))
-                .andExpect(status().isForbidden());
-
-        List<CategoryUser> categoryUsers = repository.findAll();
-        assertThat(categoryUsers).hasSize(data.size());
     }
 
     @Test

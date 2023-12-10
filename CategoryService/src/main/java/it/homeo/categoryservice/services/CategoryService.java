@@ -7,8 +7,10 @@ import it.homeo.categoryservice.dtos.UpdateCategoryRequestDto;
 import it.homeo.categoryservice.exceptions.CategoryAlreadyExistsException;
 import it.homeo.categoryservice.exceptions.CategoryNotFoundException;
 import it.homeo.categoryservice.mappers.CategoryMapper;
+import it.homeo.categoryservice.messaging.producers.CategoryKafkaProducer;
 import it.homeo.categoryservice.models.Category;
 import it.homeo.categoryservice.repositories.CategoryRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,10 +19,12 @@ import java.util.List;
 public class CategoryService implements ICategoryService {
     private final CategoryRepository repository;
     private final CategoryMapper mapper;
+    private final CategoryKafkaProducer kafkaProducer;
 
-    public CategoryService(CategoryRepository repository, CategoryMapper mapper) {
+    public CategoryService(CategoryRepository repository, CategoryMapper mapper, CategoryKafkaProducer kafkaProducer) {
         this.repository = repository;
         this.mapper = mapper;
+        this.kafkaProducer = kafkaProducer;
     }
 
     @Override
@@ -67,9 +71,11 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
+    @Transactional
     public void deleteCategory(Long id) {
         Category category = repository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
         repository.delete(category);
+        kafkaProducer.produceDeleteCategoryEvent(id);
     }
 
     public Category getCategoryEntityById(Long id) {

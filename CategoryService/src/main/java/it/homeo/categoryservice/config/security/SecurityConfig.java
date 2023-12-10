@@ -22,7 +22,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/categories/users").hasAuthority("constructor:permission")
                         .requestMatchers(HttpMethod.GET, "/api/categories/users").hasAuthority("constructor:permission")
-                        .requestMatchers(HttpMethod.DELETE, "/api/categories/users").hasAuthority("constructor:permission")
                         .requestMatchers(HttpMethod.DELETE, "/api/categories/users/{id}").hasAuthority("constructor:permission")
                         .requestMatchers(HttpMethod.POST, "/api/categories").hasAuthority("admin:permission")
                         .requestMatchers(HttpMethod.PUT, "/api/categories/{id}").hasAuthority("admin:permission")

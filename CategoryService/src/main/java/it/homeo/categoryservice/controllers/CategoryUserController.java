@@ -27,12 +27,6 @@ public class CategoryUserController {
         return service.getUserCategories(authUtils.getUserId());
     }
 
-    @DeleteMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUserFromAllCategories() {
-        service.deleteUserFromAllCategories(authUtils.getUserId());
-    }
-
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserFromCategory(@PathVariable Long id) {

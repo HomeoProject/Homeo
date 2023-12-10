@@ -18,6 +18,21 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}
+    consumer:
+      group-id: categoryservice
+
+kafka:
+  producer:
+    topics:
+      delete-category: homeo.categoryservice.delete.category
+      add-user-to-category: homeo.categoryservice.add.categoryuser
+      delete-user-from-category: homeo.categoryservice.delete.categoryuser
+  consumer:
+    topics:
+      delete-user: homeo.userservice.delete.user
+#      delete-constructor-role: homeo.userservice.delete.constructor.role
 
 okta:
   oauth2:

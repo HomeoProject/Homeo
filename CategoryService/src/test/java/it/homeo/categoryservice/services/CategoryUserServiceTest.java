@@ -1,11 +1,14 @@
 package it.homeo.categoryservice.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import it.homeo.categoryservice.dtos.AddUserToCategoryRequestDto;
 import it.homeo.categoryservice.dtos.CategoryDto;
+import it.homeo.categoryservice.dtos.CategoryUserDto;
 import it.homeo.categoryservice.exceptions.CategoryUserAlreadyExistsException;
 import it.homeo.categoryservice.exceptions.CategoryUserNotFoundException;
 import it.homeo.categoryservice.exceptions.UserIdNotFoundException;
 import it.homeo.categoryservice.mappers.CategoryMapper;
+import it.homeo.categoryservice.messaging.producers.CategoryUserKafkaProducer;
 import it.homeo.categoryservice.models.Category;
 import it.homeo.categoryservice.models.CategoryUser;
 import it.homeo.categoryservice.repositories.CategoryUserRepository;
@@ -34,14 +37,20 @@ class CategoryUserServiceTest {
     @Mock
     private CategoryMapper categoryMapper;
 
+    @Mock
+    private CategoryUserKafkaProducer kafkaProducer;
+
     @InjectMocks
     private CategoryUserService underTest;
 
     @Captor
     private ArgumentCaptor<CategoryUser> categoryUserArgumentCaptor;
 
+    @Captor
+    private ArgumentCaptor<CategoryUserDto> categoryUserDtoArgumentCaptor;
+
     @Test
-    void shouldAddUserToCategory() {
+    void shouldAddUserToCategory() throws JsonProcessingException {
         Long categoryId = 1L;
         String userId = "user123";
 
@@ -67,6 +76,12 @@ class CategoryUserServiceTest {
         verify(repository).existsCategoryUserByCategoryAndUserId(category, userId);
         verify(repository).save(categoryUserArgumentCaptor.capture());
         verify(categoryMapper).categoryToCategoryDto(category);
+        verify(kafkaProducer).produceAddUserToCategoryEvent(categoryUserDtoArgumentCaptor.capture());
+
+        CategoryUserDto capturedCategoryUserDto = categoryUserDtoArgumentCaptor.getValue();
+        assertThat(capturedCategoryUserDto.userId()).isEqualTo(userId);
+        assertThat(capturedCategoryUserDto.categoryId()).isEqualTo(categoryId);
+        assertThat(capturedCategoryUserDto.categoryName()).isEqualTo(category.getName());
 
         CategoryUser capturedCategoryUser = categoryUserArgumentCaptor.getValue();
         assertThat(capturedCategoryUser.getCategory()).isEqualTo(category);
@@ -75,7 +90,7 @@ class CategoryUserServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenAddingUserToCategoryAlreadyExists() {
+    void shouldThrowExceptionWhenAddingUserToCategoryAlreadyExists() throws JsonProcessingException {
         Long categoryId = 1L;
         String userId = "user123";
 
@@ -95,10 +110,11 @@ class CategoryUserServiceTest {
         verify(repository).existsCategoryUserByCategoryAndUserId(category, userId);
         verify(repository, never()).save(any(CategoryUser.class));
         verify(categoryMapper, never()).categoryToCategoryDto(any(Category.class));
+        verify(kafkaProducer, never()).produceAddUserToCategoryEvent(any(CategoryUserDto.class));
     }
 
     @Test
-    void shouldAddUserToCategoryThrowExceptionWhenUserIdIsNull() {
+    void shouldAddUserToCategoryThrowExceptionWhenUserIdIsNull() throws JsonProcessingException {
         Long categoryId = 1L;
 
         AddUserToCategoryRequestDto requestDto = AddUserToCategoryRequestDto.builder()
@@ -111,10 +127,11 @@ class CategoryUserServiceTest {
         verify(repository, never()).existsCategoryUserByCategoryAndUserId(any(), any());
         verify(repository, never()).save(any(CategoryUser.class));
         verify(categoryMapper, never()).categoryToCategoryDto(any(Category.class));
+        verify(kafkaProducer, never()).produceAddUserToCategoryEvent(any(CategoryUserDto.class));
     }
 
     @Test
-    void shouldDeleteUserFromCategory() {
+    void shouldDeleteUserFromCategory() throws JsonProcessingException {
         Long categoryId = 1L;
         String userId = "user123";
 
@@ -133,11 +150,17 @@ class CategoryUserServiceTest {
         verify(categoryService).getCategoryEntityById(categoryId);
         verify(repository).findByCategoryAndUserId(category, userId);
         verify(repository).delete(categoryUser);
+        verify(kafkaProducer).producerDeleteUserFromCategoryEvent(categoryUserDtoArgumentCaptor.capture());
+
+        CategoryUserDto capturedCategoryUserDto = categoryUserDtoArgumentCaptor.getValue();
+        assertThat(capturedCategoryUserDto.userId()).isEqualTo(userId);
+        assertThat(capturedCategoryUserDto.categoryId()).isEqualTo(categoryId);
+        assertThat(capturedCategoryUserDto.categoryName()).isEqualTo(category.getName());
     }
 
 
     @Test
-    void shouldThrowExceptionWhenUserNotInCategory() {
+    void shouldThrowExceptionWhenUserNotInCategory() throws JsonProcessingException {
         Long categoryId = 1L;
         String userId = "user123";
 
@@ -152,10 +175,11 @@ class CategoryUserServiceTest {
         verify(categoryService).getCategoryEntityById(categoryId);
         verify(repository).findByCategoryAndUserId(category, userId);
         verify(repository, never()).delete(any(CategoryUser.class));
+        verify(kafkaProducer, never()).producerDeleteUserFromCategoryEvent(any());
     }
 
     @Test
-    void shouldDeleteUserFromCategoryThrowExceptionWhenUserIdIsNull() {
+    void shouldDeleteUserFromCategoryThrowExceptionWhenUserIdIsNull() throws JsonProcessingException {
         Long categoryId = 1L;
 
         assertThrows(UserIdNotFoundException.class, () -> underTest.deleteUserFromCategory(categoryId, null));
@@ -163,6 +187,7 @@ class CategoryUserServiceTest {
         verify(categoryService, never()).getCategoryEntityById(anyLong());
         verify(repository, never()).findByCategoryAndUserId(any(), any());
         verify(repository, never()).delete(any(CategoryUser.class));
+        verify(kafkaProducer, never()).producerDeleteUserFromCategoryEvent(any());
     }
 
     @Test
