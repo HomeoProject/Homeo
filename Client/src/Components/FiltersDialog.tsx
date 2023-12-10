@@ -4,6 +4,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Slider from '@mui/material/Slider';
@@ -12,6 +13,7 @@ import Rating from '@mui/material/Rating';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { PL, UA, DE } from 'country-flag-icons/react/3x2'
 import '../style/scss/FiltersDialog.scss'
 
 export interface FiltersDialogProps {
@@ -188,10 +190,70 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                     <span className='filters-dialog-summary'>Experience</span>
                     </AccordionSummary>
                     <AccordionDetails>
-                    <span>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                        malesuada lacus ex, sit amet blandit leo lobortis eget.
-                    </span>
+                    <div className='filters-dialog-details experience'>
+                        <div>
+                                <div>
+                                    <Checkbox
+                                        color="primary"
+                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                    />
+                                    <span>Novice</span>
+                                </div>
+                                <div>
+                                    <Checkbox
+                                        color="primary"
+                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                    />
+                                    <span>Intermediete</span>
+                                </div>
+                                <div>
+                                    <Checkbox
+                                        color="primary"
+                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                    />
+                                    <span>Experienced</span>
+                                </div>
+                                <div>
+                                    <Checkbox
+                                        color="primary"
+                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                    />
+                                    <span>Expert</span>
+                                </div>
+                                <div>
+                                    <Checkbox
+                                        color="primary"
+                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                    />
+                                    <span>Master Craftsman</span>
+                                </div>
+                        </div>
+                        <div className='filters-dialog-details-approved'>
+                                <div>
+                                    <span className='filters-dialog-details-approved-label'>
+                                        This 
+                                        <span className='filters-dialog-details-approved-label-bold'>
+                                        &nbsp;special&nbsp;
+                                        </span>
+                                        attribute is gifted to 
+                                        the most experienced and talented on our site. 
+                                        It's a badge of honor, and not many have it.
+                                        But those who do, are the best of the best.
+                                    </span>
+                                </div>
+                                <div>
+                                    <Checkbox
+                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                        sx={{
+                                            '&.Mui-checked': {
+                                              color: '#D4AF37',
+                                            },
+                                          }}
+                                    />
+                                    <span>Homeo Approved</span>
+                                </div>
+                        </div>
+                    </div>
                     </AccordionDetails>
                 </Accordion>
                 <Accordion disableGutters defaultExpanded={openFilter === 4 ? true : false}>
@@ -203,10 +265,34 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                     <span className='filters-dialog-summary'>Language</span>
                     </AccordionSummary>
                     <AccordionDetails>
-                    <span>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                        malesuada lacus ex, sit amet blandit leo lobortis eget.
-                    </span>
+                    <div className='filters-dialog-details language'>
+                        <div>
+                            <div className='filters-dialog-details-language'>
+                                <Checkbox
+                                    color="primary"
+                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                />
+                                <span>Polish</span>
+                                <PL className='filters-dialog-details-language-flag'/>
+                            </div>
+                            <div className='filters-dialog-details-language'>
+                                <Checkbox
+                                    color="primary"
+                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                />
+                                <span>Ukrainian</span>
+                                <UA className='filters-dialog-details-language-flag'/>
+                            </div>
+                            <div className='filters-dialog-details-language'>
+                                <Checkbox
+                                    color="primary"
+                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                />
+                                <span>German</span>
+                                <DE className='filters-dialog-details-language-flag'/>
+                            </div>
+                        </div>
+                    </div>
                     </AccordionDetails>
                 </Accordion>
                 <Accordion disableGutters defaultExpanded={openFilter === 5 ? true : false}>
