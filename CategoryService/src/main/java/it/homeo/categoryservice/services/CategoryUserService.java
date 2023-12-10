@@ -1,21 +1,23 @@
 package it.homeo.categoryservice.services;
 
+
 import com.fasterxml.jackson.core.JsonProcessingException;
+import it.homeo.categoryservice.dtos.AddUserToCategoryRequestDto;
 import it.homeo.categoryservice.dtos.CategoryDto;
 import it.homeo.categoryservice.dtos.CategoryUserDto;
+import it.homeo.categoryservice.exceptions.CategoryUserAlreadyExistsException;
+import it.homeo.categoryservice.exceptions.CategoryUserNotFoundException;
 import it.homeo.categoryservice.exceptions.UserIdNotFoundException;
 import it.homeo.categoryservice.mappers.CategoryMapper;
 import it.homeo.categoryservice.messaging.producers.CategoryUserKafkaProducer;
 import it.homeo.categoryservice.models.Category;
-import it.homeo.categoryservice.dtos.AddUserToCategoryRequestDto;
-import it.homeo.categoryservice.exceptions.CategoryUserAlreadyExistsException;
-import it.homeo.categoryservice.exceptions.CategoryUserNotFoundException;
 import it.homeo.categoryservice.models.CategoryUser;
 import it.homeo.categoryservice.repositories.CategoryUserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 
 @Service
 public class CategoryUserService implements ICategoryUserService {
