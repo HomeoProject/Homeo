@@ -1,0 +1,62 @@
+server:
+  port: 8082
+  error:
+    include-message: always
+
+spring:
+  application:
+    name: CategoryService
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}
+    consumer:
+      group-id: categoryservice
+
+kafka:
+  producer:
+    topics:
+      delete-category: homeo.categoryservice.delete.category
+      add-user-to-category: homeo.categoryservice.add.categoryuser
+      delete-user-from-category: homeo.categoryservice.delete.categoryuser
+  consumer:
+    topics:
+      delete-user: homeo.userservice.delete.user
+#      delete-constructor-role: homeo.userservice.delete.constructor.role
+
+okta:
+  oauth2:
+    issuer: ${OKTA_API_ISSUER}
+    audience: ${OKTA_API_AUDIENCE}
+
+categories: Plumber, Painter, Electrician, Renovation, Cleaning, Transport, Garden
+
+openapi:
+  service:
+    title: CategoryService
+    version: 1.0.0
+    url: http://localhost:8080
+springdoc:
+  api-docs:
+    path: /categoryservice/api-docs
+  swagger-ui:
+    path: /categoryservice/swagger-ui
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL}
+
+logging:
+  level:
+    org.springframework.security: DEBUG
