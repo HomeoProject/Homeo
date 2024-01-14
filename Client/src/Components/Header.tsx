@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import AccountMenu from './AccountMenu'
 import { useAuth0 } from '@auth0/auth0-react'
 import LoginButton from './LoginButton'
-import homeIcon from '../Assets/icon.png'
+import homeIcon from '../Assets/icon-cut.png'
 
 const Header = () => {
     const { isAuthenticated } = useAuth0()
@@ -33,7 +33,7 @@ const Header = () => {
 
     return (
         <div className="Header">
-            <div className="header-main">
+            <div className='header-main'>
                 <Link className={`header-logo-${logoClass}`} to="/">
                     <img src={homeIcon} alt="logo" />
                     Homeo
@@ -61,22 +61,14 @@ const Header = () => {
                             </Link>
                         </div>
                         <div className="header-nav-user-wrapper">
-                            {!isAuthenticated ? (
-                                <LoginButton />
-                            ) : (
-                                <AccountMenu />
-                            )}
+                            {!isAuthenticated ? <LoginButton /> : <AccountMenu />}
                         </div>
                     </div>
                 ) : (
                     <div className="header-nav-small">
                         <HeaderDrawer />
                         <div className="header-nav-user-wrapper">
-                            {!isAuthenticated ? (
-                                <LoginButton />
-                            ) : (
-                                <AccountMenu />
-                            )}
+                            {!isAuthenticated ? <LoginButton /> : <AccountMenu />}
                         </div>
                     </div>
                 )}
