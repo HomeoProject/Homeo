@@ -1,46 +1,46 @@
 @use './Variables' as v;
 
 .ErrorPage {
-    width: calc(100% - 40px);
-    height: calc(100vh - 301px);
+  width: calc(100% - 40px);
+  height: calc(100vh - 301px);
 
-    > .error-page-container {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        text-align: center;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin-top: -50px;
+  > .error-page-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: -50px;
 
-        .error-page-logo {
-            scale: 1;
-        }
-        .error-page-oops {
-            font-size: v.$font-size-large;
-            font-weight: 700;
-        }
-        .error-page-message {
-            font-size: v.$font-size-large;
-        }
-        .error-page-message-details {
-            padding-top: 10px;
-            font-size: v.$font-size-large;
-            color: rgb(0, 0, 0, 0.5);
-        }
+    .error-page-logo {
+      scale: 1;
     }
-
-    > .error-page-img {
-        filter: opacity(0.05);
-        position: absolute;
-        top: 250px;
-        left: 50%;
-        transform: translate(-50%, 0);
-        max-width: calc(100% - 40px);
-
-        @media (max-width: 600px) {
-            display: none;
-        }
+    .error-page-oops {
+      font-size: v.$font-size-large;
+      font-weight: 700;
     }
+    .error-page-message {
+      font-size: v.$font-size-large;
+    }
+    .error-page-message-details {
+      padding-top: 10px;
+      font-size: v.$font-size-large;
+      color: rgb(0, 0, 0, 0.5);
+    }
+  }
+
+  > .error-page-img {
+    filter: opacity(0.05);
+    position: absolute;
+    top: 250px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    max-width: calc(100% - 40px);
+
+    @media (max-width: 600px) {
+      display: none;
+    }
+  }
 }

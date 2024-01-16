@@ -1,5 +1,5 @@
 import './Style/scss/App.scss'
-import './style/themes/mui-styles.scss';
+import './style/themes/mui-styles.scss'
 import Header from './Components/Header'
 import Footer from './Components/Footer'
 import { Outlet } from 'react-router'
@@ -9,44 +9,44 @@ import axios from 'axios'
 import { RawUser } from './types/types'
 
 function App() {
-    const { user, isAuthenticated, getAccessTokenSilently } = useAuth0()
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0()
 
-    // Check if user exists in local database, if not, create it using Auth0 data
-    const syncUser = async (token: string) => {
-        const userBody: RawUser = {
-            id: user?.sub,
-            email: user?.email,
-            avatar: user?.picture,
-            isBlocked: false,
-        }
-        const response = await axios.post(
-            `http://localhost:8080/api/users`,
-            userBody,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        )
-        console.log(response.data)
+  // Check if user exists in local database, if not, create it using Auth0 data
+  const syncUser = async (token: string) => {
+    const userBody: RawUser = {
+      id: user?.sub,
+      email: user?.email,
+      avatar: user?.picture,
+      isBlocked: false,
     }
-
-    useEffect(() => {
-        if (user && isAuthenticated) {
-            getAccessTokenSilently().then((token) => {
-                syncUser(token)
-                // console.log(token);
-            })
-        }
-    }, [user, isAuthenticated])
-
-    return (
-        <div className="App">
-            <Header />
-            <Outlet />
-            <Footer />
-        </div>
+    const response = await axios.post(
+      `http://localhost:8080/api/users`,
+      userBody,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     )
+    console.log(response.data)
+  }
+
+  useEffect(() => {
+    if (user && isAuthenticated) {
+      getAccessTokenSilently().then((token) => {
+        syncUser(token)
+        // console.log(token);
+      })
+    }
+  }, [user, isAuthenticated])
+
+  return (
+    <div className="App">
+      <Header />
+      <Outlet />
+      <Footer />
+    </div>
+  )
 }
 
 export default App

@@ -1,12 +1,12 @@
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
+import Carousel from 'react-multi-carousel'
+import 'react-multi-carousel/lib/styles.css'
 import '../style/scss/components/CategoriesCarousel.scss'
 
 type ItemProps = {
   item: {
-    name: string,
-    description: string,
-    image: string,
+    name: string
+    description: string
+    image: string
     link: string
   }
 }
@@ -20,7 +20,7 @@ function Item(props: ItemProps) {
         <p className="card-text">{props.item.description}</p>
       </div>
     </a>
-  );
+  )
 }
 
 const CategoriesCarousel = () => {
@@ -28,44 +28,48 @@ const CategoriesCarousel = () => {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
       items: 3,
-      slidesToSlide: 3 // optional, default to 1.
+      slidesToSlide: 3, // optional, default to 1.
     },
     tablet: {
       breakpoint: { max: 1024, min: 464 },
       items: 2,
-      slidesToSlide: 2 // optional, default to 1.
+      slidesToSlide: 2, // optional, default to 1.
     },
     mobile: {
       breakpoint: { max: 570, min: 0 },
       items: 1,
-      slidesToSlide: 1 // optional, default to 1.
-    }
-  };
+      slidesToSlide: 1, // optional, default to 1.
+    },
+  }
 
   const items = [
     {
-      name: "Plumbing",
-      description: "19632 adverts",
-      image: "https://emast.pl/media//articles/article/narzedzia-hydraulika.jpg",
-      link: "/categories/plumbing"
+      name: 'Plumbing',
+      description: '19632 adverts',
+      image:
+        'https://emast.pl/media//articles/article/narzedzia-hydraulika.jpg',
+      link: '/categories/plumbing',
     },
     {
-      name: "Roofing",
-      description: "2132 adverts",
-      image: "https://static.oferteo.pl/images/hero/kompleksowa-budowa-dachu-zlecenia-oferty-a.jpg",
-      link: "/categories/roofing"
+      name: 'Roofing',
+      description: '2132 adverts',
+      image:
+        'https://static.oferteo.pl/images/hero/kompleksowa-budowa-dachu-zlecenia-oferty-a.jpg',
+      link: '/categories/roofing',
     },
     {
-      name: "Electricity",
-      description: "8721 adverts",
-      image: "https://www.mgprojekt.com.pl/blog/wp-content/uploads/2018/01/rozdzielnica.jpg",
-      link: "/categories/electricity"
+      name: 'Electricity',
+      description: '8721 adverts',
+      image:
+        'https://www.mgprojekt.com.pl/blog/wp-content/uploads/2018/01/rozdzielnica.jpg',
+      link: '/categories/electricity',
     },
     {
-      name: "Painting",
-      description: "11236 adverts",
-      image: "https://futureinvestment.pl/wp-content/uploads/2019/05/Kurs_Malarz_tapeciarz-2.jpg",
-      link: "/categories/painting"
+      name: 'Painting',
+      description: '11236 adverts',
+      image:
+        'https://futureinvestment.pl/wp-content/uploads/2019/05/Kurs_Malarz_tapeciarz-2.jpg',
+      link: '/categories/painting',
     },
     // {
     //   name: "Item 5",
@@ -107,7 +111,7 @@ const CategoriesCarousel = () => {
     //   description: "Description for item 12",
     //   image: "https://picsum.photos/seed/picsum/200/300"
     // },
-  ];
+  ]
 
   return (
     <div className="CategoriesCarousel">
@@ -128,7 +132,9 @@ const CategoriesCarousel = () => {
         renderDotsOutside={false}
         customTransition="transform 300ms ease-in-out"
       >
-        {items.map((item, index) => <Item key={index} item={item} />)}
+        {items.map((item, index) => (
+          <Item key={index} item={item} />
+        ))}
       </Carousel>
     </div>
   )
