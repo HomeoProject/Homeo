@@ -1,4 +1,5 @@
 import './Style/scss/App.scss'
+import './style/themes/mui-styles.scss';
 import Header from './Components/Header'
 import Footer from './Components/Footer'
 import { Outlet } from 'react-router'

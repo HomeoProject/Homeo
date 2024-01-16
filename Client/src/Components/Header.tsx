@@ -8,13 +8,14 @@ import LoginButton from './LoginButton'
 import homeIcon from '../Assets/icon-cut.png'
 
 const Header = () => {
-    const { isAuthenticated } = useAuth0()
+    const { isAuthenticated } = useAuth0();
 
-    const [logoClass, setLogoClass] = useState('')
-    const [screenSize, setScreenSize] = useState('')
-    const [screenWidth, setScreenWidth] = useState(window.innerWidth)
-    const breakpoint = 800
-    const breakpointLogo = 500
+    const [logoClass, setLogoClass] = useState('');
+    const [screenSize, setScreenSize] = useState('');
+    const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+    const breakpoint: number = 800;
+    const breakpointLogo: number = 500;
+
     useEffect(() => {
         const handleResize = () => setScreenWidth(window.innerWidth)
         window.addEventListener('resize', handleResize)
@@ -29,7 +30,7 @@ const Header = () => {
         } else {
             setLogoClass('normal')
         }
-    }, [screenWidth])
+    }, [screenWidth]);
 
     return (
         <div className="Header">

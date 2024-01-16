@@ -1,15 +1,116 @@
 @use './Variables' as v;
 
 .UserPage {
-    width: 100%;
+    width: calc(100% - 4rem);
+    padding: 0 2rem;
+    height: calc(100vh - 300px); //for now
     display: flex;
     flex-direction: column;
     align-items: center;
 
     > .user-page-main {
-        width: 100%;
-        max-width: 1355px;
-        text-align: center;
+        width: calc(100% - 4rem);
+        height: 100%;
+        max-width: 1000px;
+        display: flex;
+        justify-content: center;
+        gap: 4rem;
+
+        @media(max-width: 800px) {
+            flex-direction: column;
+            gap: 2rem;
+            justify-content: flex-start;
+            width: 100%;
+        }
+
+        > .user-page-main-left {
+            width: 25%;
+
+            @media(max-width: 800px) {
+                width: 100%;
+            }
+
+            > .user-page-main-left-info {
+                display: flex;
+                flex-direction: column;
+
+                @media(max-width: 800px) {
+                    flex-direction: row;
+                }
+
+                > .user-page-main-left-info-avatar {
+                    padding-bottom: 2rem;
+
+                    @media(max-width: 800px) {
+                        padding-right: 2rem;
+                        padding-bottom: 0;
+                    }
+
+                    > .overlay-btn {
+                        border: none;
+                        background: none;
+                        border-radius: 50%;
+                        position: relative;
+                        transition: filter 0.15s ease-in-out;
+                        padding: 0;
+
+                        &:hover {
+                            filter: brightness(0.9);
+                            cursor: pointer;
+
+                            > .overlay-pic {
+                                opacity: 1;
+                            }
+                        }
+
+                        > .badge {
+
+                            > .avatar {
+                                width: 100px !important;
+                                height: 100px !important;
+                            }
+                        }
+
+                        > .overlay-pic {
+                            position: absolute;
+                            left: 50%;
+                            top: 50%;
+                            transform: translate(-50%,-50%);
+                            opacity: 0;
+                            transition: opacity 0.15s ease-in-out;
+                        }
+                    }
+                }
+
+                > .user-page-main-left-info-name {
+                    display: flex;
+                    flex-direction: column;
+
+                    > b {
+                        font-size: 1.5rem;
+                        padding-bottom: 1rem;
+                    }
+
+                    > p {
+                        font-size: 1.2rem;
+                        margin: 0;
+                        color: #b6b6b6;
+                    }
+
+                    @media(max-width: 800px) {
+                        justify-content: center;
+                    }
+                }
+            }
+        }
+
+        > .user-page-main-right {
+            width: 75%;
+
+            @media(max-width: 800px) {
+                width: 100%;
+            }
+        }
     }
 
     > .user-page-unathorized-error {
