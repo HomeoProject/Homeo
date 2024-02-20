@@ -10,21 +10,21 @@ import { useUserContext } from '../Context/UserContext'
 import defaultAvatar from '../Assets/default-avatar.svg'
 
 const UserPage = () => {
-    const { user, isLoading } = useAuth0();
+    const { user, isLoading } = useAuth0()
 
-    const { customUser } = useUserContext();
+    const { customUser } = useUserContext()
 
-    const { id } = useParams<{ id: string }>();
+    const { id } = useParams<{ id: string }>()
 
     const SmallAvatar = styled(Avatar)(() => ({
         width: 40,
         height: 40,
-    }));
+    }))
 
     const UserAvatar = styled(Avatar)(() => ({
         width: '100%',
         height: '100%',
-    }));
+    }))
 
     return (
         <div className="UserPage">
@@ -100,17 +100,27 @@ const UserPage = () => {
                         <div className="user-page-main-left-nav">
                             <NavLink
                                 to={`/user/${customUser?.id}`}
-                                className={({ isActive }) => isActive ? "user-page-main-left-nav-link active" : "user-page-main-left-nav-link"}
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? 'user-page-main-left-nav-link active'
+                                        : 'user-page-main-left-nav-link'
+                                }
                                 end
                             >
                                 Profile
                             </NavLink>
                             <NavLink
                                 to={`/user/${customUser?.id}/constructor-info`}
-                                className={({ isActive }) => isActive ? "user-page-main-left-nav-link active" : "user-page-main-left-nav-link"}
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? 'user-page-main-left-nav-link active'
+                                        : 'user-page-main-left-nav-link'
+                                }
                                 end
                             >
-                                {customUser?.isConstructor ? 'Company' : 'Become a Contractor'}
+                                {customUser?.isConstructor
+                                    ? 'Company'
+                                    : 'Become a Contractor'}
                             </NavLink>
                         </div>
                     </div>
