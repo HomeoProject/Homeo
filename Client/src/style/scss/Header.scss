@@ -2,7 +2,7 @@
 
 .Header {
     width: 100%;
-    background: url('https://community.dynatrace.com/html/assets/wave-white.svg'),
+    background: url('../../Assets/wave-white.svg'),
         url('../../Assets//solid-color.png');
     background-repeat: no-repeat, no-repeat;
     background-size:
@@ -13,12 +13,12 @@
     margin-bottom: -120px;
 
     .header-main {
-        width: calc(100% - 40px);
+        width: calc(100% - 4rem);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 20px;
-        height: 200px;
+        padding: 0 2rem;
+        height: 12rem;
 
         > .header-logo-normal {
             display: flex;
@@ -32,8 +32,9 @@
             margin-top: -90px;
 
             > img {
-                width: 90px;
-                height: 90px;
+                width: 45px;
+                height: 60px;
+                padding-right: 10px;
             }
         }
 
@@ -47,8 +48,9 @@
             margin-top: -90px;
 
             > img {
-                width: 70px;
-                height: 70px;
+                width: 45px;
+                height: 60px;
+                padding-right: 10px;
             }
         }
 
@@ -92,6 +94,10 @@
                 width: 86px;
                 display: flex;
                 justify-content: flex-end;
+
+                @media (max-width: 780px) {
+                    width: auto;
+                }
             }
         }
     }

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import AccountMenu from './AccountMenu'
 import { useAuth0 } from '@auth0/auth0-react'
 import LoginButton from './LoginButton'
-import homeIcon from '../Assets/icon.png'
+import homeIcon from '../Assets/icon-cut.png'
 
 const Header = () => {
     const { isAuthenticated } = useAuth0()
@@ -13,8 +13,9 @@ const Header = () => {
     const [logoClass, setLogoClass] = useState('')
     const [screenSize, setScreenSize] = useState('')
     const [screenWidth, setScreenWidth] = useState(window.innerWidth)
-    const breakpoint = 800
-    const breakpointLogo = 500
+    const breakpoint: number = 800
+    const breakpointLogo: number = 500
+
     useEffect(() => {
         const handleResize = () => setScreenWidth(window.innerWidth)
         window.addEventListener('resize', handleResize)

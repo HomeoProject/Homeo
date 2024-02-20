@@ -2,18 +2,16 @@
 @import url('https://fonts.googleapis.com/css?family=Gabarito&display=swap');
 
 .HomePage {
-    width: calc(100% - 40px);
-    height: calc(100vh - 381px); //for now
-    max-width: 1355px;
-    padding: 0 20px;
-    background-color: v.$main-background-color;
+    width: calc(100% - 4rem);
+    max-width: 1000px;
+    padding: 0 2rem;
 
     > .home-page-main-wrapper {
         display: flex;
-        justify-content: center;
-        padding: 20px;
+        justify-content: space-between;
         padding-top: 0;
-        margin-top: 20px;
+        margin-top: 2rem;
+        gap: 2rem;
 
         @media (max-width: 780px) {
             flex-direction: column;
@@ -23,40 +21,54 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            width: 60%;
+
+            @media (max-width: 780px) {
+                width: 100%;
+            }
 
             > .home-page-main-title {
                 font-size: v.$font-size-large;
                 margin: 0;
-                margin-bottom: 15px;
+                margin-bottom: 1rem;
             }
 
             > .home-page-main-search-wrapper {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                margin-bottom: 20px;
+                margin-bottom: 2rem;
 
                 > .home-page-main-search {
                     outline: none;
                     border: none;
                     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
                     width: 100%;
-                    height: 50px;
+                    height: 3.5rem;
                     padding: 0;
                     border-top-left-radius: 10px;
                     border-bottom-left-radius: 10px;
                     border: none;
-                    padding-left: 15px;
+                    padding-left: 1.5rem;
+                    font-size: v.$font-size-medium;
+
+                    @media (max-width: 600px) {
+                        font-size: v.$font-size-small;
+                    }
 
                     &::placeholder {
                         font-family: v.$font-family;
-                        font-size: v.$font-size-small;
+                        font-size: v.$font-size-medium;
+
+                        @media (max-width: 600px) {
+                            font-size: v.$font-size-small;
+                        }
                     }
                 }
 
                 > .home-page-main-search-button {
-                    width: 50px;
-                    height: 50px;
+                    width: 3.5rem;
+                    height: 3.5rem;
                     border-top-right-radius: 10px;
                     border-bottom-right-radius: 10px;
                     border: none;
@@ -74,28 +86,33 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                padding: 20px;
+                padding: 1rem;
                 border-radius: 10px;
                 box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
 
                 &:not(:last-child) {
-                    margin-bottom: 20px;
+                    margin-bottom: 2rem;
                 }
 
-                @media (max-width: 780px) {
-                    margin-bottom: 20px;
-                }
+                // @media (max-width: 780px) {
+                //     margin-bottom: 2rem;
+                // }
 
                 > .home-page-main-intro-icon {
-                    width: 40px;
-                    height: 40px;
+                    width: 2rem;
+                    height: 2rem;
                     border: 1px solid black;
-                    padding: 10px;
+                    padding: 1rem;
                     border-radius: 50%;
 
                     @media (max-width: 500px) {
-                        width: 25px;
-                        height: 25px;
+                        width: 2rem;
+                        height: 2rem;
+                    }
+
+                    @media (max-width: 450px) {
+                        width: 1rem;
+                        height: 1rem;
                     }
                 }
 
@@ -108,41 +125,18 @@
                         padding: 10px;
                     }
 
-                    > .home-page-main-intro-sub-special {
-                        display: flex;
-                        align-items: center;
-
-                        > .title-green {
-                            color: v.$primary-color;
-                        }
-
-                        > b {
-                            margin: 0;
-                            font-size: v.$font-size-normal;
-                        }
-
-                        > p {
-                            margin: 0;
-                            font-size: v.$font-size-small;
-
-                            @media (max-width: 500px) {
-                                // display: none;
-                            }
-                        }
-                    }
-
                     > b {
                         margin: 0;
                         font-size: v.$font-size-normal;
+
+                        @media (max-width: 600px) {
+                            font-size: v.$font-size-medium;
+                        }
                     }
 
                     > p {
                         margin: 0;
                         font-size: v.$font-size-small;
-
-                        @media (max-width: 500px) {
-                            // display: none;
-                        }
                     }
                 }
             }
@@ -151,13 +145,24 @@
         > .home-page-instruction {
             display: flex;
             align-items: center;
-            padding: 0 5px;
+            padding: 1.5rem;
             box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
             border-radius: 10px;
-            margin-left: 30px;
+            width: 40%;
+            flex-direction: column;
+
+            > .home-page-instruction-title {
+                font-size: v.$font-size-normal;
+                margin: 0;
+                margin-bottom: 1rem;
+                align-self: flex-start;
+            }
 
             @media (max-width: 780px) {
                 margin-left: 0;
+                width: calc(100% - 2rem);
+                padding: 1rem;
+                align-items: flex-start;
             }
         }
     }
