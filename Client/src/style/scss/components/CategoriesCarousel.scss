@@ -1,80 +1,88 @@
 @use '../Variables' as v;
 
 .CategoriesCarousel {
-  padding: 3rem 2rem;
-  width: 100%;
-  background-color: v.$primary-color;
-  border-radius: 10px;
-  max-width: calc(1000px - 4rem);
-  margin-top: 3rem;
-  margin-bottom: 2rem;
+    padding: 3rem 2rem;
+    width: calc(100% - 4rem);
+    background-color: v.$primary-color;
+    border-radius: 10px;
+    max-width: calc(1000px - 4rem);
+    margin-top: 3rem;
+    margin-bottom: 2rem;
 
-  > .react-multi-carousel-list {
-    width: 100%;
-    height: 15rem;
-    margin: auto;
+    > .react-multi-carousel-list {
+        width: 100%;
+        height: 15rem;
+        margin: auto;
 
-    > .react-multi-carousel-track {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      > .react-multi-carousel-item {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        > .card {
-          width: calc(100% - 10px);
-          height: 10rem;
-          position: relative;
-          background: linear-gradient(0deg, rgba(0, 0, 0, 0.75), transparent);
-          border-radius: 10px;
-
-          &:hover {
-            cursor: pointer;
-          }
-
-          > img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 10px;
-          }
-
-          > .card-body {
-            float: left;
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            padding: 0;
-            color: #ffffff;
-            font-weight: bold;
+        > .react-multi-carousel-track {
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-            border-radius: 10px;
-            background: linear-gradient(0deg, rgba(0, 0, 0, 0.75), transparent);
 
-            > b {
-              font-size: v.$font-size-normal;
-              margin: 0;
-              padding: 0.5rem 0;
-            }
+            > .react-multi-carousel-item {
+                display: flex;
+                align-items: center;
+                justify-content: center;
 
-            > p {
-              font-size: v.$font-size-small;
-              margin: 0;
-              padding: 0.2rem 0;
-              font-weight: 400;
-              color: #ccc;
+                > .card {
+                    width: calc(100% - 10px);
+                    height: 10rem;
+                    position: relative;
+                    background: linear-gradient(
+                        0deg,
+                        rgba(0, 0, 0, 0.75),
+                        transparent
+                    );
+                    border-radius: 10px;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+
+                    > img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        border-radius: 10px;
+                    }
+
+                    > .card-body {
+                        float: left;
+                        position: absolute;
+                        left: 0;
+                        bottom: 0;
+                        width: 100%;
+                        height: 100%;
+                        padding: 0;
+                        color: #ffffff;
+                        font-weight: bold;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex-direction: column;
+                        border-radius: 10px;
+                        background: linear-gradient(
+                            0deg,
+                            rgba(0, 0, 0, 0.75),
+                            transparent
+                        );
+
+                        > b {
+                            font-size: v.$font-size-normal;
+                            margin: 0;
+                            padding: 0.5rem 0;
+                        }
+
+                        > p {
+                            font-size: v.$font-size-small;
+                            margin: 0;
+                            padding: 0.2rem 0;
+                            font-weight: 400;
+                            color: #ccc;
+                        }
+                    }
+                }
             }
-          }
         }
-      }
     }
-  }
 }

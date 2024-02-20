@@ -1,6 +1,6 @@
 @use '../Variables' as v;
 
-.PersonalDataForm {
+.ConstructorDataForm {
     width: 100%;
     padding-bottom: 2rem;
 
@@ -10,13 +10,13 @@
         }
     }
 
-    > .personal-data-form-wrapper {
+    > .constructor-data-form-wrapper {
         width: calc(100% - 3rem);
         box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
         padding: 1.5rem;
         border-radius: 10px;
 
-        > .personal-data-form {
+        > .constructor-data-form {
             width: 100%;
             display: flex;
             flex-direction: column;

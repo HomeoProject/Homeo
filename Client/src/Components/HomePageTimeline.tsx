@@ -12,96 +12,96 @@ import ForumRoundedIcon from '@mui/icons-material/ForumRounded'
 import TagFacesRoundedIcon from '@mui/icons-material/TagFacesRounded'
 
 const centeredDotStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  flexDirection: 'column',
-  padding: '5px',
-  '& > .MuiSvgIcon-root': {
-    marginBottom: '0',
-  },
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+    padding: '5px',
+    '& > .MuiSvgIcon-root': {
+        marginBottom: '0',
+    },
 }
 
 const HomePageTimeline = () => {
-  return (
-    <Timeline sx={{ margin: '0', padding: '0' }}>
-      <TimelineItem>
-        <TimelineOppositeContent sx={{ display: 'none' }} />
-        <TimelineSeparator>
-          <TimelineDot color="primary" sx={centeredDotStyle}>
-            <PersonSearchRoundedIcon />
-          </TimelineDot>
-          <TimelineConnector />
-        </TimelineSeparator>
-        <TimelineContent sx={{ py: 0, px: 2 }}>
-          <Typography
-            fontFamily={'Gabarito'}
-            paddingTop={'20px'}
-            fontSize={'calc(80% + 0.3vw)'}
-          >
-            Choose a person you want to work with
-          </Typography>
-        </TimelineContent>
-      </TimelineItem>
-      <TimelineItem>
-        <TimelineOppositeContent sx={{ display: 'none' }} />
-        <TimelineSeparator>
-          <TimelineConnector sx={{ height: '21px' }} />
-          <TimelineDot color="primary" sx={centeredDotStyle}>
-            <CreateRounded />
-          </TimelineDot>
-          <TimelineConnector />
-        </TimelineSeparator>
-        <TimelineContent sx={{ py: 0, px: 2 }}>
-          <Typography
-            fontFamily={'Gabarito'}
-            paddingTop={'41px'}
-            fontSize={'calc(80% + 0.3vw)'}
-          >
-            Fill out a short form
-          </Typography>
-        </TimelineContent>
-      </TimelineItem>
-      <TimelineItem>
-        <TimelineOppositeContent sx={{ display: 'none' }} />
-        <TimelineSeparator>
-          <TimelineConnector sx={{ height: '30px' }} />
-          <TimelineDot color="primary" sx={centeredDotStyle}>
-            <ForumRoundedIcon />
-          </TimelineDot>
-          <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
-        </TimelineSeparator>
-        <TimelineContent sx={{ py: 0, px: 2 }}>
-          <Typography
-            fontFamily={'Gabarito'}
-            paddingTop={'49px'}
-            fontSize={'calc(80% + 0.3vw)'}
-          >
-            Sort out the details
-          </Typography>
-        </TimelineContent>
-      </TimelineItem>
-      <TimelineItem>
-        <TimelineOppositeContent sx={{ display: 'none' }} />
-        <TimelineSeparator>
-          <TimelineConnector
-            sx={{ bgcolor: 'secondary.main', height: '30px' }}
-          />
-          <TimelineDot color="primary" sx={centeredDotStyle}>
-            <TagFacesRoundedIcon />
-          </TimelineDot>
-        </TimelineSeparator>
-        <TimelineContent sx={{ py: 0, px: 2 }}>
-          <Typography
-            fontFamily={'Gabarito'}
-            paddingTop={'49px'}
-            fontSize={'calc(80% + 0.3vw)'}
-          >
-            Get the result you deserve
-          </Typography>
-        </TimelineContent>
-      </TimelineItem>
-    </Timeline>
-  )
+    return (
+        <Timeline sx={{ margin: '0', padding: '0' }}>
+            <TimelineItem>
+                <TimelineOppositeContent sx={{ display: 'none' }} />
+                <TimelineSeparator>
+                    <TimelineDot color="primary" sx={centeredDotStyle}>
+                        <PersonSearchRoundedIcon />
+                    </TimelineDot>
+                    <TimelineConnector />
+                </TimelineSeparator>
+                <TimelineContent sx={{ py: 0, px: 2 }}>
+                    <Typography
+                        fontFamily={'Gabarito'}
+                        paddingTop={'20px'}
+                        fontSize={'calc(80% + 0.3vw)'}
+                    >
+                        Choose a person you want to work with
+                    </Typography>
+                </TimelineContent>
+            </TimelineItem>
+            <TimelineItem>
+                <TimelineOppositeContent sx={{ display: 'none' }} />
+                <TimelineSeparator>
+                    <TimelineConnector sx={{ height: '21px' }} />
+                    <TimelineDot color="primary" sx={centeredDotStyle}>
+                        <CreateRounded />
+                    </TimelineDot>
+                    <TimelineConnector />
+                </TimelineSeparator>
+                <TimelineContent sx={{ py: 0, px: 2 }}>
+                    <Typography
+                        fontFamily={'Gabarito'}
+                        paddingTop={'41px'}
+                        fontSize={'calc(80% + 0.3vw)'}
+                    >
+                        Fill out a short form
+                    </Typography>
+                </TimelineContent>
+            </TimelineItem>
+            <TimelineItem>
+                <TimelineOppositeContent sx={{ display: 'none' }} />
+                <TimelineSeparator>
+                    <TimelineConnector sx={{ height: '30px' }} />
+                    <TimelineDot color="primary" sx={centeredDotStyle}>
+                        <ForumRoundedIcon />
+                    </TimelineDot>
+                    <TimelineConnector sx={{ bgcolor: 'secondary.main' }} />
+                </TimelineSeparator>
+                <TimelineContent sx={{ py: 0, px: 2 }}>
+                    <Typography
+                        fontFamily={'Gabarito'}
+                        paddingTop={'49px'}
+                        fontSize={'calc(80% + 0.3vw)'}
+                    >
+                        Sort out the details
+                    </Typography>
+                </TimelineContent>
+            </TimelineItem>
+            <TimelineItem>
+                <TimelineOppositeContent sx={{ display: 'none' }} />
+                <TimelineSeparator>
+                    <TimelineConnector
+                        sx={{ bgcolor: 'secondary.main', height: '30px' }}
+                    />
+                    <TimelineDot color="primary" sx={centeredDotStyle}>
+                        <TagFacesRoundedIcon />
+                    </TimelineDot>
+                </TimelineSeparator>
+                <TimelineContent sx={{ py: 0, px: 2 }}>
+                    <Typography
+                        fontFamily={'Gabarito'}
+                        paddingTop={'49px'}
+                        fontSize={'calc(80% + 0.3vw)'}
+                    >
+                        Get the result you deserve
+                    </Typography>
+                </TimelineContent>
+            </TimelineItem>
+        </Timeline>
+    )
 }
 
 export default HomePageTimeline
