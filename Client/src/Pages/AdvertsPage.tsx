@@ -39,6 +39,8 @@ const AdvertsPage = () => {
     })
     }, [screenSize])
 
+    // comment
+
     return (
     <div className="AdvertsPage">
         <div className="adverts-page-search">
