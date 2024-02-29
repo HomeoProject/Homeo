@@ -95,7 +95,7 @@ const TemporaryDrawer = () => {
                         alt="menu"
                         style={{
                             width: '30px',
-                            filter: 'invert(66%) sepia(31%) saturate(4454%) hue-rotate(117deg) brightness(95%) contrast(78%)',
+                            filter: 'invert(100%) sepia(3%) saturate(7500%) hue-rotate(283deg) brightness(115%) contrast(104%)',
                         }}
                     />
                 </Button>

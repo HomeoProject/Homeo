@@ -17,6 +17,9 @@ This allows you to easily inject and use the mapping in other Spring components.
 @Mapper(componentModel = "spring")
 public interface AppUserMapper {
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "isBlocked", source = "blocked")
+    @Mapping(target = "isOnline", source = "online")
+    @Mapping(target = "isApproved", source = "approved")
     AppUserDto appUserToAppUserDto(AppUser appUser);
 
     AppUser checkAppUserAfterLoginRequestToAppUser(CheckAppUserAfterLoginRequest checkAppUserAfterLoginRequest);

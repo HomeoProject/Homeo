@@ -17,13 +17,13 @@ const centeredDotStyle = {
     flexDirection: 'column',
     padding: '5px',
     '& > .MuiSvgIcon-root': {
-        marginBottom: '0', // Adjust this value for vertical alignment
+        marginBottom: '0',
     },
 }
 
 const HomePageTimeline = () => {
     return (
-        <Timeline>
+        <Timeline sx={{ margin: '0', padding: '0' }}>
             <TimelineItem>
                 <TimelineOppositeContent sx={{ display: 'none' }} />
                 <TimelineSeparator>

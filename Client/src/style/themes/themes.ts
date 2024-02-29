@@ -1,6 +1,5 @@
+import { Theme, createTheme } from '@mui/material'
 import tinycolor from 'tinycolor2'
-import { Theme } from '@mui/material/styles'
-import { createTheme } from '@mui/material/styles'
 
 const primaryColor: string = '#1CBE8E'
 const errorColor: string = '#a51f1f'

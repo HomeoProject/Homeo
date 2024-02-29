@@ -10,7 +10,11 @@ import StarOutlineIcon from '@mui/icons-material/StarOutline'
 import SmartphoneIcon from '@mui/icons-material/Smartphone'
 import '../style/scss/components/UserCard.scss'
 
-const UserCard = ({ isDialog }) => {
+type UserCardProps = {
+    isDialog?: boolean
+}
+
+const UserCard = ({ isDialog }: UserCardProps) => {
     const [open, setOpen] = useState(false)
 
     const handleClickOpen = () => {

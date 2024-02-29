@@ -3,20 +3,20 @@ package it.homeo.userservice.dtos;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.Builder;
 
-@Data
-public class CheckAppUserAfterLoginRequest {
-    @NotBlank
-    private String id;
+@Builder
+public record CheckAppUserAfterLoginRequest(
+        @NotBlank
+        String id,
 
-    @NotBlank
-    @Email
-    private String email;
+        @NotBlank
+        @Email
+        String email,
 
-    @NotBlank
-    private String avatar;
+        @NotBlank
+        String avatar,
 
-    @NotNull
-    private boolean isBlocked;
-}
+        @NotNull
+        boolean isBlocked
+) { }

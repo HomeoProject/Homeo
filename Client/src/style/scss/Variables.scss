@@ -1,14 +1,9 @@
 $primary-color: #1cbe8e;
 $secondary-color: #d8ac79;
-$error-color: #a51f1f;
-$main-background-color: #f1f5f8;
-$font-size-small: calc(70% + 0.3vw);
-$font-size-normal: calc(80% + 0.6vw);
-$font-size-large: calc(100% + 1.3vw);
-
-:export {
-    primaryColor: $primary-color;
-    secondaryColor: $secondary-color;
-    errorColor: $error-color;
-    mainBackgroundColor: $main-background-color;
-}
+$error-color: #ff0000;
+$main-background-color: #ffffff;
+$font-size-small: 0.9rem;
+$font-size-medium: 1.2rem;
+$font-size-normal: 1.5rem;
+$font-size-large: 2rem;
+$font-family: Gabarito;
