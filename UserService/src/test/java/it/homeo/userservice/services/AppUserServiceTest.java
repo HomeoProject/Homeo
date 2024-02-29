@@ -36,11 +36,13 @@ class AppUserServiceTest {
     @Test
     void shouldGetAppUserById() {
         String id = "auth|user1";
+
         AppUser appUser = new AppUser();
         appUser.setId(id);
 
-        AppUserDto appUserDto = new AppUserDto();
-        appUserDto.setId(id);
+        AppUserDto appUserDto = AppUserDto.builder()
+                .id(id)
+                .build();
 
         when(repository.findById(id)).thenReturn(Optional.of(appUser));
         when(mapper.appUserToAppUserDto(appUser)).thenReturn(appUserDto);

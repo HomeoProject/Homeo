@@ -14,12 +14,15 @@
     "@auth0/auth0-react": "^2.2.3",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@mui/icons-material": "^5.14.14",
-    "@mui/lab": "^5.0.0-alpha.150",
-    "@mui/material": "^5.14.15",
     "country-flag-icons": "^1.5.9",
+    "@hookform/error-message": "^2.0.1",
+    "@mui/icons-material": "^5.15.5",
+    "@mui/lab": "^5.0.0-alpha.161",
+    "@mui/material": "^5.15.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.49.3",
+    "react-multi-carousel": "^2.8.4",
     "react-router": "^6.17.0",
     "react-router-dom": "^6.18.0",
     "react-slick": "^0.29.0",
@@ -41,6 +44,6 @@
     "sass": "^1.69.4",
     "tinycolor2": "^1.6.0",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^5.0.12"
   }
 }

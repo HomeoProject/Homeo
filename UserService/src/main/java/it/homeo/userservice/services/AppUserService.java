@@ -5,6 +5,7 @@ import com.auth0.client.mgmt.ManagementAPI;
 import com.auth0.client.mgmt.filter.UserFilter;
 import com.auth0.exception.Auth0Exception;
 import com.auth0.json.mgmt.users.User;
+import it.homeo.userservice.config.Auth0RolesConfig;
 import it.homeo.userservice.dtos.*;
 import it.homeo.userservice.exceptions.AppUserNotFoundException;
 import it.homeo.userservice.exceptions.ForbiddenException;
@@ -15,22 +16,26 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
-public class AppUserService {
+public class AppUserService implements IAppUserService {
     private final ManagementAPI mgmt;
     private final AppUserRepository repository;
     private final AppUserMapper mapper;
+    private final Auth0RolesConfig rolesConfig;
 
     public AppUserService(
             ManagementAPI mgmt,
             AppUserRepository repository,
-            AppUserMapper mapper
+            AppUserMapper mapper,
+            Auth0RolesConfig rolesConfig
     ) {
         this.mgmt = mgmt;
         this.repository = repository;
         this.mapper = mapper;
+        this.rolesConfig = rolesConfig;
     }
 
     public AppUserDto getAppUserById(String id) {
@@ -39,9 +44,9 @@ public class AppUserService {
     }
 
     public AppUserDto checkAppUserAfterLogin(CheckAppUserAfterLoginRequest dto) throws Auth0Exception {
-        compareAppUserIdWithTokenId(dto.getId());
+        compareAppUserIdWithTokenId(dto.id());
 
-        Optional<AppUser> optionalAppUser = repository.findById(dto.getId());
+        Optional<AppUser> optionalAppUser = repository.findById(dto.id());
 
         // If the user does not exist in the database, it means that he is logging in for the first time, so we create him and return it nicely :)
         if (optionalAppUser.isEmpty()) {
@@ -50,10 +55,9 @@ public class AppUserService {
             return mapper.appUserToAppUserDto(savedAppUser);
         }
 
-
         // If it exists in the database, we check whether there are any inaccuracies between the Auth0 database and ours, possibly update the user and return dto
         AppUser appUser = optionalAppUser.get();
-        User auth0User = mgmt.users().get(dto.getId(), new UserFilter()).execute().getBody();
+        User auth0User = mgmt.users().get(dto.id(), new UserFilter()).execute().getBody();
 
         boolean shouldSave = false;
 
@@ -67,7 +71,7 @@ public class AppUserService {
             shouldSave = true;
         }
 
-        if (appUser.isBlocked() != auth0User.isBlocked()) {
+        if (auth0User.isBlocked() != null && appUser.isBlocked() != auth0User.isBlocked()) {
             appUser.setBlocked(auth0User.isBlocked());
             shouldSave = true;
         }
@@ -100,31 +104,35 @@ public class AppUserService {
         repository.delete(appUser);
     }
 
-    public void updateAppUserIsConstructor(String id, UpdateAppUserIsConstructorRequest dto) {
+    public void updateAppUserIsConstructor(String id, UpdateAppUserIsConstructorRequest dto) throws Auth0Exception {
         compareAppUserIdWithTokenId(id);
 
-        AppUser appUser = repository.findById(id).orElseThrow(() -> new AppUserNotFoundException(id));
+        // Auth0 DB update
+        if (dto.isConstructor()) {
+            mgmt.users().addRoles(id, Collections.singletonList(rolesConfig.getConstructorRoleId())).execute();
+            return;
+        }
 
-        // Local DB update
-        appUser.setConstructor(dto.isConstructor());
-        repository.save(appUser);
+        mgmt.users().removeRoles(id, Collections.singletonList(rolesConfig.getConstructorRoleId())).execute();
     }
 
-    public void updateAppUserEmail(String id, UpdateAppUserEmailRequest dto) throws Auth0Exception {
+    public AppUserDto updateAppUserEmail(String id, UpdateAppUserEmailRequest dto) throws Auth0Exception {
         compareAppUserIdWithTokenId(id);
 
         AppUser appUser = repository.findById(id).orElseThrow(() -> new AppUserNotFoundException(id));
 
         // Auth0 DB update
         User updatedUser = new User();
-        updatedUser.setEmail(dto.getEmail());
+        updatedUser.setEmail(dto.email());
         mgmt.users().update(id, updatedUser).execute().getBody();
 
         // Local DB update
-        appUser.setEmail(dto.getEmail());
+        appUser.setEmail(dto.email());
         repository.save(appUser);
 
         // TODO Resend email verification email
+
+        return mapper.appUserToAppUserDto(appUser);
     }
 
     public void updateAppUserPassword(String id, UpdateAppUserPasswordRequest dto) throws Auth0Exception {
@@ -132,18 +140,20 @@ public class AppUserService {
 
         // Auth0 DB update
         User updatedUser = new User();
-        updatedUser.setPassword(dto.getPassword().toCharArray());
+        updatedUser.setPassword(dto.password().toCharArray());
         mgmt.users().update(id, updatedUser).execute();
     }
 
-    public void approveAppUser(String id, ApproveAppUserRequest dto) {
+    public AppUserDto approveAppUser(String id, ApproveAppUserRequest dto) {
         AppUser appUser = repository.findById(id).orElseThrow(() -> new AppUserNotFoundException(id));
 
         appUser.setApproved(dto.isApproved());
         repository.save(appUser);
+
+        return mapper.appUserToAppUserDto(appUser);
     }
 
-    public void blockAppUser(String id, BlockAppUserRequest dto) throws Auth0Exception {
+    public AppUserDto blockAppUser(String id, BlockAppUserRequest dto) throws Auth0Exception {
         AppUser appUser = repository.findById(id).orElseThrow(() -> new AppUserNotFoundException(id));
 
         // Auth0 DB update
@@ -154,6 +164,8 @@ public class AppUserService {
         // Local DB update
         appUser.setBlocked(dto.isBlocked());
         repository.save(appUser);
+
+        return mapper.appUserToAppUserDto(appUser);
     }
 
     private void compareAppUserIdWithTokenId(String appUserId) {

@@ -3,6 +3,7 @@ import ConstructionRoundedIcon from '@mui/icons-material/ConstructionRounded'
 import GrassRoundedIcon from '@mui/icons-material/GrassRounded'
 import HomePageTimeline from '../Components/HomePageTimeline'
 import SearchIcon from '@mui/icons-material/Search'
+import CategoriesCarousel from '../Components/CategoriesCarousel'
 
 const HomePage = () => {
     const verifiedContractorsCount: number = 8836
@@ -27,11 +28,10 @@ const HomePage = () => {
                     </div>
                     <div className="home-page-main-intro">
                         <div className="home-page-main-intro-sub">
-                            <div className="home-page-main-intro-sub-special">
-                                <b>Over {verifiedContractorsCount} verified</b>
-                                <b className="title-green">&nbsp;Homeo&nbsp;</b>
-                                <b>contractors</b>
-                            </div>
+                            <b>
+                                Over {verifiedContractorsCount} verified
+                                contractors
+                            </b>
                             <p>Find the one that fits you</p>
                         </div>
                         <ConstructionRoundedIcon className="home-page-main-intro-icon" />
@@ -45,10 +45,15 @@ const HomePage = () => {
                     </div>
                 </div>
                 <div className="home-page-instruction">
+                    <p className="home-page-instruction-title">
+                        It's that easy:
+                    </p>
                     <HomePageTimeline />
                 </div>
             </div>
-            <div className="home-page-carousel"></div>
+            <div className="home-page-carousel">
+                <CategoriesCarousel />
+            </div>
         </div>
     )
 }

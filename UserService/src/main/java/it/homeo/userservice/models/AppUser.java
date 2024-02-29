@@ -37,8 +37,6 @@ public class AppUser {
 
     private boolean isApproved;
 
-    private boolean isConstructor;
-
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
