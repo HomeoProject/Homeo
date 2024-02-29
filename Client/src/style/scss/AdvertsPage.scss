@@ -7,9 +7,14 @@
         flex-direction: column;
         align-items: center;
         color: white;
-        background: rgb(0,255,179);
-        background: linear-gradient(90deg, rgba(0,255,179,1) 0%, rgba(28,190,142,1) 50%, rgba(29,143,109,1) 100%);
-        padding: 30px 0 30px 0; 
+        background: rgb(0, 255, 179);
+        background: linear-gradient(
+            90deg,
+            rgba(0, 255, 179, 1) 0%,
+            rgba(28, 190, 142, 1) 50%,
+            rgba(29, 143, 109, 1) 100%
+        );
+        padding: 30px 0 30px 0;
         > .adverts-page-search-slogan {
             font-size: clamp(1.5rem, 3.7vw, 4rem);
         }
@@ -37,19 +42,19 @@
                 }
             }
             > .adverts-page-search-wrapper-button {
-                    width: 50px;
-                    height: 50px;
-                    border-top-right-radius: 10px;
-                    border-bottom-right-radius: 10px;
-                    border: none;
-                    outline: none;
-                    background-color: white;
-                    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
+                width: 50px;
+                height: 50px;
+                border-top-right-radius: 10px;
+                border-bottom-right-radius: 10px;
+                border: none;
+                outline: none;
+                background-color: white;
+                box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
 
-                    &:hover {
-                        cursor: pointer;
-                    }
-            }    
+                &:hover {
+                    cursor: pointer;
+                }
+            }
         }
         > .adverts-page-search-filters {
             display: flex;
@@ -80,13 +85,11 @@
             .adverts-page-cards-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
         }
         @media screen and (max-width: 800px) {
             .adverts-page-cards-grid {
                 grid-template-columns: repeat(1, 1fr);
             }
-            
         }
         .adverts-page-cards-label {
             padding: 20px 0 20px 0;

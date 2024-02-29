@@ -1,18 +1,18 @@
-import { useState } from 'react';
+import { useState } from 'react'
 import Dialog from '@mui/material/Dialog'
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Checkbox from '@mui/material/Checkbox';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Slider from '@mui/material/Slider';
-import TextField from '@mui/material/TextField';
-import Rating from '@mui/material/Rating';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import Checkbox from '@mui/material/Checkbox'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import Slider from '@mui/material/Slider'
+import TextField from '@mui/material/TextField'
+import Rating from '@mui/material/Rating'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
 import { PL, UA, DE } from 'country-flag-icons/react/3x2'
 import '../style/scss/FiltersDialog.scss'
 
@@ -24,29 +24,29 @@ export interface FiltersDialogProps {
 
 const FiltersDialog = (props: FiltersDialogProps) => {
     const { open, handleClose, openFilter } = props
-    const [priceValue, setPriceValue] = useState<number[]>([0,100]);
+    const [priceValue, setPriceValue] = useState<number[]>([0, 100])
     const [ratingValue, setRatingValue] = useState(5.0)
     const [directionValue, setDirectionValue] = useState<string>('or less')
 
     const handleSliderChange = (event: Event, newValue) => {
-        setPriceValue(newValue);
-      };
-    
-      const handleInputChangeMin = (event) => {
-        setPriceValue([event.target.value, priceValue[1]]);
-      };
+        setPriceValue(newValue)
+    }
 
-      const handleInputChangeMax = (event) => {
-        setPriceValue([priceValue[0], event.target.value]);
-      };
-    
-      const handleBlur = () => {
+    const handleInputChangeMin = (event) => {
+        setPriceValue([event.target.value, priceValue[1]])
+    }
+
+    const handleInputChangeMax = (event) => {
+        setPriceValue([priceValue[0], event.target.value])
+    }
+
+    const handleBlur = () => {
         if (priceValue[0] < 0) {
-          setPriceValue([0,0]);
+            setPriceValue([0, 0])
         } else if (priceValue[1] > 100) {
-          setPriceValue([100,100]);
+            setPriceValue([100, 100])
         }
-      };
+    }
 
     return (
         <Dialog
@@ -55,274 +55,336 @@ const FiltersDialog = (props: FiltersDialogProps) => {
             maxWidth={'xl'}
             className="dialog"
         >
-            <div className='filtersDialog'>
-                <Accordion disableGutters defaultExpanded={openFilter === 0 ? true : false}>
+            <div className="filtersDialog">
+                <Accordion
+                    disableGutters
+                    defaultExpanded={openFilter === 0 ? true : false}
+                >
                     <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
                     >
-                    <span className='filters-dialog-summary'>Category</span>
+                        <span className="filters-dialog-summary">Category</span>
                     </AccordionSummary>
                     <AccordionDetails>
-                    <span>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                        malesuada lacus ex, sit amet blandit leo lobortis eget.
-                    </span>
+                        <span>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing
+                            elit. Suspendisse malesuada lacus ex, sit amet
+                            blandit leo lobortis eget.
+                        </span>
                     </AccordionDetails>
                 </Accordion>
-                <Accordion disableGutters defaultExpanded={openFilter === 1 ? true : false}>
+                <Accordion
+                    disableGutters
+                    defaultExpanded={openFilter === 1 ? true : false}
+                >
                     <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
                     >
-                    <span className='filters-dialog-summary'>Price</span>
+                        <span className="filters-dialog-summary">Price</span>
                     </AccordionSummary>
                     <AccordionDetails>
-                    <div className='filters-dialog-details'>
-                        <Box sx={{ width: 600 }}>
-                            <Grid container spacing={2} alignItems="center">
-                                <Grid item>
-                                <TextField
-                                    value={priceValue[0]}
-                                    size="small"
-                                    onChange={handleInputChangeMin}
-                                    onBlur={handleBlur}
-                                    inputProps={{
-                                    step: 10,
-                                    min: 0,
-                                    max: 100,
-                                    type: 'number',
-                                    'aria-labelledby': 'input-slider',
-                                    }}
-                                    sx={{width: '70px'}}
-                                />
+                        <div className="filters-dialog-details">
+                            <Box sx={{ width: 600 }}>
+                                <Grid container spacing={2} alignItems="center">
+                                    <Grid item>
+                                        <TextField
+                                            value={priceValue[0]}
+                                            size="small"
+                                            onChange={handleInputChangeMin}
+                                            onBlur={handleBlur}
+                                            inputProps={{
+                                                step: 10,
+                                                min: 0,
+                                                max: 100,
+                                                type: 'number',
+                                                'aria-labelledby':
+                                                    'input-slider',
+                                            }}
+                                            sx={{ width: '70px' }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs>
+                                        <Slider
+                                            value={priceValue}
+                                            onChange={handleSliderChange}
+                                            aria-labelledby="input-slider"
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField
+                                            value={priceValue[1]}
+                                            size="small"
+                                            onChange={handleInputChangeMax}
+                                            onBlur={handleBlur}
+                                            inputProps={{
+                                                step: 10,
+                                                min: 0,
+                                                max: 100,
+                                                type: 'number',
+                                                'aria-labelledby':
+                                                    'input-slider',
+                                            }}
+                                            sx={{ width: '70px' }}
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <span>$ / h</span>
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs>
-                                <Slider
-                                    value={priceValue}
-                                    onChange={handleSliderChange}
-                                    aria-labelledby="input-slider"
-                                />
-                                </Grid>
-                                <Grid item>
-                                <TextField
-                                    value={priceValue[1]}
-                                    size="small"
-                                    onChange={handleInputChangeMax}
-                                    onBlur={handleBlur}
-                                    inputProps={{
-                                    step: 10,
-                                    min: 0,
-                                    max: 100,
-                                    type: 'number',
-                                    'aria-labelledby': 'input-slider',
-                                    }}
-                                    sx={{width: '70px'}}
-                                />
-                                </Grid>
-                                <Grid item>
-                                    <span>$ / h</span>
-                                </Grid>
-                            </Grid>
-                            <div className='filters-dialog-details-label'>
-                                <span>Minimum</span>
-                                <span>The Range</span>
-                                <span>Maximum</span>
-                            </div>
-                        </Box>
-                    </div>
+                                <div className="filters-dialog-details-label">
+                                    <span>Minimum</span>
+                                    <span>The Range</span>
+                                    <span>Maximum</span>
+                                </div>
+                            </Box>
+                        </div>
                     </AccordionDetails>
                 </Accordion>
-                <Accordion disableGutters defaultExpanded={openFilter === 2 ? true : false}>
+                <Accordion
+                    disableGutters
+                    defaultExpanded={openFilter === 2 ? true : false}
+                >
                     <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
                     >
-                    <span className='filters-dialog-summary'>Rating</span>
+                        <span className="filters-dialog-summary">Rating</span>
                     </AccordionSummary>
                     <AccordionDetails>
-                    <div className='filters-dialog-details'>
-                        <div className='filters-dialog-details-box'>
-                            <Rating
-                                name="simple-controlled"
-                                value={ratingValue}
-                                precision={0.5}
-                                defaultValue={2.5}
-                                onChange={(event, newValue) => {
-                                    setRatingValue(newValue!);
-                                }}
-                                sx={{fontSize: '50px'}}
-                            />
-                            <div className='filters-dialog-details-box-rating'>
-                                <span className='filters-dialog-details-box-rating-statement'>
-                                    The rating must be {ratingValue}, 
-                                </span>
-                                <FormControl>
-                                    {/* <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
-                                    <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={directionValue}
-                                    // label="Age"
-                                    onChange={(e) => setDirectionValue(e.target.value)}
-                                    variant='standard'
-                                    sx={{minWidth: '100px', fontSize: 'calc(80% + 0.6vw)'}}
-                                    >
-                                    <MenuItem value={'or less'}>or less</MenuItem>
-                                    <MenuItem value={'exactly that'}>exactly that</MenuItem>
-                                    <MenuItem value={'or more'}>or more</MenuItem>
-                                    </Select>
-                                </FormControl>
+                        <div className="filters-dialog-details">
+                            <div className="filters-dialog-details-box">
+                                <Rating
+                                    name="simple-controlled"
+                                    value={ratingValue}
+                                    precision={0.5}
+                                    defaultValue={2.5}
+                                    onChange={(event, newValue) => {
+                                        setRatingValue(newValue!)
+                                    }}
+                                    sx={{ fontSize: '50px' }}
+                                />
+                                <div className="filters-dialog-details-box-rating">
+                                    <span className="filters-dialog-details-box-rating-statement">
+                                        The rating must be {ratingValue},
+                                    </span>
+                                    <FormControl>
+                                        {/* <InputLabel id="demo-simple-select-label">Age</InputLabel> */}
+                                        <Select
+                                            labelId="demo-simple-select-label"
+                                            id="demo-simple-select"
+                                            value={directionValue}
+                                            // label="Age"
+                                            onChange={(e) =>
+                                                setDirectionValue(
+                                                    e.target.value
+                                                )
+                                            }
+                                            variant="standard"
+                                            sx={{
+                                                minWidth: '100px',
+                                                fontSize: 'calc(80% + 0.6vw)',
+                                            }}
+                                        >
+                                            <MenuItem value={'or less'}>
+                                                or less
+                                            </MenuItem>
+                                            <MenuItem value={'exactly that'}>
+                                                exactly that
+                                            </MenuItem>
+                                            <MenuItem value={'or more'}>
+                                                or more
+                                            </MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </AccordionDetails>
                 </Accordion>
-                <Accordion disableGutters defaultExpanded={openFilter === 3 ? true : false}>
+                <Accordion
+                    disableGutters
+                    defaultExpanded={openFilter === 3 ? true : false}
+                >
                     <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
                     >
-                    <span className='filters-dialog-summary'>Experience</span>
+                        <span className="filters-dialog-summary">
+                            Experience
+                        </span>
                     </AccordionSummary>
                     <AccordionDetails>
-                    <div className='filters-dialog-details experience'>
-                        <div>
+                        <div className="filters-dialog-details experience">
+                            <div>
                                 <div>
                                     <Checkbox
                                         color="primary"
-                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                        inputProps={{
+                                            'aria-label': 'secondary checkbox',
+                                        }}
                                     />
                                     <span>Novice</span>
                                 </div>
                                 <div>
                                     <Checkbox
                                         color="primary"
-                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                        inputProps={{
+                                            'aria-label': 'secondary checkbox',
+                                        }}
                                     />
                                     <span>Intermediete</span>
                                 </div>
                                 <div>
                                     <Checkbox
                                         color="primary"
-                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                        inputProps={{
+                                            'aria-label': 'secondary checkbox',
+                                        }}
                                     />
                                     <span>Experienced</span>
                                 </div>
                                 <div>
                                     <Checkbox
                                         color="primary"
-                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                        inputProps={{
+                                            'aria-label': 'secondary checkbox',
+                                        }}
                                     />
                                     <span>Expert</span>
                                 </div>
                                 <div>
                                     <Checkbox
                                         color="primary"
-                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                        inputProps={{
+                                            'aria-label': 'secondary checkbox',
+                                        }}
                                     />
                                     <span>Master Craftsman</span>
                                 </div>
-                        </div>
-                        <div className='filters-dialog-details-approved'>
+                            </div>
+                            <div className="filters-dialog-details-approved">
                                 <div>
-                                    <span className='filters-dialog-details-approved-label'>
-                                        This 
-                                        <span className='filters-dialog-details-approved-label-bold'>
-                                        &nbsp;special&nbsp;
+                                    <span className="filters-dialog-details-approved-label">
+                                        This
+                                        <span className="filters-dialog-details-approved-label-bold">
+                                            &nbsp;special&nbsp;
                                         </span>
-                                        attribute is gifted to 
-                                        the most experienced and talented on our site. 
-                                        It's a badge of honor, and not many have it.
-                                        But those who do, are the best of the best.
+                                        attribute is gifted to the most
+                                        experienced and talented on our site.
+                                        It's a badge of honor, and not many have
+                                        it. But those who do, are the best of
+                                        the best.
                                     </span>
                                 </div>
                                 <div>
                                     <Checkbox
-                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                        inputProps={{
+                                            'aria-label': 'secondary checkbox',
+                                        }}
                                         sx={{
                                             '&.Mui-checked': {
-                                              color: '#D4AF37',
+                                                color: '#D4AF37',
                                             },
-                                          }}
+                                        }}
                                     />
                                     <span>Homeo Approved</span>
                                 </div>
-                        </div>
-                    </div>
-                    </AccordionDetails>
-                </Accordion>
-                <Accordion disableGutters defaultExpanded={openFilter === 4 ? true : false}>
-                    <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                    >
-                    <span className='filters-dialog-summary'>Language</span>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                    <div className='filters-dialog-details language'>
-                        <div>
-                            <div className='filters-dialog-details-language'>
-                                <Checkbox
-                                    color="primary"
-                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                />
-                                <span>Polish</span>
-                                <PL className='filters-dialog-details-language-flag'/>
-                            </div>
-                            <div className='filters-dialog-details-language'>
-                                <Checkbox
-                                    color="primary"
-                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                />
-                                <span>Ukrainian</span>
-                                <UA className='filters-dialog-details-language-flag'/>
-                            </div>
-                            <div className='filters-dialog-details-language'>
-                                <Checkbox
-                                    color="primary"
-                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                />
-                                <span>German</span>
-                                <DE className='filters-dialog-details-language-flag'/>
                             </div>
                         </div>
-                    </div>
                     </AccordionDetails>
                 </Accordion>
-                <Accordion disableGutters defaultExpanded={openFilter === 5 ? true : false}>
+                <Accordion
+                    disableGutters
+                    defaultExpanded={openFilter === 4 ? true : false}
+                >
                     <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
                     >
-                    <span className='filters-dialog-summary'>Payment methods</span>
+                        <span className="filters-dialog-summary">Language</span>
                     </AccordionSummary>
                     <AccordionDetails>
-                    <span>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                        malesuada lacus ex, sit amet blandit leo lobortis eget.
-                    </span>
+                        <div className="filters-dialog-details language">
+                            <div>
+                                <div className="filters-dialog-details-language">
+                                    <Checkbox
+                                        color="primary"
+                                        inputProps={{
+                                            'aria-label': 'secondary checkbox',
+                                        }}
+                                    />
+                                    <span>Polish</span>
+                                    <PL className="filters-dialog-details-language-flag" />
+                                </div>
+                                <div className="filters-dialog-details-language">
+                                    <Checkbox
+                                        color="primary"
+                                        inputProps={{
+                                            'aria-label': 'secondary checkbox',
+                                        }}
+                                    />
+                                    <span>Ukrainian</span>
+                                    <UA className="filters-dialog-details-language-flag" />
+                                </div>
+                                <div className="filters-dialog-details-language">
+                                    <Checkbox
+                                        color="primary"
+                                        inputProps={{
+                                            'aria-label': 'secondary checkbox',
+                                        }}
+                                    />
+                                    <span>German</span>
+                                    <DE className="filters-dialog-details-language-flag" />
+                                </div>
+                            </div>
+                        </div>
                     </AccordionDetails>
                 </Accordion>
-                <Accordion disableGutters defaultExpanded={openFilter === 6 ? true : false}>
+                <Accordion
+                    disableGutters
+                    defaultExpanded={openFilter === 5 ? true : false}
+                >
                     <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
                     >
-                    <span className='filters-dialog-summary'>Location</span>
+                        <span className="filters-dialog-summary">
+                            Payment methods
+                        </span>
                     </AccordionSummary>
                     <AccordionDetails>
-                    <span>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                        malesuada lacus ex, sit amet blandit leo lobortis eget.
-                    </span>
+                        <span>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing
+                            elit. Suspendisse malesuada lacus ex, sit amet
+                            blandit leo lobortis eget.
+                        </span>
+                    </AccordionDetails>
+                </Accordion>
+                <Accordion
+                    disableGutters
+                    defaultExpanded={openFilter === 6 ? true : false}
+                >
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                    >
+                        <span className="filters-dialog-summary">Location</span>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <span>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing
+                            elit. Suspendisse malesuada lacus ex, sit amet
+                            blandit leo lobortis eget.
+                        </span>
                     </AccordionDetails>
                 </Accordion>
             </div>
