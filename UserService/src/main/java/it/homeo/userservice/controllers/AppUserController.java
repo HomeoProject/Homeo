@@ -92,6 +92,13 @@ public class AppUserController {
         return ResponseEntity.ok(appUserDto);
     }
 
+    @DeleteMapping("/avatar/{id}")
+    public ResponseEntity<AppUserDto> deleteAppUserAvatar(@PathVariable String id) throws Auth0Exception {
+        logger.info("Inside: AppUserController -> deleteAppUserAvatar()...");
+        AppUserDto appUserDto = service.deleteAppUserAvatar(id);
+        return ResponseEntity.ok(appUserDto);
+    }
+
     /*
     ADMIN ENDPOINT
      */

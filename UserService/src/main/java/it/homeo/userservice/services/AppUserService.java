@@ -8,6 +8,7 @@ import com.auth0.exception.Auth0Exception;
 import com.auth0.json.mgmt.permissions.Permission;
 import com.auth0.json.mgmt.users.User;
 import it.homeo.userservice.config.Auth0RolesConfig;
+import it.homeo.userservice.config.CloudinaryProperties;
 import it.homeo.userservice.dtos.request.*;
 import it.homeo.userservice.dtos.response.AppUserDto;
 import it.homeo.userservice.dtos.response.CloudinaryDto;
@@ -32,19 +33,22 @@ public class AppUserService implements IAppUserService {
     private final AppUserMapper mapper;
     private final Auth0RolesConfig rolesConfig;
     private final ICloudinaryService cloudinaryService;
+    private final CloudinaryProperties cloudinaryProperties;
 
     public AppUserService(
             ManagementAPI mgmt,
             AppUserRepository repository,
             AppUserMapper mapper,
             Auth0RolesConfig rolesConfig,
-            ICloudinaryService cloudinaryService
+            ICloudinaryService cloudinaryService,
+            CloudinaryProperties cloudinaryProperties
     ) {
         this.mgmt = mgmt;
         this.repository = repository;
         this.mapper = mapper;
         this.rolesConfig = rolesConfig;
         this.cloudinaryService = cloudinaryService;
+        this.cloudinaryProperties = cloudinaryProperties;
     }
 
     public AppUserDto getAppUserById(String id) {
@@ -194,6 +198,29 @@ public class AppUserService implements IAppUserService {
         // Local DB update
         appUser.setAvatarId(cloudinaryDto.publicId());
         appUser.setAvatar(cloudinaryDto.imageUrl());
+        appUser = repository.save(appUser);
+
+        return mapper.appUserToAppUserDto(appUser);
+    }
+
+    @Transactional
+    public AppUserDto deleteAppUserAvatar(String id) throws Auth0Exception {
+        compareAppUserIdWithTokenId(id);
+        AppUser appUser = getAppUser(id);
+
+        // Cloudinary delete
+        if (appUser.getAvatarId() != null) {
+            cloudinaryService.deleteFile(appUser.getAvatarId());
+            appUser.setAvatarId(null);
+        }
+
+        // Auth0 update
+        User updatedUser = new User();
+        updatedUser.setPicture(cloudinaryProperties.getDefaultAvatar());
+        mgmt.users().update(id, updatedUser).execute();
+
+        // Local DB update
+        appUser.setAvatar(cloudinaryProperties.getDefaultAvatar());
         appUser = repository.save(appUser);
 
         return mapper.appUserToAppUserDto(appUser);

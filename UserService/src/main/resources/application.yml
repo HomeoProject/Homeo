@@ -31,6 +31,7 @@ cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME}
   api-secret: ${CLOUDINARY_API_SECRET}
   folder-name: homeo/userservice
+  default-avatar: https://res.cloudinary.com/dyihgedrz/image/upload/v1709401307/homeo/ddvvvusgqhkga3iimm4q.jpg
 
 openapi:
   service:
