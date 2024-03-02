@@ -39,6 +39,8 @@ public class AppUser {
     // Auth0
     private String avatar;
 
+    private String avatarId;
+
     // Auth0
     private boolean isBlocked;
 

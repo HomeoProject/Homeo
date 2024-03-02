@@ -11,6 +11,7 @@ public interface IAppUserService {
     AppUserDto updateAppUserEmail(String id, UpdateAppUserEmailRequest dto) throws Auth0Exception;
     AppUserDto approveAppUser(String id, ApproveAppUserRequest dto);
     AppUserDto blockAppUser(String id, BlockAppUserRequest dto) throws Auth0Exception;
+    AppUserDto updateAppUserAvatar(String id, UpdateAppUserAvatarRequest dto) throws Auth0Exception;
     void deleteAppUser(String id) throws Auth0Exception;
     void updateAppUserIsConstructor(String id, UpdateAppUserIsConstructorRequest dto) throws Auth0Exception;
     void updateAppUserPassword(String id, UpdateAppUserPasswordRequest dto) throws Auth0Exception;

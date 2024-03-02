@@ -2,6 +2,7 @@ package it.homeo.userservice.config;
 
 import com.auth0.exception.Auth0Exception;
 import it.homeo.userservice.exceptions.AppUserNotFoundException;
+import it.homeo.userservice.exceptions.BadRequestException;
 import it.homeo.userservice.exceptions.ForbiddenException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleAppUserNotFoundException(AppUserNotFoundException ex, WebRequest request) {
         CustomError error = new CustomError(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, ex.getMessage(), getPath(request), LocalDateTime.now());
         return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler({BadRequestException.class})
+    protected ResponseEntity<Object> handleBadRequestException(BadRequestException ex, WebRequest request) {
+        CustomError error = new CustomError(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, ex.getMessage(), getPath(request), LocalDateTime.now());
+        return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler(Auth0Exception.class)

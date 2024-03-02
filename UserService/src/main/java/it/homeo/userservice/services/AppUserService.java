@@ -10,6 +10,7 @@ import com.auth0.json.mgmt.users.User;
 import it.homeo.userservice.config.Auth0RolesConfig;
 import it.homeo.userservice.dtos.request.*;
 import it.homeo.userservice.dtos.response.AppUserDto;
+import it.homeo.userservice.dtos.response.CloudinaryDto;
 import it.homeo.userservice.exceptions.AppUserNotFoundException;
 import it.homeo.userservice.exceptions.ForbiddenException;
 import it.homeo.userservice.mappers.AppUserMapper;
@@ -30,17 +31,20 @@ public class AppUserService implements IAppUserService {
     private final AppUserRepository repository;
     private final AppUserMapper mapper;
     private final Auth0RolesConfig rolesConfig;
+    private final ICloudinaryService cloudinaryService;
 
     public AppUserService(
             ManagementAPI mgmt,
             AppUserRepository repository,
             AppUserMapper mapper,
-            Auth0RolesConfig rolesConfig
+            Auth0RolesConfig rolesConfig,
+            ICloudinaryService cloudinaryService
     ) {
         this.mgmt = mgmt;
         this.repository = repository;
         this.mapper = mapper;
         this.rolesConfig = rolesConfig;
+        this.cloudinaryService = cloudinaryService;
     }
 
     public AppUserDto getAppUserById(String id) {
@@ -86,6 +90,11 @@ public class AppUserService implements IAppUserService {
     public void deleteAppUser(String id) throws Auth0Exception {
         compareAppUserIdWithTokenId(id);
         AppUser appUser = getAppUser(id);
+
+        // Delete avatar in Cloudinary
+        if (appUser.getAvatarId() != null) {
+            cloudinaryService.deleteFile(appUser.getAvatarId());
+        }
 
         // Auth0 DB update
         mgmt.users().delete(id).execute();
@@ -162,6 +171,30 @@ public class AppUserService implements IAppUserService {
         // Local DB update
         appUser.setBlocked(dto.isBlocked());
         repository.save(appUser);
+
+        return mapper.appUserToAppUserDto(appUser);
+    }
+
+    @Transactional
+    public AppUserDto updateAppUserAvatar(String id, UpdateAppUserAvatarRequest dto) throws Auth0Exception {
+        compareAppUserIdWithTokenId(id);
+        AppUser appUser = getAppUser(id);
+
+        if (appUser.getAvatarId() != null) {
+            cloudinaryService.deleteFile(appUser.getAvatarId());
+        }
+
+        CloudinaryDto cloudinaryDto = cloudinaryService.uploadFile(dto.file());
+
+        // Auth0 update
+        User updatedUser = new User();
+        updatedUser.setPicture(cloudinaryDto.imageUrl());
+        mgmt.users().update(id, updatedUser).execute();
+
+        // Local DB update
+        appUser.setAvatarId(cloudinaryDto.publicId());
+        appUser.setAvatar(cloudinaryDto.imageUrl());
+        appUser = repository.save(appUser);
 
         return mapper.appUserToAppUserDto(appUser);
     }

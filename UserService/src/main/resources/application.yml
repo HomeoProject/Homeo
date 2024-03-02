@@ -26,6 +26,12 @@ okta:
     roles:
       constructor-role-id: rol_UCL6ZThu4ydr1nYW
 
+cloudinary:
+  api-key: ${CLOUDINARY_API_KEY}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-secret: ${CLOUDINARY_API_SECRET}
+  folder-name: homeo/userservice
+
 openapi:
   service:
     title: UserService

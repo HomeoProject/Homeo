@@ -3,7 +3,9 @@ package it.homeo.userservice.controllers;
 import com.auth0.exception.Auth0Exception;
 import it.homeo.userservice.dtos.request.*;
 import it.homeo.userservice.dtos.response.AppUserDto;
+import it.homeo.userservice.exceptions.BadRequestException;
 import it.homeo.userservice.services.IAppUserService;
+import it.homeo.userservice.validators.FileValidator;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +77,19 @@ public class AppUserController {
         logger.info("Inside: AppUserController -> updateAppUserPassword()...");
         service.updateAppUserPassword(id, dto);
         return ResponseEntity.noContent().build();
+    }
+
+    /*
+    To send data from the frontend you need to send dto as FormData, example: https://github.com/piotrd22/portalY/blob/main/frontend/src/services/userService.js
+    */
+    @PatchMapping("/avatar/{id}")
+    public ResponseEntity<AppUserDto> updateAppUserAvatar(@PathVariable String id, UpdateAppUserAvatarRequest dto) throws Auth0Exception {
+        logger.info("Inside: AppUserController -> updateAppUserAvatar()...");
+        if (!FileValidator.isImage(dto.file())) {
+            throw new BadRequestException("File must be an image.");
+        }
+        AppUserDto appUserDto = service.updateAppUserAvatar(id, dto);
+        return ResponseEntity.ok(appUserDto);
     }
 
     /*
