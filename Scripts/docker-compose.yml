@@ -16,7 +16,7 @@ services:
       POSTGRES_URL: ${POSTGRES_URL_USERSERVICE}
       EUREKA_URL: ${EUREKA_URL}
     ports:
-      - 8081:8081
+      - "8081:8080"
     restart: unless-stopped
     depends_on:
       - homeo-apigateway
@@ -25,7 +25,7 @@ services:
     container_name: homeo-apigateway
     build: ../ApiGateway
     ports:
-      - 8080:8080
+      - "8080:8080"
     restart: unless-stopped
     depends_on:
       - homeo-eureka
@@ -37,14 +37,14 @@ services:
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD_APIGATEWAY}
     ports:
-      - 6380:6379
+      - "6380:6379"
     restart: unless-stopped
 
   homeo-eureka:
     container_name: homeo-eureka
     build: ../Eureka
     ports:
-      - 8761:8761
+      - "8761:8761"
     restart: unless-stopped
 
   homeo-postgres:
@@ -57,7 +57,7 @@ services:
     volumes:
       - homeo-postgres:/data/homeo-postgres
     ports:
-      - 5432:5432
+      - "5432:5432"
     restart: unless-stopped
 
   homeo-rabbit:
