@@ -1,15 +1,15 @@
 package it.homeo.userservice.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
-@Component
+@Getter
+@Setter
+@Configuration
+@ConfigurationProperties(prefix = Auth0RolesConfig.PREFIX)
 public class Auth0RolesConfig {
-
-    @Value("${okta.auth0.roles.constructorRoleId}")
+    public static final String PREFIX = "okta.auth0.roles";
     private String constructorRoleId;
-
-    public String getConstructorRoleId() {
-        return constructorRoleId;
-    }
 }

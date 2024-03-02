@@ -1,7 +1,8 @@
 package it.homeo.userservice.services;
 
 import com.auth0.exception.Auth0Exception;
-import it.homeo.userservice.dtos.*;
+import it.homeo.userservice.dtos.request.*;
+import it.homeo.userservice.dtos.response.AppUserDto;
 
 public interface IAppUserService {
     AppUserDto getAppUserById(String id);

@@ -1,4 +1,4 @@
-package it.homeo.userservice.config.security;
+package it.homeo.userservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

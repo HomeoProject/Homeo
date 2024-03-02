@@ -1,6 +1,6 @@
 package it.homeo.userservice.services;
 
-import it.homeo.userservice.dtos.AppUserDto;
+import it.homeo.userservice.dtos.response.AppUserDto;
 import it.homeo.userservice.exceptions.AppUserNotFoundException;
 import it.homeo.userservice.mappers.AppUserMapper;
 import it.homeo.userservice.models.AppUser;

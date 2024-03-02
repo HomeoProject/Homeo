@@ -1,8 +1,8 @@
 package it.homeo.userservice.mappers;
 
-import it.homeo.userservice.dtos.AppUserDto;
-import it.homeo.userservice.dtos.CheckAppUserAfterLoginRequest;
-import it.homeo.userservice.dtos.UpdateAppUserRequest;
+import it.homeo.userservice.dtos.response.AppUserDto;
+import it.homeo.userservice.dtos.request.CheckAppUserAfterLoginRequest;
+import it.homeo.userservice.dtos.request.UpdateAppUserRequest;
 import it.homeo.userservice.models.AppUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

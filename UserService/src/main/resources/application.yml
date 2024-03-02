@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8085
   error:
     include-message: always
 
@@ -17,7 +17,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-    show-sql: true
 
 okta:
   oauth2:
@@ -30,7 +29,7 @@ okta:
     audience: ${OKTA_MANAGEMENT_API_AUDIENCE}
   auth0:
     roles:
-      constructorRoleId: rol_UCL6ZThu4ydr1nYW
+      constructor-role-id: rol_UCL6ZThu4ydr1nYW
 
 openapi:
   service:
@@ -47,7 +46,3 @@ eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_URL}
-
-logging:
-  level:
-    org.springframework.security: DEBUG
