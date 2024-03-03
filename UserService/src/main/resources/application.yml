@@ -24,20 +24,20 @@ okta:
     audience: ${OKTA_MANAGEMENT_API_AUDIENCE}
   auth0:
     roles:
-      constructor-role-id: rol_UCL6ZThu4ydr1nYW
+      constructor-role-id: ${OKTA_AUTH0_CONSTRUCTOR_ROLE_ID}
 
 cloudinary:
   api-key: ${CLOUDINARY_API_KEY}
   cloud-name: ${CLOUDINARY_CLOUD_NAME}
   api-secret: ${CLOUDINARY_API_SECRET}
-  folder-name: homeo/userservice
-  default-avatar: https://res.cloudinary.com/dyihgedrz/image/upload/v1709401307/homeo/ddvvvusgqhkga3iimm4q.jpg
+  folder-name: ${CLOUDINARY_FOLDER_NAME}
+  default-avatar: ${CLOUDINARY_DEFAULT_AVATAR_URL}
 
 openapi:
   service:
     title: UserService
     version: 1.0.0
-    url: http://localhost:8080
+    url: ${OPENAPI_URL}
 springdoc:
   api-docs:
     path: /userservice/api-docs
