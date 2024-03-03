@@ -1,7 +1,7 @@
 package it.homeo.userservice.controllers;
 
 
-import it.homeo.userservice.dtos.AppUserDto;
+import it.homeo.userservice.dtos.response.AppUserDto;
 import it.homeo.userservice.models.AppUser;
 import it.homeo.userservice.repositories.AppUserRepository;
 import org.junit.jupiter.api.AfterEach;

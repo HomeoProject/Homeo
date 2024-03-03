@@ -1,4 +1,4 @@
-package it.homeo.userservice.config.security;
+package it.homeo.userservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +28,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "api/user/constructor/{id}").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "api/user/email/{id}").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "api/user/password/{id}").authenticated()
+                        .requestMatchers("/api/user/avatar/{id}").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "api/user/approve/{id}").hasAuthority("admin:permission")
                         .requestMatchers(HttpMethod.PATCH, "api/user/block/{id}").hasAuthority("admin:permission")
                         .anyRequest().permitAll()

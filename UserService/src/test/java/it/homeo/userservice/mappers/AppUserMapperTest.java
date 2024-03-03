@@ -1,13 +1,14 @@
 package it.homeo.userservice.mappers;
 
-import it.homeo.userservice.dtos.AppUserDto;
-import it.homeo.userservice.dtos.CheckAppUserAfterLoginRequest;
-import it.homeo.userservice.dtos.UpdateAppUserRequest;
+import it.homeo.userservice.dtos.response.AppUserDto;
+import it.homeo.userservice.dtos.request.CheckAppUserAfterLoginRequest;
+import it.homeo.userservice.dtos.request.UpdateAppUserRequest;
 import it.homeo.userservice.models.AppUser;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Date;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,6 +32,7 @@ class AppUserMapperTest {
         assertThat(appUserDto.firstName()).isEqualTo(appUser.getFirstName());
         assertThat(appUserDto.lastName()).isEqualTo(appUser.getLastName());
         assertThat(appUserDto.email()).isEqualTo(appUser.getEmail());
+        assertThat(appUserDto.authorities()).isEqualTo(appUser.getAuthorities());
         assertThat(appUserDto.phoneNumber()).isEqualTo(appUser.getPhoneNumber());
         assertThat(appUserDto.avatar()).isEqualTo(appUser.getAvatar());
         assertThat(appUserDto.isBlocked()).isEqualTo(appUser.isBlocked());
@@ -99,11 +101,16 @@ class AppUserMapperTest {
         appUser.setEmail("john.doe@example.com");
         appUser.setPhoneNumber("123-456-789");
         appUser.setAvatar("avatar-url");
+        appUser.setAuthorities(generateAuthorities());
         appUser.setBlocked(false);
         appUser.setOnline(true);
         appUser.setApproved(true);
         appUser.setCreatedAt(new Date());
         appUser.setUpdatedAt(new Date());
         return appUser;
+    }
+
+    private Set<String> generateAuthorities() {
+        return Set.of("admin:permission");
     }
 }

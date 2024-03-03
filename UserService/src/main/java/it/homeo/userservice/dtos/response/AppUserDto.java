@@ -1,8 +1,9 @@
-package it.homeo.userservice.dtos;
+package it.homeo.userservice.dtos.response;
 
 import lombok.Builder;
 
 import java.util.Date;
+import java.util.Set;
 
 @Builder
 public record AppUserDto(
@@ -12,6 +13,7 @@ public record AppUserDto(
         String phoneNumber,
         String email,
         String avatar,
+        Set<String> authorities,
         boolean isBlocked,
         boolean isOnline,
         boolean isApproved,
