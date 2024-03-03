@@ -1,0 +1,55 @@
+@import './Variables.scss';
+
+.filtersDialog {
+    .filters-dialog-summary {
+        font-size: 25px;
+    }
+    .filters-dialog-details {
+        display: flex;
+        justify-content: center;
+        &.experience {
+            align-items: center;
+            gap: 50px;
+        }
+        .filters-dialog-details-label {
+            display: flex;
+            padding-top: 15px;
+            width: 550px;
+            justify-content: space-between;
+        }
+        .filters-dialog-details-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .filters-dialog-details-box-rating {
+                display: flex;
+                align-items: center;
+                padding: 20px 0 0 0;
+                .filters-dialog-details-box-rating-statement {
+                    font-size: $font-size-normal;
+                    padding: 0 10px 0 0;
+                }
+            }
+        }
+        .filters-dialog-details-approved {
+            width: 300px;
+            .filters-dialog-details-approved-label {
+                font-size: $font-size-small;
+                .filters-dialog-details-approved-label-bold {
+                    font-weight: 700;
+                }
+            }
+        }
+        .filters-dialog-details-language {
+            display: flex;
+            align-items: center;
+            width: 300px;
+            .filters-dialog-details-language-flag {
+                border: 2px solid black;
+                width: 25px;
+                border-radius: 2px;
+                margin: 0 0 0 10px;
+            }
+        }
+    }
+}
