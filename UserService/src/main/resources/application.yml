@@ -48,3 +48,5 @@ eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_URL}
+    healthcheck:
+      enabled: true
