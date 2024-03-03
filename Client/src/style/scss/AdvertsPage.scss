@@ -7,6 +7,8 @@
         flex-direction: column;
         align-items: center;
         color: white;
+        margin: 3rem 12rem 0 12rem;
+        border-radius: 3rem;
         background: rgb(0, 255, 179);
         background: linear-gradient(
             90deg,
@@ -14,7 +16,7 @@
             rgba(28, 190, 142, 1) 50%,
             rgba(29, 143, 109, 1) 100%
         );
-        padding: 30px 0 30px 0;
+        padding: 2rem 0 2rem 0;
         > .adverts-page-search-slogan {
             font-size: clamp(1.5rem, 3.7vw, 4rem);
         }
@@ -22,8 +24,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
-            padding: 20px 0 0px 0;
+            margin-bottom: 1rem;
+            padding: 1rem 0 0 0;
             min-width: 60%;
             > .adverts-page-search-wrapper-input {
                 outline: none;
@@ -62,7 +64,7 @@
                 display: flex;
                 align-items: center;
                 font-size: $font-size-small;
-                padding: 0px 5px 0px 5px;
+                padding: 0px 0.5rem 0px 0.5rem;
                 cursor: pointer;
                 > .adverts-page-search-filters-container-label {
                     &.mobile {
@@ -79,7 +81,7 @@
         .adverts-page-cards-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
+            gap: 3rem;
         }
         @media screen and (max-width: 1200px) {
             .adverts-page-cards-grid {
@@ -92,12 +94,34 @@
             }
         }
         .adverts-page-cards-label {
-            padding: 20px 0 20px 0;
+            padding: 2rem 0 2rem 0;
             min-width: 60%;
             font-size: $font-size-normal;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .adverts-page-cards-label-right {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                .adverts-page-cards-label-filters {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    width: 17rem;
+                }   
+                .adverts-page-cards-label-page {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+            }
             .adverts-page-cards-label-value {
                 border-bottom: 3px solid $primary-color;
             }
+        }
+        .adverts-page-cards-pagination {
+            padding: 2rem 0 2rem 0;
         }
     }
 }
