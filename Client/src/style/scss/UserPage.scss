@@ -43,10 +43,16 @@
 
                 > .user-page-main-left-info-avatar {
                     padding-bottom: 2rem;
+                    display: flex;
 
                     @media (max-width: 800px) {
                         padding-right: 2rem;
                         padding-bottom: 0;
+                    }
+
+                    > .user-avatar-link {
+                        height: 100%;
+                        border-radius: 50%;
                     }
 
                     > .overlay-btn {
@@ -63,13 +69,6 @@
 
                             > .overlay-pic {
                                 opacity: 1;
-                            }
-                        }
-
-                        > .badge {
-                            > .avatar {
-                                width: 100px !important;
-                                height: 100px !important;
                             }
                         }
 

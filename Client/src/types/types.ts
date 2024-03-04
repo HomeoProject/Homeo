@@ -6,12 +6,12 @@ export interface RawUser {
 }
 
 export interface CustomUser {
-    id: string | undefined
+    id: string
     firstName: string | undefined
     lastName: string | undefined
     phoneNumber: string | undefined
-    email: string | undefined
-    avatar: string | undefined
+    email: string
+    avatar: string
     isBlocked: boolean
     isOnline: boolean
     isConstructor: boolean
