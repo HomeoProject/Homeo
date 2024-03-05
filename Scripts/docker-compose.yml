@@ -28,6 +28,23 @@ services:
     depends_on:
       - homeo-apigateway
 
+  homeo-constructorservice:
+    container_name: homeo-constructorservice
+    build: ../ConstructorService
+    environment:
+      OKTA_API_ISSUER: ${OKTA_API_ISSUER}
+      OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_URL: ${POSTGRES_URL_CONSTRUCTORSERVICE}
+      EUREKA_URL: ${EUREKA_URL}
+      OPENAPI_URL: ${OPENAPI_URL}
+    ports:
+      - "8082:8080"
+    restart: unless-stopped
+    depends_on:
+      - homeo-apigateway
+
   homeo-apigateway:
     container_name: homeo-apigateway
     build: ../ApiGateway
