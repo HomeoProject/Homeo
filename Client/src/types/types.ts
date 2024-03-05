@@ -61,3 +61,11 @@ export interface Constructor {
     createdAt: string
     updatedAt: string
 }
+
+export interface Developer {
+    name: string,
+    github: string,
+    linkedin: string,
+    image: string,
+    role: string
+}
