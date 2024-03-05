@@ -3,8 +3,6 @@ Group project
 
 Karol Wiśniewski -- Maciej Słupianek -- Piotr Damrych
 
-Miro Architecture Example
-**https://miro.com/app/board/uXjVNbUOMjw=/?share_link_id=337826251107**
+[App Architecture](https://miro.com/app/board/uXjVNXgGLhg=/?share_link_id=712521886168)
 
-Kanban
-**https://miro.com/app/board/uXjVNXgGLhg=/**
+[Our Kanban Board](https://miro.com/app/board/uXjVNXgGLhg=/?share_link_id=712521886168)
