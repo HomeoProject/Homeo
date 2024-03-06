@@ -2,6 +2,7 @@ package it.homeo.constructorservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
@@ -14,6 +15,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+    private final static String ADMIN_AUTHORITY = "admin:permission";
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         /*
@@ -22,6 +25,11 @@ public class WebSecurityConfig {
         */
         return http
                 .authorizeHttpRequests(authorize -> authorize
+                        // CategoryController
+                        .requestMatchers(HttpMethod.POST, "/api/constructors/categories/**").hasAuthority(ADMIN_AUTHORITY)
+                        .requestMatchers(HttpMethod.DELETE, "/api/constructors/categories/**").hasAuthority(ADMIN_AUTHORITY)
+                        .requestMatchers(HttpMethod.PUT, "/api/constructors/categories/**").hasAuthority(ADMIN_AUTHORITY)
+                        // All
                         .anyRequest().permitAll()
                 )
                 .cors(withDefaults())
