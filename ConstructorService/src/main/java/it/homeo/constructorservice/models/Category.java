@@ -26,7 +26,6 @@ public class Category {
     @Column(nullable = false)
     private String image;
 
-    @Column(nullable = false)
     private String imageId;
 
     private LocalDateTime createdAt;

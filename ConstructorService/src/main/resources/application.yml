@@ -18,6 +18,13 @@ okta:
     issuer: ${OKTA_API_ISSUER}
     audience: ${OKTA_API_AUDIENCE}
 
+cloudinary:
+  api-key: ${CLOUDINARY_API_KEY}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-secret: ${CLOUDINARY_API_SECRET}
+  folder-name: ${CLOUDINARY_FOLDER_NAME}
+  default-category-image: ${CLOUDINARY_DEFAULT_CATEGORY_URL}
+
 openapi:
   service:
     title: ConstructorService
@@ -35,3 +42,6 @@ eureka:
       defaultZone: ${EUREKA_URL}
     healthcheck:
       enabled: true
+
+init:
+  categories: Plumber, Painter, Electrician, Renovation, Cleaning, Transport, Garden
