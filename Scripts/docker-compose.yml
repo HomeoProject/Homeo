@@ -65,6 +65,7 @@ services:
     container_name: homeo-redis-apigateway
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD_APIGATEWAY}
+      ALLOWED_CORS_URLS=: ${ALLOWED_CORS_URLS}
     ports:
       - "6380:6379"
     restart: unless-stopped

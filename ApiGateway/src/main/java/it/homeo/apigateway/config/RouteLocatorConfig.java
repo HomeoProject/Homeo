@@ -9,9 +9,11 @@ import org.springframework.http.HttpMethod;
 
 @Configuration
 public class RouteLocatorConfig {
+
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder.routes()
+                // UserService
                 .route("UserServiceSwagger-Route", request -> request
                         .path("/userservice/api-docs")
                         .and().method(HttpMethod.GET)
@@ -19,9 +21,19 @@ public class RouteLocatorConfig {
                 .route("UserService-Route", request -> request
                         .path("/api/users/**")
                         .filters(f -> f.requestRateLimiter(r -> r.setRateLimiter(redisRateLimiter())))
-//                        If we want to change the keyResolver to non-primary, just:
-//                        .setKeyResolver(otherResolver)))
+                        // If we want to change the keyResolver to non-primary, just:
+                        // .setKeyResolver(otherResolver)))
                         .uri("lb://UserService"))
+
+                // ConstructorService
+                .route("ConstructorServiceSwagger-Route", request -> request
+                        .path("/constructorservice/api-docs")
+                        .and().method(HttpMethod.GET)
+                        .uri("lb://ConstructorService"))
+                .route("ConstructorService-Route", request -> request
+                        .path("/api/constructors/**")
+                        .filters(f -> f.requestRateLimiter(r -> r.setRateLimiter(redisRateLimiter())))
+                        .uri("lb://ConstructorService"))
                 .build();
     }
 
