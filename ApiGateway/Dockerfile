@@ -6,4 +6,8 @@ RUN gradle build --no-daemon
 FROM openjdk:17-jdk-alpine
 WORKDIR /app
 COPY --from=build /home/gradle/ApiGateway/build/libs/ApiGateway-0.0.1-SNAPSHOT.jar /app
+
+ENV REDIS_PASSWORD_APIGATEWAY=${REDIS_PASSWORD_APIGATEWAY:-REPLACE}
+ENV ALLOWED_CORS_URLS=${ALLOWED_CORS_URLS:-REPLACE}
+
 ENTRYPOINT ["java","-jar","ApiGateway-0.0.1-SNAPSHOT.jar"]

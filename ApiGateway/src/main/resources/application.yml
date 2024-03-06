@@ -1,8 +1,3 @@
-server:
-  port: 8080
-  error:
-    include-message: always
-
 spring:
   application:
     name: ApiGateway
@@ -21,7 +16,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: "http://localhost:5173, http://127.0.0.1:5173"
+            allowedOrigins: ${ALLOWED_CORS_URLS}
             allowedHeaders: "*"
             allowCredentials: true
             allowedMethods: "*"
@@ -30,10 +25,6 @@ eureka:
   client:
     service-url:
       defaultZone: http://homeo-eureka:8761/eureka
-
-logging:
-  level:
-    org.springframework.security: DEBUG
 
 springdoc:
   enable-native-support: true
@@ -48,3 +39,5 @@ springdoc:
         name: API Gateway Service
       - url: /userservice/api-docs
         name: User Service
+      - url: /constructorservice/api-docs
+        name: ConstructorService
