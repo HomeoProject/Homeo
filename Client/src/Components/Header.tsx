@@ -55,10 +55,10 @@ const Header = () => {
                                 {'About Us'}
                             </Link>
                             <Link
-                                className="header-nav-normal-right-link"
-                                to="/contact"
+                                className="header-nav-normal-right-link-special"
+                                to="/admin-panel"
                             >
-                                {'Contact'}
+                                {'Admin Panel'}
                             </Link>
                         </div>
                         <div className="header-nav-user-wrapper">

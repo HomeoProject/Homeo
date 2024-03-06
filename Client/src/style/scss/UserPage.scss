@@ -44,6 +44,7 @@
                 > .user-page-main-left-info-avatar {
                     padding-bottom: 2rem;
                     display: flex;
+                    max-width: 10rem;
 
                     @media (max-width: 800px) {
                         padding-right: 2rem;

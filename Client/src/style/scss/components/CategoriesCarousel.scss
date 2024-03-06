@@ -3,7 +3,7 @@
 .CategoriesCarousel {
     padding: 3rem 2rem;
     width: calc(100% - 4rem);
-    background-color: v.$primary-color;
+    background: v.$primary-color;
     border-radius: 10px;
     max-width: calc(1000px - 4rem);
     margin-top: 3rem;
@@ -34,9 +34,15 @@
                         transparent
                     );
                     border-radius: 10px;
+                    overflow: hidden;
 
                     &:hover {
                         cursor: pointer;
+
+                        > img {
+                            scale: 1.1;
+                            transition: scale 0.2s ease;
+                        }
                     }
 
                     > img {
@@ -44,6 +50,7 @@
                         height: 100%;
                         object-fit: cover;
                         border-radius: 10px;
+                        transition: scale 0.2s ease;
                     }
 
                     > .card-body {

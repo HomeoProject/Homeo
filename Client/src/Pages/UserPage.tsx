@@ -39,7 +39,7 @@ const UserPage = () => {
                             <div className="user-page-main-left-info-name">
                                 <b>{user?.name}</b>
                                 {customUser?.isConstructor && (
-                                    <p>Homeo Contractor</p>
+                                    <p>Homeo Constructor</p>
                                 )}
                             </div>
                         </div>
@@ -53,7 +53,7 @@ const UserPage = () => {
                                 }
                                 end
                             >
-                                Profile
+                                Personal profile
                             </NavLink>
                             <NavLink
                                 to={`/user/${customUser?.id}/constructor-info`}
@@ -65,8 +65,8 @@ const UserPage = () => {
                                 end
                             >
                                 {customUser?.isConstructor
-                                    ? 'Company'
-                                    : 'Become a Contractor'}
+                                    ? 'Constructor profile'
+                                    : 'Become a Constructor'}
                             </NavLink>
                         </div>
                     </div>

@@ -18,6 +18,8 @@
     "@mui/icons-material": "^5.15.5",
     "@mui/lab": "^5.0.0-alpha.161",
     "@mui/material": "^5.15.5",
+    "@react-google-maps/api": "^2.19.3",
+    "csv-parser": "^3.0.0",
     "react": "^18.2.0",
     "react-cropper": "^2.3.3",
     "react-dom": "^18.2.0",

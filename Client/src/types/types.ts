@@ -61,3 +61,8 @@ export interface Constructor {
     createdAt: string
     updatedAt: string
 }
+
+export interface Place {
+    label: string
+    value: string
+}

@@ -1,4 +1,4 @@
-import { Category, PaymentMethod } from '../types/types'
+import { Category, PaymentMethod, Place } from '../types/types'
 import {
     ListItemText,
     MenuItem,
@@ -12,24 +12,32 @@ import {
 import { ErrorMessage } from '@hookform/error-message'
 import { SelectChangeEvent } from '@mui/material/Select'
 import { useForm } from 'react-hook-form'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import '../style/scss/components/ConstructorDataForm.scss'
+import CustomGooglePlacesAutocomplete from './CustomGooglePlacesAutocomplete'
+import { LoadScript } from '@react-google-maps/api'
 
 interface ConstructorDataForm {
-    companyName: string
-    companyAddress: string
-    companyPhoneNumber: string
-    companyEmail: string
+    phoneNumber: string
+    email: string
     aboutMe: string
     experience: string
-    rate: number
+    minimalRate: number
     categories: Array<Category>
-    city: string
-    language: string
+    cities: Array<Place>
+    languages: string
     acceptedPaymentMethods: Array<PaymentMethod>
 }
 
 const ConstructorDataForm = () => {
+    const libraries = useMemo(() => ['places'] as 'places'[], [])
+
+    const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([])
+
+    const handleSelectPlace = (places: Place[]) => {
+        setSelectedPlaces(places)
+    }
+
     const {
         register,
         // reset,
@@ -63,78 +71,27 @@ const ConstructorDataForm = () => {
     const customHandleSubmit = (data: ConstructorDataForm) => {
         const finalData: ConstructorDataForm = {
             ...data,
-            rate: +data.rate, // convert string to number
+            minimalRate: +data.minimalRate, // convert string to number
             acceptedPaymentMethods: acceptedPaymentMethods,
+            cities: selectedPlaces,
         }
         console.log(finalData)
     }
 
     return (
         <div className="ConstructorDataForm">
-            <h1>Company Information</h1>
+            <h1>Constructor Information</h1>
             <div className="constructor-data-form-wrapper">
                 <form
                     className="constructor-data-form"
                     onSubmit={handleSubmit(customHandleSubmit)}
                 >
                     <TextField
-                        id="companyName"
-                        label="Company name"
-                        InputLabelProps={{ shrink: true }}
-                        type="text"
-                        {...register('companyName', {
-                            required: 'Company name is required.',
-                            minLength: {
-                                value: 2,
-                                message:
-                                    'Company name must be at least 2 characters long.',
-                            },
-                            maxLength: {
-                                value: 20,
-                                message:
-                                    'Company name cannot be longer than 20 characters.',
-                            },
-                        })}
-                    />
-                    <ErrorMessage
-                        errors={errors}
-                        name="companyName"
-                        render={({ message }) => (
-                            <p className="error-message">{message}</p>
-                        )}
-                    />
-                    <TextField
-                        id="companyAddress"
-                        label="Company address"
-                        InputLabelProps={{ shrink: true }}
-                        type="text"
-                        {...register('companyAddress', {
-                            required: 'Company address is required.',
-                            minLength: {
-                                value: 2,
-                                message:
-                                    'Company address must be at least 2 characters long.',
-                            },
-                            maxLength: {
-                                value: 20,
-                                message:
-                                    'Company address cannot be longer than 20 characters.',
-                            },
-                        })}
-                    />
-                    <ErrorMessage
-                        errors={errors}
-                        name="companyAddress"
-                        render={({ message }) => (
-                            <p className="error-message">{message}</p>
-                        )}
-                    />
-                    <TextField
                         id="companyPhoneNumber"
                         label="Company phone number"
                         InputLabelProps={{ shrink: true }}
                         type="text"
-                        {...register('companyPhoneNumber', {
+                        {...register('phoneNumber', {
                             required: 'Company phone number is required.',
                             minLength: {
                                 value: 2,
@@ -160,7 +117,7 @@ const ConstructorDataForm = () => {
                         label="Company email"
                         InputLabelProps={{ shrink: true }}
                         type="text"
-                        {...register('companyEmail', {
+                        {...register('email', {
                             required: 'Company email is required.',
                             minLength: {
                                 value: 2,
@@ -235,14 +192,14 @@ const ConstructorDataForm = () => {
                     />
                     <TextField
                         id="rate"
-                        label="Rate ($/hour)"
+                        label="Minimal rate ($/hour)"
                         InputLabelProps={{ shrink: true }}
                         type="number"
-                        {...register('rate', {
-                            required: 'Rate is required.',
+                        {...register('minimalRate', {
+                            required: 'Minimal rate is required.',
                             min: {
                                 value: 1.0,
-                                message: 'Rate must be at least $1.00.',
+                                message: 'Minimal rate must be at least $1.00.',
                             },
                         })}
                     />
@@ -253,38 +210,22 @@ const ConstructorDataForm = () => {
                             <p className="error-message">{message}</p>
                         )}
                     />
-                    <TextField
-                        id="city"
-                        label="City"
-                        InputLabelProps={{ shrink: true }}
-                        type="text"
-                        {...register('city', {
-                            required: 'City is required.',
-                            minLength: {
-                                value: 2,
-                                message:
-                                    'City must be at least 2 characters long.',
-                            },
-                            maxLength: {
-                                value: 30,
-                                message:
-                                    'City cannot be longer than 30 characters.',
-                            },
-                        })}
-                    />
-                    <ErrorMessage
-                        errors={errors}
-                        name="city"
-                        render={({ message }) => (
-                            <p className="error-message">{message}</p>
-                        )}
-                    />
+                    <LoadScript
+                        googleMapsApiKey={
+                            import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string
+                        }
+                        libraries={libraries}
+                    >
+                        <CustomGooglePlacesAutocomplete
+                            onSelectPlace={handleSelectPlace}
+                        />
+                    </LoadScript>
                     <TextField
                         id="language"
-                        label="Language"
+                        label="Languages I speak"
                         InputLabelProps={{ shrink: true }}
                         type="text"
-                        {...register('language', {
+                        {...register('languages', {
                             required: 'Language is required.',
                             minLength: {
                                 value: 2,
