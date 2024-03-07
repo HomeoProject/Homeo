@@ -1,0 +1,111 @@
+version: "3.8"
+
+services:
+  homeo-userservice:
+    container_name: homeo-userservice
+    build: ../UserService
+    environment:
+      OKTA_API_ISSUER: ${OKTA_API_ISSUER}
+      OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
+      OKTA_API_DOMAIN: ${OKTA_API_DOMAIN}
+      OKTA_MTM_CLIENT_ID: ${OKTA_MTM_CLIENT_ID}
+      OKTA_MTM_CLIENT_SECRET: ${OKTA_MTM_CLIENT_SECRET}
+      OKTA_MANAGEMENT_API_AUDIENCE: ${OKTA_MANAGEMENT_API_AUDIENCE}
+      OKTA_AUTH0_CONSTRUCTOR_ROLE_ID: ${OKTA_AUTH0_CONSTRUCTOR_ROLE_ID}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_URL: ${POSTGRES_URL_USERSERVICE}
+      EUREKA_URL: ${EUREKA_URL}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      CLOUDINARY_FOLDER_NAME: ${CLOUDINARY_FOLDER_NAME_USERSERVICE}
+      CLOUDINARY_DEFAULT_AVATAR_URL: ${CLOUDINARY_DEFAULT_AVATAR_URL}
+      OPENAPI_URL: ${OPENAPI_URL}
+    ports:
+      - "8081:8080"
+    restart: unless-stopped
+    depends_on:
+      - homeo-apigateway
+
+  homeo-constructorservice:
+    container_name: homeo-constructorservice
+    build: ../ConstructorService
+    environment:
+      OKTA_API_ISSUER: ${OKTA_API_ISSUER}
+      OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_URL: ${POSTGRES_URL_CONSTRUCTORSERVICE}
+      EUREKA_URL: ${EUREKA_URL}
+      OPENAPI_URL: ${OPENAPI_URL}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      CLOUDINARY_FOLDER_NAME: ${CLOUDINARY_FOLDER_NAME_USERSERVICE}
+      CLOUDINARY_DEFAULT_CATEGORY_URL: ${CLOUDINARY_DEFAULT_CATEGORY_URL}
+    ports:
+      - "8082:8080"
+    restart: unless-stopped
+    depends_on:
+      - homeo-apigateway
+
+  homeo-apigateway:
+    container_name: homeo-apigateway
+    build: ../ApiGateway
+    environment:
+      EUREKA_URL: ${EUREKA_URL}
+      REDIS_PASSWORD_APIGATEWAY: ${REDIS_PASSWORD_APIGATEWAY}
+      ALLOWED_CORS_URLS: ${ALLOWED_CORS_URLS}
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    depends_on:
+      - homeo-eureka
+      - homeo-redis-apigateway
+      - homeo-rabbit
+
+  homeo-eureka:
+    container_name: homeo-eureka
+    build: ../Eureka
+    ports:
+      - "8761:8761"
+    restart: unless-stopped
+
+  homeo-postgres:
+    container_name: homeo-postgres
+    build: Postgres/
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: ${PGDATA}
+    volumes:
+      - homeo-postgres:/data/homeo-postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  homeo-redis-apigateway:
+    image: redis:alpine
+    container_name: homeo-redis-apigateway
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD_APIGATEWAY}
+    ports:
+      - "6380:6379"
+    restart: unless-stopped
+
+  homeo-rabbit:
+    container_name: homeo-rabbit
+    build: RabbitMQ/
+    environment:
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+    volumes:
+      - homeo-rabbit:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+volumes:
+  homeo-postgres:
+  homeo-rabbit:
