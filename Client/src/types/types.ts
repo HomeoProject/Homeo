@@ -28,9 +28,9 @@ export interface Category {
 }
 
 export enum PaymentMethod {
-    CASH = 'cash',
-    CARD = 'card',
-    TRANSFER = 'transfer',
+    CASH = 'Cash',
+    CARD = 'Card',
+    TRANSFER = 'Transfer',
 }
 
 export interface Review {

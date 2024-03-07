@@ -29,10 +29,6 @@ const PersonalDataForm = () => {
         )
     }
 
-    const validateContainsSpaces = (value: string, label: string) => {
-        return !value.includes(' ') || `${label} cannot contain spaces.`
-    }
-
     useEffect(() => {
         if (customUser) {
             reset({
@@ -119,16 +115,14 @@ const PersonalDataForm = () => {
                         {...register('email', {
                             required: 'Email is required.',
                             pattern: {
-                                value: /\S+@\S+\.\S+/,
-                                message: 'Email is not valid.',
+                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                message: 'Invalid email address.',
                             },
                             maxLength: {
                                 value: 50,
                                 message:
                                     'Email must be at most 50 characters long.',
                             },
-                            validate: (value) =>
-                                validateContainsSpaces(value, 'Email'),
                         })}
                         className="custom-input"
                     />
@@ -147,8 +141,9 @@ const PersonalDataForm = () => {
                         {...register('phoneNumber', {
                             required: 'Phone number is required.',
                             pattern: {
-                                value: /^[0-9\b]+$/,
-                                message: 'Phone number is not valid.',
+                                value: /^\d{9}$/,
+                                message:
+                                    'Phone number must be exactly 9 digits.',
                             },
                             minLength: {
                                 value: 9,
@@ -160,8 +155,6 @@ const PersonalDataForm = () => {
                                 message:
                                     'Phone number must be exactly 9 characters long.',
                             },
-                            validate: (value) =>
-                                validateContainsSpaces(value, 'Phone number'),
                         })}
                         className="custom-input"
                     />

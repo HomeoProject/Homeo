@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
-import { InputLabel, TextField, Autocomplete } from '@mui/material'
+import { TextField, Autocomplete } from '@mui/material'
 
 interface Place {
     label: string
     value: string
 }
 
-interface CustomGooglePlacesAutocompleteProps {
+type CustomGooglePlacesAutocompleteProps = {
     onSelectPlace: (places: Place[]) => void
 }
 
@@ -18,7 +18,7 @@ const CustomGooglePlacesAutocomplete = ({
     const [selectedCities, setSelectedCities] = useState<Place[]>([])
     const maximumCitiesLimit = 6
 
-    // Combine fetched options with selected options to ensure selected options are always valid. This also takes care of the duplicates :)
+    // Combine fetched options with selected options to ensure selected options are always valid. This also takes care of the duplicates.
     const options = [
         ...new Map(
             [...selectedCities, ...fetchedOptions].map((option) => [
@@ -60,22 +60,6 @@ const CustomGooglePlacesAutocomplete = ({
 
     return (
         <div className="google-places-autocomplete">
-            <InputLabel
-                shrink={true}
-                id="google-places-autocomplete-label"
-                sx={{
-                    backgroundColor: 'white',
-                    padding: '0 5px',
-                    marginBottom: '-17px',
-                    zIndex: 1,
-                    width: 'min-content',
-                    marginLeft: '10px',
-                    fontFamily: 'Gabarito',
-                    fontSize: '1rem',
-                }}
-            >
-                Cities I can work in
-            </InputLabel>
             <Autocomplete
                 multiple
                 id="google-places-autocomplete"
@@ -97,7 +81,14 @@ const CustomGooglePlacesAutocomplete = ({
                 isOptionEqualToValue={(option, value) =>
                     option.value === value.value
                 }
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        placeholder="Search for cities..."
+                        label="Cities I can work in"
+                        InputLabelProps={{ shrink: true }}
+                    />
+                )}
             />
         </div>
     )

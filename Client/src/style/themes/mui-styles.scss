@@ -4,6 +4,11 @@
     height: 1rem !important;
 }
 
+.MuiInputBase-input,
+.MuiChip-label {
+    font-family: v.$font-family !important;
+}
+
 .MuiInputLabel-formControl {
-    font-family: 'Gabarito' !important;
+    font-family: v.$font-family !important;
 }

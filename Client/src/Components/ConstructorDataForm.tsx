@@ -16,6 +16,7 @@ import { useMemo, useState } from 'react'
 import '../style/scss/components/ConstructorDataForm.scss'
 import CustomGooglePlacesAutocomplete from './CustomGooglePlacesAutocomplete'
 import { LoadScript } from '@react-google-maps/api'
+import LanguagesAutocomplete from './LanguagesAutocomplete'
 
 interface ConstructorDataForm {
     phoneNumber: string
@@ -25,7 +26,7 @@ interface ConstructorDataForm {
     minimalRate: number
     categories: Array<Category>
     cities: Array<Place>
-    languages: string
+    languages: Array<string>
     acceptedPaymentMethods: Array<PaymentMethod>
 }
 
@@ -34,13 +35,34 @@ const ConstructorDataForm = () => {
 
     const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([])
 
+    const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
+
+    const [acceptedPaymentMethods, setAcceptedPaymentMethods] = useState<
+        PaymentMethod[]
+    >([])
+
+    const [placesErrorMeessage, setPlacesErrorMessage] = useState<string>('')
+
+    const [languagesErrorMessage, setLanguagesErrorMessage] =
+        useState<string>('')
+
+    const [
+        acceptedPaymentMethodsErrorMessage,
+        setAcceptedPaymentMethodsErrorMessage,
+    ] = useState<string>('')
+
+    const [isFormLoading, setIsFormLoading] = useState<boolean>(false)
+
     const handleSelectPlace = (places: Place[]) => {
         setSelectedPlaces(places)
     }
 
+    const handleSelectLanguage = (languages: string[]) => {
+        setSelectedLanguages(languages)
+    }
+
     const {
         register,
-        // reset,
         formState: { errors },
         handleSubmit,
     } = useForm<ConstructorDataForm>()
@@ -51,31 +73,53 @@ const ConstructorDataForm = () => {
         PaymentMethod.TRANSFER,
     ]
 
-    const [acceptedPaymentMethods, setAcceptedPaymentMethods] = useState<
-        PaymentMethod[]
-    >([])
-
     const handlePaymentMethodChange = (
         event: SelectChangeEvent<PaymentMethod[]>
     ) => {
         const {
             target: { value },
         } = event
-        setAcceptedPaymentMethods(
-            (typeof value === 'string'
-                ? value.split(',')
-                : value) as PaymentMethod[]
-        )
+        setAcceptedPaymentMethods(value as PaymentMethod[])
     }
 
     const customHandleSubmit = (data: ConstructorDataForm) => {
+        setIsFormLoading(true)
+        setPlacesErrorMessage('')
+        setLanguagesErrorMessage('')
+        setAcceptedPaymentMethodsErrorMessage('')
+
+        if (selectedPlaces.length === 0) {
+            setPlacesErrorMessage('At least one city is required.')
+            setIsFormLoading(false)
+            return
+        }
+
+        if (selectedLanguages.length === 0) {
+            setLanguagesErrorMessage('At least one language is required.')
+            setIsFormLoading(false)
+            return
+        }
+
+        if (acceptedPaymentMethods.length === 0) {
+            setAcceptedPaymentMethodsErrorMessage(
+                'At least one payment method is required.'
+            )
+            setIsFormLoading(false)
+            return
+        }
+
         const finalData: ConstructorDataForm = {
             ...data,
             minimalRate: +data.minimalRate, // convert string to number
             acceptedPaymentMethods: acceptedPaymentMethods,
+            languages: selectedLanguages,
             cities: selectedPlaces,
         }
         console.log(finalData)
+
+        setTimeout(() => {
+            setIsFormLoading(false)
+        }, 2000)
     }
 
     return (
@@ -87,53 +131,62 @@ const ConstructorDataForm = () => {
                     onSubmit={handleSubmit(customHandleSubmit)}
                 >
                     <TextField
-                        id="companyPhoneNumber"
-                        label="Company phone number"
+                        id="phoneNumber"
+                        label="Phone number"
                         InputLabelProps={{ shrink: true }}
                         type="text"
                         {...register('phoneNumber', {
-                            required: 'Company phone number is required.',
+                            required: 'Phone number is required.',
                             minLength: {
                                 value: 2,
                                 message:
-                                    'Company phone number must be at least 2 characters long.',
+                                    'Phone number must be at least 2 characters long.',
                             },
                             maxLength: {
                                 value: 20,
                                 message:
-                                    'Company phone number cannot be longer than 20 characters.',
+                                    'Phone number cannot be longer than 20 characters.',
+                            },
+                            pattern: {
+                                value: /^\d{9}$/,
+                                message:
+                                    'Phone number must be exactly 9 digits.',
                             },
                         })}
                     />
                     <ErrorMessage
                         errors={errors}
-                        name="companyPhoneNumber"
+                        name="phoneNumber"
                         render={({ message }) => (
                             <p className="error-message">{message}</p>
                         )}
                     />
                     <TextField
-                        id="companyEmail"
-                        label="Company email"
+                        id="email"
+                        label="Email"
                         InputLabelProps={{ shrink: true }}
                         type="text"
                         {...register('email', {
-                            required: 'Company email is required.',
+                            required: 'Email is required.',
                             minLength: {
                                 value: 2,
                                 message:
-                                    'Company email must be at least 2 characters long.',
+                                    'Email must be at least 2 characters long.',
                             },
                             maxLength: {
                                 value: 20,
                                 message:
-                                    'Company email cannot be longer than 20 characters.',
+                                    'Email cannot be longer than 20 characters.',
+                            },
+                            pattern: {
+                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                message: 'Invalid email address.',
                             },
                         })}
                     />
                     <ErrorMessage
                         errors={errors}
-                        name="companyEmail"
+                        name="email"
                         render={({ message }) => (
                             <p className="error-message">{message}</p>
                         )}
@@ -146,14 +199,14 @@ const ConstructorDataForm = () => {
                         {...register('aboutMe', {
                             required: 'About me is required.',
                             minLength: {
-                                value: 2,
+                                value: 10,
                                 message:
-                                    'About me must be at least 2 characters long.',
+                                    'About me must be at least 10 characters long.',
                             },
                             maxLength: {
-                                value: 20,
+                                value: 300,
                                 message:
-                                    'About me cannot be longer than 20 characters.',
+                                    'About me cannot be longer than 300 characters.',
                             },
                         })}
                     />
@@ -172,14 +225,14 @@ const ConstructorDataForm = () => {
                         {...register('experience', {
                             required: 'Experience is required.',
                             minLength: {
-                                value: 2,
+                                value: 10,
                                 message:
-                                    'Experience must be at least 2 characters long.',
+                                    'Experience must be at least 10 characters long.',
                             },
                             maxLength: {
-                                value: 20,
+                                value: 300,
                                 message:
-                                    'Experience cannot be longer than 20 characters.',
+                                    'Experience cannot be longer than 300 characters.',
                             },
                         })}
                     />
@@ -220,32 +273,11 @@ const ConstructorDataForm = () => {
                             onSelectPlace={handleSelectPlace}
                         />
                     </LoadScript>
-                    <TextField
-                        id="language"
-                        label="Languages I speak"
-                        InputLabelProps={{ shrink: true }}
-                        type="text"
-                        {...register('languages', {
-                            required: 'Language is required.',
-                            minLength: {
-                                value: 2,
-                                message:
-                                    'Language must be at least 2 characters long.',
-                            },
-                            maxLength: {
-                                value: 20,
-                                message:
-                                    'Language cannot be longer than 20 characters.',
-                            },
-                        })}
+                    <p className="error-message">{placesErrorMeessage}</p>
+                    <LanguagesAutocomplete
+                        onSelectLanguage={handleSelectLanguage}
                     />
-                    <ErrorMessage
-                        errors={errors}
-                        name="language"
-                        render={({ message }) => (
-                            <p className="error-message">{message}</p>
-                        )}
-                    />
+                    <p className="error-message">{languagesErrorMessage}</p>
                     <FormControl>
                         <InputLabel
                             shrink={true}
@@ -271,27 +303,19 @@ const ConstructorDataForm = () => {
                                             ) > -1
                                         }
                                     />
-                                    <ListItemText
-                                        primary={
-                                            method.charAt(0).toUpperCase() +
-                                            method.slice(1)
-                                        }
-                                    />
+                                    <ListItemText primary={method} />
                                 </MenuItem>
                             ))}
                         </Select>
                     </FormControl>
-                    <ErrorMessage
-                        errors={errors}
-                        name="paymentMethod"
-                        render={({ message }) => (
-                            <p className="error-message">{message}</p>
-                        )}
-                    />
+                    <p className="error-message">
+                        {acceptedPaymentMethodsErrorMessage}
+                    </p>
                     <Button
                         variant="contained"
                         type="submit"
                         className="submit-button"
+                        disabled={isFormLoading}
                     >
                         Save
                     </Button>
