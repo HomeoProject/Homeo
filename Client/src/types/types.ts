@@ -63,9 +63,9 @@ export interface Constructor {
 }
 
 export interface Developer {
-    name: string,
-    github: string,
-    linkedin: string,
-    image: string,
+    name: string
+    github: string
+    linkedin: string
+    image: string
     role: string
 }
