@@ -37,6 +37,16 @@ const AboutPage = () => {
     ]
 
     const [developer, setDeveloper] = useState<Developer>(developers[0])
+    const [photoStyle, setPhotoStyle] = useState<{rotate: string, transition: string}>({rotate: '0deg', transition: '0.5s ease-in-out'})
+
+    const handleDeveloperChange = (index: number) => {
+        setPhotoStyle({rotate: '0deg', transition: '0.5s ease-in-out'})
+        setPhotoStyle({rotate: '360deg',transition: '0.5s ease-in-out'})
+        setDeveloper(developers[index])
+        setTimeout(() => {
+            setPhotoStyle({rotate: '0deg',transition: 'none'})
+        },500)
+    }
 
     return (
         <div className="About">
@@ -54,20 +64,21 @@ const AboutPage = () => {
                     </span>
                 </div>
                 <div className="about-description-value">
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
-                    Libero, consequuntur quibusdam architecto tempore quasi quia unde in nemo 
-                    vitae reiciendis minus fuga alias aspernatur ex neque at nostrum numquam excepturi!
+                    Homeo is a project made with passion by a group of three students from the University of Gdańsk. 
+                    Our main aim? Crafting a web application that simplifies the process of finding optimal assistance. 
+                    The application is designed to be user-friendly and intuitive. 
+                    We hope that you will find it useful and that it will help you find what you're looking for.
                 </div>
             </div>
             <div className='about-developers-choice'>
-                <img src={piotrImg} className='about-developers-choice-developer' onClick={() => setDeveloper(developers[0])}/>
+                <img src={piotrImg} className='about-developers-choice-developer' onClick={() => handleDeveloperChange(0)}/>
                 <div className='about-developers-choice-divider'/>
-                <img src={karolImg} className='about-developers-choice-developer' onClick={() => setDeveloper(developers[1])}/>
+                <img src={karolImg} className='about-developers-choice-developer' onClick={() => handleDeveloperChange(1)}/>
                 <div className='about-developers-choice-divider'/>
-                <img src={maciejImg} className='about-developers-choice-developer' onClick={() => setDeveloper(developers[2])}/>
+                <img src={maciejImg} className='about-developers-choice-developer' onClick={() => handleDeveloperChange(2)}/>
             </div>
             <div className='about-developers-info'>
-                <img src={developer.image} className='about-developers-info-photo'/>
+                <img src={developer.image} className='about-developers-info-photo' style={photoStyle}/>
                 <div className='about-developers-info-values'>
                     <div className='about-developers-info-values-row'>
                         <PersonIcon fontSize='large' color='primary'/>
