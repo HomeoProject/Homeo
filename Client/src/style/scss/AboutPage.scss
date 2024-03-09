@@ -1,0 +1,83 @@
+@use './Variables' as v;
+
+.About {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0 3rem 0;
+    .about-description {
+        font-family: v.$font-family;
+        font-size: 1.5rem;
+        text-align: center;
+        width: 50%;
+        padding: 3rem 0 0 0;
+        .about-description-header {
+            font-size: 3rem;
+            padding: 0 0 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .about-description-header-value {
+                .about-description-header-value-title {
+                    color: v.$primary-color;
+                }
+            }
+        }
+    }
+    .about-developers-choice {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 3rem 0 5rem 0;
+        .about-developers-choice-developer {
+            height: 5rem;
+            width: 5rem;
+            background-color: v.$secondary-color;
+            border: 5px solid white;
+            border-radius: 90px;
+            transition: 0.2s ease-in-out;
+            cursor: pointer;
+            &:hover {
+                border: 5px solid v.$primary-color;
+            }
+        }
+        .about-developers-choice-divider {
+            height: 0.2rem;
+            width: 4rem;
+            background-color: rgb(177, 177, 177);
+        }
+    }
+    .about-developers-info {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        .about-developers-info-photo {
+            height: 12rem;
+            width: 12rem;
+            border-radius: 50px;
+            transition: 0.5s ease-in-out;
+            rotate: 360deg;
+            border: 5px solid v.$primary-color;
+        }
+        .about-developers-info-values {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            .about-developers-info-values-row {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                .about-developers-info-values-row-link {
+                    text-decoration: none;
+                    color: black;
+                    transition: 0.2s ease-in-out;
+                    &:hover {
+                        color: v.$primary-color;
+                    }
+                }
+            }
+        }
+    }
+}
