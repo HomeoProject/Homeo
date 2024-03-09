@@ -4,19 +4,27 @@ import { Outlet, useParams, NavLink } from 'react-router-dom'
 import ErrorPage from './ErrorPage'
 import LoadingSpinner from '../Components/LoadingSpinner'
 import { useUserContext } from '../Context/UserContext'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import UserAvatar from '../Components/UserAvatar'
 import ChangeAvatarModal from '../Components/ChangeAvatarModal'
+import 'react-toastify/dist/ReactToastify.css'
+import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 
 const UserPage = () => {
-    const { user, isLoading } = useAuth0()
+    const { user, isLoading, getAccessTokenSilently } = useAuth0()
+    const [isConstructor, setIsConstructor] = useState<boolean>(false)
 
-    const { customUser, customUserAuthorities } = useUserContext()
+    const { customUser } = useUserContext()
 
-    const isConstructor =
-        customUserAuthorities?.includes(
-            import.meta.env.VITE_REACT_CONSTRUCTOR_ROLE
-        ) || false
+    useEffect(() => {
+        getAccessTokenSilently().then((token) => {
+            checkIfUserHasPermission(token, 'constructor').then(
+                (isConstructor) => {
+                    setIsConstructor(isConstructor)
+                }
+            )
+        })
+    }, [])
 
     const { id } = useParams<{ id: string }>()
 

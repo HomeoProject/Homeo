@@ -4,6 +4,9 @@ import { Button, TextField } from '@mui/material'
 import '../style/scss/components/PersonalDataForm.scss'
 import { useUserContext } from '../Context/UserContext'
 import { useEffect } from 'react'
+import { toast } from 'react-toastify'
+import axios from 'axios'
+import { useAuth0 } from '@auth0/auth0-react'
 
 interface PersonalDataForm {
     firstName: string
@@ -13,6 +16,8 @@ interface PersonalDataForm {
 }
 
 const PersonalDataForm = () => {
+    const { isAuthenticated, getAccessTokenSilently } = useAuth0()
+
     const { customUser } = useUserContext()
 
     const {
@@ -27,6 +32,38 @@ const PersonalDataForm = () => {
             !(value.trim().length != value.length) ||
             `${label} cannot start or end with spaces.`
         )
+    }
+
+    const handleSubmitForm = async (data: PersonalDataForm) => {
+        if (isAuthenticated) {
+            const token = await getAccessTokenSilently()
+
+            await axios
+                .put(
+                    `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/users/${customUser?.id}`,
+                    data,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                )
+                .then((response) => {
+                    console.log(
+                        'Personal information updated successfully: ',
+                        response.data
+                    )
+                    toast.success('Personal information updated successfully!')
+                })
+                .catch((error) => {
+                    toast.error('Failed to update personal information.')
+                    console.error(error)
+                })
+        } else {
+            toast.error(
+                'There was a problem with your authentication. Please try again in a moment.'
+            )
+        }
     }
 
     useEffect(() => {
@@ -46,7 +83,7 @@ const PersonalDataForm = () => {
             <div className="personal-data-form-wrapper">
                 <form
                     className="personal-data-form"
-                    onSubmit={handleSubmit((data) => console.log(data))}
+                    onSubmit={handleSubmit(handleSubmitForm)}
                 >
                     <TextField
                         id="firstName"

@@ -1,5 +1,6 @@
 import './Style/scss/App.scss'
 import './style/themes/mui-styles.scss'
+import './style/themes/toastify-styles.scss'
 import Header from './Components/Header'
 import Footer from './Components/Footer'
 import { Outlet } from 'react-router'
@@ -8,18 +9,11 @@ import { useAuth0 } from '@auth0/auth0-react'
 import axios from 'axios'
 import { CustomUser, RawUser } from './types/types'
 import UserContext from './Context/UserContext'
-import { JwtPayload, jwtDecode } from 'jwt-decode'
-
-interface CustomJwtPayload extends JwtPayload {
-    permissions: string[] // We're assuming permissions is an array of strings that is included in the JWT (it is)
-}
+import { ToastContainer } from 'react-toastify'
 
 function App() {
     const { user, isAuthenticated, getAccessTokenSilently } = useAuth0()
     const [customUser, setCustomUser] = useState<CustomUser | null>(null)
-    const [customUserAuthorities, setCustomUserAuthorities] = useState<
-        string[] | null
-    >(null)
 
     // Check if user exists in local database, if not, create it using Auth0 data
     const syncUser = async (token: string) => {
@@ -43,12 +37,7 @@ function App() {
             )
             .then((response) => {
                 console.log('Custom user from backend: ', response.data)
-                const decodedToken = jwtDecode<CustomJwtPayload>(token)
-                setCustomUserAuthorities(decodedToken.permissions)
-                setCustomUser({
-                    ...response.data,
-                    customUserAuthorities,
-                })
+                setCustomUser(response.data)
             })
             .catch((error) => {
                 console.error(error)
@@ -69,11 +58,10 @@ function App() {
                 value={{
                     customUser,
                     setCustomUser,
-                    customUserAuthorities,
-                    setCustomUserAuthorities,
                 }}
             >
                 <Header />
+                <ToastContainer />
                 <Outlet />
                 <Footer />
             </UserContext.Provider>

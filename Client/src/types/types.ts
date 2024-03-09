@@ -1,8 +1,9 @@
+import { JwtPayload } from 'jwt-decode'
+
 export interface RawUser {
     id: string | undefined
     email: string | undefined
     avatar: string | undefined
-    // isBlocked: boolean | undefined
 }
 
 export interface CustomUser {
@@ -14,8 +15,8 @@ export interface CustomUser {
     avatar: string
     // isBanned: boolean
     isOnline: boolean
-    permissions: string[]
     isApproved: boolean
+    isDeleted: boolean
     createdAt: string
     updatedAt: string
 }
@@ -63,4 +64,8 @@ export interface Constructor {
 export interface Place {
     label: string
     value: string
+}
+
+export interface CustomJwtPayload extends JwtPayload {
+    permissions: string[] // We're assuming permissions is an array of strings that is included in the JWT (it is)
 }

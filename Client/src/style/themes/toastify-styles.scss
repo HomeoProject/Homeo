@@ -1,0 +1,5 @@
+@use '../scss/Variables.scss' as v;
+
+.Toastify__toast-body {
+    font-family: v.$font-family;
+}

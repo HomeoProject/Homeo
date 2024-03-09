@@ -4,15 +4,11 @@ import { CustomUser } from '../types/types'
 type UserContextType = {
     customUser: CustomUser | null
     setCustomUser: Dispatch<SetStateAction<CustomUser | null>>
-    customUserAuthorities: string[] | null
-    setCustomUserAuthorities: Dispatch<SetStateAction<string[] | null>>
 }
 
 const defaultContextValue: UserContextType = {
     customUser: null,
     setCustomUser: () => {},
-    customUserAuthorities: null,
-    setCustomUserAuthorities: () => {},
 }
 
 export const useUserContext = () => {

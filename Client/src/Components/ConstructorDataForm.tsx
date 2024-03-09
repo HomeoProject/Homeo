@@ -17,6 +17,10 @@ import '../style/scss/components/ConstructorDataForm.scss'
 import CustomGooglePlacesAutocomplete from './CustomGooglePlacesAutocomplete'
 import { LoadScript } from '@react-google-maps/api'
 import LanguagesAutocomplete from './LanguagesAutocomplete'
+import { toast } from 'react-toastify'
+import axios from 'axios'
+import { useAuth0 } from '@auth0/auth0-react'
+import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 
 interface ConstructorDataForm {
     phoneNumber: string
@@ -53,6 +57,8 @@ const ConstructorDataForm = () => {
 
     const [isFormLoading, setIsFormLoading] = useState<boolean>(false)
 
+    const { isAuthenticated, getAccessTokenSilently } = useAuth0()
+
     const handleSelectPlace = (places: Place[]) => {
         setSelectedPlaces(places)
     }
@@ -82,7 +88,7 @@ const ConstructorDataForm = () => {
         setAcceptedPaymentMethods(value as PaymentMethod[])
     }
 
-    const customHandleSubmit = (data: ConstructorDataForm) => {
+    const customHandleSubmit = async (data: ConstructorDataForm) => {
         setIsFormLoading(true)
         setPlacesErrorMessage('')
         setLanguagesErrorMessage('')
@@ -117,11 +123,67 @@ const ConstructorDataForm = () => {
             languages: selectedLanguages,
             cities: selectedPlaces,
         }
-        console.log(finalData)
 
-        setTimeout(() => {
-            setIsFormLoading(false)
-        }, 2000)
+        if (isAuthenticated) {
+            const token = await getAccessTokenSilently()
+            const isConstructor = await checkIfUserHasPermission(
+                token,
+                'constructor'
+            )
+            !isConstructor
+                ? await axios
+                      .post(
+                          `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/constructors`,
+                          finalData,
+                          {
+                              headers: {
+                                  Authorization: `Bearer ${token}`,
+                              },
+                          }
+                      )
+                      .then((response) => {
+                          console.log(
+                              'Constructor profile created successfully: ',
+                              response.data
+                          )
+                          toast.success(
+                              'Constructor profile created successfully!'
+                          )
+                      })
+                      .catch((error) => {
+                          toast.error('Failed to create constructor profile.')
+                          console.error(error)
+                      })
+                : await axios
+                      .put(
+                          `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/constructors`,
+                          finalData,
+                          {
+                              headers: {
+                                  Authorization: `Bearer ${token}`,
+                              },
+                          }
+                      )
+                      .then((response) => {
+                          console.log(
+                              'Constructor profile updated successfully: ',
+                              response.data
+                          )
+                          toast.success(
+                              'Constructor profile updated successfully!'
+                          )
+                          setIsFormLoading(false)
+                      })
+                      .catch((error) => {
+                          console.error(error)
+                          toast.error('Failed to update constructor profile.')
+                          setIsFormLoading(false)
+                      })
+        } else {
+            toast.error(
+                'There was a problem with your authentication. Please try again in a moment.'
+            )
+        }
     }
 
     return (
