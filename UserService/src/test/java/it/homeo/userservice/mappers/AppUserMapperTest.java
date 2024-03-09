@@ -1,7 +1,6 @@
 package it.homeo.userservice.mappers;
 
 import it.homeo.userservice.dtos.response.AppUserDto;
-import it.homeo.userservice.dtos.request.CheckAppUserAfterLoginRequest;
 import it.homeo.userservice.dtos.request.UpdateAppUserRequest;
 import it.homeo.userservice.models.AppUser;
 import org.junit.jupiter.api.Test;
@@ -32,7 +31,6 @@ class AppUserMapperTest {
         assertThat(appUserDto.firstName()).isEqualTo(appUser.getFirstName());
         assertThat(appUserDto.lastName()).isEqualTo(appUser.getLastName());
         assertThat(appUserDto.email()).isEqualTo(appUser.getEmail());
-        assertThat(appUserDto.authorities()).isEqualTo(appUser.getAuthorities());
         assertThat(appUserDto.phoneNumber()).isEqualTo(appUser.getPhoneNumber());
         assertThat(appUserDto.avatar()).isEqualTo(appUser.getAvatar());
         assertThat(appUserDto.isBlocked()).isEqualTo(appUser.isBlocked());
@@ -40,33 +38,6 @@ class AppUserMapperTest {
         assertThat(appUserDto.isApproved()).isEqualTo(appUser.isApproved());
         assertThat(appUserDto.createdAt()).isEqualTo(appUser.getCreatedAt());
         assertThat(appUserDto.updatedAt()).isEqualTo(appUser.getUpdatedAt());
-    }
-
-    @Test
-    void shouldMapCheckAppUserAfterLoginRequestToNullAppUser() {
-        AppUser appUser = mapper.checkAppUserAfterLoginRequestToAppUser(null);
-        assertThat(appUser).isNull();
-    }
-
-    @Test
-    void shouldMapCheckAppUserAfterLoginRequestToAppUser() {
-        CheckAppUserAfterLoginRequest request = CheckAppUserAfterLoginRequest.builder()
-                .id("auth|user1")
-                .email("john.doe@example.com")
-                .avatar("avatar-url")
-                .isBlocked(false)
-                .build();
-
-        AppUser appUser = mapper.checkAppUserAfterLoginRequestToAppUser(request);
-
-        assertThat(appUser).isNotNull();
-        assertThat(appUser.getId()).isEqualTo(request.id());
-        assertThat(appUser.getEmail()).isEqualTo(request.email());
-        assertThat(appUser.getAvatar()).isEqualTo(request.avatar());
-        assertThat(appUser.isBlocked()).isEqualTo(request.isBlocked());
-        assertThat(appUser.getFirstName()).isNull();
-        assertThat(appUser.getLastName()).isNull();
-        assertThat(appUser.getPhoneNumber()).isNull();
     }
 
     @Test
@@ -101,7 +72,6 @@ class AppUserMapperTest {
         appUser.setEmail("john.doe@example.com");
         appUser.setPhoneNumber("123-456-789");
         appUser.setAvatar("avatar-url");
-        appUser.setAuthorities(generateAuthorities());
         appUser.setBlocked(false);
         appUser.setOnline(true);
         appUser.setApproved(true);

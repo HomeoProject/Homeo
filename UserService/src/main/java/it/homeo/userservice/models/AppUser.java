@@ -6,7 +6,6 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Date;
 import java.util.Objects;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -27,12 +26,6 @@ public class AppUser {
     private String phoneNumber;
 
     // Auth0
-    @ElementCollection
-    @CollectionTable(name = "auhorities", joinColumns = @JoinColumn(name = "id"))
-    @Column(name = "authority")
-    private Set<String> authorities;
-
-    // Auth0
     @Column(unique = true)
     private String email;
 
@@ -47,6 +40,8 @@ public class AppUser {
     private boolean isOnline;
 
     private boolean isApproved;
+
+    private boolean isDeleted;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
