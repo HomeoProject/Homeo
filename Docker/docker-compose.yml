@@ -53,22 +53,17 @@ services:
   homeo-apigateway:
     container_name: homeo-apigateway
     build: ../ApiGateway
+    environment:
+      EUREKA_URL: ${EUREKA_URL}
+      REDIS_PASSWORD_APIGATEWAY: ${REDIS_PASSWORD_APIGATEWAY}
+      ALLOWED_CORS_URLS: ${ALLOWED_CORS_URLS}
     ports:
       - "8080:8080"
     restart: unless-stopped
     depends_on:
       - homeo-eureka
       - homeo-redis-apigateway
-
-  homeo-redis-apigateway:
-    image: redis:alpine
-    container_name: homeo-redis-apigateway
-    environment:
-      REDIS_PASSWORD: ${REDIS_PASSWORD_APIGATEWAY}
-      ALLOWED_CORS_URLS=: ${ALLOWED_CORS_URLS}
-    ports:
-      - "6380:6379"
-    restart: unless-stopped
+      - homeo-rabbit
 
   homeo-eureka:
     container_name: homeo-eureka
@@ -79,7 +74,7 @@ services:
 
   homeo-postgres:
     container_name: homeo-postgres
-    build: ../Postgres
+    build: Postgres/
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -90,9 +85,18 @@ services:
       - "5432:5432"
     restart: unless-stopped
 
+  homeo-redis-apigateway:
+    image: redis:alpine
+    container_name: homeo-redis-apigateway
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD_APIGATEWAY}
+    ports:
+      - "6380:6379"
+    restart: unless-stopped
+
   homeo-rabbit:
     container_name: homeo-rabbit
-    build: ../RabbitMQ
+    build: RabbitMQ/
     environment:
       RABBITMQ_USER: ${RABBITMQ_USER}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
