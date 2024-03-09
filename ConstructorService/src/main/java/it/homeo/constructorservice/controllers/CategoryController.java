@@ -11,6 +11,8 @@ import it.homeo.constructorservice.services.CategoryService;
 import it.homeo.constructorservice.validators.FileValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,7 @@ import java.util.List;
 @RequestMapping("/api/constructors/categories")
 public class CategoryController extends AbstractControllerBase {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CategoryController.class);
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
 
@@ -33,21 +36,21 @@ public class CategoryController extends AbstractControllerBase {
 
     @GetMapping
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
-        logger.info("Inside: CategoryController -> getAllCategories()...");
+        LOGGER.info("Inside: CategoryController -> getAllCategories()...");
         List<Category> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(categories.stream().map(categoryMapper::toDto).toList());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDto> getCategory(@PathVariable Long id) {
-        logger.info("Inside: CategoryController -> getCategory()...");
+        LOGGER.info("Inside: CategoryController -> getCategory()...");
         Category category = categoryService.getCategory(id);
         return ResponseEntity.ok(categoryMapper.toDto(category));
     }
 
     @PostMapping
     public ResponseEntity<CategoryDto> addCategory(@RequestBody @Valid AddCategoryDto dto, HttpServletRequest request) {
-        logger.info("Inside: CategoryController -> addCategory()...");
+        LOGGER.info("Inside: CategoryController -> addCategory()...");
         Category category = categoryMapper.toEntity(dto);
         category = categoryService.addCategory(category);
         URI location = getURILocationFromRequest(category.getId(), request);
@@ -56,14 +59,14 @@ public class CategoryController extends AbstractControllerBase {
 
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDto> updateCategory(@RequestBody @Valid UpdateCategoryDto dto, @PathVariable Long id) {
-        logger.info("Inside: CategoryController -> updateCategory()...");
+        LOGGER.info("Inside: CategoryController -> updateCategory()...");
         Category category = categoryService.updateCategory(id, dto.name(), dto.description());
         return ResponseEntity.ok(categoryMapper.toDto(category));
     }
 
     @PutMapping("image/{id}")
     public ResponseEntity<CategoryDto> updateCategoryImage(@PathVariable Long id, UpdateCategoryImageDto dto) {
-        logger.info("Inside: CategoryController -> updateCategoryImage()...");
+        LOGGER.info("Inside: CategoryController -> updateCategoryImage()...");
         if (!FileValidator.isImage(dto.file())) {
             throw new BadRequestException("File must be an image.");
         }
@@ -73,7 +76,7 @@ public class CategoryController extends AbstractControllerBase {
 
     @DeleteMapping("/image/{id}")
     public ResponseEntity<CategoryDto> deleteCategoryImage(@PathVariable Long id) {
-        logger.info("Inside: CategoryController -> deleteCategoryImage()...");
+        LOGGER.info("Inside: CategoryController -> deleteCategoryImage()...");
         Category category = categoryService.deleteCategoryImage(id);
         return ResponseEntity.ok(categoryMapper.toDto(category));
     }
@@ -81,7 +84,7 @@ public class CategoryController extends AbstractControllerBase {
     // If a product has a category assigned to it, it cannot be removed
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        logger.info("Inside: CategoryController -> deleteCategory()...");
+        LOGGER.info("Inside: CategoryController -> deleteCategory()...");
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
     }
