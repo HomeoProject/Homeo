@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AppUserServiceTest {
+class AppUserServiceImplTest {
     @Mock
     private AppUserRepository repository;
 
@@ -28,7 +28,7 @@ class AppUserServiceTest {
     private AppUserMapper mapper;
 
     @InjectMocks
-    private AppUserService underTest;
+    private AppUserServiceImpl underTest;
 
     @Captor
     private ArgumentCaptor<AppUser> appUserArgumentCaptor;
