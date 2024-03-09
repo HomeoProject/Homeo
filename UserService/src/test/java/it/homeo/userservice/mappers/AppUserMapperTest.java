@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Date;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -78,9 +77,5 @@ class AppUserMapperTest {
         appUser.setCreatedAt(new Date());
         appUser.setUpdatedAt(new Date());
         return appUser;
-    }
-
-    private Set<String> generateAuthorities() {
-        return Set.of("admin:permission");
     }
 }

@@ -18,6 +18,10 @@ public interface AppUserMapper {
     AppUser updateAppUserRequestToAppUser(UpdateAppUserRequest updateAppUserRequest, @MappingTarget AppUser appUser);
 
     default AppUserDto appUserToAppUserDto(AppUser appUser) {
+        if (appUser == null) {
+            return null;
+        }
+
         if (appUser.isDeleted()) {
             return AppUserDto.builder()
                     .id(appUser.getId())
