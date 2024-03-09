@@ -27,7 +27,7 @@ interface ConstructorDataForm {
     categories: Array<Category>
     cities: Array<Place>
     languages: Array<string>
-    acceptedPaymentMethods: Array<PaymentMethod>
+    acceptedPaymentMethods: Array<string>
 }
 
 const ConstructorDataForm = () => {
@@ -111,7 +111,9 @@ const ConstructorDataForm = () => {
         const finalData: ConstructorDataForm = {
             ...data,
             minimalRate: +data.minimalRate, // convert string to number
-            acceptedPaymentMethods: acceptedPaymentMethods,
+            acceptedPaymentMethods: acceptedPaymentMethods.map((method) =>
+                method.toString().toUpperCase()
+            ),
             languages: selectedLanguages,
             cities: selectedPlaces,
         }
@@ -153,6 +155,7 @@ const ConstructorDataForm = () => {
                                     'Phone number must be exactly 9 digits.',
                             },
                         })}
+                        placeholder="Fill in your work phone number (9 digits)"
                     />
                     <ErrorMessage
                         errors={errors}
@@ -183,6 +186,7 @@ const ConstructorDataForm = () => {
                                 message: 'Invalid email address.',
                             },
                         })}
+                        placeholder="Fill in your work email address"
                     />
                     <ErrorMessage
                         errors={errors}
@@ -209,6 +213,7 @@ const ConstructorDataForm = () => {
                                     'About me cannot be longer than 300 characters.',
                             },
                         })}
+                        placeholder="Write a few words about yourself"
                     />
                     <ErrorMessage
                         errors={errors}
@@ -235,6 +240,7 @@ const ConstructorDataForm = () => {
                                     'Experience cannot be longer than 300 characters.',
                             },
                         })}
+                        placeholder="Describe your experience"
                     />
                     <ErrorMessage
                         errors={errors}
@@ -255,6 +261,7 @@ const ConstructorDataForm = () => {
                                 message: 'Minimal rate must be at least $1.00.',
                             },
                         })}
+                        placeholder="Set your minimal rate ($/hour)"
                     />
                     <ErrorMessage
                         errors={errors}
@@ -307,6 +314,11 @@ const ConstructorDataForm = () => {
                                 </MenuItem>
                             ))}
                         </Select>
+                        {acceptedPaymentMethods.length === 0 && (
+                            <p className="select-placeholder">
+                                Choose accepted payment methods...
+                            </p>
+                        )}
                     </FormControl>
                     <p className="error-message">
                         {acceptedPaymentMethodsErrorMessage}

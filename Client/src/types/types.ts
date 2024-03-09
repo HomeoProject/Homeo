@@ -2,27 +2,27 @@ export interface RawUser {
     id: string | undefined
     email: string | undefined
     avatar: string | undefined
-    isBlocked: boolean
+    // isBlocked: boolean | undefined
 }
 
 export interface CustomUser {
     id: string
-    firstName: string | undefined
-    lastName: string | undefined
-    phoneNumber: string | undefined
+    firstName: string | null
+    lastName: string | null
+    phoneNumber: string | null
     email: string
     avatar: string
-    isBlocked: boolean
+    // isBanned: boolean
     isOnline: boolean
-    isConstructor: boolean
+    permissions: string[]
     isApproved: boolean
     createdAt: string
     updatedAt: string
 }
 
 export interface Category {
-    id: string | undefined
-    name: string | undefined
+    id: string
+    name: string
     createdAt: string
     updatedAt: string
 }
@@ -34,30 +34,28 @@ export enum PaymentMethod {
 }
 
 export interface Review {
-    id: string | undefined
-    reviewerId: string | undefined
-    receiverId: string | undefined
-    text: string | undefined
-    rating: string | undefined
+    id: string
+    reviewerId: string
+    receiverId: string
+    text: string
+    rating: string
     createdAt: string
     updatedAt: string
 }
 
 export interface Constructor {
-    id: string | undefined
-    userId: string | undefined
-    companyName: string | undefined
-    companyAddress: string | undefined
-    companyPhoneNumber: string | undefined
-    companyEmail: string | undefined
-    aboutMe: string | undefined
-    experience: string | undefined
-    rate: number | undefined
+    id: string
+    userId: string
+    phoneNumber: string
+    email: string
+    aboutMe: string
+    experience: string
+    rate: number
     categories: Array<Category>
-    city: string | undefined
-    language: string | undefined
+    cities: Array<string>
+    languages: Array<string>
     receivedReviews: Array<Review>
-    acceptedPaymentMethods: Array<PaymentMethod>
+    acceptedPaymentMethods: Array<string>
     createdAt: string
     updatedAt: string
 }

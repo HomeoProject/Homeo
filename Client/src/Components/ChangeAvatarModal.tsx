@@ -79,7 +79,7 @@ const ChangeAvatarModal = ({ open, handleClose }: ChangeAvatarModalProps) => {
             formData.append('file', blob)
             axios
                 .patch(
-                    `http://localhost:8080/api/users/avatar/${customUser.id}`,
+                    `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/users/avatar/${customUser.id}`,
                     formData,
                     {
                         headers: {

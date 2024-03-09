@@ -70,6 +70,7 @@ const PersonalDataForm = () => {
                                 validateSpacesStartOrEnd(value, 'First name'),
                         })}
                         className="custom-input"
+                        placeholder="Fill in your first name"
                     />
                     <ErrorMessage
                         errors={errors}
@@ -99,6 +100,7 @@ const PersonalDataForm = () => {
                                 validateSpacesStartOrEnd(value, 'Last name'),
                         })}
                         className="custom-input"
+                        placeholder="Fill in your last name"
                     />
                     <ErrorMessage
                         errors={errors}
@@ -157,6 +159,7 @@ const PersonalDataForm = () => {
                             },
                         })}
                         className="custom-input"
+                        placeholder="Fill in your phone number"
                     />
                     <ErrorMessage
                         errors={errors}

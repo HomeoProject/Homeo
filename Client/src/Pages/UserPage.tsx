@@ -11,7 +11,12 @@ import ChangeAvatarModal from '../Components/ChangeAvatarModal'
 const UserPage = () => {
     const { user, isLoading } = useAuth0()
 
-    const { customUser } = useUserContext()
+    const { customUser, customUserAuthorities } = useUserContext()
+
+    const isConstructor =
+        customUserAuthorities?.includes(
+            import.meta.env.VITE_REACT_CONSTRUCTOR_ROLE
+        ) || false
 
     const { id } = useParams<{ id: string }>()
 
@@ -32,15 +37,13 @@ const UserPage = () => {
                                     src={customUser.avatar}
                                     alt=""
                                     variant="page"
-                                    isApproved={customUser.isConstructor}
+                                    isApproved={customUser.isApproved}
                                     customOnClick={handleOpen}
                                 />
                             </div>
                             <div className="user-page-main-left-info-name">
                                 <b>{user?.name}</b>
-                                {customUser?.isConstructor && (
-                                    <p>Homeo Constructor</p>
-                                )}
+                                {isConstructor && <p>Homeo Constructor</p>}
                             </div>
                         </div>
                         <div className="user-page-main-left-nav">
@@ -64,7 +67,7 @@ const UserPage = () => {
                                 }
                                 end
                             >
-                                {customUser?.isConstructor
+                                {isConstructor
                                     ? 'Constructor profile'
                                     : 'Become a Constructor'}
                             </NavLink>

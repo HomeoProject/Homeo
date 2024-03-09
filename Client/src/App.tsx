@@ -8,10 +8,18 @@ import { useAuth0 } from '@auth0/auth0-react'
 import axios from 'axios'
 import { CustomUser, RawUser } from './types/types'
 import UserContext from './Context/UserContext'
+import { JwtPayload, jwtDecode } from 'jwt-decode'
+
+interface CustomJwtPayload extends JwtPayload {
+    permissions: string[] // We're assuming permissions is an array of strings that is included in the JWT (it is)
+}
 
 function App() {
     const { user, isAuthenticated, getAccessTokenSilently } = useAuth0()
     const [customUser, setCustomUser] = useState<CustomUser | null>(null)
+    const [customUserAuthorities, setCustomUserAuthorities] = useState<
+        string[] | null
+    >(null)
 
     // Check if user exists in local database, if not, create it using Auth0 data
     const syncUser = async (token: string) => {
@@ -19,26 +27,31 @@ function App() {
             id: user?.sub,
             email: user?.email,
             avatar: user?.picture,
-            isBlocked: false,
+            // TODO: banning on our backend side
+            // isBanned: user?.
         }
 
         await axios
-            .post(`http://localhost:8080/api/users`, userBody, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
+            .post(
+                `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/users`,
+                userBody,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            )
             .then((response) => {
+                console.log('Custom user from backend: ', response.data)
+                const decodedToken = jwtDecode<CustomJwtPayload>(token)
+                setCustomUserAuthorities(decodedToken.permissions)
                 setCustomUser({
                     ...response.data,
-                    firstName: 'Karol',
-                    lastName: 'Wiśniewski',
-                    phoneNumber: '737483499',
-                    isConstructor: true,
+                    customUserAuthorities,
                 })
             })
             .catch((error) => {
-                console.log(error)
+                console.error(error)
             })
     }
 
@@ -52,7 +65,14 @@ function App() {
 
     return (
         <div className="App">
-            <UserContext.Provider value={{ customUser, setCustomUser }}>
+            <UserContext.Provider
+                value={{
+                    customUser,
+                    setCustomUser,
+                    customUserAuthorities,
+                    setCustomUserAuthorities,
+                }}
+            >
                 <Header />
                 <Outlet />
                 <Footer />
