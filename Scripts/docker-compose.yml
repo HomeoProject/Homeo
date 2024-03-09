@@ -28,6 +28,28 @@ services:
     depends_on:
       - homeo-apigateway
 
+  homeo-constructorservice:
+    container_name: homeo-constructorservice
+    build: ../ConstructorService
+    environment:
+      OKTA_API_ISSUER: ${OKTA_API_ISSUER}
+      OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_URL: ${POSTGRES_URL_CONSTRUCTORSERVICE}
+      EUREKA_URL: ${EUREKA_URL}
+      OPENAPI_URL: ${OPENAPI_URL}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      CLOUDINARY_FOLDER_NAME: ${CLOUDINARY_FOLDER_NAME_USERSERVICE}
+      CLOUDINARY_DEFAULT_CATEGORY_URL: ${CLOUDINARY_DEFAULT_CATEGORY_URL}
+    ports:
+      - "8082:8080"
+    restart: unless-stopped
+    depends_on:
+      - homeo-apigateway
+
   homeo-apigateway:
     container_name: homeo-apigateway
     build: ../ApiGateway
@@ -43,6 +65,7 @@ services:
     container_name: homeo-redis-apigateway
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD_APIGATEWAY}
+      ALLOWED_CORS_URLS=: ${ALLOWED_CORS_URLS}
     ports:
       - "6380:6379"
     restart: unless-stopped
