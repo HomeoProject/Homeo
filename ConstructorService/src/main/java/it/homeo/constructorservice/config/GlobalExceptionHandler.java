@@ -1,5 +1,6 @@
 package it.homeo.constructorservice.config;
 
+import com.auth0.exception.Auth0Exception;
 import it.homeo.constructorservice.exceptions.AlreadyExistsException;
 import it.homeo.constructorservice.exceptions.BadRequestException;
 import it.homeo.constructorservice.exceptions.EntityInUseException;
@@ -14,6 +15,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -40,6 +43,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleInvalidCartStateException(BadRequestException ex, WebRequest request) {
         CustomError error = new CustomError(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, ex.getMessage(), getPath(request), LocalDateTime.now());
         return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(Auth0Exception.class)
+    protected ResponseEntity<Object> handleAuth0Exception(Auth0Exception ex, WebRequest request) {
+        int statusCode = extractErrorCodeFromAuth0ExceptionMessage(ex.getMessage());
+        CustomError error = new CustomError(statusCode, HttpStatus.valueOf(statusCode), ex.getMessage(), getPath(request), LocalDateTime.now());
+        return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.valueOf(statusCode), request);
+    }
+
+    private int extractErrorCodeFromAuth0ExceptionMessage(String errorMessage) {
+        Pattern pattern = Pattern.compile("status code (\\d+):");
+        Matcher matcher = pattern.matcher(errorMessage);
+
+        if (!matcher.find()) {
+            return 500;
+        }
+
+        try {
+            return Integer.parseInt(matcher.group(1));
+        } catch (NumberFormatException e) {
+            return 500;
+        }
     }
 
     private String getPath(WebRequest request) {

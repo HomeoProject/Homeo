@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
+    Boolean existsByNameIgnoreCase(String name);
+
     @Query("SELECT COUNT(con) > 0 FROM Constructor con JOIN con.categories c WHERE c.id = :categoryId")
     Boolean existsConstructorInCategory(@Param("categoryId") Long categoryId);
-
-    Boolean existsByNameIgnoreCase(String name);
 }
