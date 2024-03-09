@@ -26,7 +26,7 @@ public class RabbitMQConfig {
     public Queue createConstructorAddedQueue() {
         return QueueBuilder.durable("q.constructor-added")
                 .withArgument("x-dead-letter-exchange", "x.constructor-added-failure")
-                .withArgument("x-dead-letter-routing-key", "fall-back")
+                .withArgument("x-dead-letter-routing-key", "fall-back-constructor-added")
                 .build();
     }
 
@@ -34,7 +34,7 @@ public class RabbitMQConfig {
     public Queue createConstructorDeletedQueue() {
         return QueueBuilder.durable("q.constructor-deleted")
                 .withArgument("x-dead-letter-exchange", "x.constructor-deleted-failure")
-                .withArgument("x-dead-letter-routing-key","fall-back")
+                .withArgument("x-dead-letter-routing-key","fall-back-constructor-deleted")
                 .build();
     }
 
@@ -42,7 +42,7 @@ public class RabbitMQConfig {
     public Queue createConstructorUpdatedQueue() {
         return QueueBuilder.durable("q.constructor-updated")
                 .withArgument("x-dead-letter-exchange", "x.constructor-updated-failure")
-                .withArgument("x-dead-letter-routing-key","fall-back")
+                .withArgument("x-dead-letter-routing-key","fall-back-constructor-updated")
                 .build();
     }
 
@@ -52,7 +52,7 @@ public class RabbitMQConfig {
         return new Declarables(
                 new DirectExchange("x.constructor-added-failure"),
                 new Queue("q.fall-back-constructor-added"),
-                new Binding("q.fall-back-constructor-added", Binding.DestinationType.QUEUE, "x.constructor-added-failure", "fall-back", null)
+                new Binding("q.fall-back-constructor-added", Binding.DestinationType.QUEUE, "x.constructor-added-failure", "fall-back-constructor-added", null)
         );
     }
 
@@ -61,7 +61,7 @@ public class RabbitMQConfig {
         return new Declarables(
                 new DirectExchange("x.constructor-deleted-failure"),
                 new Queue("q.fall-back-constructor-deleted"),
-                new Binding("q.fall-back-constructor-deleted", Binding.DestinationType.QUEUE, "x.constructor-deleted-failure", "fall-back", null)
+                new Binding("q.fall-back-constructor-deleted", Binding.DestinationType.QUEUE, "x.constructor-deleted-failure", "fall-back-constructor-deleted", null)
         );
     }
 
@@ -70,7 +70,7 @@ public class RabbitMQConfig {
         return new Declarables(
                 new DirectExchange("x.constructor-updated-failure"),
                 new Queue("q.fall-back-constructor-updated"),
-                new Binding("q.fall-back-constructor-updated", Binding.DestinationType.QUEUE, "x.constructor-updated-failure", "fall-back", null)
+                new Binding("q.fall-back-constructor-updated", Binding.DestinationType.QUEUE, "x.constructor-updated-failure", "fall-back-constructor-updated", null)
         );
     }
 
