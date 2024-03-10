@@ -12,6 +12,11 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
 
 okta:
   oauth2:
@@ -24,7 +29,7 @@ okta:
     audience: ${OKTA_MANAGEMENT_API_AUDIENCE}
   auth0:
     roles:
-      constructor-role-id: ${OKTA_AUTH0_CONSTRUCTOR_ROLE_ID}
+      user-role-id: ${OKTA_AUTH0_USER_ROLE_ID}
 
 cloudinary:
   api-key: ${CLOUDINARY_API_KEY}

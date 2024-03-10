@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
@@ -11,7 +12,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-public class SecurityConfig {
+@EnableWebSecurity
+public class WebSecurityConfig {
+
+    private static final String ADMIN_PERSMISSION = "admin:permission";
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         /*
@@ -22,15 +27,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         // Example of permission used route
                         // .requestMatchers("/api/user").hasAuthority("admin:permission")
-                        .requestMatchers(HttpMethod.POST, "/api/user").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "api/user/{id}").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "api/user/{id}").authenticated()
-                        .requestMatchers(HttpMethod.PATCH, "api/user/constructor/{id}").authenticated()
-                        .requestMatchers(HttpMethod.PATCH, "api/user/email/{id}").authenticated()
-                        .requestMatchers(HttpMethod.PATCH, "api/user/password/{id}").authenticated()
-                        .requestMatchers("/api/user/avatar/{id}").authenticated()
-                        .requestMatchers(HttpMethod.PATCH, "api/user/approve/{id}").hasAuthority("admin:permission")
-                        .requestMatchers(HttpMethod.PATCH, "api/user/block/{id}").hasAuthority("admin:permission")
+                        .requestMatchers(HttpMethod.GET, "/api/users/sync").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "api/users/{id}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "api/users/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "api/users/email/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "api/users/password/{id}").authenticated()
+                        .requestMatchers("/api/users/avatar/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "api/users/approve/{id}").hasAuthority(ADMIN_PERSMISSION)
+                        .requestMatchers(HttpMethod.PATCH, "api/users/block/{id}").hasAuthority(ADMIN_PERSMISSION)
                         .anyRequest().permitAll()
                 )
                 .cors(withDefaults())

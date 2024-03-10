@@ -15,7 +15,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private final static String ADMIN_AUTHORITY = "admin:permission";
+    private static final String ADMIN_AUTHORITY = "admin:permission";
+    private static final String USER_AUTHORITY = "user:permission";
+    private static final String CONSTRUCTOR_AUTHORITY = "constructor:permission";
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -29,6 +31,10 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/constructors/categories/**").hasAuthority(ADMIN_AUTHORITY)
                         .requestMatchers(HttpMethod.DELETE, "/api/constructors/categories/**").hasAuthority(ADMIN_AUTHORITY)
                         .requestMatchers(HttpMethod.PUT, "/api/constructors/categories/**").hasAuthority(ADMIN_AUTHORITY)
+                        // ConstructorController
+                        .requestMatchers(HttpMethod.POST, "/api/constructors").hasAuthority(USER_AUTHORITY)
+                        .requestMatchers(HttpMethod.PUT, "/api/constructors").hasAuthority(CONSTRUCTOR_AUTHORITY)
+                        .requestMatchers(HttpMethod.DELETE, "/api/constructors").hasAuthority(CONSTRUCTOR_AUTHORITY)
                         // All
                         .anyRequest().permitAll()
                 )

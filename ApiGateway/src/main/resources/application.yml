@@ -24,7 +24,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://homeo-eureka:8761/eureka
+      defaultZone: ${EUREKA_URL}
 
 springdoc:
   enable-native-support: true

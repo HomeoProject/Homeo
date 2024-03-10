@@ -7,28 +7,20 @@ import { Outlet } from 'react-router'
 import { useEffect, useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import axios from 'axios'
-import { CustomUser, RawUser } from './types/types'
+import { CustomUser } from './types/types'
 import UserContext from './Context/UserContext'
 import { ToastContainer } from 'react-toastify'
 
 function App() {
-    const { user, isAuthenticated, getAccessTokenSilently } = useAuth0()
+    const { isAuthenticated, getAccessTokenSilently } = useAuth0()
     const [customUser, setCustomUser] = useState<CustomUser | null>(null)
 
     // Check if user exists in local database, if not, create it using Auth0 data
     const syncUser = async (token: string) => {
-        const userBody: RawUser = {
-            id: user?.sub,
-            email: user?.email,
-            avatar: user?.picture,
-            // TODO: banning on our backend side
-            // isBanned: user?.
-        }
 
         await axios
-            .post(
-                `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/users`,
-                userBody,
+            .get(
+                `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/users/sync`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -45,12 +37,12 @@ function App() {
     }
 
     useEffect(() => {
-        if (user && isAuthenticated) {
+        if (isAuthenticated) {
             getAccessTokenSilently().then((token) => {
                 syncUser(token)
             })
         }
-    }, [user, isAuthenticated])
+    }, [getAccessTokenSilently, isAuthenticated])
 
     return (
         <div className="App">
