@@ -67,19 +67,21 @@ public class AppUserServiceImpl implements AppUserService {
 
         Optional<AppUser> optionalAppUser = repository.findById(id);
 
+        boolean isAuth0UserBlocked = Boolean.TRUE.equals(auth0User.isBlocked()); // Handles null as false
+
         // If the user does not exist in the database, it means that he is logging in for the first time, so we create him and return it nicely :)
         if (optionalAppUser.isEmpty()) {
             AppUser newAppUser = new AppUser();
             newAppUser.setId(auth0User.getId());
             newAppUser.setEmail(auth0User.getEmail());
             newAppUser.setAvatar(auth0User.getPicture());
-            newAppUser.setBlocked(auth0User.isBlocked());
+            newAppUser.setBlocked(isAuth0UserBlocked);
             AppUser savedAppUser = repository.save(newAppUser);
             return mapper.appUserToAppUserDto(savedAppUser);
         }
 
         // If it exists in the database, we check whether there are any inaccuracies between the Auth0 database and ours, possibly update the user and return dto
-        AppUser appUser = synchronizeAppUserWithAuth0User(optionalAppUser.get(), auth0User);
+        AppUser appUser = synchronizeAppUserWithAuth0User(optionalAppUser.get(), auth0User, isAuth0UserBlocked);
         return mapper.appUserToAppUserDto(appUser);
     }
 
@@ -217,7 +219,7 @@ public class AppUserServiceImpl implements AppUserService {
         return mapper.appUserToAppUserDto(appUser);
     }
 
-    private AppUser synchronizeAppUserWithAuth0User(AppUser appUser, User auth0User) {
+    private AppUser synchronizeAppUserWithAuth0User(AppUser appUser, User auth0User, boolean isAuth0UserBlocked) {
         boolean shouldSave = false;
 
         if (!appUser.getEmail().equals(auth0User.getEmail())) {
@@ -230,8 +232,8 @@ public class AppUserServiceImpl implements AppUserService {
             shouldSave = true;
         }
 
-        if (auth0User.isBlocked() != null && appUser.isBlocked() != auth0User.isBlocked()) {
-            appUser.setBlocked(auth0User.isBlocked());
+        if (appUser.isBlocked() != isAuth0UserBlocked) {
+            appUser.setBlocked(isAuth0UserBlocked);
             shouldSave = true;
         }
 
