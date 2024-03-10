@@ -18,13 +18,10 @@ const UserPage = () => {
 
     useEffect(() => {
         getAccessTokenSilently().then((token) => {
-            checkIfUserHasPermission(token, 'constructor').then(
-                (isConstructor) => {
-                    setIsConstructor(isConstructor)
-                }
-            )
+            const isConstructor = checkIfUserHasPermission(token, 'constructor')
+            setIsConstructor(isConstructor)
         })
-    }, [])
+    }, [getAccessTokenSilently])
 
     const { id } = useParams<{ id: string }>()
 

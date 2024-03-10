@@ -18,7 +18,7 @@ interface PersonalDataForm {
 const PersonalDataForm = () => {
     const { isAuthenticated, getAccessTokenSilently } = useAuth0()
 
-    const { customUser } = useUserContext()
+    const { customUser, setCustomUser } = useUserContext()
 
     const {
         register,
@@ -53,6 +53,7 @@ const PersonalDataForm = () => {
                         'Personal information updated successfully: ',
                         response.data
                     )
+                    setCustomUser(response.data)
                     toast.success('Personal information updated successfully!')
                 })
                 .catch((error) => {

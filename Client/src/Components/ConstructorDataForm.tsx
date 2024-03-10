@@ -1,4 +1,4 @@
-import { Category, PaymentMethod, Place } from '../types/types'
+import { PaymentMethod, Place } from '../types/types'
 import {
     ListItemText,
     MenuItem,
@@ -21,6 +21,7 @@ import { toast } from 'react-toastify'
 import axios from 'axios'
 import { useAuth0 } from '@auth0/auth0-react'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
+import CategoriesSelect from './CategoriesSelect'
 
 interface ConstructorDataForm {
     phoneNumber: string
@@ -28,7 +29,7 @@ interface ConstructorDataForm {
     aboutMe: string
     experience: string
     minimalRate: number
-    categories: Array<Category>
+    categories: Array<string>
     cities: Array<Place>
     languages: Array<string>
     acceptedPaymentMethods: Array<string>
@@ -54,6 +55,12 @@ const ConstructorDataForm = () => {
         acceptedPaymentMethodsErrorMessage,
         setAcceptedPaymentMethodsErrorMessage,
     ] = useState<string>('')
+
+    const [selectedCategories, setSelectedCategories] = useState<
+        string[]
+    >([])
+
+    const [categoriesErrorMessage, setCategoriesErrorMessage] = useState('')
 
     const [isFormLoading, setIsFormLoading] = useState<boolean>(false)
 
@@ -122,14 +129,32 @@ const ConstructorDataForm = () => {
             ),
             languages: selectedLanguages,
             cities: selectedPlaces,
+            categories: selectedCategories,
         }
+
+        console.log('Final data: ', finalData)
 
         if (isAuthenticated) {
             const token = await getAccessTokenSilently()
-            const isConstructor = await checkIfUserHasPermission(
+
+            const isProfileComplete = checkIfUserHasPermission(
+                token,
+                'user'
+            )
+    
+            if (!isProfileComplete) {
+                toast.error(
+                    'Please complete your personal profile before creating a constructor profile.'
+                )
+                setIsFormLoading(false)
+                return
+            }
+
+            const isConstructor = checkIfUserHasPermission(
                 token,
                 'constructor'
             )
+
             !isConstructor
                 ? await axios
                       .post(
@@ -234,14 +259,14 @@ const ConstructorDataForm = () => {
                         {...register('email', {
                             required: 'Email is required.',
                             minLength: {
-                                value: 2,
+                                value: 5,
                                 message:
-                                    'Email must be at least 2 characters long.',
+                                    'Email must be at least 5 characters long.',
                             },
                             maxLength: {
-                                value: 20,
+                                value: 50,
                                 message:
-                                    'Email cannot be longer than 20 characters.',
+                                    'Email cannot be longer than 50 characters.',
                             },
                             pattern: {
                                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
@@ -342,11 +367,16 @@ const ConstructorDataForm = () => {
                             onSelectPlace={handleSelectPlace}
                         />
                     </LoadScript>
-                    <p className="error-message">{placesErrorMeessage}</p>
+                    {placesErrorMeessage && <p className="error-message">{placesErrorMeessage}</p>}
+                    <CategoriesSelect 
+                        selectedCategories={selectedCategories}
+                        setSelectedCategories={setSelectedCategories} 
+                        categoriesErrorMessage={categoriesErrorMessage} 
+                    />
                     <LanguagesAutocomplete
                         onSelectLanguage={handleSelectLanguage}
                     />
-                    <p className="error-message">{languagesErrorMessage}</p>
+                    {languagesErrorMessage && <p className="error-message">{languagesErrorMessage}</p>}
                     <FormControl>
                         <InputLabel
                             shrink={true}

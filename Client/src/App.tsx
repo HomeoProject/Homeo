@@ -7,13 +7,15 @@ import { Outlet } from 'react-router'
 import { useEffect, useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import axios from 'axios'
-import { CustomUser } from './types/types'
+import { Category, CustomUser } from './types/types'
 import UserContext from './Context/UserContext'
 import { ToastContainer } from 'react-toastify'
+import CategoriesContext from './Context/CategoriesContext'
 
 function App() {
     const { isAuthenticated, getAccessTokenSilently } = useAuth0()
     const [customUser, setCustomUser] = useState<CustomUser | null>(null)
+    const [categories, setCategories] = useState<Category[]>([])
 
     // Check if user exists in local database, if not, create it using Auth0 data
     const syncUser = async (token: string) => {
@@ -42,6 +44,10 @@ function App() {
                 syncUser(token)
             })
         }
+
+        axios.get(
+            `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/constructors/categories`
+        ).then((categories) => setCategories(categories.data))
     }, [getAccessTokenSilently, isAuthenticated])
 
     return (
@@ -52,10 +58,17 @@ function App() {
                     setCustomUser,
                 }}
             >
+            <CategoriesContext.Provider
+                value={{
+                    categories,
+                    setCategories,
+                }}
+            >
                 <Header />
                 <ToastContainer />
                 <Outlet />
                 <Footer />
+            </CategoriesContext.Provider>
             </UserContext.Provider>
         </div>
     )

@@ -30,6 +30,11 @@ export enum PaymentMethod {
     TRANSFER = 'Transfer',
 }
 
+export interface SelectedCategory {
+    id: string
+    name: string
+}
+
 export interface Review {
     id: string
     reviewerId: string
