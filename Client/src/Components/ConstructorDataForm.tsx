@@ -121,6 +121,12 @@ const ConstructorDataForm = () => {
             return
         }
 
+        if (selectedCategories.length === 0) {
+            setCategoriesErrorMessage('At least one category is required.')
+            setIsFormLoading(false)
+            return
+        }
+
         const finalData: ConstructorDataForm = {
             ...data,
             minimalRate: +data.minimalRate, // convert string to number

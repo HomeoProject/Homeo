@@ -16,15 +16,26 @@ const CategoriesSelect = ({
 }: CategoriesSelectProps) => {
   const { categories } = useCategoriesContext();
 
+  const maximumCategoriesLimit = 10;
+
   const handleCategoryChange = (event: SelectChangeEvent<typeof selectedCategories>) => {
     const value = event.target.value;
+    if (value.length > maximumCategoriesLimit) {
+      return;
+    }
     setSelectedCategories(typeof value === 'string' ? value.split(',') : value);
   };
 
   return (
     <>
       <FormControl fullWidth error={categoriesErrorMessage !== ""}>
-        <InputLabel id="categories-label">Categories you work in</InputLabel>
+        <InputLabel 
+          id="categories-label"
+          shrink={true}
+          sx={{ backgroundColor: 'white', padding: '0 5px' }}
+        >
+          Categories you work in (max 2)
+        </InputLabel>
         <Select
           labelId="categories-label"
           id="categories-select"
@@ -46,6 +57,11 @@ const CategoriesSelect = ({
             </MenuItem>
           ))}
         </Select>
+        {selectedCategories.length === 0 && (
+            <p className="select-placeholder">
+                Choose categories you are working in...
+            </p>
+        )}
         {categoriesErrorMessage && (
           <p className="error-message">{categoriesErrorMessage}</p>
         )}

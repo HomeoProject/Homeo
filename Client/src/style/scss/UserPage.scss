@@ -101,8 +101,11 @@
                     }
 
                     > b {
-                        font-size: v.$font-size-normal;
+                        // font-size: v.$font-size-normal;
+                        max-width: 100%;
+                        white-space: nowrap;
                         padding-bottom: 1rem;
+                        font-size: calc(1em + 1vw);
                     }
 
                     > p {
