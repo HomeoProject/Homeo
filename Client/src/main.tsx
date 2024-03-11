@@ -12,6 +12,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import theme from './style/themes/themes.ts'
 import PersonalDataForm from './Components/PersonalDataForm.tsx'
 import ConstructorDataForm from './Components/ConstructorDataForm.tsx'
+import AdminPanel from './Pages/AdminPanel.tsx'
 
 const domain: string | undefined = import.meta.env.VITE_REACT_APP_AUTH0_DOMAIN
 const clientId: string | undefined = import.meta.env
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
             {
                 path: '/contact',
                 element: <ContactPage />,
+            },
+            {
+                path: '/admin-panel',
+                element: <AdminPanel />,
             },
             {
                 path: '/user/:id',

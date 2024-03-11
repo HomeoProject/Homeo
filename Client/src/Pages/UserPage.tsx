@@ -4,14 +4,24 @@ import { Outlet, useParams, NavLink } from 'react-router-dom'
 import ErrorPage from './ErrorPage'
 import LoadingSpinner from '../Components/LoadingSpinner'
 import { useUserContext } from '../Context/UserContext'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import UserAvatar from '../Components/UserAvatar'
 import ChangeAvatarModal from '../Components/ChangeAvatarModal'
+import 'react-toastify/dist/ReactToastify.css'
+import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 
 const UserPage = () => {
-    const { user, isLoading } = useAuth0()
+    const { user, isLoading, getAccessTokenSilently } = useAuth0()
+    const [isConstructor, setIsConstructor] = useState<boolean>(false)
 
     const { customUser } = useUserContext()
+
+    useEffect(() => {
+        getAccessTokenSilently().then((token) => {
+            const isConstructor = checkIfUserHasPermission(token, 'constructor')
+            setIsConstructor(isConstructor)
+        })
+    }, [getAccessTokenSilently])
 
     const { id } = useParams<{ id: string }>()
 
@@ -32,15 +42,13 @@ const UserPage = () => {
                                     src={customUser.avatar}
                                     alt=""
                                     variant="page"
-                                    isApproved={customUser.isConstructor}
+                                    isApproved={customUser.isApproved}
                                     customOnClick={handleOpen}
                                 />
                             </div>
                             <div className="user-page-main-left-info-name">
                                 <b>{user?.name}</b>
-                                {customUser?.isConstructor && (
-                                    <p>Homeo Contractor</p>
-                                )}
+                                {isConstructor && <p>Homeo Constructor</p>}
                             </div>
                         </div>
                         <div className="user-page-main-left-nav">
@@ -53,7 +61,7 @@ const UserPage = () => {
                                 }
                                 end
                             >
-                                Profile
+                                Personal profile
                             </NavLink>
                             <NavLink
                                 to={`/user/${customUser?.id}/constructor-info`}
@@ -64,9 +72,9 @@ const UserPage = () => {
                                 }
                                 end
                             >
-                                {customUser?.isConstructor
-                                    ? 'Company'
-                                    : 'Become a Contractor'}
+                                {isConstructor
+                                    ? 'Constructor profile'
+                                    : 'Become a Constructor'}
                             </NavLink>
                         </div>
                     </div>

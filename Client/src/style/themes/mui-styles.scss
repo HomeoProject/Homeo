@@ -3,3 +3,35 @@
 .MuiOutlinedInput-input {
     height: 1rem !important;
 }
+
+.MuiInputBase-input,
+.MuiChip-label {
+    font-family: v.$font-family !important;
+}
+
+.MuiInputLabel-formControl {
+    font-family: v.$font-family !important;
+}
+
+.MuiTimelineConnector-root {
+    background-color: black !important;
+}
+
+.MuiButtonBase-root {
+    font-family: v.$font-family !important;
+    font-size: v.$font-size-small !important;
+}
+
+.select-placeholder {
+    color: #aaa;
+    margin-top: -36px;
+    margin-left: 14px;
+    font-size: 16px;
+    pointer-events: none;
+    pointer-events: none;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 75%;
+    box-sizing: border-box;
+}

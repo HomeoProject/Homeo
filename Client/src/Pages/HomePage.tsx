@@ -14,7 +14,7 @@ const HomePage = () => {
             <div className="home-page-main-wrapper">
                 <div className="home-page-main">
                     <p className="home-page-main-title">
-                        Contractors never had so many forms.
+                        Constructors never had so many forms.
                     </p>
                     <div className="home-page-main-search-wrapper">
                         <input
@@ -30,7 +30,7 @@ const HomePage = () => {
                         <div className="home-page-main-intro-sub">
                             <b>
                                 Over {verifiedContractorsCount} verified
-                                contractors
+                                constructors
                             </b>
                             <p>Find the one that fits you</p>
                         </div>

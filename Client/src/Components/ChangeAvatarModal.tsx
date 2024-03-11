@@ -18,6 +18,7 @@ import {
     closeModalContainerStyle,
 } from '../style/scss/muiComponents/ChangeAvatarModal.ts'
 import CloseIcon from '@mui/icons-material/Close'
+import LoadingSpinner from './LoadingSpinner.tsx'
 
 type ChangeAvatarModalProps = {
     open: boolean
@@ -29,11 +30,13 @@ const ChangeAvatarModal = ({ open, handleClose }: ChangeAvatarModalProps) => {
     const { getAccessTokenSilently } = useAuth0()
     const [errorMessage, setErrorMessage] = useState('')
     const [imgSrc, setImgSrc] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
 
     const internalHandleClose = () => {
         handleClose()
         customUser && setImgSrc(customUser?.avatar)
         setErrorMessage('')
+        setIsLoading(false)
     }
 
     function getFileExtension(filename: string) {
@@ -65,6 +68,7 @@ const ChangeAvatarModal = ({ open, handleClose }: ChangeAvatarModalProps) => {
     const cropperRef = useRef<ReactCropperElement>(null)
 
     const onSubmit = async () => {
+        setIsLoading(true)
         const token = await getAccessTokenSilently()
         const cropper = cropperRef.current?.cropper
         if (customUser && cropper) {
@@ -75,7 +79,7 @@ const ChangeAvatarModal = ({ open, handleClose }: ChangeAvatarModalProps) => {
             formData.append('file', blob)
             axios
                 .patch(
-                    `http://localhost:8080/api/users/avatar/${customUser.id}`,
+                    `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/users/avatar/${customUser.id}`,
                     formData,
                     {
                         headers: {
@@ -90,15 +94,22 @@ const ChangeAvatarModal = ({ open, handleClose }: ChangeAvatarModalProps) => {
                         ...customUser,
                         avatar: response.data.avatar,
                     })
+                    setIsLoading(false)
                 })
                 .catch((error) => {
                     console.log(error)
                     setErrorMessage('Error while uploading file')
+                    setIsLoading(false)
                 })
+        } else {
+            setErrorMessage('Something went wrong, please try again later.')
+            setIsLoading(false)
         }
     }
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setIsLoading(true)
+        setErrorMessage('')
         const file = e.target.files?.[0]
 
         if (file && isImage(file.name)) {
@@ -111,15 +122,25 @@ const ChangeAvatarModal = ({ open, handleClose }: ChangeAvatarModalProps) => {
                     return
                 }
 
-                // If the image dimensions are valid, set the image source
+                const maxSizeInBytes = 1024 * 1024 // 1MB
+                if (file.size > maxSizeInBytes) {
+                    setErrorMessage(
+                        'Image size exceeds the maximum allowed size (1MB)'
+                    )
+                    setIsLoading(false)
+                    return
+                }
+
                 const reader = new FileReader()
                 reader.onload = () => {
                     setImgSrc(reader.result as string)
+                    setIsLoading(false)
                 }
                 reader.readAsDataURL(file)
             }
         } else {
             setErrorMessage('Unsupported file type')
+            setIsLoading(false)
         }
     }
 
@@ -163,20 +184,25 @@ const ChangeAvatarModal = ({ open, handleClose }: ChangeAvatarModalProps) => {
                     </button>
                 </Box>
                 <Box sx={cropperBoxStyle}>
-                    <Cropper
-                        src={imgSrc}
-                        style={{ height: 400, width: '100%' }}
-                        initialAspectRatio={1}
-                        aspectRatio={1}
-                        guides={false}
-                        ref={cropperRef}
-                        viewMode={1}
-                        max={1}
-                        autoCropArea={1}
-                        cropBoxResizable={false}
-                        cropBoxMovable={true}
-                        dragMode="none"
-                    />
+                    {isLoading ? (
+                        <LoadingSpinner />
+                    ) : (
+                        <Cropper
+                            src={imgSrc}
+                            style={{ height: 400, width: '100%' }}
+                            initialAspectRatio={1}
+                            aspectRatio={1}
+                            guides={false}
+                            ref={cropperRef}
+                            viewMode={1}
+                            max={1}
+                            autoCropArea={1}
+                            cropBoxResizable={false}
+                            cropBoxMovable={true}
+                            dragMode="none"
+                            zoomable={false}
+                        />
+                    )}
                 </Box>
                 <Typography
                     id="modal-modal-error"
@@ -200,6 +226,7 @@ const ChangeAvatarModal = ({ open, handleClose }: ChangeAvatarModalProps) => {
                             variant="contained"
                             color="primary"
                             sx={saveButtonStyle}
+                            disabled={isLoading}
                         >
                             Save
                         </Button>

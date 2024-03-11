@@ -44,6 +44,7 @@
                 > .user-page-main-left-info-avatar {
                     padding-bottom: 2rem;
                     display: flex;
+                    max-width: 10rem;
 
                     @media (max-width: 800px) {
                         padding-right: 2rem;
@@ -100,12 +101,15 @@
                     }
 
                     > b {
-                        font-size: 1.5rem;
+                        // font-size: v.$font-size-normal;
+                        max-width: 100%;
+                        white-space: nowrap;
                         padding-bottom: 1rem;
+                        font-size: calc(1em + 1vw);
                     }
 
                     > p {
-                        font-size: 1.2rem;
+                        font-size: v.$font-size-medium;
                         margin: 0;
                         color: #b6b6b6;
                     }
@@ -143,7 +147,7 @@
                 > .user-page-main-left-nav-link {
                     text-decoration: none;
                     color: black;
-                    font-size: 1.2rem;
+                    font-size: v.$font-size-medium;
                     font-weight: 600;
                     padding: 0.5rem 0;
                     transition: color 0.15s ease-in-out;

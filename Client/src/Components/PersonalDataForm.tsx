@@ -4,6 +4,9 @@ import { Button, TextField } from '@mui/material'
 import '../style/scss/components/PersonalDataForm.scss'
 import { useUserContext } from '../Context/UserContext'
 import { useEffect } from 'react'
+import { toast } from 'react-toastify'
+import axios from 'axios'
+import { useAuth0 } from '@auth0/auth0-react'
 
 interface PersonalDataForm {
     firstName: string
@@ -13,7 +16,9 @@ interface PersonalDataForm {
 }
 
 const PersonalDataForm = () => {
-    const { customUser } = useUserContext()
+    const { isAuthenticated, getAccessTokenSilently } = useAuth0()
+
+    const { customUser, setCustomUser } = useUserContext()
 
     const {
         register,
@@ -29,8 +34,37 @@ const PersonalDataForm = () => {
         )
     }
 
-    const validateContainsSpaces = (value: string, label: string) => {
-        return !value.includes(' ') || `${label} cannot contain spaces.`
+    const handleSubmitForm = async (data: PersonalDataForm) => {
+        if (isAuthenticated) {
+            const token = await getAccessTokenSilently()
+
+            await axios
+                .put(
+                    `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/users/${customUser?.id}`,
+                    data,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                )
+                .then((response) => {
+                    console.log(
+                        'Personal information updated successfully: ',
+                        response.data
+                    )
+                    setCustomUser(response.data)
+                    toast.success('Personal information updated successfully!')
+                })
+                .catch((error) => {
+                    toast.error('Failed to update personal information.')
+                    console.error(error)
+                })
+        } else {
+            toast.error(
+                'There was a problem with your authentication. Please try again in a moment.'
+            )
+        }
     }
 
     useEffect(() => {
@@ -50,7 +84,7 @@ const PersonalDataForm = () => {
             <div className="personal-data-form-wrapper">
                 <form
                     className="personal-data-form"
-                    onSubmit={handleSubmit((data) => console.log(data))}
+                    onSubmit={handleSubmit(handleSubmitForm)}
                 >
                     <TextField
                         id="firstName"
@@ -74,6 +108,7 @@ const PersonalDataForm = () => {
                                 validateSpacesStartOrEnd(value, 'First name'),
                         })}
                         className="custom-input"
+                        placeholder="Fill in your first name"
                     />
                     <ErrorMessage
                         errors={errors}
@@ -103,6 +138,7 @@ const PersonalDataForm = () => {
                                 validateSpacesStartOrEnd(value, 'Last name'),
                         })}
                         className="custom-input"
+                        placeholder="Fill in your last name"
                     />
                     <ErrorMessage
                         errors={errors}
@@ -119,16 +155,14 @@ const PersonalDataForm = () => {
                         {...register('email', {
                             required: 'Email is required.',
                             pattern: {
-                                value: /\S+@\S+\.\S+/,
-                                message: 'Email is not valid.',
+                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                message: 'Invalid email address.',
                             },
                             maxLength: {
                                 value: 50,
                                 message:
                                     'Email must be at most 50 characters long.',
                             },
-                            validate: (value) =>
-                                validateContainsSpaces(value, 'Email'),
                         })}
                         className="custom-input"
                     />
@@ -147,8 +181,9 @@ const PersonalDataForm = () => {
                         {...register('phoneNumber', {
                             required: 'Phone number is required.',
                             pattern: {
-                                value: /^[0-9\b]+$/,
-                                message: 'Phone number is not valid.',
+                                value: /^\d{9}$/,
+                                message:
+                                    'Phone number must be exactly 9 digits.',
                             },
                             minLength: {
                                 value: 9,
@@ -160,10 +195,9 @@ const PersonalDataForm = () => {
                                 message:
                                     'Phone number must be exactly 9 characters long.',
                             },
-                            validate: (value) =>
-                                validateContainsSpaces(value, 'Phone number'),
                         })}
                         className="custom-input"
+                        placeholder="Fill in your phone number"
                     />
                     <ErrorMessage
                         errors={errors}

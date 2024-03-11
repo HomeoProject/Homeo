@@ -3,7 +3,7 @@
 .Header {
     width: 100%;
     background: url('../../Assets/wave-white.svg'),
-        url('../../Assets//solid-color.png');
+        linear-gradient(60deg, v.$primary-color 50%, v.$primary-color-dark);
     background-repeat: no-repeat, no-repeat;
     background-size:
         100% 65%,
@@ -20,10 +20,10 @@
         padding: 0 2rem;
         height: 12rem;
 
-        > .header-logo-normal {
+        > .header-logo {
             display: flex;
             align-items: center;
-            font-size: 40px;
+            font-size: v.$font-size-logo;
             padding: 0;
             margin: 0;
             text-decoration: none;
@@ -36,21 +36,21 @@
                 height: 60px;
                 padding-right: 10px;
             }
-        }
 
-        > .header-logo-small {
-            font-size: 30px;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            color: white;
-            font-family: v.$font-family;
-            margin-top: -90px;
+            @media (max-width: 500px) {
+                font-size: v.$font-size-large;
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                color: white;
+                font-family: v.$font-family;
+                margin-top: -90px;
 
-            > img {
-                width: 45px;
-                height: 60px;
-                padding-right: 10px;
+                > img {
+                    width: 35px;
+                    height: 45px;
+                    padding-right: 10px;
+                }
             }
         }
 
@@ -59,14 +59,34 @@
             align-items: center;
             margin-top: -90px;
 
+            @media (max-width: 800px) {
+                display: none;
+            }
+
             > .header-nav-normal-right {
                 display: flex;
                 align-items: center;
                 gap: 30px;
                 padding-right: 20px;
 
+                > .header-nav-normal-right-link-special {
+                    font-size: v.$font-size-medium;
+                    color: white;
+                    text-decoration: none;
+                    transition: all 0.2s ease;
+                    background-color: white;
+                    color: v.$primary-color;
+                    padding: 6px 16px;
+                    border-radius: 4px;
+
+                    &:hover {
+                        color: v.$primary-color-dark;
+                        background-color: #f0f0f0;
+                    }
+                }
+
                 > .header-nav-normal-right-link {
-                    font-size: 25px;
+                    font-size: v.$font-size-normal;
                     color: white;
                     text-decoration: none;
                     transition: all 0.2s ease;
@@ -78,26 +98,29 @@
             }
 
             > .header-nav-user-wrapper {
-                width: 86px;
                 display: flex;
                 justify-content: flex-end;
+                margin-left: 1rem;
             }
         }
 
         > .header-nav-small {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: -90px;
+            display: none;
+
+            @media (max-width: 800px) {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: -90px;
+            }
 
             > .header-nav-user-wrapper {
-                width: 86px;
                 display: flex;
                 justify-content: flex-end;
 
-                @media (max-width: 780px) {
-                    width: auto;
-                }
+                // @media (max-width: 780px) {
+                //     width: auto;
+                // }
             }
         }
     }

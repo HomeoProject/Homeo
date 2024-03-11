@@ -1,4 +1,3 @@
-import * as React from 'react'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Menu from '@mui/material/Menu'
@@ -13,13 +12,17 @@ import { useAuth0 } from '@auth0/auth0-react'
 import Skeleton from '@mui/material/Skeleton'
 import { useUserContext } from '../Context/UserContext'
 import defaultAvatar from '../Assets/default-avatar.svg'
+import { useState } from 'react'
+import { useNavigate } from 'react-router'
 
 const AccountMenu = () => {
     const { logout, isLoading, isAuthenticated } = useAuth0()
 
     const { customUser } = useUserContext()
 
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+    const navigate = useNavigate()
+
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget)
@@ -35,7 +38,7 @@ const AccountMenu = () => {
 
     const handleUserRedirect = () => {
         setAnchorEl(null)
-        window.location.href = `/user/${customUser?.id}`
+        navigate(`/user/${customUser?.id}`)
     }
 
     return (
