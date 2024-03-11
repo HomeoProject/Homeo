@@ -19,7 +19,6 @@ function App() {
 
     // Check if user exists in local database, if not, create it using Auth0 data
     const syncUser = async (token: string) => {
-
         await axios
             .get(
                 `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/users/sync`,
@@ -45,9 +44,11 @@ function App() {
             })
         }
 
-        axios.get(
-            `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/constructors/categories`
-        ).then((categories) => setCategories(categories.data))
+        axios
+            .get(
+                `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/constructors/categories`
+            )
+            .then((categories) => setCategories(categories.data))
     }, [getAccessTokenSilently, isAuthenticated])
 
     return (
@@ -58,17 +59,17 @@ function App() {
                     setCustomUser,
                 }}
             >
-            <CategoriesContext.Provider
-                value={{
-                    categories,
-                    setCategories,
-                }}
-            >
-                <Header />
-                <ToastContainer />
-                <Outlet />
-                <Footer />
-            </CategoriesContext.Provider>
+                <CategoriesContext.Provider
+                    value={{
+                        categories,
+                        setCategories,
+                    }}
+                >
+                    <Header />
+                    <ToastContainer />
+                    <Outlet />
+                    <Footer />
+                </CategoriesContext.Provider>
             </UserContext.Provider>
         </div>
     )

@@ -1,10 +1,7 @@
 import { CustomJwtPayload } from '../types/types'
 import { jwtDecode } from 'jwt-decode'
 
-export const checkIfUserHasPermission = (
-    token: string,
-    permission: string
-) => {
+export const checkIfUserHasPermission = (token: string, permission: string) => {
     const decodedToken = jwtDecode<CustomJwtPayload>(token)
 
     switch (permission) {

@@ -56,9 +56,7 @@ const ConstructorDataForm = () => {
         setAcceptedPaymentMethodsErrorMessage,
     ] = useState<string>('')
 
-    const [selectedCategories, setSelectedCategories] = useState<
-        string[]
-    >([])
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([])
 
     const [categoriesErrorMessage, setCategoriesErrorMessage] = useState('')
 
@@ -143,11 +141,8 @@ const ConstructorDataForm = () => {
         if (isAuthenticated) {
             const token = await getAccessTokenSilently()
 
-            const isProfileComplete = checkIfUserHasPermission(
-                token,
-                'user'
-            )
-    
+            const isProfileComplete = checkIfUserHasPermission(token, 'user')
+
             if (!isProfileComplete) {
                 toast.error(
                     'Please complete your personal profile before creating a constructor profile.'
@@ -156,10 +151,7 @@ const ConstructorDataForm = () => {
                 return
             }
 
-            const isConstructor = checkIfUserHasPermission(
-                token,
-                'constructor'
-            )
+            const isConstructor = checkIfUserHasPermission(token, 'constructor')
 
             !isConstructor
                 ? await axios
@@ -373,16 +365,20 @@ const ConstructorDataForm = () => {
                             onSelectPlace={handleSelectPlace}
                         />
                     </LoadScript>
-                    {placesErrorMeessage && <p className="error-message">{placesErrorMeessage}</p>}
-                    <CategoriesSelect 
+                    {placesErrorMeessage && (
+                        <p className="error-message">{placesErrorMeessage}</p>
+                    )}
+                    <CategoriesSelect
                         selectedCategories={selectedCategories}
-                        setSelectedCategories={setSelectedCategories} 
-                        categoriesErrorMessage={categoriesErrorMessage} 
+                        setSelectedCategories={setSelectedCategories}
+                        categoriesErrorMessage={categoriesErrorMessage}
                     />
                     <LanguagesAutocomplete
                         onSelectLanguage={handleSelectLanguage}
                     />
-                    {languagesErrorMessage && <p className="error-message">{languagesErrorMessage}</p>}
+                    {languagesErrorMessage && (
+                        <p className="error-message">{languagesErrorMessage}</p>
+                    )}
                     <FormControl>
                         <InputLabel
                             shrink={true}

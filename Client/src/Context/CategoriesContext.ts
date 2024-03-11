@@ -19,6 +19,7 @@ export const useCategoriesContext = () => {
     return context
 }
 
-export const CategoriesContext = createContext<CategoriesContextType>(defaultContextValue)
+export const CategoriesContext =
+    createContext<CategoriesContextType>(defaultContextValue)
 
 export default CategoriesContext
