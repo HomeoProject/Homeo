@@ -28,6 +28,11 @@ const LanguagesAutocomplete = ({
                     onSelectLanguage(newValue)
                 }
             }}
+            ListboxProps={{
+                style: {
+                    maxHeight: 160,
+                },
+            }}
             renderInput={(params) => (
                 <TextField
                     {...params}

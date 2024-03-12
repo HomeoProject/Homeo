@@ -62,7 +62,14 @@ const CategoriesSelect = ({
                             .map((cat: SelectedCategory) => cat.name)
                             .join(', ')
                     }
-                    MenuProps={{ disableScrollLock: true }}
+                    MenuProps={{
+                        disableScrollLock: true,
+                        PaperProps: {
+                            style: {
+                                maxHeight: 200,
+                            },
+                        },
+                    }}
                 >
                     {categories.map((category: Category) => (
                         <MenuItem key={category.id} value={category.id}>
@@ -77,7 +84,7 @@ const CategoriesSelect = ({
                 </Select>
                 {selectedCategories.length === 0 && (
                     <p className="select-placeholder">
-                        Choose categories you are working in...
+                        Choose categories you work in...
                     </p>
                 )}
                 {categoriesErrorMessage && (
