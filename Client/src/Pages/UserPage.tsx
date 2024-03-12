@@ -9,25 +9,32 @@ import UserAvatar from '../Components/UserAvatar'
 import ChangeAvatarModal from '../Components/ChangeAvatarModal'
 import 'react-toastify/dist/ReactToastify.css'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
+import Banner from '../Components/Banner'
 
 const UserPage = () => {
     const { user, isLoading, getAccessTokenSilently } = useAuth0()
     const [isConstructor, setIsConstructor] = useState<boolean>(false)
+    const [isProfileComplete, setIsProfileComplete] = useState<boolean>(false)
+    const [open, setOpen] = useState(false)
 
     const { customUser } = useUserContext()
+
+    const { id } = useParams<{ id: string }>()
+
+    const handleOpen = () => {
+        console.log('open')
+        setOpen(true)
+    }
+    const handleClose = () => setOpen(false)
 
     useEffect(() => {
         getAccessTokenSilently().then((token) => {
             const isConstructor = checkIfUserHasPermission(token, 'constructor')
+            const isProfileComplete = checkIfUserHasPermission(token, 'user')
             setIsConstructor(isConstructor)
+            setIsProfileComplete(isProfileComplete)
         })
     }, [getAccessTokenSilently])
-
-    const { id } = useParams<{ id: string }>()
-
-    const [open, setOpen] = useState(false)
-    const handleOpen = () => setOpen(true)
-    const handleClose = () => setOpen(false)
 
     return (
         <div className="UserPage">
@@ -40,15 +47,21 @@ const UserPage = () => {
                             <div className="user-page-main-left-info-avatar">
                                 <UserAvatar
                                     src={customUser.avatar}
-                                    alt=""
+                                    alt={customUser.email}
                                     variant="page"
                                     isApproved={customUser.isApproved}
                                     customOnClick={handleOpen}
                                 />
                             </div>
                             <div className="user-page-main-left-info-name">
-                                <b>{user?.name}</b>
-                                {isConstructor && <p>Homeo Constructor</p>}
+                                <b className="user-page-main-left-info-name-email">
+                                    {user?.name}
+                                </b>
+                                {isConstructor && (
+                                    <p className="user-page-main-left-info-name-title">
+                                        Homeo Constructor
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div className="user-page-main-left-nav">
@@ -72,13 +85,18 @@ const UserPage = () => {
                                 }
                                 end
                             >
-                                {isConstructor
-                                    ? 'Constructor profile'
-                                    : 'Become a Constructor'}
+                                Constructor profile
                             </NavLink>
                         </div>
                     </div>
                     <div className="user-page-main-right">
+                        {isProfileComplete && (
+                            <Banner
+                                variant="warning"
+                                text="In order to comment, leave reviews and communicate with or become a constructor please fill the missing personal information."
+                                headline="Your profile is incomplete"
+                            />
+                        )}
                         <Outlet />
                     </div>
                     <ChangeAvatarModal open={open} handleClose={handleClose} />

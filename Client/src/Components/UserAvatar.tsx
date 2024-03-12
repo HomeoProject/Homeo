@@ -64,7 +64,7 @@ const UserAvatar = ({
                     />
                 </button>
             ) : (
-                <button className="overlay-btn">
+                <button className="overlay-btn" onClick={customOnClick}>
                     <Avatar
                         alt={alt}
                         src={src}
