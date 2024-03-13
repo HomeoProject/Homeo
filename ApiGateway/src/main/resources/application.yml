@@ -41,3 +41,5 @@ springdoc:
         name: User Service
       - url: /constructorservice/api-docs
         name: ConstructorService
+      - url: /reviewservice/api-docs
+        name: ReviewService
