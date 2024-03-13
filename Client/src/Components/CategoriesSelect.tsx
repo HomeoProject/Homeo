@@ -45,7 +45,7 @@ const CategoriesSelect = ({
                     shrink={true}
                     sx={{ backgroundColor: 'white', padding: '0 5px' }}
                 >
-                    Categories you work in (max 2)
+                    Categories you work in
                 </InputLabel>
                 <Select
                     labelId="categories-label"
@@ -84,11 +84,8 @@ const CategoriesSelect = ({
                 </Select>
                 {selectedCategories.length === 0 && (
                     <p className="select-placeholder">
-                        Choose categories you work in...
+                        Choose categories you work in (max 10)...
                     </p>
-                )}
-                {categoriesErrorMessage && (
-                    <p className="error-message">{categoriesErrorMessage}</p>
                 )}
             </FormControl>
         </>

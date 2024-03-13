@@ -12,10 +12,9 @@ import {
 import { ErrorMessage } from '@hookform/error-message'
 import { SelectChangeEvent } from '@mui/material/Select'
 import { useForm } from 'react-hook-form'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import '../style/scss/components/ConstructorDataForm.scss'
-import CustomGooglePlacesAutocomplete from './CustomGooglePlacesAutocomplete'
-import { LoadScript } from '@react-google-maps/api'
+import CitiesAutocomplete from './CitiesAutocomplete'
 import LanguagesAutocomplete from './LanguagesAutocomplete'
 import { toast } from 'react-toastify'
 import axios from 'axios'
@@ -25,19 +24,17 @@ import CategoriesSelect from './CategoriesSelect'
 
 interface ConstructorDataForm {
     phoneNumber: string
-    email: string
+    constructorEmail: string
     aboutMe: string
     experience: string
-    minimalRate: number
-    categories: Array<string>
-    cities: Array<Place>
+    minRate: number
+    categoryIds: Array<string>
+    cities: Array<string>
     languages: Array<string>
-    acceptedPaymentMethods: Array<string>
+    paymentMethods: Array<string>
 }
 
 const ConstructorDataForm = () => {
-    const libraries = useMemo(() => ['places'] as 'places'[], [])
-
     const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([])
 
     const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
@@ -74,6 +71,8 @@ const ConstructorDataForm = () => {
 
     const {
         register,
+        //TODO put contructor data in context and use it to set default values
+        // reset,
         formState: { errors },
         handleSubmit,
     } = useForm<ConstructorDataForm>()
@@ -93,47 +92,47 @@ const ConstructorDataForm = () => {
         setAcceptedPaymentMethods(value as PaymentMethod[])
     }
 
-    const customHandleSubmit = async (data: ConstructorDataForm) => {
-        setIsFormLoading(true)
-        setPlacesErrorMessage('')
-        setLanguagesErrorMessage('')
-        setAcceptedPaymentMethodsErrorMessage('')
-
+    const validateSelectsAndAutocompletes = () => {
         if (selectedPlaces.length === 0) {
             setPlacesErrorMessage('At least one city is required.')
-            setIsFormLoading(false)
-            return
+        } else {
+            setPlacesErrorMessage('')
         }
 
         if (selectedLanguages.length === 0) {
             setLanguagesErrorMessage('At least one language is required.')
-            setIsFormLoading(false)
-            return
+        } else {
+            setLanguagesErrorMessage('')
         }
 
         if (acceptedPaymentMethods.length === 0) {
             setAcceptedPaymentMethodsErrorMessage(
                 'At least one payment method is required.'
             )
-            setIsFormLoading(false)
-            return
+        } else {
+            setAcceptedPaymentMethodsErrorMessage('')
         }
 
         if (selectedCategories.length === 0) {
             setCategoriesErrorMessage('At least one category is required.')
-            setIsFormLoading(false)
-            return
+        } else {
+            setCategoriesErrorMessage('')
         }
+    }
+
+    const customHandleSubmit = async (data: ConstructorDataForm) => {
+        setIsFormLoading(true)
+        validateSelectsAndAutocompletes()
 
         const finalData: ConstructorDataForm = {
             ...data,
-            minimalRate: +data.minimalRate, // convert string to number
-            acceptedPaymentMethods: acceptedPaymentMethods.map((method) =>
+            minRate: +data.minRate, // convert string to number
+            paymentMethods: acceptedPaymentMethods.map((method) =>
                 method.toString().toUpperCase()
             ),
             languages: selectedLanguages,
-            cities: selectedPlaces,
-            categories: selectedCategories,
+            cities: selectedPlaces.map((place) => place.name),
+            categoryIds: selectedCategories,
         }
 
         console.log('Final data: ', finalData)
@@ -169,12 +168,14 @@ const ConstructorDataForm = () => {
                               'Constructor profile created successfully: ',
                               response.data
                           )
+                          setIsFormLoading(false)
                           toast.success(
                               'Constructor profile created successfully!'
                           )
                       })
                       .catch((error) => {
                           toast.error('Failed to create constructor profile.')
+                          setIsFormLoading(false)
                           console.error(error)
                       })
                 : await axios
@@ -224,16 +225,6 @@ const ConstructorDataForm = () => {
                         type="text"
                         {...register('phoneNumber', {
                             required: 'Phone number is required.',
-                            minLength: {
-                                value: 2,
-                                message:
-                                    'Phone number must be at least 2 characters long.',
-                            },
-                            maxLength: {
-                                value: 20,
-                                message:
-                                    'Phone number cannot be longer than 20 characters.',
-                            },
                             pattern: {
                                 value: /^\d{9}$/,
                                 message:
@@ -250,11 +241,11 @@ const ConstructorDataForm = () => {
                         )}
                     />
                     <TextField
-                        id="email"
+                        id="constructorEmail"
                         label="Email"
                         InputLabelProps={{ shrink: true }}
                         type="text"
-                        {...register('email', {
+                        {...register('constructorEmail', {
                             required: 'Email is required.',
                             minLength: {
                                 value: 5,
@@ -275,7 +266,7 @@ const ConstructorDataForm = () => {
                     />
                     <ErrorMessage
                         errors={errors}
-                        name="email"
+                        name="constructorEmail"
                         render={({ message }) => (
                             <p className="error-message">{message}</p>
                         )}
@@ -335,11 +326,11 @@ const ConstructorDataForm = () => {
                         )}
                     />
                     <TextField
-                        id="rate"
+                        id="minRate"
                         label="Minimal rate ($/hour)"
                         InputLabelProps={{ shrink: true }}
                         type="number"
-                        {...register('minimalRate', {
+                        {...register('minRate', {
                             required: 'Minimal rate is required.',
                             min: {
                                 value: 1.0,
@@ -350,21 +341,12 @@ const ConstructorDataForm = () => {
                     />
                     <ErrorMessage
                         errors={errors}
-                        name="rate"
+                        name="minRate"
                         render={({ message }) => (
                             <p className="error-message">{message}</p>
                         )}
                     />
-                    <LoadScript
-                        googleMapsApiKey={
-                            import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string
-                        }
-                        libraries={libraries}
-                    >
-                        <CustomGooglePlacesAutocomplete
-                            onSelectPlace={handleSelectPlace}
-                        />
-                    </LoadScript>
+                    <CitiesAutocomplete onSelectPlace={handleSelectPlace} />
                     {placesErrorMeessage && (
                         <p className="error-message">{placesErrorMeessage}</p>
                     )}
@@ -373,6 +355,11 @@ const ConstructorDataForm = () => {
                         setSelectedCategories={setSelectedCategories}
                         categoriesErrorMessage={categoriesErrorMessage}
                     />
+                    {categoriesErrorMessage && (
+                        <p className="error-message">
+                            {categoriesErrorMessage}
+                        </p>
+                    )}
                     <LanguagesAutocomplete
                         onSelectLanguage={handleSelectLanguage}
                     />
