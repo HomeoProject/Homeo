@@ -42,16 +42,16 @@ public class Constructor {
 
     @ElementCollection
     @CollectionTable(name = "languages", joinColumns = @JoinColumn(name = "id"))
-    @Column(name = "language", nullable = false)
+    @Column(name = "language", nullable = false, length = 6)
     private Set<String> languages;
 
     @ElementCollection
     @CollectionTable(name = "cities", joinColumns = @JoinColumn(name = "id"))
-    @Column(name = "city", nullable = false)
+    @Column(name = "city", nullable = false, length = 6)
     private Set<String> cities;
 
     @OneToMany(cascade = {CascadeType.REFRESH})
-    @Column(nullable = false)
+    @Column(nullable = false, length = 10)
     @ToString.Exclude
     private Set<Category> categories;
 

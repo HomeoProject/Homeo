@@ -35,6 +35,7 @@ public class ConstructorMapper {
                 .constructorEmail(constructor.getConstructorEmail())
                 .languages(constructor.getLanguages())
                 .categories(constructor.getCategories().stream().map(categoryMapper::toDto).collect(Collectors.toSet()))
+                .cities(constructor.getCities())
                 .paymentMethods(constructor.getPaymentMethods())
                 .createdAt(constructor.getCreatedAt())
                 .updatedAt(constructor.getUpdatedAt())

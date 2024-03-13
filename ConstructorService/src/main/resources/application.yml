@@ -38,6 +38,10 @@ cloudinary:
   folder-name: ${CLOUDINARY_FOLDER_NAME}
   default-category-image: ${CLOUDINARY_DEFAULT_CATEGORY_URL}
 
+api-ninjas:
+  url: ${API_NINJAS_URL}
+  key: ${API_NINJAS_KEY}
+
 openapi:
   service:
     title: ConstructorService
