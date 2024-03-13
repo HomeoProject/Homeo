@@ -62,9 +62,17 @@ export interface Constructor {
     updatedAt: string
 }
 
+export interface City {
+    name: string
+    latitude: number
+    longitude: number
+    country: string
+    population: number
+    is_capital: boolean
+}
+
 export interface Place {
-    label: string
-    value: string
+    name: string
 }
 
 export interface CustomJwtPayload extends JwtPayload {

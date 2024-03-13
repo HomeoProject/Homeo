@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react'
 import { TextField, Autocomplete } from '@mui/material'
-
-interface Place {
-    label: string
-    value: string
-}
+import { Place, City } from '../types/types'
+import axios from 'axios'
 
 type CustomGooglePlacesAutocompleteProps = {
     onSelectPlace: (places: Place[]) => void
@@ -22,49 +19,47 @@ const CustomGooglePlacesAutocomplete = ({
     const options = [
         ...new Map(
             [...selectedCities, ...fetchedOptions].map((option) => [
-                option.value,
+                option.name,
                 option,
             ])
         ).values(),
     ]
 
     useEffect(() => {
-        if (!window.google || inputValue === '') {
+        if (inputValue === '' || inputValue.length < 3) {
             setFetchedOptions([])
             return
         }
 
-        const service = new window.google.maps.places.AutocompleteService()
-        service.getPlacePredictions(
-            {
-                input: inputValue,
-                types: ['(cities)'],
-                componentRestrictions: { country: 'pl' },
-            },
-            (results, status) => {
-                if (
-                    status ===
-                        window.google.maps.places.PlacesServiceStatus.OK &&
-                    results
-                ) {
+        try {
+            axios
+                .get(
+                    `https://api.api-ninjas.com/v1/city?name=${inputValue}&country=PL&limit=5`,
+                    {
+                        headers: {
+                            'X-Api-Key': import.meta.env.VITE_API_NINJAS_KEY,
+                        },
+                    }
+                )
+                .then((response) => {
                     setFetchedOptions(
-                        results.map((result) => ({
-                            label: result.description,
-                            value: result.place_id,
+                        response.data.map((city: City) => ({
+                            name: city.name,
                         }))
                     )
-                }
-            }
-        )
+                })
+        } catch (error) {
+            console.error(error)
+        }
     }, [inputValue])
 
     return (
-        <div className="google-places-autocomplete">
+        <div className="cities-autocomplete">
             <Autocomplete
                 multiple
-                id="google-places-autocomplete"
+                id="cities-autocomplete"
                 options={options}
-                getOptionLabel={(option) => option.label}
+                getOptionLabel={(option) => option.name}
                 filterSelectedOptions
                 value={selectedCities}
                 onChange={(_, newValue) => {
@@ -79,12 +74,12 @@ const CustomGooglePlacesAutocomplete = ({
                 }}
                 // Custom matching function to ensure that the selected options are always valid
                 isOptionEqualToValue={(option, value) =>
-                    option.value === value.value
+                    option.name === value.name
                 }
                 renderInput={(params) => (
                     <TextField
                         {...params}
-                        placeholder="Search for cities..."
+                        placeholder="Search for cities (max 6)..."
                         label="Cities I can work in"
                         InputLabelProps={{ shrink: true }}
                     />

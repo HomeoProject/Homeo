@@ -37,7 +37,7 @@ const LanguagesAutocomplete = ({
                 <TextField
                     {...params}
                     label="Languages I can speak"
-                    placeholder="Search for languages..."
+                    placeholder="Search for languages (max 6)..."
                     InputLabelProps={{ shrink: true }}
                 />
             )}
