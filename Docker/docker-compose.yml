@@ -63,6 +63,27 @@ services:
     depends_on:
       - homeo-apigateway
 
+  homeo-reviewservice:
+    container_name: homeo-reviewservice
+    build: ../ReviewService
+    environment:
+      OKTA_API_ISSUER: ${OKTA_API_ISSUER}
+      OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_URL: ${POSTGRES_URL_REVIEWSERVICE}
+      EUREKA_URL: ${EUREKA_URL}
+      OPENAPI_URL: ${OPENAPI_URL}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    ports:
+      - "8083:8080"
+    restart: unless-stopped
+    depends_on:
+      - homeo-apigateway
+
   homeo-apigateway:
     container_name: homeo-apigateway
     build: ../ApiGateway
