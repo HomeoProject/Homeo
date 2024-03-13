@@ -1,6 +1,7 @@
 package it.homeo.constructorservice.dtos.request;
 
 import it.homeo.constructorservice.enums.PaymentMethod;
+import it.homeo.constructorservice.validators.ValidCities;
 import it.homeo.constructorservice.validators.ValidLanguages;
 import it.homeo.constructorservice.validators.ValidPaymentMethods;
 import jakarta.validation.constraints.*;
@@ -26,14 +27,17 @@ public record AddConstructorDto(
         String constructorEmail,
 
         @ValidLanguages
+        @Size(min= 1, max = 6)
         Set<String> languages,
 
-        // TODO add validator to check if every city is in GCP
-        @NotEmpty
+        @ValidCities
+        @Size(min= 1, max = 6)
         Set<String> cities,
 
+        @Size(min= 1, max = 10)
         Set<Long> categoryIds,
 
         @ValidPaymentMethods
+        @NotEmpty
         Set<PaymentMethod> paymentMethods
 ) { }
