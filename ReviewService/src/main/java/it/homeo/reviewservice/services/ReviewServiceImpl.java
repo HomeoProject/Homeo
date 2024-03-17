@@ -7,17 +7,20 @@ import com.auth0.json.mgmt.permissions.Permission;
 import it.homeo.reviewservice.dtos.response.ReviewPageDto;
 import it.homeo.reviewservice.exceptions.AlreadyExistsException;
 import it.homeo.reviewservice.exceptions.BadRequestException;
+import it.homeo.reviewservice.exceptions.ForbiddenException;
 import it.homeo.reviewservice.exceptions.NotFoundException;
+import it.homeo.reviewservice.mappers.ReviewMapper;
 import it.homeo.reviewservice.messaging.ReviewEventProducer;
 import it.homeo.reviewservice.models.Review;
 import it.homeo.reviewservice.models.ReviewStats;
 import it.homeo.reviewservice.repositories.ReviewRepository;
 import it.homeo.reviewservice.repositories.ReviewStatsRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -29,23 +32,32 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewStatsRepository reviewStatsRepository;
     private final ReviewEventProducer reviewEventProducer;
+    private final ReviewMapper reviewMapper;
     private final ManagementAPI mgmt;
 
-    public ReviewServiceImpl(ReviewRepository reviewRepository, ReviewStatsRepository reviewStatsRepository, ReviewEventProducer reviewEventProducer, ManagementAPI mgmt) {
+    public ReviewServiceImpl(ReviewRepository reviewRepository, ReviewStatsRepository reviewStatsRepository, ReviewEventProducer reviewEventProducer, ReviewMapper reviewMapper, ManagementAPI mgmt) {
         this.reviewRepository = reviewRepository;
         this.reviewStatsRepository = reviewStatsRepository;
         this.reviewEventProducer = reviewEventProducer;
+        this.reviewMapper = reviewMapper;
         this.mgmt = mgmt;
     }
 
     @Override
-    public ReviewPageDto getUserReviews(String userId, LocalDateTime lastCreatedAt) {
-        Optional<ReviewPageDto> reviewPageDto = reviewRepository.findReviewPageBeforeCreatedAt(userId, lastCreatedAt);
+    public ReviewPageDto getUserReceivedReviews(String userId, LocalDateTime lastCreatedAt) {
+        ReviewStats reviewStats = getUserReviewStats(userId);
+        Pageable pageable = PageRequest.of(0, 5);
+        List<Review> reviews = reviewRepository.findByReceiverIdAndCreatedAtBeforeOrderByCreatedAtDesc(userId, lastCreatedAt, pageable);
+        return ReviewPageDto.builder()
+                .stats(reviewMapper.toDto(reviewStats))
+                .content(reviews.stream().map(reviewMapper::toDto).toList())
+                .build();
+    }
 
-        return reviewPageDto.orElseGet(() -> ReviewPageDto.builder()
-                .reviewsNumber(0)
-                .content(new ArrayList<>())
-                .build());
+    @Override
+    public List<Review> getUserReviewedReviews(String userId, LocalDateTime lastCreatedAt) {
+        Pageable pageable = PageRequest.of(0, 5);
+        return reviewRepository.findByReviewerIdAndCreatedAtBeforeOrderByCreatedAtDesc(userId, lastCreatedAt, pageable);
     }
 
     @Override
@@ -81,20 +93,31 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review updateReview(Long id, Review newReview) {
-        return null;
+    public Review updateReview(Long id, String userId, Review newReview) {
+        Review review = getReview(id);
+        validateUser(review.getReviewerId(), userId);
+        ReviewStats reviewStats = getUserReviewStats(review.getReceiverId());
+        Double newRatingsSum = reviewStats.getRatingsSum() - review.getRating() + newReview.getRating();
+        reviewStats.setRatingsSum(newRatingsSum);
+        review.setRating(newReview.getRating());
+        review.setText(newReview.getText());
+        reviewStats = reviewStatsRepository.save(reviewStats);
+        reviewEventProducer.produceAvgReviewUpdated(reviewStats);
+        return reviewRepository.save(review);
     }
 
     @Transactional
     @Override
-    public void deleteReview(Long id) {
+    public void deleteReview(Long id, String userId) {
         Review review = getReview(id);
+        validateUser(review.getReviewerId(), userId);
         ReviewStats reviewStats = getUserReviewStats(review.getReceiverId());
         Integer newReviewsNumber = reviewStats.getReviewsNumber() - 1;
         Double newRatingsSum = reviewStats.getRatingsSum() - review.getRating();
         reviewStats.setReviewsNumber(newReviewsNumber);
         reviewStats.setRatingsSum(newRatingsSum);
-        reviewStatsRepository.save(reviewStats);
+        reviewStats = reviewStatsRepository.save(reviewStats);
+        reviewEventProducer.produceAvgReviewUpdated(reviewStats);
         reviewRepository.delete(review);
     }
 
@@ -116,6 +139,12 @@ public class ReviewServiceImpl implements ReviewService {
         }
         if (isUserHasNotConstructorPermission(review.getReceiverId())) {
             throw new BadRequestException("Receiver with id: " + review.getReceiverId() + " is not a constructor");
+        }
+    }
+
+    private void validateUser(String userId, String secondUserId) {
+        if (!userId.equals(secondUserId)) {
+            throw new ForbiddenException();
         }
     }
 

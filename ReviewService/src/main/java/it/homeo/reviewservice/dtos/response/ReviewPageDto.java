@@ -6,7 +6,6 @@ import java.util.List;
 
 @Builder
 public record ReviewPageDto(
-    Double averageRating,
-    Integer reviewsNumber,
+    ReviewStatsDto stats,
     List<ReviewDto> content
 ) { }

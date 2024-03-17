@@ -3,6 +3,7 @@ package it.homeo.reviewservice.config;
 import com.auth0.exception.Auth0Exception;
 import it.homeo.reviewservice.exceptions.AlreadyExistsException;
 import it.homeo.reviewservice.exceptions.BadRequestException;
+import it.homeo.reviewservice.exceptions.ForbiddenException;
 import it.homeo.reviewservice.exceptions.NotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,12 @@ import java.util.regex.Pattern;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(ForbiddenException.class)
+    protected ResponseEntity<Object> handleAppUserNotFoundException(ForbiddenException ex, WebRequest request) {
+        CustomError error = new CustomError(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN, ex.getMessage(), getPath(request), LocalDateTime.now());
+        return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
+    }
 
     @ExceptionHandler(NotFoundException.class)
     protected ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest request) {
