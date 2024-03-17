@@ -21,6 +21,7 @@ import axios from 'axios'
 import { useAuth0 } from '@auth0/auth0-react'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 import CategoriesSelect from './CategoriesSelect'
+import AcceptedPaymentMethodSelect from './AcceptedPaymentMethodSelect'
 
 interface ConstructorDataForm {
     phoneNumber: string
@@ -366,41 +367,11 @@ const ConstructorDataForm = () => {
                     {languagesErrorMessage && (
                         <p className="error-message">{languagesErrorMessage}</p>
                     )}
-                    <FormControl>
-                        <InputLabel
-                            shrink={true}
-                            id="acceptedPaymentMethods"
-                            sx={{ backgroundColor: 'white', padding: '0 5px' }}
-                        >
-                            Accepted payment methods
-                        </InputLabel>
-                        <Select
-                            id="acceptedPaymentMethods"
-                            multiple
-                            MenuProps={{ disableScrollLock: true }}
-                            value={acceptedPaymentMethods}
-                            onChange={handlePaymentMethodChange}
-                            renderValue={(selected) => selected.join(', ')}
-                        >
-                            {paymentMethods.map((method) => (
-                                <MenuItem key={method} value={method}>
-                                    <Checkbox
-                                        checked={
-                                            acceptedPaymentMethods.indexOf(
-                                                method
-                                            ) > -1
-                                        }
-                                    />
-                                    <ListItemText primary={method} />
-                                </MenuItem>
-                            ))}
-                        </Select>
-                        {acceptedPaymentMethods.length === 0 && (
-                            <p className="select-placeholder">
-                                Choose accepted payment methods...
-                            </p>
-                        )}
-                    </FormControl>
+                    <AcceptedPaymentMethodSelect
+                        acceptedPaymentMethods={acceptedPaymentMethods}
+                        handlePaymentMethodChange={handlePaymentMethodChange}
+                        paymentMethods={paymentMethods}
+                    />
                     <p className="error-message">
                         {acceptedPaymentMethodsErrorMessage}
                     </p>
