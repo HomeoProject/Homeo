@@ -2,6 +2,7 @@ import '../style/scss/AboutPage.scss'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Developer } from '../types/types'
+import { developers } from '../Data/data'
 import greenIcon from '../Assets/icon-green.png'
 import PersonIcon from '@mui/icons-material/Person'
 import GitHubIcon from '@mui/icons-material/GitHub'
@@ -12,44 +13,18 @@ import maciejImg from '../Assets/Maciej.jpg'
 import piotrImg from '../Assets/Piotr.jpg'
 
 const AboutPage = () => {
-    const developers = [
-        {
-            name: 'Piotr Damrych',
-            github: 'https://github.com/piotrd22',
-            linkedin: 'https://www.linkedin.com/in/piotr-damrych-146a1421a/',
-            image: piotrImg,
-            role: 'Backend Engineer',
-        },
-        {
-            name: 'Karol Wiśniewski',
-            github: 'https://github.com/Karol-Wisniewski',
-            linkedin: 'https://www.linkedin.com/in/karol-wisniewski-722588267/',
-            image: karolImg,
-            role: 'Fullstack Engineer',
-        },
-        {
-            name: 'Maciej Słupianek',
-            github: 'https://github.com/M-ac-i-ej-s',
-            linkedin:
-                'https://www.linkedin.com/in/maciej-s%C5%82upianek-686246237/',
-            image: maciejImg,
-            role: 'Frontend Engineer',
-        },
-    ]
-
     const [developer, setDeveloper] = useState<Developer>(developers[0])
-    const [photoStyle, setPhotoStyle] = useState<{
-        rotate: string
-        transition: string
-    }>({ rotate: '0deg', transition: '0.5s ease-in-out' })
+    const [photoStyle, setPhotoStyle] = useState<string>('activate')
 
-    const handleDeveloperChange = (index: number) => {
-        setPhotoStyle({ rotate: '0deg', transition: '0.5s ease-in-out' })
-        setPhotoStyle({ rotate: '360deg', transition: '0.5s ease-in-out' })
-        setDeveloper(developers[index])
+    const handleDeveloperChange = (name: string) => {
+        setPhotoStyle('activate')
+        setPhotoStyle('rotated')
+        setDeveloper(
+            developers.find((dev) => dev.name === name) || developers[0]
+        )
         setTimeout(() => {
-            setPhotoStyle({ rotate: '0deg', transition: 'none' })
-        }, 500)
+            setPhotoStyle('deactivate')
+        }, 400)
     }
 
     return (
@@ -85,26 +60,25 @@ const AboutPage = () => {
                 <img
                     src={piotrImg}
                     className="about-developers-choice-developer"
-                    onClick={() => handleDeveloperChange(0)}
+                    onClick={() => handleDeveloperChange('Piotr Damrych')}
                 />
                 <div className="about-developers-choice-divider" />
                 <img
                     src={karolImg}
                     className="about-developers-choice-developer"
-                    onClick={() => handleDeveloperChange(1)}
+                    onClick={() => handleDeveloperChange('Karol Wiśniewski')}
                 />
                 <div className="about-developers-choice-divider" />
                 <img
                     src={maciejImg}
                     className="about-developers-choice-developer"
-                    onClick={() => handleDeveloperChange(2)}
+                    onClick={() => handleDeveloperChange('Maciej Słupianek')}
                 />
             </div>
             <div className="about-developers-info">
                 <img
                     src={developer.image}
-                    className="about-developers-info-photo"
-                    style={photoStyle}
+                    className={'about-developers-info-photo' + ` ${photoStyle}`}
                 />
                 <div className="about-developers-info-values">
                     <div className="about-developers-info-values-row">

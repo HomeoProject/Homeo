@@ -56,9 +56,21 @@
             height: 12rem;
             width: 12rem;
             border-radius: 50px;
-            transition: 0.5s ease-in-out;
+            transition: 0.4s ease-in-out;
             rotate: 360deg;
             border: 5px solid v.$primary-color;
+            &.activate {
+                scale: 1;
+                transition: 0.4s ease-in-out;
+            }
+            &.rotated {
+                scale: 1.1;
+                transition: 0.4s ease-in-out;
+            }
+            &.deactivate {
+                scale: 1;
+                transition: 0.4s ease-in-out;
+            }
         }
         .about-developers-info-values {
             display: flex;
