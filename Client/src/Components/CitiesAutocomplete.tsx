@@ -1,29 +1,29 @@
 import { useState, useEffect } from 'react'
 import { TextField, Autocomplete } from '@mui/material'
-import { Place, City } from '../types/types'
-import axios from 'axios'
+import { City } from '../types/types'
+import apiNinjasClient from '../AxiosClients/apiNinjasClient'
+import { AxiosError, AxiosResponse } from 'axios'
 
 type CustomGooglePlacesAutocompleteProps = {
-    onSelectPlace: (places: Place[]) => void
+    selectedPlaces: string[]
+    onSelectPlace: (places: string[]) => void
 }
 
 const CustomGooglePlacesAutocomplete = ({
+    selectedPlaces,
     onSelectPlace,
 }: CustomGooglePlacesAutocompleteProps) => {
     const [inputValue, setInputValue] = useState<string>('')
-    const [fetchedOptions, setFetchedOptions] = useState<Place[]>([])
-    const [selectedCities, setSelectedCities] = useState<Place[]>([])
+    const [fetchedOptions, setFetchedOptions] = useState<City[]>([])
     const maximumCitiesLimit = 6
 
-    // Combine fetched options with selected options to ensure selected options are always valid. This also takes care of the duplicates.
-    const options = [
-        ...new Map(
-            [...selectedCities, ...fetchedOptions].map((option) => [
-                option.name,
-                option,
-            ])
-        ).values(),
-    ]
+    // Combine fetched city names with selected city names to ensure selected city names are always valid and to take care of duplicates
+    const options = Array.from(
+        new Set([
+            ...selectedPlaces,
+            ...fetchedOptions.map((option) => option.name),
+        ])
+    )
 
     useEffect(() => {
         if (inputValue === '' || inputValue.length < 3) {
@@ -31,26 +31,14 @@ const CustomGooglePlacesAutocomplete = ({
             return
         }
 
-        try {
-            axios
-                .get(
-                    `https://api.api-ninjas.com/v1/city?name=${inputValue}&country=PL&limit=5`,
-                    {
-                        headers: {
-                            'X-Api-Key': import.meta.env.VITE_API_NINJAS_KEY,
-                        },
-                    }
-                )
-                .then((response) => {
-                    setFetchedOptions(
-                        response.data.map((city: City) => ({
-                            name: city.name,
-                        }))
-                    )
-                })
-        } catch (error) {
-            console.error(error)
-        }
+        apiNinjasClient
+            .get<City[]>(`city?name=${inputValue}&country=PL&limit=5`)
+            .then((response: AxiosResponse<City[]>) => {
+                setFetchedOptions(response.data)
+            })
+            .catch((error: AxiosError) => {
+                console.error(error)
+            })
     }, [inputValue])
 
     return (
@@ -59,23 +47,18 @@ const CustomGooglePlacesAutocomplete = ({
                 multiple
                 id="cities-autocomplete"
                 options={options}
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option) => option} // options are now strings, so return the option directly
                 filterSelectedOptions
-                value={selectedCities}
+                value={selectedPlaces}
                 onChange={(_, newValue) => {
-                    // Enforce the maximum limit of cities
                     if (newValue.length <= maximumCitiesLimit) {
-                        setSelectedCities(newValue)
                         onSelectPlace(newValue)
                     }
                 }}
                 onInputChange={(_, newInputValue) => {
                     setInputValue(newInputValue)
                 }}
-                // Custom matching function to ensure that the selected options are always valid
-                isOptionEqualToValue={(option, value) =>
-                    option.name === value.name
-                }
+                isOptionEqualToValue={(option, value) => option === value} // compare city names directly
                 renderInput={(params) => (
                     <TextField
                         {...params}

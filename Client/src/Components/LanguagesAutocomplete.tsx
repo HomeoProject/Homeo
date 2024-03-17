@@ -3,10 +3,12 @@ import isoLangs from 'iso-639-1'
 import { useMemo } from 'react'
 
 type LanguagesAutocompleteProps = {
+    selectedLanguages: string[]
     onSelectLanguage: (languages: string[]) => void
 }
 
 const LanguagesAutocomplete = ({
+    selectedLanguages,
     onSelectLanguage,
 }: LanguagesAutocompleteProps) => {
     const languages = useMemo(() => {
@@ -33,6 +35,7 @@ const LanguagesAutocomplete = ({
                     maxHeight: 160,
                 },
             }}
+            value={selectedLanguages}
             renderInput={(params) => (
                 <TextField
                     {...params}
