@@ -71,13 +71,8 @@ public class AppUserServiceImpl implements AppUserService {
 
         // If the user does not exist in the database, it means that he is logging in for the first time, so we create him and return it nicely :)
         if (optionalAppUser.isEmpty()) {
-            AppUser newAppUser = new AppUser();
-            newAppUser.setId(auth0User.getId());
-            newAppUser.setEmail(auth0User.getEmail());
-            newAppUser.setAvatar(auth0User.getPicture());
-            newAppUser.setBlocked(isAuth0UserBlocked);
-            AppUser savedAppUser = repository.save(newAppUser);
-            return mapper.appUserToAppUserDto(savedAppUser);
+            AppUser newAppUser = synchronizeAppUserWithAuth0UserAfterFirstLogin(id, auth0User, isAuth0UserBlocked);
+            return mapper.appUserToAppUserDto(newAppUser);
         }
 
         // If it exists in the database, we check whether there are any inaccuracies between the Auth0 database and ours, possibly update the user and return dto
@@ -242,6 +237,19 @@ public class AppUserServiceImpl implements AppUserService {
         }
 
         return appUser;
+    }
+
+    private AppUser synchronizeAppUserWithAuth0UserAfterFirstLogin(String id, User auth0User, boolean isAuth0UserBlocked) throws Auth0Exception {
+        User updatedUser = new User();
+        updatedUser.setPicture(cloudinaryProperties.getDefaultAvatar());
+        mgmt.users().update(id, updatedUser).execute();
+
+        AppUser newAppUser = new AppUser();
+        newAppUser.setId(auth0User.getId());
+        newAppUser.setEmail(auth0User.getEmail());
+        newAppUser.setAvatar(cloudinaryProperties.getDefaultAvatar());
+        newAppUser.setBlocked(isAuth0UserBlocked);
+        return repository.save(newAppUser);
     }
 
     private AppUser getAppUser(String id) {
