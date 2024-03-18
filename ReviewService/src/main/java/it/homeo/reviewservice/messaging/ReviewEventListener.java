@@ -22,7 +22,7 @@ public class ReviewEventListener {
         reviewService.deleteAllReviewsWithReceiverId(receiverId);
     }
 
-    @RabbitListener(queues = "q.fall-back-user-delete-reviewss")
+    @RabbitListener(queues = "q.fall-back-user-delete-reviews")
     public void fallbackDeleteAllReviewsWithReceiverId(String receiverId) {
         LOGGER.info("Inside: ReviewEventListener -> fallbackDeleteAllReviewsWithReceiverId()...");
         reviewService.deleteAllReviewsWithReceiverId(receiverId);
