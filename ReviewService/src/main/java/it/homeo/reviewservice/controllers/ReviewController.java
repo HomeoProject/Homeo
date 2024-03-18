@@ -52,13 +52,13 @@ public class ReviewController {
         return ResponseEntity.ok(reviewMapper.toDto(reviewStats));
     }
 
-    @GetMapping("/page/{userId}")
+    @GetMapping("/received/{userId}")
     public ResponseEntity<ReviewPageDto> getUserReceivedReviews(@PathVariable String userId, @RequestParam("lastCreatedAt") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime lastCreatedAt) {
         LOGGER.info("Inside: ReviewController -> getUserReceivedReviews()...");
         return ResponseEntity.ok(reviewService.getUserReceivedReviews(userId, lastCreatedAt));
     }
 
-    @GetMapping("/myreviews")
+    @GetMapping("/user/reviewed")
     public ResponseEntity<List<ReviewDto>> getUserReviewedReviews(@RequestParam("lastCreatedAt") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime lastCreatedAt) {
         LOGGER.info("Inside: ReviewController -> getUserReviewedReviews()...");
         String userId = getUserId();

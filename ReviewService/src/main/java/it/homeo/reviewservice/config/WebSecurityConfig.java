@@ -2,6 +2,7 @@ package it.homeo.reviewservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
@@ -14,6 +15,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+    private static final String USER_AUTHORITY = "user:permission";
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         /*
@@ -22,7 +25,10 @@ public class WebSecurityConfig {
         */
         return http
                 .authorizeHttpRequests(authorize -> authorize
-                        // All
+                        .requestMatchers(HttpMethod.GET, "/api/reviews/user/**").hasAuthority(USER_AUTHORITY)
+                        .requestMatchers(HttpMethod.PUT, "/api/reviews/**").hasAuthority(USER_AUTHORITY)
+                        .requestMatchers(HttpMethod.DELETE, "/api/reviews/**").hasAuthority(USER_AUTHORITY)
+                        .requestMatchers(HttpMethod.POST, "/api/reviews/**").hasAuthority(USER_AUTHORITY)
                         .anyRequest().permitAll()
                 )
                 .cors(withDefaults())
