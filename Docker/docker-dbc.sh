@@ -27,3 +27,4 @@ fi
 check_database "userservice"
 check_database "constructorservice"
 check_database "reviewservice"
+check_database "searchservice"

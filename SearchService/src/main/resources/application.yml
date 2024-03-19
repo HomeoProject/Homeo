@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: SearchService
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
+
+okta:
+  oauth2:
+    issuer: ${OKTA_API_ISSUER}
+    audience: ${OKTA_API_AUDIENCE}
+
+openapi:
+  service:
+    title: SearchService
+    version: 1.0.0
+    url: ${OPENAPI_URL}
+springdoc:
+  api-docs:
+    path: /searchservice/api-docs
+  swagger-ui:
+    path: /searchservice/swagger-ui
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL}
+    healthcheck:
+      enabled: true
