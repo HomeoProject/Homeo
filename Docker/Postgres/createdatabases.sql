@@ -6,3 +6,6 @@ CREATE DATABASE constructorservice;
 
 -- ReviewService DB
 CREATE DATABASE reviewservice;
+
+-- SearchService DB
+CREATE DATABASE searchservice;
