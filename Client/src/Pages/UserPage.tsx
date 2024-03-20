@@ -98,6 +98,13 @@ const UserPage = () => {
                                 headline="Your profile is incomplete"
                             />
                         )}
+                        {!isConstructor && isProfileComplete && (
+                            <Banner
+                                variant="info"
+                                text="Fill in the missing constructor information to become one and start offering your services."
+                                headline="Want to become a constructor?"
+                            />
+                        )}
                         <Outlet />
                     </div>
                     <UploadPictureModal
