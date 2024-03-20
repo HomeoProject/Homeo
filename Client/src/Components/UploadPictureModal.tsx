@@ -1,8 +1,7 @@
 import { Box, Button, Modal, Typography } from '@mui/material'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
-import { useUserContext } from '../Context/UserContext'
+import { useUserContext } from '../Context/UserContext.ts'
 import { useForm } from 'react-hook-form'
-import axios from 'axios'
 import { TextField } from '@mui/material'
 import { useAuth0 } from '@auth0/auth0-react'
 import Cropper, { ReactCropperElement } from 'react-cropper'
@@ -19,13 +18,32 @@ import {
 } from '../style/scss/muiComponents/ChangeAvatarModal.ts'
 import CloseIcon from '@mui/icons-material/Close'
 import LoadingSpinner from './LoadingSpinner.tsx'
+import { toast } from 'react-toastify'
+import { setAuthToken } from '../AxiosClients/apiClient.ts'
+import DefaultAvatar from '../Assets/default-avatar.svg'
+import { AxiosInstance } from 'axios'
 
-type ChangeAvatarModalProps = {
+type UploadPictureModalProps = {
     open: boolean
+    minHeight?: number
+    minWidth?: number
+    maxSize?: number
+    client: AxiosInstance
+    path: string
+    method: 'patch' | 'post' | 'put'
     handleClose: () => void
 }
 
-const ChangeAvatarModal = ({ open, handleClose }: ChangeAvatarModalProps) => {
+const UploadPictureModal = ({
+    open,
+    minHeight,
+    minWidth,
+    maxSize,
+    client,
+    path,
+    method,
+    handleClose,
+}: UploadPictureModalProps) => {
     const { customUser, setCustomUser } = useUserContext()
     const { getAccessTokenSilently } = useAuth0()
     const [errorMessage, setErrorMessage] = useState('')
@@ -70,39 +88,40 @@ const ChangeAvatarModal = ({ open, handleClose }: ChangeAvatarModalProps) => {
     const onSubmit = async () => {
         setIsLoading(true)
         const token = await getAccessTokenSilently()
+        setAuthToken(token)
+
         const cropper = cropperRef.current?.cropper
         if (customUser && cropper) {
             const canvas = cropper.getCroppedCanvas()
             const dataURL = canvas.toDataURL('image/jpeg', 0.5)
             const blob = dataURItoBlob(dataURL)
-            const formData = new FormData(document.forms[0])
+            const formData = new FormData()
             formData.append('file', blob)
-            axios
-                .patch(
-                    `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/users/avatar/${customUser.id}`,
-                    formData,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    }
-                )
+
+            client[method](path, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
                 .then((response) => {
                     internalHandleClose()
-                    setCustomUser({
-                        ...customUser,
-                        avatar: response.data.avatar,
-                    })
-                    setIsLoading(false)
+                    if (response.data.avatar && customUser) {
+                        setCustomUser({
+                            ...customUser,
+                            avatar: response.data.avatar,
+                        })
+                        toast.success('Picture uploaded successfully!')
+                    }
                 })
                 .catch((error) => {
-                    console.log(error)
+                    console.error(error)
                     setErrorMessage('Error while uploading file')
-                    setIsLoading(false)
+                    setImgSrc(customUser.avatar)
                 })
+                .finally(() => setIsLoading(false))
         } else {
             setErrorMessage('Something went wrong, please try again later.')
+            setImgSrc(DefaultAvatar)
             setIsLoading(false)
         }
     }
@@ -117,15 +136,21 @@ const ChangeAvatarModal = ({ open, handleClose }: ChangeAvatarModalProps) => {
             image.src = URL.createObjectURL(file)
 
             image.onload = () => {
-                if (image.width < 200 || image.height < 200) {
-                    setErrorMessage('Image must be at least 200x200 pixels')
+                if (
+                    image.width < (minWidth || 200) ||
+                    image.height < (minHeight || 200)
+                ) {
+                    setErrorMessage(
+                        `Image must be at least ${minWidth || 200}x${minHeight || 200} pixels`
+                    ) // Default: 200x200
+                    setIsLoading(false)
                     return
                 }
 
-                const maxSizeInBytes = 1024 * 1024 // 1MB
+                const maxSizeInBytes = (maxSize || 1) * 1024 * 1024 // Default: 1MB
                 if (file.size > maxSizeInBytes) {
                     setErrorMessage(
-                        'Image size exceeds the maximum allowed size (1MB)'
+                        `Image size exceeds the maximum allowed size (${maxSize || 1}MB)`
                     )
                     setIsLoading(false)
                     return
@@ -237,4 +262,4 @@ const ChangeAvatarModal = ({ open, handleClose }: ChangeAvatarModalProps) => {
     )
 }
 
-export default ChangeAvatarModal
+export default UploadPictureModal

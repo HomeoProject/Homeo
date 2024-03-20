@@ -6,10 +6,11 @@ import LoadingSpinner from '../Components/LoadingSpinner'
 import { useUserContext } from '../Context/UserContext'
 import { useEffect, useState } from 'react'
 import UserAvatar from '../Components/UserAvatar'
-import ChangeAvatarModal from '../Components/ChangeAvatarModal'
+import UploadPictureModal from '../Components/UploadPictureModal'
 import 'react-toastify/dist/ReactToastify.css'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 import Banner from '../Components/Banner'
+import apiClient from '../AxiosClients/apiClient'
 
 const UserPage = () => {
     const { user, isLoading, getAccessTokenSilently } = useAuth0()
@@ -90,7 +91,7 @@ const UserPage = () => {
                         </div>
                     </div>
                     <div className="user-page-main-right">
-                        {isProfileComplete && (
+                        {!isProfileComplete && (
                             <Banner
                                 variant="warning"
                                 text="In order to comment, leave reviews and communicate with or become a constructor please fill the missing personal information."
@@ -99,7 +100,16 @@ const UserPage = () => {
                         )}
                         <Outlet />
                     </div>
-                    <ChangeAvatarModal open={open} handleClose={handleClose} />
+                    <UploadPictureModal
+                        open={open}
+                        handleClose={handleClose}
+                        maxSize={1}
+                        minHeight={200}
+                        minWidth={200}
+                        client={apiClient}
+                        path={`users/avatar/${customUser.id}`}
+                        method={'patch'}
+                    />
                 </div>
             ) : (
                 <ErrorPage error={'You are not authorized to view this page'} />

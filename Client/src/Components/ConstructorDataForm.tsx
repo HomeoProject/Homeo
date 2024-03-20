@@ -1,27 +1,20 @@
-import { PaymentMethod, Place } from '../types/types'
-import {
-    ListItemText,
-    MenuItem,
-    Checkbox,
-    Select,
-    Button,
-    TextField,
-    FormControl,
-    InputLabel,
-} from '@mui/material'
+import { Category, PaymentMethod } from '../types/types'
+import { Button, TextField } from '@mui/material'
 import { ErrorMessage } from '@hookform/error-message'
 import { SelectChangeEvent } from '@mui/material/Select'
 import { useForm } from 'react-hook-form'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import '../style/scss/components/ConstructorDataForm.scss'
 import CitiesAutocomplete from './CitiesAutocomplete'
 import LanguagesAutocomplete from './LanguagesAutocomplete'
 import { toast } from 'react-toastify'
-import axios from 'axios'
 import { useAuth0 } from '@auth0/auth0-react'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 import CategoriesSelect from './CategoriesSelect'
 import AcceptedPaymentMethodSelect from './AcceptedPaymentMethodSelect'
+import apiClient, { setAuthToken } from '../AxiosClients/apiClient'
+import { useConstructorContext } from '../Context/ConstructorContext'
+import Banner from './Banner'
 
 interface ConstructorDataForm {
     phoneNumber: string
@@ -36,7 +29,9 @@ interface ConstructorDataForm {
 }
 
 const ConstructorDataForm = () => {
-    const [selectedPlaces, setSelectedPlaces] = useState<Place[]>([])
+    const { constructor, setConstructor } = useConstructorContext()
+
+    const [selectedPlaces, setSelectedPlaces] = useState<string[]>([])
 
     const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
 
@@ -62,7 +57,7 @@ const ConstructorDataForm = () => {
 
     const { isAuthenticated, getAccessTokenSilently } = useAuth0()
 
-    const handleSelectPlace = (places: Place[]) => {
+    const handleSelectPlace = (places: string[]) => {
         setSelectedPlaces(places)
     }
 
@@ -72,8 +67,7 @@ const ConstructorDataForm = () => {
 
     const {
         register,
-        //TODO put contructor data in context and use it to set default values
-        // reset,
+        reset,
         formState: { errors },
         handleSubmit,
     } = useForm<ConstructorDataForm>()
@@ -121,6 +115,38 @@ const ConstructorDataForm = () => {
         }
     }
 
+    const updateConstructorProfile = async (
+        isConstructor: boolean,
+        finalData: ConstructorDataForm,
+        token: string
+    ) => {
+        setAuthToken(token)
+
+        try {
+            if (!isConstructor) {
+                // Creating a new constructor profile
+                apiClient.post('/constructors', finalData).then((response) => {
+                    setConstructor(response.data)
+                })
+                toast.success('Constructor profile created successfully!')
+            } else {
+                // Updating an existing constructor profile
+                apiClient.put('/constructors', finalData).then((response) => {
+                    setConstructor(response.data)
+                })
+                toast.success('Constructor profile updated successfully!')
+            }
+        } catch (error) {
+            const errorMessage = isConstructor
+                ? 'Failed to update constructor profile.'
+                : 'Failed to create constructor profile.'
+            console.error(error)
+            toast.error(errorMessage)
+        } finally {
+            setIsFormLoading(false)
+        }
+    }
+
     const customHandleSubmit = async (data: ConstructorDataForm) => {
         setIsFormLoading(true)
         validateSelectsAndAutocompletes()
@@ -132,7 +158,7 @@ const ConstructorDataForm = () => {
                 method.toString().toUpperCase()
             ),
             languages: selectedLanguages,
-            cities: selectedPlaces.map((place) => place.name),
+            cities: selectedPlaces,
             categoryIds: selectedCategories,
         }
 
@@ -153,57 +179,7 @@ const ConstructorDataForm = () => {
 
             const isConstructor = checkIfUserHasPermission(token, 'constructor')
 
-            !isConstructor
-                ? await axios
-                      .post(
-                          `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/constructors`,
-                          finalData,
-                          {
-                              headers: {
-                                  Authorization: `Bearer ${token}`,
-                              },
-                          }
-                      )
-                      .then((response) => {
-                          console.log(
-                              'Constructor profile created successfully: ',
-                              response.data
-                          )
-                          setIsFormLoading(false)
-                          toast.success(
-                              'Constructor profile created successfully!'
-                          )
-                      })
-                      .catch((error) => {
-                          toast.error('Failed to create constructor profile.')
-                          setIsFormLoading(false)
-                          console.error(error)
-                      })
-                : await axios
-                      .put(
-                          `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/constructors`,
-                          finalData,
-                          {
-                              headers: {
-                                  Authorization: `Bearer ${token}`,
-                              },
-                          }
-                      )
-                      .then((response) => {
-                          console.log(
-                              'Constructor profile updated successfully: ',
-                              response.data
-                          )
-                          toast.success(
-                              'Constructor profile updated successfully!'
-                          )
-                          setIsFormLoading(false)
-                      })
-                      .catch((error) => {
-                          console.error(error)
-                          toast.error('Failed to update constructor profile.')
-                          setIsFormLoading(false)
-                      })
+            updateConstructorProfile(isConstructor, finalData, token)
         } else {
             toast.error(
                 'There was a problem with your authentication. Please try again in a moment.'
@@ -211,8 +187,56 @@ const ConstructorDataForm = () => {
         }
     }
 
+    useEffect(() => {
+        if (isAuthenticated && constructor !== null) {
+            const {
+                phoneNumber,
+                constructorEmail,
+                aboutMe,
+                experience,
+                minRate,
+                categories,
+                cities,
+                languages,
+                paymentMethods,
+            } = constructor
+
+            const selectedCategoriesIds = categories.map(
+                (category: Category) => category.id
+            )
+
+            //convert payment methods from string to PaymentMethod enum
+            const selectedPaymentMethods: PaymentMethod[] = paymentMethods.map(
+                (method: string) =>
+                    PaymentMethod[
+                        method.toUpperCase() as keyof typeof PaymentMethod
+                    ]
+            )
+
+            setSelectedCategories(selectedCategoriesIds)
+            setSelectedPlaces(cities)
+            setSelectedLanguages(languages)
+            setAcceptedPaymentMethods(selectedPaymentMethods)
+
+            reset({
+                phoneNumber,
+                constructorEmail,
+                aboutMe,
+                experience,
+                minRate,
+            })
+        }
+    }, [isAuthenticated, constructor, reset])
+
     return (
         <div className="ConstructorDataForm">
+            {!constructor && (
+                <Banner
+                    variant="info"
+                    text="Fill in the missing constructor information to become one and start offering your services."
+                    headline="Want to become a constructor?"
+                />
+            )}
             <h1>Constructor Information</h1>
             <div className="constructor-data-form-wrapper">
                 <form
@@ -347,7 +371,10 @@ const ConstructorDataForm = () => {
                             <p className="error-message">{message}</p>
                         )}
                     />
-                    <CitiesAutocomplete onSelectPlace={handleSelectPlace} />
+                    <CitiesAutocomplete
+                        selectedPlaces={selectedPlaces}
+                        onSelectPlace={handleSelectPlace}
+                    />
                     {placesErrorMeessage && (
                         <p className="error-message">{placesErrorMeessage}</p>
                     )}
@@ -362,6 +389,7 @@ const ConstructorDataForm = () => {
                         </p>
                     )}
                     <LanguagesAutocomplete
+                        selectedLanguages={selectedLanguages}
                         onSelectLanguage={handleSelectLanguage}
                     />
                     {languagesErrorMessage && (

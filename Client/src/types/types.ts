@@ -49,15 +49,15 @@ export interface Constructor {
     id: string
     userId: string
     phoneNumber: string
-    email: string
+    constructorEmail: string
     aboutMe: string
     experience: string
-    rate: number
+    minRate: number
     categories: Array<Category>
     cities: Array<string>
     languages: Array<string>
-    receivedReviews: Array<Review>
-    acceptedPaymentMethods: Array<string>
+    // receivedReviews: Array<Review>
+    paymentMethods: Array<string>
     createdAt: string
     updatedAt: string
 }
@@ -69,10 +69,6 @@ export interface City {
     country: string
     population: number
     is_capital: boolean
-}
-
-export interface Place {
-    name: string
 }
 
 export interface CustomJwtPayload extends JwtPayload {

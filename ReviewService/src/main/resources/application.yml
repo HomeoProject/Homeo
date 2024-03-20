@@ -22,6 +22,11 @@ okta:
   oauth2:
     issuer: ${OKTA_API_ISSUER}
     audience: ${OKTA_API_AUDIENCE}
+  sdk:
+    domain: ${OKTA_API_DOMAIN}
+    client-id: ${OKTA_MTM_CLIENT_ID}
+    client-secret: ${OKTA_MTM_CLIENT_SECRET}
+    audience: ${OKTA_MANAGEMENT_API_AUDIENCE}
 
 openapi:
   service:
