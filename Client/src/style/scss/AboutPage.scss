@@ -36,7 +36,7 @@
             background-color: v.$secondary-color;
             border: 5px solid white;
             border-radius: 90px;
-            transition: 0.2s ease-in-out;
+            transition: 0.15s ease-in-out;
             cursor: pointer;
             &:hover {
                 border: 5px solid v.$primary-color;
@@ -56,20 +56,20 @@
             height: 12rem;
             width: 12rem;
             border-radius: 50px;
-            transition: 0.4s ease-in-out;
+            transition: 0.15s ease;
             rotate: 360deg;
             border: 5px solid v.$primary-color;
             &.activate {
                 scale: 1;
-                transition: 0.4s ease-in-out;
+                transition: 0.15s ease;
             }
             &.rotated {
                 scale: 1.1;
-                transition: 0.4s ease-in-out;
+                transition: 0.15s ease;
             }
             &.deactivate {
                 scale: 1;
-                transition: 0.4s ease-in-out;
+                transition: 0.15s ease;
             }
         }
         .about-developers-info-values {
@@ -84,7 +84,7 @@
                 .about-developers-info-values-row-link {
                     text-decoration: none;
                     color: black;
-                    transition: 0.2s ease-in-out;
+                    transition: 0.15s ease-in-out;
                     &:hover {
                         color: v.$primary-color;
                     }
