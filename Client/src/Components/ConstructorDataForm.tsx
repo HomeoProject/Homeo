@@ -14,7 +14,6 @@ import CategoriesSelect from './CategoriesSelect'
 import AcceptedPaymentMethodSelect from './AcceptedPaymentMethodSelect'
 import apiClient, { setAuthToken } from '../AxiosClients/apiClient'
 import { useConstructorContext } from '../Context/ConstructorContext'
-import Banner from './Banner'
 
 interface ConstructorDataForm {
     phoneNumber: string
@@ -122,29 +121,36 @@ const ConstructorDataForm = () => {
     ) => {
         setAuthToken(token)
 
-        try {
-            if (!isConstructor) {
-                // Creating a new constructor profile
-                apiClient.post('/constructors', finalData).then((response) => {
+        if (!isConstructor) {
+            // Creating a new constructor profile
+            apiClient
+                .post('/constructors', finalData)
+                .then((response) => {
                     setConstructor(response.data)
                 })
-                toast.success('Constructor profile created successfully!')
-            } else {
-                // Updating an existing constructor profile
-                apiClient.put('/constructors', finalData).then((response) => {
+                .then(() => {
+                    toast.success('Constructor profile created successfully!')
+                })
+                .catch((error) => {
+                    console.error(error)
+                    toast.error('Failed to create constructor profile.')
+                })
+        } else {
+            // Updating an existing constructor profile
+            apiClient
+                .put('/constructors', finalData)
+                .then((response) => {
                     setConstructor(response.data)
                 })
-                toast.success('Constructor profile updated successfully!')
-            }
-        } catch (error) {
-            const errorMessage = isConstructor
-                ? 'Failed to update constructor profile.'
-                : 'Failed to create constructor profile.'
-            console.error(error)
-            toast.error(errorMessage)
-        } finally {
-            setIsFormLoading(false)
+                .then(() => {
+                    toast.success('Constructor profile updated successfully!')
+                })
+                .catch((error) => {
+                    console.error(error)
+                    toast.error('Failed to update constructor profile.')
+                })
         }
+        setIsFormLoading(false)
     }
 
     const customHandleSubmit = async (data: ConstructorDataForm) => {
@@ -230,13 +236,6 @@ const ConstructorDataForm = () => {
 
     return (
         <div className="ConstructorDataForm">
-            {!constructor && (
-                <Banner
-                    variant="info"
-                    text="Fill in the missing constructor information to become one and start offering your services."
-                    headline="Want to become a constructor?"
-                />
-            )}
             <h1>Constructor Information</h1>
             <div className="constructor-data-form-wrapper">
                 <form

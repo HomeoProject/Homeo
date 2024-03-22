@@ -24,7 +24,7 @@ const AboutPage = () => {
         )
         setTimeout(() => {
             setPhotoStyle('deactivate')
-        }, 400)
+        }, 150)
     }
 
     return (

@@ -5,6 +5,7 @@ import ConstructorContext from './ConstructorContext'
 import { Constructor, Category, CustomUser } from '../types/types'
 import { useAuth0 } from '@auth0/auth0-react'
 import apiClient, { setAuthToken } from '../AxiosClients/apiClient'
+import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 
 type AppProviderProps = {
     children: ReactNode
@@ -21,36 +22,26 @@ const AppProvider = ({ children }: AppProviderProps) => {
             if (!isAuthenticated) return
 
             // Check if user exists in local database, if not, create it using Auth0 data
-            try {
-                const token = await getAccessTokenSilently()
-                setAuthToken(token) // Set the auth token for the axios client
+            const token = await getAccessTokenSilently()
+            setAuthToken(token) // Set the auth token for the axios client
 
-                // Get user data
-                const userResponse =
-                    await apiClient.get<CustomUser>('/users/sync')
-                console.log('Custom user: ', userResponse.data)
-                if (userResponse.status === 200 && userResponse.data) {
-                    setCustomUser(userResponse.data)
-                } else {
-                    setCustomUser(null)
-                }
+            // Get user data
+            const userResponse = await apiClient.get<CustomUser>('/users/sync')
+            console.log('Custom user: ', userResponse.data)
+            if (userResponse.status === 200 && userResponse.data) {
+                setCustomUser(userResponse.data)
+            }
 
-                // Get constructor data
+            // Get constructor data
+            const isConstructor = checkIfUserHasPermission(token, 'constructor')
+
+            if (isConstructor) {
                 const userId = userResponse.data.id
                 const constructorResponse = await apiClient.get<Constructor>(
                     `/constructors/${userId}`
                 )
+                setConstructor(constructorResponse.data)
                 console.log('Constructor: ', constructorResponse.data)
-                if (
-                    constructorResponse.status === 200 &&
-                    constructorResponse.data
-                ) {
-                    setConstructor(constructorResponse.data)
-                } else {
-                    setConstructor(null)
-                }
-            } catch (error) {
-                console.error(error)
             }
         }
 
