@@ -50,7 +50,7 @@ public class Constructor {
     @Column(name = "city", nullable = false, length = 6)
     private Set<String> cities;
 
-    @OneToMany(cascade = {CascadeType.REFRESH})
+    @ManyToMany(cascade = {CascadeType.REFRESH})
     @Column(nullable = false, length = 10)
     @ToString.Exclude
     private Set<Category> categories;
