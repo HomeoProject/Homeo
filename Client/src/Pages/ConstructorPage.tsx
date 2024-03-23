@@ -19,12 +19,15 @@ import BuildIcon from '@mui/icons-material/Build'
 import PlumbingIcon from '@mui/icons-material/Plumbing'
 import LocationCityIcon from '@mui/icons-material/LocationCity'
 import PublicIcon from '@mui/icons-material/Public'
+import ErrorPage from './ErrorPage'
 
 const ConstructorPage = () => {
   const id = useParams().id
   const { customUser } = useContext(UserContext)
   const [constructorData, setConstructorData] =
     useState<ConstructorProfile | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [constructorNotFound, setConstructorNotFound] = useState(false)
   const [isViewingOwnProfile, setIsViewingOwnProfile] = useState(false)
 
   const { isAuthenticated, getAccessTokenSilently } = useAuth0()
@@ -35,7 +38,7 @@ const ConstructorPage = () => {
       .then(async (constructorResponse) => {
         setConstructorData(constructorResponse.data)
 
-        if (!isAuthenticated) return
+        if (!isAuthenticated) return constructorResponse.data
 
         const token = await getAccessTokenSilently()
         const isViewerConstructor = checkIfUserHasPermission(
@@ -65,7 +68,10 @@ const ConstructorPage = () => {
         return constructorResponse.data
       })
       .then((partialConstructorData) => {
-        if (!partialConstructorData) return
+        if (!partialConstructorData) {
+          setIsLoading(false)
+          return
+        }
 
         apiClient
           .get(`/users/${partialConstructorData.userId}`)
@@ -79,34 +85,40 @@ const ConstructorPage = () => {
               isOnline: userResponse.data.isOnline,
               isDeleted: userResponse.data.isDeleted,
             })
+            setIsLoading(false)
           })
           .catch((err) => {
             console.error(err)
+            setConstructorNotFound(true)
+            setIsLoading(false)
           })
       })
       .catch((err) => {
         console.error(err)
+        setConstructorNotFound(true)
+        setIsLoading(false)
       })
-  }, [customUser, getAccessTokenSilently, id, isAuthenticated])
+    // eslint-disable-next-line
+  }, [])
 
   return (
     <div className="ConstructorPage">
-      {!constructorData || !customUser ? (
+      {isLoading ? (
         <LoadingSpinner />
-      ) : (
+      ) : !constructorNotFound && !constructorData!.isDeleted ? (
         <div className="constructor-page-main">
           <section className="constructor-page-main-info-section">
             <div className="constructor-page-main-section-content">
               <div className="constructor-page-main-section-content-avatar-wrapper">
                 <UserAvatar
-                  src={constructorData.avatar}
-                  alt={constructorData.constructorEmail}
+                  src={constructorData!.avatar}
+                  alt={constructorData!.constructorEmail}
                   variant="standard"
                   maxWidth="200px"
                   maxHeight="200px"
-                  isApproved={constructorData.isApproved}
+                  isApproved={constructorData!.isApproved}
                 />
-                <p className="constructor-page-main-section-content-mobile-name">{`${constructorData.firstName} ${constructorData.lastName}`}</p>
+                <p className="constructor-page-main-section-content-mobile-name">{`${constructorData!.firstName} ${constructorData!.lastName}`}</p>
                 <p className="constructor-page-main-section-content-mobile-title">
                   Homeo Constructor
                 </p>
@@ -123,20 +135,20 @@ const ConstructorPage = () => {
                 </Button>
               )}
               <div className="constructor-page-main-section-content-info">
-                <p className="constructor-page-main-section-content-info-name">{`${constructorData.firstName} ${constructorData.lastName}`}</p>
+                <p className="constructor-page-main-section-content-info-name">{`${constructorData!.firstName} ${constructorData!.lastName}`}</p>
                 <p className="constructor-page-main-section-content-info-title">
                   Homeo Constructor
                 </p>
                 <div className="constructor-page-main-section-content-info-icon-wrapper">
                   <EmailIcon color="primary" />
                   <p className="constructor-page-main-section-content-info-standard">
-                    {constructorData.constructorEmail}
+                    {constructorData!.constructorEmail}
                   </p>
                 </div>
                 <div className="constructor-page-main-section-content-info-icon-wrapper">
                   <PhoneIcon color="primary" />
                   <p className="constructor-page-main-section-content-info-standard">
-                    {constructorData.phoneNumber
+                    {constructorData!.phoneNumber
                       .split('')
                       .map((char, index) => {
                         if (index === 3 || index === 6) return `-${char}`
@@ -147,17 +159,17 @@ const ConstructorPage = () => {
                 <div className="constructor-page-main-section-content-info-icon-wrapper">
                   <MonetizationOnIcon color="primary" />
                   <p className="constructor-page-main-section-content-info-standard">
-                    {constructorData.minRate}$ / hour
+                    {constructorData!.minRate}$ / hour
                   </p>
                 </div>
                 <div className="constructor-page-main-section-content-info-icon-wrapper">
                   <PaymentsIcon color="primary" />
                   <p className="constructor-page-main-section-content-info-standard">
-                    {constructorData.paymentMethods.map((method, index) => {
+                    {constructorData!.paymentMethods.map((method, index) => {
                       //only first letter should be uppercase, not the whole word
                       const lowercasedMethod =
                         method.charAt(0) + method.slice(1).toLowerCase()
-                      if (index === constructorData.paymentMethods.length - 1)
+                      if (index === constructorData!.paymentMethods.length - 1)
                         return lowercasedMethod
                       return `${lowercasedMethod}, `
                     })}
@@ -184,7 +196,7 @@ const ConstructorPage = () => {
               <h1 className="constructor-page-main-section-title">About me</h1>
             </div>
             <p className="constructor-page-main-section-content">
-              {constructorData.aboutMe}
+              {constructorData!.aboutMe}
             </p>
             <div className="constructor-page-main-section-title-wrapper">
               <BuildIcon color="primary" />
@@ -193,7 +205,7 @@ const ConstructorPage = () => {
               </h1>
             </div>
             <p className="constructor-page-main-section-content">
-              {constructorData.experience}
+              {constructorData!.experience}
             </p>
             <div className="constructor-page-main-section-title-wrapper">
               <PlumbingIcon color="primary" />
@@ -202,8 +214,8 @@ const ConstructorPage = () => {
               </h1>
             </div>
             <p className="constructor-page-main-section-content">
-              {constructorData.categories.map((category, index) => {
-                if (index === constructorData.categories.length - 1)
+              {constructorData!.categories.map((category, index) => {
+                if (index === constructorData!.categories.length - 1)
                   return category.name
                 return `${category.name}, `
               })}
@@ -215,8 +227,8 @@ const ConstructorPage = () => {
               </h1>
             </div>
             <p className="constructor-page-main-section-content">
-              {constructorData.cities.map((city, index) => {
-                if (index === constructorData.cities.length - 1) return city
+              {constructorData!.cities.map((city, index) => {
+                if (index === constructorData!.cities.length - 1) return city
                 return `${city}, `
               })}
             </p>
@@ -225,14 +237,16 @@ const ConstructorPage = () => {
               <h1 className="constructor-page-main-section-title">Languages</h1>
             </div>
             <p className="constructor-page-main-section-content">
-              {constructorData.languages.map((language, index) => {
-                if (index === constructorData.languages.length - 1)
+              {constructorData!.languages.map((language, index) => {
+                if (index === constructorData!.languages.length - 1)
                   return language
                 return `${language}, `
               })}
             </p>
           </section>
         </div>
+      ) : (
+        <ErrorPage error="Constructor not found" />
       )}
     </div>
   )
