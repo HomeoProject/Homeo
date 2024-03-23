@@ -1,4 +1,6 @@
-import { useState, Fragment } from 'react'
+import { useState, Fragment, useEffect } from 'react'
+import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
+import { useAuth0 } from '@auth0/auth0-react'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
@@ -8,9 +10,11 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import InboxIcon from '@mui/icons-material/MoveToInbox'
-import MailIcon from '@mui/icons-material/Mail'
+import ListIcon from '@mui/icons-material/List'
+import GroupsIcon from '@mui/icons-material/Groups'
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
 import burgerIcon from '../Assets/burger.svg'
+import { Link } from 'react-router-dom'
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right'
 
@@ -21,6 +25,10 @@ const TemporaryDrawer = () => {
     bottom: false,
     right: false,
   })
+
+  const [isAdmin, setIsAdmin] = useState<boolean>(false)
+
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0()
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
@@ -46,32 +54,65 @@ const TemporaryDrawer = () => {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem key={text} disablePadding>
+        <Link
+          to="/adverts"
+          style={{ textDecoration: 'none', color: 'inherit' }}
+        >
+          <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <ListIcon />
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary="Adverts" />
             </ListItemButton>
           </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem key={text} disablePadding>
+        </Link>
+        <Link to="/about" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <GroupsIcon />
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary="About us" />
             </ListItemButton>
           </ListItem>
-        ))}
+        </Link>
+        {isAdmin && (
+          <>
+            <Divider />
+            <Link to="/admin-panel" style={{ textDecoration: 'none' }}>
+              <ListItem disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <AdminPanelSettingsIcon color="primary" />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Admin panel"
+                    primaryTypographyProps={{
+                      color: 'primary',
+                      fontWeight: 'bold',
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            </Link>
+          </>
+        )}
       </List>
     </Box>
   )
+
+  useEffect(() => {
+    if (!isAuthenticated) return
+
+    const checkIfAdmin = async () => {
+      const token = await getAccessTokenSilently()
+      const isAdmin = checkIfUserHasPermission(token, 'admin')
+      setIsAdmin(isAdmin)
+    }
+
+    checkIfAdmin()
+  }, [getAccessTokenSilently, isAuthenticated])
 
   return (
     <div className="drawer">

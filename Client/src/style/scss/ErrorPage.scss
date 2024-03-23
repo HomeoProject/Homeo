@@ -1,7 +1,7 @@
 @use './Variables' as v;
 
 .ErrorPage {
-  width: 100%;
+  width: calc(100% - 4rem);
   min-height: calc(100vh - 17rem);
   padding: 0 2rem;
   display: flex;

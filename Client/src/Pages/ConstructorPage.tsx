@@ -14,6 +14,11 @@ import PhoneIcon from '@mui/icons-material/Phone'
 import EmailIcon from '@mui/icons-material/Email'
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn'
 import PaymentsIcon from '@mui/icons-material/Payments'
+import PersonIcon from '@mui/icons-material/Person'
+import BuildIcon from '@mui/icons-material/Build'
+import PlumbingIcon from '@mui/icons-material/Plumbing'
+import LocationCityIcon from '@mui/icons-material/LocationCity'
+import PublicIcon from '@mui/icons-material/Public'
 
 const ConstructorPage = () => {
   const id = useParams().id
@@ -106,15 +111,17 @@ const ConstructorPage = () => {
                   Homeo Constructor
                 </p>
               </div>
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ display: 'flex', gap: '5px', width: 'min-content' }}
-                className="open-chat-button-mobile"
-              >
-                <ChatIcon />
-                Chat
-              </Button>
+              {!isViewingOwnProfile && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  style={{ display: 'flex', gap: '5px', width: 'min-content' }}
+                  className="open-chat-button-mobile"
+                >
+                  <ChatIcon />
+                  Chat
+                </Button>
+              )}
               <div className="constructor-page-main-section-content-info">
                 <p className="constructor-page-main-section-content-info-name">{`${constructorData.firstName} ${constructorData.lastName}`}</p>
                 <p className="constructor-page-main-section-content-info-title">
@@ -159,23 +166,72 @@ const ConstructorPage = () => {
               </div>
             </div>
             <div className="constructor-page-main-section-interactive">
-              <Button
-                variant="contained"
-                color="primary"
-                className="open-chat-button"
-              >
-                <ChatIcon />
-                Chat
-              </Button>
+              {!isViewingOwnProfile && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className="open-chat-button"
+                >
+                  <ChatIcon />
+                  Chat
+                </Button>
+              )}
             </div>
           </section>
           <section className="constructor-page-main-section">
-            <p className="constructor-page-main-section-content"></p>
+            <div className="constructor-page-main-section-title-wrapper">
+              <PersonIcon color="primary" />
+              <h1 className="constructor-page-main-section-title">About me</h1>
+            </div>
+            <p className="constructor-page-main-section-content">
+              {constructorData.aboutMe}
+            </p>
+            <div className="constructor-page-main-section-title-wrapper">
+              <BuildIcon color="primary" />
+              <h1 className="constructor-page-main-section-title">
+                Experience
+              </h1>
+            </div>
+            <p className="constructor-page-main-section-content">
+              {constructorData.experience}
+            </p>
+            <div className="constructor-page-main-section-title-wrapper">
+              <PlumbingIcon color="primary" />
+              <h1 className="constructor-page-main-section-title">
+                Categories
+              </h1>
+            </div>
+            <p className="constructor-page-main-section-content">
+              {constructorData.categories.map((category, index) => {
+                if (index === constructorData.categories.length - 1)
+                  return category.name
+                return `${category.name}, `
+              })}
+            </p>
+            <div className="constructor-page-main-section-title-wrapper">
+              <LocationCityIcon color="primary" />
+              <h1 className="constructor-page-main-section-title">
+                Cities I work in
+              </h1>
+            </div>
+            <p className="constructor-page-main-section-content">
+              {constructorData.cities.map((city, index) => {
+                if (index === constructorData.cities.length - 1) return city
+                return `${city}, `
+              })}
+            </p>
+            <div className="constructor-page-main-section-title-wrapper">
+              <PublicIcon color="primary" />
+              <h1 className="constructor-page-main-section-title">Languages</h1>
+            </div>
+            <p className="constructor-page-main-section-content">
+              {constructorData.languages.map((language, index) => {
+                if (index === constructorData.languages.length - 1)
+                  return language
+                return `${language}, `
+              })}
+            </p>
           </section>
-          <section className="constructor-page-main-section"></section>
-          <section className="constructor-page-main-section"></section>
-          <section className="constructor-page-main-section"></section>
-          <section className="constructor-page-main-section"></section>
         </div>
       )}
     </div>

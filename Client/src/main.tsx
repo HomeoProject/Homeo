@@ -14,6 +14,8 @@ import PersonalDataForm from './Components/PersonalDataForm.tsx'
 import ConstructorDataForm from './Components/ConstructorDataForm.tsx'
 import AdminPanel from './Pages/AdminPanel.tsx'
 import ConstructorPage from './Pages/ConstructorPage.tsx'
+import ErrorHeader from './Components/ErrorHeader.tsx'
+import ErrorFooter from './Components/ErrorFooter.tsx'
 
 const domain: string | undefined = import.meta.env.VITE_REACT_APP_AUTH0_DOMAIN
 const clientId: string | undefined = import.meta.env
@@ -23,7 +25,13 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
-    errorElement: <ErrorPage />,
+    errorElement: (
+      <>
+        <ErrorHeader />
+        <ErrorPage />
+        <ErrorFooter />
+      </>
+    ),
     children: [
       {
         index: true,
