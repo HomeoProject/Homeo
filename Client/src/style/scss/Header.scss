@@ -1,127 +1,128 @@
 @use './Variables' as v;
 
 .Header {
-    width: 100%;
-    background: url('../../Assets/wave-white.svg'),
-        linear-gradient(60deg, v.$primary-color 50%, v.$primary-color-dark);
-    background-repeat: no-repeat, no-repeat;
-    background-size:
-        100% 65%,
-        100% 95%;
-    background-position-y: bottom, top;
-    padding-bottom: 120px;
-    margin-bottom: -120px;
+  width: 100%;
+  background: url('../../Assets/wave-white.svg'),
+    linear-gradient(60deg, v.$primary-color 50%, v.$primary-color-dark);
+  background-repeat: no-repeat, no-repeat;
+  background-size:
+    100% 65%,
+    100% 95%;
+  background-position-y: bottom, top;
+  padding-bottom: 120px;
+  margin-bottom: -120px;
+  height: 12rem;
 
-    .header-main {
-        width: calc(100% - 4rem);
+  .header-main {
+    height: 100%;
+    width: calc(100% - 4rem);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+
+    > .header-logo {
+      display: flex;
+      align-items: center;
+      font-size: v.$font-size-logo;
+      padding: 0;
+      margin: 0;
+      text-decoration: none;
+      color: white;
+      font-family: v.$font-family;
+      margin-top: -90px;
+
+      > img {
+        width: 45px;
+        height: 60px;
+        padding-right: 10px;
+      }
+
+      @media (max-width: 500px) {
+        font-size: v.$font-size-large;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        padding: 0 2rem;
-        height: 12rem;
+        text-decoration: none;
+        color: white;
+        font-family: v.$font-family;
+        margin-top: -90px;
 
-        > .header-logo {
-            display: flex;
-            align-items: center;
-            font-size: v.$font-size-logo;
-            padding: 0;
-            margin: 0;
-            text-decoration: none;
-            color: white;
-            font-family: v.$font-family;
-            margin-top: -90px;
-
-            > img {
-                width: 45px;
-                height: 60px;
-                padding-right: 10px;
-            }
-
-            @media (max-width: 500px) {
-                font-size: v.$font-size-large;
-                display: flex;
-                align-items: center;
-                text-decoration: none;
-                color: white;
-                font-family: v.$font-family;
-                margin-top: -90px;
-
-                > img {
-                    width: 35px;
-                    height: 45px;
-                    padding-right: 10px;
-                }
-            }
+        > img {
+          width: 35px;
+          height: 45px;
+          padding-right: 10px;
         }
-
-        > .header-nav-normal {
-            display: flex;
-            align-items: center;
-            margin-top: -90px;
-
-            @media (max-width: 800px) {
-                display: none;
-            }
-
-            > .header-nav-normal-right {
-                display: flex;
-                align-items: center;
-                gap: 30px;
-                padding-right: 20px;
-
-                > .header-nav-normal-right-link-special {
-                    font-size: v.$font-size-medium;
-                    color: white;
-                    text-decoration: none;
-                    transition: all 0.2s ease;
-                    background-color: white;
-                    color: v.$primary-color;
-                    padding: 6px 16px;
-                    border-radius: 4px;
-
-                    &:hover {
-                        color: v.$primary-color-dark;
-                        background-color: #f0f0f0;
-                    }
-                }
-
-                > .header-nav-normal-right-link {
-                    font-size: v.$font-size-normal;
-                    color: white;
-                    text-decoration: none;
-                    transition: all 0.2s ease;
-
-                    &:hover {
-                        text-decoration: underline;
-                    }
-                }
-            }
-
-            > .header-nav-user-wrapper {
-                display: flex;
-                justify-content: flex-end;
-                margin-left: 1rem;
-            }
-        }
-
-        > .header-nav-small {
-            display: none;
-
-            @media (max-width: 800px) {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-top: -90px;
-            }
-
-            > .header-nav-user-wrapper {
-                display: flex;
-                justify-content: flex-end;
-
-                // @media (max-width: 780px) {
-                //     width: auto;
-                // }
-            }
-        }
+      }
     }
+
+    > .header-nav-normal {
+      display: flex;
+      align-items: center;
+      margin-top: -90px;
+
+      @media (max-width: 800px) {
+        display: none;
+      }
+
+      > .header-nav-normal-right {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        padding-right: 20px;
+
+        > .header-nav-normal-right-link-special {
+          font-size: v.$font-size-medium;
+          color: white;
+          text-decoration: none;
+          transition: all 0.2s ease;
+          background-color: white;
+          color: v.$primary-color;
+          padding: 6px 16px;
+          border-radius: 4px;
+
+          &:hover {
+            color: v.$primary-color-dark;
+            background-color: #f0f0f0;
+          }
+        }
+
+        > .header-nav-normal-right-link {
+          font-size: v.$font-size-normal;
+          color: white;
+          text-decoration: none;
+          transition: all 0.2s ease;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      > .header-nav-user-wrapper {
+        display: flex;
+        justify-content: flex-end;
+        margin-left: 1rem;
+      }
+    }
+
+    > .header-nav-small {
+      display: none;
+
+      @media (max-width: 800px) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: -90px;
+      }
+
+      > .header-nav-user-wrapper {
+        display: flex;
+        justify-content: flex-end;
+
+        // @media (max-width: 780px) {
+        //     width: auto;
+        // }
+      }
+    }
+  }
 }

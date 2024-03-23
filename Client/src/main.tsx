@@ -13,68 +13,67 @@ import theme from './style/themes/themes.ts'
 import PersonalDataForm from './Components/PersonalDataForm.tsx'
 import ConstructorDataForm from './Components/ConstructorDataForm.tsx'
 import AdminPanel from './Pages/AdminPanel.tsx'
+import ConstructorPage from './Pages/ConstructorPage.tsx'
 
 const domain: string | undefined = import.meta.env.VITE_REACT_APP_AUTH0_DOMAIN
 const clientId: string | undefined = import.meta.env
-    .VITE_REACT_APP_AUTH0_CLIENT_ID
+  .VITE_REACT_APP_AUTH0_CLIENT_ID
 
 const router = createBrowserRouter([
-    {
-        path: '/',
-        element: <App />,
-        errorElement: <ErrorPage />,
+  {
+    path: '/',
+    element: <App />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        path: '/about',
+        element: <AboutPage />,
+      },
+      {
+        path: '/adverts',
+        element: <AdvertsPage />,
+      },
+      {
+        path: '/admin-panel',
+        element: <AdminPanel />,
+      },
+      {
+        path: '/user/:id',
+        element: <UserPage />,
         children: [
-            {
-                index: true,
-                element: <HomePage />,
-            },
-            {
-                path: '/about',
-                element: <AboutPage />,
-            },
-            {
-                path: '/adverts',
-                element: <AdvertsPage />,
-            },
-            {
-                path: '/contact',
-                element: <ContactPage />,
-            },
-            {
-                path: '/admin-panel',
-                element: <AdminPanel />,
-            },
-            {
-                path: '/user/:id',
-                element: <UserPage />,
-                children: [
-                    {
-                        index: true,
-                        element: <PersonalDataForm />,
-                    },
-                    {
-                        path: 'constructor-info',
-                        element: <ConstructorDataForm />,
-                    },
-                ],
-            },
+          {
+            index: true,
+            element: <PersonalDataForm />,
+          },
+          {
+            path: 'constructor-info',
+            element: <ConstructorDataForm />,
+          },
         ],
-    },
+      },
+      {
+        path: '/constructor/:id',
+        element: <ConstructorPage />,
+      },
+    ],
+  },
 ])
 
-// console.log(domain, clientId)
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <Auth0Provider
-        domain={domain || ''}
-        clientId={clientId || ''}
-        authorizationParams={{
-            redirect_uri: window.location.origin,
-            audience: 'https://homeo-backend/api',
-        }}
-    >
-        <ThemeProvider theme={theme}>
-            <RouterProvider router={router} />
-        </ThemeProvider>
-    </Auth0Provider>
+  <Auth0Provider
+    domain={domain || ''}
+    clientId={clientId || ''}
+    authorizationParams={{
+      redirect_uri: window.location.origin,
+      audience: 'https://homeo-backend/api',
+    }}
+  >
+    <ThemeProvider theme={theme}>
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  </Auth0Provider>
 )

@@ -1,55 +1,55 @@
 @use '../Variables' as v;
 
 .ConstructorDataForm {
-    width: 100%;
-    padding-bottom: 2rem;
+  width: 100%;
+  padding-bottom: 2rem;
 
-    > h1 {
-        font-size: v.$font-size-large;
+  > h1 {
+    font-size: v.$font-size-large;
 
-        @media (max-width: 800px) {
-            font-size: v.$font-size-normal;
-            margin-top: 0;
-        }
+    @media (max-width: 800px) {
+      font-size: v.$font-size-normal;
+      margin-top: 0;
     }
+  }
 
-    > .constructor-data-form-wrapper {
-        width: calc(100% - 3rem);
-        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
-        padding: 1.5rem;
-        border-radius: 10px;
+  > .constructor-data-form-wrapper {
+    width: calc(100% - 3rem);
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
+    padding: 1.5rem;
+    border-radius: 10px;
 
-        > .constructor-data-form {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 20px; //px for custom margins
+    > .constructor-data-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px; //px for custom margins
 
-            > .custom-input {
-                font-family: v.$font-family;
-            }
+      > .custom-input {
+        font-family: v.$font-family;
+      }
 
-            > input::-webkit-outer-spin-button,
-            input::-webkit-inner-spin-button {
-                -webkit-appearance: none;
-                margin: 0;
-            }
+      > input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
 
-            > input[type='number'] {
-                -moz-appearance: textfield;
-                appearance: textfield;
-            }
+      > input[type='number'] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
 
-            > .error-message {
-                color: v.$error-color;
-                margin: 0;
-                margin-top: -10px;
-            }
+      > .error-message {
+        color: v.$error-color;
+        margin: 0;
+        margin-top: -10px;
+      }
 
-            > .submit-button {
-                font-family: v.$font-family;
-                width: 5rem;
-            }
-        }
+      > .submit-button {
+        font-family: v.$font-family;
+        width: 5rem;
+      }
     }
+  }
 }

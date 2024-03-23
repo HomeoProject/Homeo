@@ -8,16 +8,16 @@ import { ToastContainer } from 'react-toastify'
 import AppProvider from './Context/AppProvider'
 
 function App() {
-    return (
-        <div className="App">
-            <AppProvider>
-                <Header />
-                <ToastContainer />
-                <Outlet />
-                <Footer />
-            </AppProvider>
-        </div>
-    )
+  return (
+    <div className="App">
+      <AppProvider>
+        <Header />
+        <ToastContainer />
+        <Outlet />
+        <Footer />
+      </AppProvider>
+    </div>
+  )
 }
 
 export default App
