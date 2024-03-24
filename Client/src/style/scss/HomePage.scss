@@ -5,7 +5,7 @@
   width: calc(100% - 4rem);
   max-width: 1000px;
   padding: 0 2rem;
-  min-height: calc(100vh - 17rem);
+  min-height: calc(100vh - 26rem);
 
   > .home-page-main-wrapper {
     display: flex;
@@ -32,6 +32,11 @@
         font-size: v.$font-size-large;
         margin: 0;
         margin-bottom: 1rem;
+        padding: 1rem;
+        // background-color: v.$primary-color;
+        // color: white;
+        // border-radius: 10px;
+        // box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
       }
 
       > .home-page-main-search-wrapper {

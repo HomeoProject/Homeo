@@ -3,7 +3,7 @@
 .Header {
   width: 100%;
   background: url('../../Assets/wave-white.svg'),
-    linear-gradient(60deg, v.$primary-color 50%, v.$primary-color-dark);
+    linear-gradient(to right, v.$primary-color, v.$primary-color-dark 95%);
   background-repeat: no-repeat, no-repeat;
   background-size:
     100% 65%,
@@ -13,7 +13,7 @@
   margin-bottom: -120px;
   height: 12rem;
 
-  .header-main {
+  > .header-main {
     height: 100%;
     width: calc(100% - 4rem);
     display: flex;

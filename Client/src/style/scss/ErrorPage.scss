@@ -2,7 +2,7 @@
 
 .ErrorPage {
   width: calc(100% - 4rem);
-  min-height: calc(100vh - 17rem);
+  min-height: calc(100vh - 26rem);
   padding: 0 2rem;
   display: flex;
   flex-direction: column;
@@ -17,22 +17,29 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: -7rem;
+    margin-top: -5rem;
 
-    .error-page-logo {
-      scale: 1;
-    }
-    .error-page-oops {
-      font-size: v.$font-size-large;
+    > .error-page-oops {
       font-weight: 700;
     }
-    .error-page-message {
-      font-size: v.$font-size-large;
-    }
-    .error-page-message-details {
+
+    > .error-page-message-details {
       padding-top: 10px;
-      font-size: v.$font-size-large;
       color: rgb(0, 0, 0, 0.5);
+    }
+
+    > .error-page-oops,
+    .error-page-message,
+    .error-page-message-details {
+      font-size: v.$font-size-normal;
+
+      @media (max-width: 623px) {
+        font-size: v.$font-size-medium;
+      }
+
+      @media (max-width: 330px) {
+        font-size: v.$font-size-small;
+      }
     }
 
     @media (max-width: 623px) {
@@ -50,7 +57,11 @@
     transform: translate(-50%, -50%);
     margin-top: 2rem;
 
-    @media (max-width: 600px) {
+    @media (max-width: 623px) {
+      height: 50%;
+    }
+
+    @media (max-width: 450px) {
       display: none;
     }
   }

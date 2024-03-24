@@ -1,7 +1,7 @@
 @use './Variables.scss' as v;
 
 .ConstructorPage {
-  min-height: calc(100vh - 17rem);
+  min-height: calc(100vh - 26rem);
   max-width: 1000px;
   width: calc(100% - 4rem);
   padding: 0 2rem;
@@ -16,7 +16,7 @@
     justify-content: center;
     align-items: center;
     gap: 1rem;
-    padding-bottom: 2rem;
+    padding-bottom: 4rem;
 
     > .constructor-page-main-info-section {
       width: 100%;
@@ -187,7 +187,7 @@
       }
 
       > .constructor-page-main-section-content:not(:last-child) {
-        border-bottom: 1px solid #d8d8d8;
+        border-bottom: 1px dashed #d8d8d8;
         padding-bottom: 2rem;
       }
 
