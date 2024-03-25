@@ -2,10 +2,8 @@ import { useParams } from 'react-router'
 import '../style/scss/ConstructorPage.scss'
 import { useContext, useEffect, useState } from 'react'
 import apiClient from '../AxiosClients/apiClient'
-import { ConstructorProfile } from '../types/types'
+import { ConstructorProfile, ConstructorProfileReviews } from '../types/types'
 import UserContext from '../Context/UserContext'
-import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
-import { useAuth0 } from '@auth0/auth0-react'
 import LoadingSpinner from '../Components/LoadingSpinner'
 import UserAvatar from '../Components/UserAvatar'
 import { Button } from '@mui/material'
@@ -19,130 +17,166 @@ import BuildIcon from '@mui/icons-material/Build'
 import PlumbingIcon from '@mui/icons-material/Plumbing'
 import LocationCityIcon from '@mui/icons-material/LocationCity'
 import PublicIcon from '@mui/icons-material/Public'
+import StarHalfIcon from '@mui/icons-material/StarHalf'
 import ErrorPage from './ErrorPage'
+import ConstructorReviews from '../Components/ConstructorReviews'
+import StarIcon from '@mui/icons-material/Star'
+import StarBorderIcon from '@mui/icons-material/StarBorder'
+import { Rating } from '@mui/material'
 
 const ConstructorPage = () => {
   const id = useParams().id
   const { customUser } = useContext(UserContext)
   const [constructorData, setConstructorData] =
     useState<ConstructorProfile | null>(null)
+  const [constructorReviews, setConstructorReviews] =
+    useState<ConstructorProfileReviews | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [constructorNotFound, setConstructorNotFound] = useState(false)
   const [isViewingOwnProfile, setIsViewingOwnProfile] = useState(false)
 
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0()
-
   useEffect(() => {
-    apiClient
-      .get(`/constructors/${id}`)
-      .then(async (constructorResponse) => {
-        setConstructorData(constructorResponse.data)
-
-        if (!isAuthenticated) return constructorResponse.data
-
-        const token = await getAccessTokenSilently()
-        const isViewerConstructor = checkIfUserHasPermission(
-          token,
-          'constructor'
-        )
-
-        if (
-          isViewerConstructor &&
-          customUser &&
-          constructorResponse.data.userId === customUser.id
-        ) {
-          setIsViewingOwnProfile(true)
-          setConstructorData({
-            ...constructorResponse.data,
-            avatar: customUser.avatar,
-            firstName: customUser.firstName,
-            lastName: customUser.lastName,
-            isApproved: customUser.isApproved,
-            isOnline: customUser.isOnline,
-            isDeleted: customUser.isDeleted,
+    const getConstructorData = async () => {
+      return apiClient
+        .get(`/constructors/${id}`)
+        .then((constructorResponse) => {
+          setConstructorData((prev) => {
+            return {
+              ...prev,
+              ...constructorResponse.data,
+            }
           })
+        })
+        .catch((err) => {
+          console.error(err)
+          setConstructorNotFound(true)
+        })
+    }
 
-          return
-        }
+    const getConstrutorUserData = async () => {
+      return apiClient
+        .get(`/users/${id}`)
+        .then((userResponse) => {
+          setConstructorData((prev) => {
+            if (!prev) return null
 
-        return constructorResponse.data
-      })
-      .then((partialConstructorData) => {
-        if (!partialConstructorData) {
-          setIsLoading(false)
-          return
-        }
-
-        apiClient
-          .get(`/users/${partialConstructorData.userId}`)
-          .then((userResponse) => {
-            setConstructorData({
-              ...partialConstructorData,
-              avatar: userResponse.data.avatar,
+            return {
+              ...prev,
               firstName: userResponse.data.firstName,
               lastName: userResponse.data.lastName,
+              avatar: userResponse.data.avatar,
               isApproved: userResponse.data.isApproved,
-              isOnline: userResponse.data.isOnline,
               isDeleted: userResponse.data.isDeleted,
-            })
-            setIsLoading(false)
+              isOnline: userResponse.data.isOnline,
+            }
           })
-          .catch((err) => {
-            console.error(err)
-            setConstructorNotFound(true)
-            setIsLoading(false)
-          })
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+    }
+
+    const getConstructorReviews = async () => {
+      return apiClient
+        .get(`/reviews/received/${id}`, {
+          params: {
+            lastCreatedAt: new Date().toISOString(),
+          },
+        })
+        .then((reviewsResponse) => {
+          setConstructorReviews(reviewsResponse.data)
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+    }
+
+    if (customUser && customUser.id === id) {
+      setIsViewingOwnProfile(true)
+    }
+
+    Promise.all([
+      getConstructorData(),
+      getConstrutorUserData(),
+      getConstructorReviews(),
+    ])
+      .then(() => {
+        setIsLoading(false)
       })
       .catch((err) => {
         console.error(err)
-        setConstructorNotFound(true)
         setIsLoading(false)
       })
-    // eslint-disable-next-line
-  }, [])
+  }, [customUser, id])
 
   return (
     <div className="ConstructorPage">
-      {isLoading ? (
+      {isLoading ||
+      (constructorData && Object.keys(constructorData).length !== 19) ? (
         <LoadingSpinner />
-      ) : !constructorNotFound && !constructorData!.isDeleted ? (
+      ) : !constructorNotFound &&
+        constructorData &&
+        !constructorData.isDeleted ? (
         <div className="constructor-page-main">
           <section className="constructor-page-main-info-section">
             <div className="constructor-page-main-section-content">
               <div className="constructor-page-main-section-content-avatar-wrapper">
                 <UserAvatar
-                  src={constructorData!.avatar}
-                  alt={constructorData!.constructorEmail}
+                  src={constructorData.avatar}
+                  alt={constructorData.constructorEmail}
                   variant="standard"
-                  maxWidth="200px"
-                  maxHeight="200px"
-                  isApproved={constructorData!.isApproved}
+                  maxWidth="220px"
+                  maxHeight="220px"
+                  isApproved={constructorData.isApproved}
+                  badgeHeight="40px"
+                  badgeWidth="40px"
                 />
-                <p className="constructor-page-main-section-content-mobile-name">{`${constructorData!.firstName} ${constructorData!.lastName}`}</p>
+                <p className="constructor-page-main-section-content-mobile-name">{`${constructorData.firstName} ${constructorData.lastName}`}</p>
                 <p className="constructor-page-main-section-content-mobile-title">
                   Homeo Constructor
                 </p>
               </div>
-              {!isViewingOwnProfile && (
+              <div className="constructor-page-main-section-interactive-mobile">
                 <Button
                   variant="contained"
                   color="primary"
-                  style={{ display: 'flex', gap: '5px', width: 'min-content' }}
+                  className="open-review-modal-button-mobile"
+                  disabled={isViewingOwnProfile}
+                >
+                  <StarHalfIcon />
+                  Add review
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
                   className="open-chat-button-mobile"
+                  disabled={isViewingOwnProfile}
                 >
                   <ChatIcon />
                   Chat
                 </Button>
-              )}
+              </div>
               <div className="constructor-page-main-section-content-info">
-                <p className="constructor-page-main-section-content-info-name">{`${constructorData!.firstName} ${constructorData!.lastName}`}</p>
+                <p className="constructor-page-main-section-content-info-name">{`${constructorData.firstName} ${constructorData.lastName}`}</p>
                 <p className="constructor-page-main-section-content-info-title">
                   Homeo Constructor
                 </p>
+                <div className="constructor-page-main-section-content-info-rating-wrapper">
+                  <Rating
+                    name="simple-controlled"
+                    value={constructorReviews?.stats.averageRating}
+                    precision={0.5}
+                    icon={<StarIcon color="primary" />}
+                    emptyIcon={<StarBorderIcon color="primary" />}
+                    max={5}
+                    readOnly
+                  />
+                  <p className="constructor-page-main-section-content-info-rating">{`(${constructorReviews?.stats.averageRating})`}</p>
+                </div>
                 <div className="constructor-page-main-section-content-info-icon-wrapper">
                   <EmailIcon color="primary" />
                   <p className="constructor-page-main-section-content-info-standard">
-                    {constructorData!.constructorEmail}
+                    {constructorData.constructorEmail}
                   </p>
                 </div>
                 <div className="constructor-page-main-section-content-info-icon-wrapper">
@@ -178,28 +212,42 @@ const ConstructorPage = () => {
               </div>
             </div>
             <div className="constructor-page-main-section-interactive">
-              {!isViewingOwnProfile && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className="open-chat-button"
-                >
-                  <ChatIcon />
-                  Chat
-                </Button>
-              )}
+              <Button
+                variant="contained"
+                color="primary"
+                className="open-review-modal-button"
+                disabled={isViewingOwnProfile}
+              >
+                <StarHalfIcon />
+                Add review
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                className="open-chat-button"
+                disabled={isViewingOwnProfile}
+              >
+                <ChatIcon />
+                Chat
+              </Button>
             </div>
           </section>
           <section className="constructor-page-main-section">
             <div className="constructor-page-main-section-title-wrapper">
-              <PersonIcon color="primary" />
+              <PersonIcon
+                className="constructor-page-main-section-icon"
+                color="primary"
+              />
               <h1 className="constructor-page-main-section-title">About me</h1>
             </div>
             <p className="constructor-page-main-section-content">
               {constructorData!.aboutMe}
             </p>
             <div className="constructor-page-main-section-title-wrapper">
-              <BuildIcon color="primary" />
+              <BuildIcon
+                className="constructor-page-main-section-icon"
+                color="primary"
+              />
               <h1 className="constructor-page-main-section-title">
                 Experience
               </h1>
@@ -208,7 +256,10 @@ const ConstructorPage = () => {
               {constructorData!.experience}
             </p>
             <div className="constructor-page-main-section-title-wrapper">
-              <PlumbingIcon color="primary" />
+              <PlumbingIcon
+                className="constructor-page-main-section-icon"
+                color="primary"
+              />
               <h1 className="constructor-page-main-section-title">
                 Categories
               </h1>
@@ -221,7 +272,10 @@ const ConstructorPage = () => {
               })}
             </p>
             <div className="constructor-page-main-section-title-wrapper">
-              <LocationCityIcon color="primary" />
+              <LocationCityIcon
+                className="constructor-page-main-section-icon"
+                color="primary"
+              />
               <h1 className="constructor-page-main-section-title">
                 Cities I work in
               </h1>
@@ -233,7 +287,10 @@ const ConstructorPage = () => {
               })}
             </p>
             <div className="constructor-page-main-section-title-wrapper">
-              <PublicIcon color="primary" />
+              <PublicIcon
+                className="constructor-page-main-section-icon"
+                color="primary"
+              />
               <h1 className="constructor-page-main-section-title">Languages</h1>
             </div>
             <p className="constructor-page-main-section-content">
@@ -244,9 +301,16 @@ const ConstructorPage = () => {
               })}
             </p>
           </section>
+          <div className="section-header-wrapper">
+            <StarHalfIcon className="section-header-icon" />
+            <h1 className="section-header">Reviews</h1>
+          </div>
+          <section className="constructor-page-main-section">
+            <ConstructorReviews userId={id} />
+          </section>
         </div>
       ) : (
-        <ErrorPage error="Constructor not found" />
+        <ErrorPage error="Error while fetching constructor data" />
       )}
     </div>
   )

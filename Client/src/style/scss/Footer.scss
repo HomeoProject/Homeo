@@ -56,14 +56,10 @@
       padding-bottom: 23px;
 
       > .footer-text {
-        font-size: v.$font-size-medium;
+        font-size: v.$font-size-small;
         color: white;
         text-align: center;
         margin: 0;
-
-        @media (max-width: 600px) {
-          font-size: v.$font-size-small;
-        }
 
         @media (max-width: 400px) {
           font-size: v.$font-size-extra-small;

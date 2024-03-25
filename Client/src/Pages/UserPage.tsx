@@ -23,7 +23,6 @@ const UserPage = () => {
   const { id } = useParams<{ id: string }>()
 
   const handleOpen = () => {
-    console.log('open')
     setOpen(true)
   }
   const handleClose = () => setOpen(false)

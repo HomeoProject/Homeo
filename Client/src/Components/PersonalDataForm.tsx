@@ -49,10 +49,6 @@ const PersonalDataForm = () => {
           }
         )
         .then((response) => {
-          console.log(
-            'Personal information updated successfully: ',
-            response.data
-          )
           setCustomUser(response.data)
           toast.success('Personal information updated successfully!')
         })

@@ -16,7 +16,7 @@ export interface CustomUser {
 }
 
 export interface Category {
-  id: string
+  id: number
   name: string
   description: string
   image: string
@@ -31,22 +31,22 @@ export enum PaymentMethod {
 }
 
 export interface SelectedCategory {
-  id: string
+  id: number
   name: string
 }
 
 export interface Review {
-  id: string
+  id: number
   reviewerId: string
   receiverId: string
+  rating: number
   text: string
-  rating: string
   createdAt: string
   updatedAt: string
 }
 
 export interface Constructor {
-  id: string
+  id: number
   userId: string
   phoneNumber: string
   constructorEmail: string
@@ -56,14 +56,13 @@ export interface Constructor {
   categories: Array<Category>
   cities: Array<string>
   languages: Array<string>
-  // receivedReviews: Array<Review>
   paymentMethods: Array<string>
   createdAt: string
   updatedAt: string
 }
 
 export interface ConstructorProfile {
-  id: string
+  id: number
   userId: string
   phoneNumber: string
   constructorEmail: string
@@ -73,7 +72,6 @@ export interface ConstructorProfile {
   categories: Array<Category>
   cities: Array<string>
   languages: Array<string>
-  // receivedReviews: Array<Review>
   paymentMethods: Array<string>
   avatar: string
   firstName: string
@@ -84,6 +82,16 @@ export interface ConstructorProfile {
   createdAt: string
   updatedAt: string
 }
+
+export interface ConstructorProfileReviews {
+  stats: {
+    userId: string
+    averageRating: number
+    reviewsNumber: number
+  }
+  content: Array<Review>
+}
+
 export interface City {
   name: string
   latitude: number

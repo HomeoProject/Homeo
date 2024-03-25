@@ -6,7 +6,7 @@ type UserAvatarProps = {
   src: string
   alt: string
   isApproved: boolean
-  variant: 'page' | 'standard' | 'link'
+  variant?: 'page' | 'standard' | 'link'
   viewHref?: string
   customOnClick?: () => void
   maxWidth?: string
@@ -163,13 +163,38 @@ const UserAvatar = ({
         />
       )
     default:
-      return (
+      return isApproved ? (
+        <Badge
+          overlap="circular"
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          badgeContent={
+            <Avatar
+              alt={alt}
+              src={ApprovedIcon}
+              sx={{
+                width: badgeWidth ? badgeWidth : 20,
+                height: badgeHeight ? badgeHeight : 20,
+              }}
+            />
+          }
+        >
+          <Avatar
+            alt={alt}
+            src={src}
+            sx={{
+              maxWidth: maxWidth || 40,
+              maxHeight: maxHeight || 40,
+            }}
+          />
+        </Badge>
+      ) : (
         <Avatar
           alt={alt}
           src={src}
           sx={{
-            width: '100%',
-            height: '100%',
             maxWidth: maxWidth || 40,
             maxHeight: maxHeight || 40,
           }}

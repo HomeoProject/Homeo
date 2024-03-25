@@ -8,10 +8,7 @@ const LoginButton = () => {
     !isLoading && (
       <Button
         variant="contained"
-        onClick={() => (
-          loginWithRedirect(),
-          console.log(import.meta.env.REACT_APP_AUTH0_DOMAIN)
-        )}
+        onClick={() => loginWithRedirect()}
         sx={{
           fontFamily: 'inherit',
           fontWeight: 'bold',

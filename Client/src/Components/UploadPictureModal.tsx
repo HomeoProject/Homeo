@@ -137,12 +137,12 @@ const UploadPictureModal = ({
 
       image.onload = () => {
         if (
-          image.width < (minWidth || 200) ||
-          image.height < (minHeight || 200)
+          image.width < (minWidth || 220) ||
+          image.height < (minHeight || 220)
         ) {
           setErrorMessage(
-            `Image must be at least ${minWidth || 200}x${minHeight || 200} pixels`
-          ) // Default: 200x200
+            `Image must be at least ${minWidth || 220}x${minHeight || 220} pixels`
+          ) // Default: 220x220
           setIsLoading(false)
           return
         }

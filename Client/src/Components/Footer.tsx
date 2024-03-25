@@ -10,7 +10,9 @@ const Footer = () => {
           <b className="footer-logo-text">Homeo</b>
         </div>
         <div className="footer-text-wrapper">
-          <p className="footer-text">©2024 Homeo, All rights reserved</p>
+          <p className="footer-text">
+            ©2024 Homeo &nbsp;&nbsp;|&nbsp;&nbsp; All rights reserved
+          </p>
         </div>
       </div>
     </div>

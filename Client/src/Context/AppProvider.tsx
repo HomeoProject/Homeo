@@ -27,7 +27,6 @@ const AppProvider = ({ children }: AppProviderProps) => {
 
       // Get user data
       const userResponse = await apiClient.get<CustomUser>('/users/sync')
-      console.log('Custom user: ', userResponse.data)
       if (userResponse.status === 200 && userResponse.data) {
         setCustomUser(userResponse.data)
       }
@@ -41,7 +40,6 @@ const AppProvider = ({ children }: AppProviderProps) => {
           `/constructors/${userId}`
         )
         setConstructor(constructorResponse.data)
-        console.log('Constructor: ', constructorResponse.data)
       }
     }
 

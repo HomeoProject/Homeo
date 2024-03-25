@@ -6,13 +6,13 @@ import {
   Checkbox,
   ListItemText,
 } from '@mui/material'
-import { useCategoriesContext } from '../Context/CategoriesContext' // Corrected typo in the hook name
+import { useCategoriesContext } from '../Context/CategoriesContext'
 import { SelectChangeEvent } from '@mui/material/Select'
 import { Category, SelectedCategory } from '../types/types'
 
 interface CategoriesSelectProps {
-  selectedCategories: string[]
-  setSelectedCategories: (categories: string[]) => void
+  selectedCategories: number[]
+  setSelectedCategories: (categories: number[]) => void
   categoriesErrorMessage: string
 }
 
@@ -32,7 +32,7 @@ const CategoriesSelect = ({
     if (value.length > maximumCategoriesLimit) {
       return
     }
-    setSelectedCategories(typeof value === 'string' ? value.split(',') : value)
+    setSelectedCategories(value as number[])
   }
 
   return (

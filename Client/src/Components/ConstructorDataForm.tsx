@@ -21,7 +21,7 @@ interface ConstructorDataForm {
   aboutMe: string
   experience: string
   minRate: number
-  categoryIds: Array<string>
+  categoryIds: Array<number>
   cities: Array<string>
   languages: Array<string>
   paymentMethods: Array<string>
@@ -47,7 +47,7 @@ const ConstructorDataForm = () => {
     setAcceptedPaymentMethodsErrorMessage,
   ] = useState<string>('')
 
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([])
 
   const [categoriesErrorMessage, setCategoriesErrorMessage] = useState('')
 
@@ -166,8 +166,6 @@ const ConstructorDataForm = () => {
       cities: selectedPlaces,
       categoryIds: selectedCategories,
     }
-
-    console.log('Final data: ', finalData)
 
     if (isAuthenticated) {
       const token = await getAccessTokenSilently()
