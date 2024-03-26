@@ -17,6 +17,8 @@ import it.homeo.userservice.messaging.AppUserEventProducer;
 import it.homeo.userservice.models.AppUser;
 import it.homeo.userservice.repositories.AppUserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -142,6 +144,11 @@ public class AppUserServiceImpl implements AppUserService {
         User updatedUser = new User();
         updatedUser.setPassword(dto.password().toCharArray());
         mgmt.users().update(id, updatedUser).execute();
+    }
+
+    public Page<AppUserDto> searchAppUsers(AppUserFilterDto dto, Pageable pageable) {
+        Page<AppUser> appUsers = repository.searchAppUsers(dto, pageable);
+        return appUsers.map(mapper::appUserToAppUserDto);
     }
 
     public AppUserDto approveAppUser(String id, ApproveAppUserRequest dto) {

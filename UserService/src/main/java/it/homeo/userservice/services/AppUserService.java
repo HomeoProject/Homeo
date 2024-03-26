@@ -3,6 +3,8 @@ package it.homeo.userservice.services;
 import com.auth0.exception.Auth0Exception;
 import it.homeo.userservice.dtos.request.*;
 import it.homeo.userservice.dtos.response.AppUserDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface AppUserService {
     AppUserDto getAppUserById(String id);
@@ -15,4 +17,5 @@ public interface AppUserService {
     AppUserDto deleteAppUserAvatar(String id) throws Auth0Exception;
     void deleteAppUser(String id) throws Auth0Exception;
     void updateAppUserPassword(String id, UpdateAppUserPasswordRequest dto) throws Auth0Exception;
+    Page<AppUserDto> searchAppUsers(AppUserFilterDto dto, Pageable pageable);
 }
