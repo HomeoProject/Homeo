@@ -1,19 +1,15 @@
 package it.homeo.reviewservice.dtos.request;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import it.homeo.reviewservice.validators.ValidRating;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 public record AddReviewDto(
-    @NotBlank
+    @NotBlank(message = "Text cannot be empty")
     String text,
 
-    @Min(1)
-    @Max(5)
-    @NotNull
+    @ValidRating
     Double rating,
 
-    @NotBlank
+    @NotBlank(message = "Receiver ID cannot be empty")
     String receiverId
 ) { }
