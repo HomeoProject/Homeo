@@ -20,7 +20,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -89,9 +88,7 @@ public class AppUserServiceImpl implements AppUserService {
         mgmt.users().addRoles(appUser.getId(), Collections.singletonList(auth0RolesProperties.getUserRoleId())).execute();
         appUser = repository.save(appUser);
         AppUserDto appUserDto = mapper.appUserToAppUserDto(appUser);
-        if (isUserConstructor()) {
-            appUserEventProducer.produceUserUpdatedEvent(appUserDto);
-        }
+        appUserEventProducer.produceUserUpdatedEvent(appUserDto);
         return appUserDto;
     }
 
@@ -112,9 +109,7 @@ public class AppUserServiceImpl implements AppUserService {
         // Local DB update
         appUser.setAvatar(cloudinaryProperties.getDefaultAvatar());
         appUser.setDeleted(true);
-        if (isUserConstructor()) {
-            appUserEventProducer.produceUserDeletedEvents(appUser.getId());
-        }
+        appUserEventProducer.produceUserDeletedEvents(appUser.getId());
         repository.save(appUser);
     }
 
@@ -276,16 +271,5 @@ public class AppUserServiceImpl implements AppUserService {
         if (!appUserId.equals(tokenId)) {
             throw new ForbiddenException();
         }
-    }
-
-    private boolean isUserConstructor() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            return false;
-        }
-
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        return authorities.stream()
-                .anyMatch(authority -> authority.getAuthority().equals("constructor:permission"));
     }
 }
