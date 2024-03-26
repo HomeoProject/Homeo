@@ -21,4 +21,8 @@ public class AppUserEventProducer {
         rabbitTemplate.convertAndSend("", "q.user-delete-reviews", userId);
         rabbitTemplate.convertAndSend("", "q.user-delete-constructor", userId);
     }
+
+    public void produceUserIsBlockedEvent(AppUserDto appUserDto) {
+        rabbitTemplate.convertAndSend("", "q.user-is-blocked", appUserDto);
+    }
 }

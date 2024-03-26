@@ -46,6 +46,14 @@ public class RabbitMQConfig {
                 .build();
     }
 
+    @Bean
+    public Queue createUserIsBlockedQueue() {
+        return QueueBuilder.durable("q.user-is-blocked")
+                .withArgument("x-dead-letter-exchange", "x.user-is-blocked-failure")
+                .withArgument("x-dead-letter-routing-key", "fall-back-user-is-blocked")
+                .build();
+    }
+
     // DLQ
     @Bean
     public Declarables createDeadLetterSchemaDeleteReviews() {
@@ -71,6 +79,15 @@ public class RabbitMQConfig {
                 new DirectExchange("x.user-updated-failure"),
                 new Queue("q.fall-back-user-updated"),
                 new Binding("q.fall-back-user-updated", Binding.DestinationType.QUEUE, "x.user-updated-failure", "fall-back-user-updated", null)
+        );
+    }
+
+    @Bean
+    public Declarables createDeadLetterSchemaIsBlocked() {
+        return new Declarables(
+                new DirectExchange("x.user-is-blocked-failure"),
+                new Queue("q.fall-back-user-is-blocked"),
+                new Binding("q.fall-back-user-is-blocked", Binding.DestinationType.QUEUE, "x.user-is-blocked-failure", "fall-back-user-is-blocked", null)
         );
     }
 

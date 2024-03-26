@@ -1,10 +1,12 @@
 package it.homeo.userservice.mappers;
 
+import it.homeo.userservice.config.CloudinaryProperties;
 import it.homeo.userservice.dtos.response.AppUserDto;
 import it.homeo.userservice.dtos.request.UpdateAppUserRequest;
 import it.homeo.userservice.models.AppUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 /*
@@ -13,22 +15,27 @@ MapStruct will generate an implementation class for the interface as a Spring-ma
 This allows you to easily inject and use the mapping in other Spring components.
 */
 @Mapper(componentModel = "spring")
-public interface AppUserMapper {
+public abstract class AppUserMapper {
 
-    AppUser updateAppUserRequestToAppUser(UpdateAppUserRequest updateAppUserRequest, @MappingTarget AppUser appUser);
+    @Autowired
+    private CloudinaryProperties cloudinaryProperties;
 
-    default AppUserDto appUserToAppUserDto(AppUser appUser) {
+    public abstract AppUser updateAppUserRequestToAppUser(UpdateAppUserRequest updateAppUserRequest, @MappingTarget AppUser appUser);
+
+    public AppUserDto appUserToAppUserDto(AppUser appUser) {
         if (appUser == null) {
             return null;
         }
 
-        if (appUser.isDeleted()) {
+        if (appUser.isDeleted() || appUser.isBlocked()) {
             return AppUserDto.builder()
                     .id(appUser.getId())
                     .firstName("Anonymous")
                     .lastName("Anonymous")
-                    .avatar(appUser.getAvatar())
+                    .avatar(cloudinaryProperties.getDefaultAvatar())
                     .isDeleted(appUser.isDeleted())
+                    .isBlocked(appUser.isBlocked())
+                    .createdAt(appUser.getCreatedAt())
                     .build();
         }
 

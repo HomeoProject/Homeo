@@ -155,6 +155,10 @@ public class AppUserServiceImpl implements AppUserService {
     public AppUserDto blockAppUser(String id, BlockAppUserRequest dto) throws Auth0Exception {
         AppUser appUser = getAppUser(id);
 
+        if (appUser.isBlocked() == dto.isBlocked()) {
+            return mapper.appUserToAppUserDto(appUser);
+        }
+
         // Auth0 DB update
         User updatedUser = new User();
         updatedUser.setBlocked(dto.isBlocked());
@@ -164,7 +168,9 @@ public class AppUserServiceImpl implements AppUserService {
         appUser.setBlocked(dto.isBlocked());
         repository.save(appUser);
 
-        return mapper.appUserToAppUserDto(appUser);
+        AppUserDto appUserDto = mapper.appUserToAppUserDto(appUser);
+        appUserEventProducer.produceUserIsBlockedEvent(appUserDto);
+        return appUserDto;
     }
 
     @Transactional
