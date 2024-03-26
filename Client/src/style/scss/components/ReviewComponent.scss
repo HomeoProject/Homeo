@@ -22,12 +22,36 @@
     }
 
     > .review-component-main-middle {
-      padding: 0.4rem 0;
+      > .rating {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        > .divider {
+          width: 1px;
+          height: v.$font-size-content;
+          background-color: #b6b6b6;
+
+          @media (max-width: 370px) {
+            height: v.$font-size-small;
+          }
+        }
+
+        > .rating-value {
+          font-size: v.$font-size-content;
+          font-weight: 600;
+
+          @media (max-width: 370px) {
+            font-size: v.$font-size-small;
+          }
+        }
+      }
     }
 
     > .review-component-main-bottom {
       > .text {
         font-size: v.$font-size-content;
+        margin: 0.5rem 0;
 
         @media (max-width: 370px) {
           font-size: v.$font-size-extra-small;

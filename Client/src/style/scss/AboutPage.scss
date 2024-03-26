@@ -5,69 +5,156 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0 0 3rem 0;
+  padding: 0 4rem;
+  width: calc(100% - 8rem);
+  max-width: 1000px;
   min-height: calc(100vh - 26rem);
 
-  .about-description {
+  @media (max-width: 550px) {
+    padding: 0 2rem;
+    width: calc(100% - 4rem);
+  }
+
+  > .about-description {
     font-family: v.$font-family;
-    font-size: 1.5rem;
-    text-align: center;
-    width: 50%;
+    font-size: v.$font-size-medium;
+    text-align: justify;
+    text-justify: distribute;
+    width: 100%;
+    max-width: 800px;
     padding: 3rem 0 0 0;
 
-    .about-description-header {
-      font-size: 3rem;
+    @media (max-width: 500px) {
+      font-size: v.$font-size-small;
+    }
+
+    > .about-description-header {
       padding: 0 0 1.5rem 0;
       display: flex;
       align-items: center;
       justify-content: center;
 
-      .about-description-header-value {
-        .about-description-header-value-title {
-          color: v.$primary-color;
+      @media (max-width: 500px) {
+        font-size: v.$font-size-large;
+      }
+
+      > .about-description-header-value {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: v.$font-size-logo;
+
+        @media (max-width: 800px) {
+          font-size: v.$font-size-large;
+          gap: 10px;
         }
+
+        @media (max-width: 600px) {
+          font-size: v.$font-size-normal;
+          gap: 5px;
+        }
+
+        @media (max-width: 400px) {
+          font-size: v.$font-size-medium;
+          gap: 5px;
+        }
+
+        > .about-description-header-value-logo {
+          width: 58px;
+          height: 100px;
+
+          @media (max-width: 800px) {
+            width: 48px;
+            height: 82px;
+          }
+
+          @media (max-width: 600px) {
+            width: 36px;
+            height: 60px;
+          }
+
+          @media (max-width: 400px) {
+            width: 30px;
+            height: 50px;
+          }
+        }
+
+        > .about-description-header-value-text {
+          margin: 0;
+        }
+
+        > .about-description-header-value-title {
+          color: v.$primary-color;
+          margin: 0;
+        }
+      }
+    }
+
+    > .about-description-value {
+      margin: 0;
+      font-size: v.$font-size-medium;
+
+      @media (max-width: 600px) {
+        font-size: v.$font-size-content;
       }
     }
   }
 
-  .about-developers-choice {
+  > .about-developers-choice {
     display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 450px;
     align-items: center;
-    gap: 0.5rem;
     padding: 3rem 0 5rem 0;
 
-    .about-developers-choice-developer {
+    > .about-developers-choice-developer {
+      width: 100%;
       height: 5rem;
       width: 5rem;
       background-color: v.$secondary-color;
       border: 5px solid white;
-      border-radius: 90px;
+      border-radius: 50%;
       transition: 0.15s ease-in-out;
       cursor: pointer;
+
       &:hover {
         border: 5px solid v.$primary-color;
       }
+
+      @media (max-width: 500px) {
+        height: 3.5rem;
+        width: 3.5rem;
+      }
     }
 
-    .about-developers-choice-divider {
-      height: 0.2rem;
+    > .about-developers-choice-divider {
+      height: 0.15rem;
       width: 4rem;
-      background-color: rgb(177, 177, 177);
+      background-color: rgba(177, 177, 177, 0.37);
     }
   }
 
-  .about-developers-info {
+  > .about-developers-info {
     display: flex;
     align-items: center;
     gap: 2rem;
 
-    .about-developers-info-photo {
+    @media (max-width: 500px) {
+      gap: 1rem;
+    }
+
+    > .about-developers-info-photo {
       height: 12rem;
       width: 12rem;
-      border-radius: 50px;
-      transition: 0.15s ease;
-      rotate: 360deg;
+      border-radius: 50%;
+      transition: scale 0.15s ease;
       border: 5px solid v.$primary-color;
+
+      @media (max-width: 500px) {
+        height: 10rem;
+        width: 10rem;
+      }
 
       &.activate {
         scale: 1;
@@ -85,21 +172,24 @@
       }
     }
 
-    .about-developers-info-values {
+    > .about-developers-info-values {
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
-      font-size: 1.5rem;
 
-      .about-developers-info-values-row {
+      > .about-developers-info-values-row {
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        font-size: v.$font-size-medium;
 
-        .about-developers-info-values-row-link {
+        @media (max-width: 600px) {
+          font-size: v.$font-size-small;
+        }
+
+        > .about-developers-info-values-row-link {
           text-decoration: none;
           color: black;
-          transition: 0.15s ease-in-out;
 
           &:hover {
             color: v.$primary-color;

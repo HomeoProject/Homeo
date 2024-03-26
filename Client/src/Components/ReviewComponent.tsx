@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { toast } from 'react-toastify'
 import StarIcon from '@mui/icons-material/Star'
 import StarBorderIcon from '@mui/icons-material/StarBorder'
-import { Rating } from '@mui/material'
+import { Rating, Tooltip } from '@mui/material'
 import { useUserContext } from '../Context/UserContext'
 
 type ReviewComponentProps = {
@@ -25,6 +25,7 @@ const ReviewComponent = ({
   setReviews,
 }: ReviewComponentProps) => {
   const [reviewer, setReviewer] = useState<CustomUser | null>(null)
+  const [isUserReviewer, setIsUserReviewer] = useState(false)
 
   const { customUser } = useUserContext()
 
@@ -56,6 +57,7 @@ const ReviewComponent = ({
       .get(`/users/${review.reviewerId}`)
       .then((response) => {
         setReviewer(response.data)
+        setIsUserReviewer(true)
       })
       .catch((err) => {
         console.error(err)
@@ -86,6 +88,8 @@ const ReviewComponent = ({
         )}
         <div className="review-component-main-middle">
           <span className="rating">
+            <p className="rating-value">{review.rating}</p>
+            <div className="divider"></div>
             <Rating
               name="simple-controlled"
               value={review.rating}
@@ -101,7 +105,11 @@ const ReviewComponent = ({
           <p className="text">{review.text}</p>
         </div>
       </div>
-      {isAdmin && <DeleteIcon className="delete-icon" onClick={deleteReview} />}
+      {(isAdmin || isUserReviewer) && (
+        <Tooltip title="Delete review" placement="left-end">
+          <DeleteIcon className="delete-icon" onClick={deleteReview} />
+        </Tooltip>
+      )}
     </div>
   )
 }

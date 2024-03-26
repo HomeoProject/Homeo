@@ -61,28 +61,6 @@ export interface Constructor {
   updatedAt: string
 }
 
-export interface ConstructorProfile {
-  id: number
-  userId: string
-  phoneNumber: string
-  constructorEmail: string
-  aboutMe: string
-  experience: string
-  minRate: number
-  categories: Array<Category>
-  cities: Array<string>
-  languages: Array<string>
-  paymentMethods: Array<string>
-  avatar: string
-  firstName: string
-  lastName: string
-  isOnline: boolean
-  isApproved: boolean
-  isDeleted: boolean
-  createdAt: string
-  updatedAt: string
-}
-
 export interface ConstructorProfileReviews {
   stats: {
     userId: string

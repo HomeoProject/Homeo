@@ -2,7 +2,11 @@ import { useParams } from 'react-router'
 import '../style/scss/ConstructorPage.scss'
 import { useContext, useEffect, useState } from 'react'
 import apiClient from '../AxiosClients/apiClient'
-import { ConstructorProfile, ConstructorProfileReviews } from '../types/types'
+import {
+  Constructor,
+  ConstructorProfileReviews,
+  CustomUser,
+} from '../types/types'
 import UserContext from '../Context/UserContext'
 import LoadingSpinner from '../Components/LoadingSpinner'
 import UserAvatar from '../Components/UserAvatar'
@@ -27,8 +31,11 @@ import { Rating } from '@mui/material'
 const ConstructorPage = () => {
   const id = useParams().id
   const { customUser } = useContext(UserContext)
-  const [constructorData, setConstructorData] =
-    useState<ConstructorProfile | null>(null)
+  const [constructorData, setConstructorData] = useState<Constructor | null>(
+    null
+  )
+  const [constructorUserData, setConstructorUserData] =
+    useState<CustomUser | null>(null)
   const [constructorReviews, setConstructorReviews] =
     useState<ConstructorProfileReviews | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -36,102 +43,56 @@ const ConstructorPage = () => {
   const [isViewingOwnProfile, setIsViewingOwnProfile] = useState(false)
 
   useEffect(() => {
-    const getConstructorData = async () => {
-      return apiClient
-        .get(`/constructors/${id}`)
-        .then((constructorResponse) => {
-          setConstructorData((prev) => {
-            return {
-              ...prev,
-              ...constructorResponse.data,
-            }
-          })
+    const fetchData = async () => {
+      try {
+        const constructorResponse = await apiClient.get(`/constructors/${id}`)
+        const userResponse = await apiClient.get(`/users/${id}`)
+        const reviewsResponse = await apiClient.get(`/reviews/received/${id}`, {
+          params: { lastCreatedAt: new Date().toISOString() },
         })
-        .catch((err) => {
-          console.error(err)
-          setConstructorNotFound(true)
-        })
-    }
 
-    const getConstrutorUserData = async () => {
-      return apiClient
-        .get(`/users/${id}`)
-        .then((userResponse) => {
-          setConstructorData((prev) => {
-            if (!prev) return null
-
-            return {
-              ...prev,
-              firstName: userResponse.data.firstName,
-              lastName: userResponse.data.lastName,
-              avatar: userResponse.data.avatar,
-              isApproved: userResponse.data.isApproved,
-              isDeleted: userResponse.data.isDeleted,
-              isOnline: userResponse.data.isOnline,
-            }
-          })
-        })
-        .catch((err) => {
-          console.error(err)
-        })
-    }
-
-    const getConstructorReviews = async () => {
-      return apiClient
-        .get(`/reviews/received/${id}`, {
-          params: {
-            lastCreatedAt: new Date().toISOString(),
-          },
-        })
-        .then((reviewsResponse) => {
-          setConstructorReviews(reviewsResponse.data)
-        })
-        .catch((err) => {
-          console.error(err)
-        })
+        setConstructorData(constructorResponse.data)
+        setConstructorUserData(userResponse.data)
+        setConstructorReviews(reviewsResponse.data)
+      } catch (err) {
+        console.error(err)
+        setConstructorNotFound(true)
+      } finally {
+        setIsLoading(false)
+      }
     }
 
     if (customUser && customUser.id === id) {
       setIsViewingOwnProfile(true)
     }
 
-    Promise.all([
-      getConstructorData(),
-      getConstrutorUserData(),
-      getConstructorReviews(),
-    ])
-      .then(() => {
-        setIsLoading(false)
-      })
-      .catch((err) => {
-        console.error(err)
-        setIsLoading(false)
-      })
+    fetchData()
   }, [customUser, id])
 
   return (
     <div className="ConstructorPage">
-      {isLoading ||
-      (constructorData && Object.keys(constructorData).length !== 19) ? (
+      {isLoading ? (
         <LoadingSpinner />
       ) : !constructorNotFound &&
         constructorData &&
-        !constructorData.isDeleted ? (
+        constructorUserData &&
+        constructorReviews &&
+        !constructorUserData.isDeleted ? (
         <div className="constructor-page-main">
           <section className="constructor-page-main-info-section">
             <div className="constructor-page-main-section-content">
               <div className="constructor-page-main-section-content-avatar-wrapper">
                 <UserAvatar
-                  src={constructorData.avatar}
+                  src={constructorUserData.avatar}
                   alt={constructorData.constructorEmail}
                   variant="standard"
                   maxWidth="220px"
                   maxHeight="220px"
-                  isApproved={constructorData.isApproved}
+                  isApproved={constructorUserData.isApproved}
                   badgeHeight="40px"
                   badgeWidth="40px"
                 />
-                <p className="constructor-page-main-section-content-mobile-name">{`${constructorData.firstName} ${constructorData.lastName}`}</p>
+                <p className="constructor-page-main-section-content-mobile-name">{`${constructorUserData.firstName} ${constructorUserData.lastName}`}</p>
                 <p className="constructor-page-main-section-content-mobile-title">
                   Homeo Constructor
                 </p>
@@ -157,7 +118,7 @@ const ConstructorPage = () => {
                 </Button>
               </div>
               <div className="constructor-page-main-section-content-info">
-                <p className="constructor-page-main-section-content-info-name">{`${constructorData.firstName} ${constructorData.lastName}`}</p>
+                <p className="constructor-page-main-section-content-info-name">{`${constructorUserData.firstName} ${constructorUserData.lastName}`}</p>
                 <p className="constructor-page-main-section-content-info-title">
                   Homeo Constructor
                 </p>
@@ -171,7 +132,7 @@ const ConstructorPage = () => {
                     max={5}
                     readOnly
                   />
-                  <p className="constructor-page-main-section-content-info-rating">{`(${constructorReviews?.stats.averageRating})`}</p>
+                  <p className="constructor-page-main-section-content-info-rating">{`(${constructorReviews.stats.averageRating})`}</p>
                 </div>
                 <div className="constructor-page-main-section-content-info-icon-wrapper">
                   <EmailIcon color="primary" />
@@ -182,7 +143,7 @@ const ConstructorPage = () => {
                 <div className="constructor-page-main-section-content-info-icon-wrapper">
                   <PhoneIcon color="primary" />
                   <p className="constructor-page-main-section-content-info-standard">
-                    {constructorData!.phoneNumber
+                    {constructorData.phoneNumber
                       .split('')
                       .map((char, index) => {
                         if (index === 3 || index === 6) return `-${char}`
@@ -193,17 +154,17 @@ const ConstructorPage = () => {
                 <div className="constructor-page-main-section-content-info-icon-wrapper">
                   <MonetizationOnIcon color="primary" />
                   <p className="constructor-page-main-section-content-info-standard">
-                    {constructorData!.minRate}$ / hour
+                    {constructorData.minRate}$ / hour
                   </p>
                 </div>
                 <div className="constructor-page-main-section-content-info-icon-wrapper">
                   <PaymentsIcon color="primary" />
                   <p className="constructor-page-main-section-content-info-standard">
-                    {constructorData!.paymentMethods.map((method, index) => {
+                    {constructorData.paymentMethods.map((method, index) => {
                       //only first letter should be uppercase, not the whole word
                       const lowercasedMethod =
                         method.charAt(0) + method.slice(1).toLowerCase()
-                      if (index === constructorData!.paymentMethods.length - 1)
+                      if (index === constructorData.paymentMethods.length - 1)
                         return lowercasedMethod
                       return `${lowercasedMethod}, `
                     })}
@@ -241,7 +202,7 @@ const ConstructorPage = () => {
               <h1 className="constructor-page-main-section-title">About me</h1>
             </div>
             <p className="constructor-page-main-section-content">
-              {constructorData!.aboutMe}
+              {constructorData.aboutMe}
             </p>
             <div className="constructor-page-main-section-title-wrapper">
               <BuildIcon
@@ -253,7 +214,7 @@ const ConstructorPage = () => {
               </h1>
             </div>
             <p className="constructor-page-main-section-content">
-              {constructorData!.experience}
+              {constructorData.experience}
             </p>
             <div className="constructor-page-main-section-title-wrapper">
               <PlumbingIcon
@@ -265,7 +226,7 @@ const ConstructorPage = () => {
               </h1>
             </div>
             <p className="constructor-page-main-section-content">
-              {constructorData!.categories.map((category, index) => {
+              {constructorData.categories.map((category, index) => {
                 if (index === constructorData!.categories.length - 1)
                   return category.name
                 return `${category.name}, `
@@ -281,7 +242,7 @@ const ConstructorPage = () => {
               </h1>
             </div>
             <p className="constructor-page-main-section-content">
-              {constructorData!.cities.map((city, index) => {
+              {constructorData.cities.map((city, index) => {
                 if (index === constructorData!.cities.length - 1) return city
                 return `${city}, `
               })}
@@ -294,8 +255,8 @@ const ConstructorPage = () => {
               <h1 className="constructor-page-main-section-title">Languages</h1>
             </div>
             <p className="constructor-page-main-section-content">
-              {constructorData!.languages.map((language, index) => {
-                if (index === constructorData!.languages.length - 1)
+              {constructorData.languages.map((language, index) => {
+                if (index === constructorData.languages.length - 1)
                   return language
                 return `${language}, `
               })}
