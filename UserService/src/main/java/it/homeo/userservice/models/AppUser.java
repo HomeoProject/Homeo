@@ -22,11 +22,9 @@ public class AppUser {
 
     private String lastName;
 
-    @Column(unique = true)
     private String phoneNumber;
 
     // Auth0
-    @Column(unique = true)
     private String email;
 
     // Auth0

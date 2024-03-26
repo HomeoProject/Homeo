@@ -9,6 +9,8 @@ import it.homeo.userservice.validators.FileValidator;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -117,6 +119,17 @@ public class AppUserController {
         AppUserDto appUserDto = service.blockAppUser(id, dto);
         return ResponseEntity.ok(appUserDto);
     }
+
+    /*
+    ADMIN ENDPOINT
+     */
+    @PostMapping("/search")
+    public ResponseEntity<Page<AppUserDto>> searchAppUsers(@RequestBody @Valid AppUserFilterDto dto,  Pageable pageable) {
+        LOGGER.info("Inside: AppUserController -> searchAppUsers()...");
+        Page<AppUserDto> appUsers = service.searchAppUsers(dto, pageable);
+        return ResponseEntity.ok(appUsers);
+    }
+
 
     private String getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

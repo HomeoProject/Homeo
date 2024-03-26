@@ -35,6 +35,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/users/avatar/{id}").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "api/users/approve/{id}").hasAuthority(ADMIN_PERSMISSION)
                         .requestMatchers(HttpMethod.PATCH, "api/users/block/{id}").hasAuthority(ADMIN_PERSMISSION)
+                        .requestMatchers(HttpMethod.POST, "api/users/search").hasAuthority(ADMIN_PERSMISSION)
                         .anyRequest().permitAll()
                 )
                 .cors(withDefaults())

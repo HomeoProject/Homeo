@@ -17,6 +17,8 @@ import it.homeo.userservice.messaging.AppUserEventProducer;
 import it.homeo.userservice.models.AppUser;
 import it.homeo.userservice.repositories.AppUserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -144,6 +146,11 @@ public class AppUserServiceImpl implements AppUserService {
         mgmt.users().update(id, updatedUser).execute();
     }
 
+    public Page<AppUserDto> searchAppUsers(AppUserFilterDto dto, Pageable pageable) {
+        Page<AppUser> appUsers = repository.searchAppUsers(dto, pageable);
+        return appUsers.map(mapper::appUserToAppUserDto);
+    }
+
     public AppUserDto approveAppUser(String id, ApproveAppUserRequest dto) {
         AppUser appUser = getAppUser(id);
         appUser.setApproved(dto.isApproved());
@@ -155,6 +162,10 @@ public class AppUserServiceImpl implements AppUserService {
     public AppUserDto blockAppUser(String id, BlockAppUserRequest dto) throws Auth0Exception {
         AppUser appUser = getAppUser(id);
 
+        if (appUser.isBlocked() == dto.isBlocked()) {
+            return mapper.appUserToAppUserDto(appUser);
+        }
+
         // Auth0 DB update
         User updatedUser = new User();
         updatedUser.setBlocked(dto.isBlocked());
@@ -164,7 +175,9 @@ public class AppUserServiceImpl implements AppUserService {
         appUser.setBlocked(dto.isBlocked());
         repository.save(appUser);
 
-        return mapper.appUserToAppUserDto(appUser);
+        AppUserDto appUserDto = mapper.appUserToAppUserDto(appUser);
+        appUserEventProducer.produceUserIsBlockedEvent(appUserDto);
+        return appUserDto;
     }
 
     @Transactional
