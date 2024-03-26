@@ -1,46 +1,67 @@
 @use './Variables' as v;
 
 .ErrorPage {
-    width: calc(100% - 40px);
-    height: calc(100vh - 301px);
+  width: calc(100% - 4rem);
+  min-height: calc(100vh - 26rem);
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-    > .error-page-container {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        text-align: center;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin-top: -50px;
+  > .error-page-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: -5rem;
 
-        .error-page-logo {
-            scale: 1;
-        }
-        .error-page-oops {
-            font-size: v.$font-size-large;
-            font-weight: 700;
-        }
-        .error-page-message {
-            font-size: v.$font-size-large;
-        }
-        .error-page-message-details {
-            padding-top: 10px;
-            font-size: v.$font-size-large;
-            color: rgb(0, 0, 0, 0.5);
-        }
+    > .error-page-oops {
+      font-weight: 700;
     }
 
-    > .error-page-img {
-        filter: opacity(0.05);
-        position: absolute;
-        top: 250px;
-        left: 50%;
-        transform: translate(-50%, 0);
-        max-width: calc(100% - 40px);
-
-        @media (max-width: 600px) {
-            display: none;
-        }
+    > .error-page-message-details {
+      padding-top: 10px;
+      color: rgb(0, 0, 0, 0.5);
     }
+
+    > .error-page-oops,
+    .error-page-message,
+    .error-page-message-details {
+      font-size: v.$font-size-normal;
+
+      @media (max-width: 623px) {
+        font-size: v.$font-size-medium;
+      }
+
+      @media (max-width: 330px) {
+        font-size: v.$font-size-small;
+      }
+    }
+
+    @media (max-width: 623px) {
+      margin-top: -2rem;
+    }
+  }
+
+  > .error-page-img {
+    filter: opacity(0.05);
+    position: absolute;
+    max-width: 100%;
+    height: 60%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    @media (max-width: 623px) {
+      height: 50%;
+    }
+
+    @media (max-width: 450px) {
+      display: none;
+    }
+  }
 }

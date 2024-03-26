@@ -8,71 +8,65 @@ import apiClient, { setAuthToken } from '../AxiosClients/apiClient'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 
 type AppProviderProps = {
-    children: ReactNode
+  children: ReactNode
 }
 
 const AppProvider = ({ children }: AppProviderProps) => {
-    const { isAuthenticated, getAccessTokenSilently } = useAuth0()
-    const [customUser, setCustomUser] = useState<CustomUser | null>(null)
-    const [constructor, setConstructor] = useState<Constructor | null>(null)
-    const [categories, setCategories] = useState<Category[]>([])
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0()
+  const [customUser, setCustomUser] = useState<CustomUser | null>(null)
+  const [constructor, setConstructor] = useState<Constructor | null>(null)
+  const [categories, setCategories] = useState<Category[]>([])
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            if (!isAuthenticated) return
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!isAuthenticated) return
 
-            // Check if user exists in local database, if not, create it using Auth0 data
-            const token = await getAccessTokenSilently()
-            setAuthToken(token) // Set the auth token for the axios client
+      // Check if user exists in local database, if not, create it using Auth0 data
+      const token = await getAccessTokenSilently()
+      setAuthToken(token) // Set the auth token for the axios client
 
-            // Get user data
-            const userResponse = await apiClient.get<CustomUser>('/users/sync')
-            console.log('Custom user: ', userResponse.data)
-            if (userResponse.status === 200 && userResponse.data) {
-                setCustomUser(userResponse.data)
-            }
+      // Get user data
+      const userResponse = await apiClient.get<CustomUser>('/users/sync')
+      if (userResponse.status === 200 && userResponse.data) {
+        setCustomUser(userResponse.data)
+      }
 
-            // Get constructor data
-            const isConstructor = checkIfUserHasPermission(token, 'constructor')
+      // Get constructor data
+      const isConstructor = checkIfUserHasPermission(token, 'constructor')
 
-            if (isConstructor) {
-                const userId = userResponse.data.id
-                const constructorResponse = await apiClient.get<Constructor>(
-                    `/constructors/${userId}`
-                )
-                setConstructor(constructorResponse.data)
-                console.log('Constructor: ', constructorResponse.data)
-            }
-        }
+      if (isConstructor) {
+        const userId = userResponse.data.id
+        const constructorResponse = await apiClient.get<Constructor>(
+          `/constructors/${userId}`
+        )
+        setConstructor(constructorResponse.data)
+      }
+    }
 
-        const fetchCategories = async () => {
-            try {
-                const categoriesResponse = await apiClient.get<Category[]>(
-                    '/constructors/categories'
-                )
-                setCategories(categoriesResponse.data)
-            } catch (error) {
-                console.error(error)
-            }
-        }
+    const fetchCategories = async () => {
+      try {
+        const categoriesResponse = await apiClient.get<Category[]>(
+          '/constructors/categories'
+        )
+        setCategories(categoriesResponse.data)
+      } catch (error) {
+        console.error(error)
+      }
+    }
 
-        fetchUserData()
-        fetchCategories()
-    }, [getAccessTokenSilently, isAuthenticated])
+    fetchUserData()
+    fetchCategories()
+  }, [getAccessTokenSilently, isAuthenticated])
 
-    return (
-        <UserContext.Provider value={{ customUser, setCustomUser }}>
-            <ConstructorContext.Provider
-                value={{ constructor, setConstructor }}
-            >
-                <CategoriesContext.Provider
-                    value={{ categories, setCategories }}
-                >
-                    {children}
-                </CategoriesContext.Provider>
-            </ConstructorContext.Provider>
-        </UserContext.Provider>
-    )
+  return (
+    <UserContext.Provider value={{ customUser, setCustomUser }}>
+      <ConstructorContext.Provider value={{ constructor, setConstructor }}>
+        <CategoriesContext.Provider value={{ categories, setCategories }}>
+          {children}
+        </CategoriesContext.Provider>
+      </ConstructorContext.Provider>
+    </UserContext.Provider>
+  )
 }
 
 export default AppProvider
