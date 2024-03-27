@@ -23,22 +23,6 @@ public class RabbitMQConfig {
 
     // Queues
     @Bean
-    public Queue createUserDeleteReviewsQueue() {
-        return QueueBuilder.durable("q.user-delete-reviews")
-                .withArgument("x-dead-letter-exchange", "x.user-delete-reviews-failure")
-                .withArgument("x-dead-letter-routing-key", "fall-back-delete-reviews")
-                .build();
-    }
-
-    @Bean
-    public Queue createUserDeleteConstrcutorQueue() {
-        return QueueBuilder.durable("q.user-delete-constructor")
-                .withArgument("x-dead-letter-exchange", "x.user-delete-constructor-failure")
-                .withArgument("x-dead-letter-routing-key", "fall-back-delete-constructor")
-                .build();
-    }
-
-    @Bean
     public Queue createUserUpdatedQueue() {
         return QueueBuilder.durable("q.user-updated")
                 .withArgument("x-dead-letter-exchange", "x.user-updated-failure")
@@ -54,25 +38,29 @@ public class RabbitMQConfig {
                 .build();
     }
 
-    // DLQ
+    // Exchange with queues
     @Bean
-    public Declarables createDeadLetterSchemaDeleteReviews() {
+    public Declarables createUserDeletedSchema() {
+        Queue userDeleteReviewsQueue = QueueBuilder.durable("q.user-delete-reviews")
+                .withArgument("x-dead-letter-exchange", "x.user-delete-reviews-failure")
+                .withArgument("x-dead-letter-routing-key", "fall-back-user-delete-reviews")
+                .build();
+
+        Queue userDeleteConstructorQueue = QueueBuilder.durable("q.user-delete-constructor")
+                .withArgument("x-dead-letter-exchange", "x.user-delete-constructor-failure")
+                .withArgument("x-dead-letter-routing-key", "fall-back-user-delete-constructor")
+                .build();
+
         return new Declarables(
-                new DirectExchange("x.user-delete-reviews-failure"),
-                new Queue("q.fall-back-user-delete-reviews"),
-                new Binding("q.fall-back-user-delete-reviews", Binding.DestinationType.QUEUE, "x.user-delete-reviews-failure", "fall-back-delete-reviews", null)
+                new FanoutExchange("x.user-deleted"),
+                userDeleteReviewsQueue,
+                userDeleteConstructorQueue,
+                new Binding("q.user-delete-reviews", Binding.DestinationType.QUEUE, "x.user-deleted", "user-delete-reviews", null),
+                new Binding("q.user-delete-constructor", Binding.DestinationType.QUEUE, "x.user-deleted", "user-delete-constructor", null)
         );
     }
 
-    @Bean
-    public Declarables createDeadLetterSchemaDeleteConstructor() {
-        return new Declarables(
-                new DirectExchange("x.user-delete-constructor-failure"),
-                new Queue("q.fall-back-user-delete-constructor"),
-                new Binding("q.fall-back-user-delete-constructor", Binding.DestinationType.QUEUE, "x.user-delete-constructor-failure", "fall-back-delete-constructor", null)
-        );
-    }
-
+    // DLQs
     @Bean
     public Declarables createDeadLetterSchemaUpdated() {
         return new Declarables(
@@ -88,6 +76,24 @@ public class RabbitMQConfig {
                 new DirectExchange("x.user-is-blocked-failure"),
                 new Queue("q.fall-back-user-is-blocked"),
                 new Binding("q.fall-back-user-is-blocked", Binding.DestinationType.QUEUE, "x.user-is-blocked-failure", "fall-back-user-is-blocked", null)
+        );
+    }
+
+    @Bean
+    public Declarables createDeadLetterSchemaDeleteReviews() {
+        return new Declarables(
+                new DirectExchange("x.user-delete-reviews-failure"),
+                new Queue("q.fall-back-user-delete-reviews"),
+                new Binding("q.fall-back-user-delete-reviews", Binding.DestinationType.QUEUE, "x.user-delete-reviews-failure", "fall-back-user-delete-reviews", null)
+        );
+    }
+
+    @Bean
+    public Declarables createDeadLetterSchemaDeleteConstructor() {
+        return new Declarables(
+                new DirectExchange("x.user-delete-constructor-failure"),
+                new Queue("q.fall-back-user-delete-constructor"),
+                new Binding("q.fall-back-user-delete-constructor", Binding.DestinationType.QUEUE, "x.user-delete-constructor-failure", "fall-back-user-delete-constructor", null)
         );
     }
 
