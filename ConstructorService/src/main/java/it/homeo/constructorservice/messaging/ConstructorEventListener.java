@@ -1,6 +1,7 @@
 package it.homeo.constructorservice.messaging;
 
 import com.auth0.exception.Auth0Exception;
+import it.homeo.constructorservice.exceptions.NotFoundException;
 import it.homeo.constructorservice.services.ConstructorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +18,15 @@ public class ConstructorEventListener {
         this.constructorService = constructorService;
     }
 
+    // I added a try catch block to not repeat event processing when this exception occurs, because then you don't have to do it anymore
     @RabbitListener(queues = "q.user-delete-constructor")
     public void deleteConstructor(String userId) throws Auth0Exception {
         LOGGER.info("Inside: ConstructorEventListener -> deleteConstructor()...");
-        constructorService.deleteConstructorByUserId(userId);
+        try {
+            constructorService.deleteConstructorByUserId(userId);
+        } catch (NotFoundException e) {
+            LOGGER.error("Error: ConstructorEventListener -> deleteConstructor(): {}", e.getMessage());
+        }
     }
 
     /*
@@ -31,6 +37,10 @@ public class ConstructorEventListener {
     @RabbitListener(queues = "q.fall-back-user-delete-constructor")
     public void fallbackDeleteConstructor(String userId) throws Auth0Exception {
         LOGGER.info("Inside: ConstructorEventListener -> fallbackDeleteConstructor()...");
-        constructorService.deleteConstructorByUserId(userId);
+        try {
+            constructorService.deleteConstructorByUserId(userId);
+        } catch (NotFoundException e) {
+            LOGGER.error("Error: ConstructorEventListener -> fallbackDeleteConstructor(): {}", e.getMessage());
+        }
     }
 }
