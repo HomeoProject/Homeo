@@ -109,7 +109,7 @@ public class AppUserServiceImpl implements AppUserService {
         // Local DB update
         appUser.setAvatar(cloudinaryProperties.getDefaultAvatar());
         appUser.setDeleted(true);
-        appUserEventProducer.produceUserDeletedEvents(appUser.getId());
+        appUserEventProducer.produceUserDeletedEvent(appUser.getId());
         repository.save(appUser);
     }
 
