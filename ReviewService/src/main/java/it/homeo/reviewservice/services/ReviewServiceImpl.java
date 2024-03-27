@@ -18,9 +18,13 @@ import it.homeo.reviewservice.repositories.ReviewStatsRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -45,13 +49,15 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewPageDto getUserReceivedReviews(String userId, LocalDateTime lastCreatedAt) {
-        ReviewStats reviewStats = getUserReviewStats(userId);
         Pageable pageable = PageRequest.of(0, 5);
         List<Review> reviews = reviewRepository.findByReceiverIdAndCreatedAtBeforeOrderByCreatedAtDesc(userId, lastCreatedAt, pageable);
-        return ReviewPageDto.builder()
-                .stats(reviewMapper.toDto(reviewStats))
-                .content(reviews.stream().map(reviewMapper::toDto).toList())
-                .build();
+
+        Optional<ReviewStats> reviewStats = reviewStatsRepository.findByUserId(userId);
+        ReviewPageDto.ReviewPageDtoBuilder builder = ReviewPageDto.builder();
+
+        reviewStats.ifPresent(stats -> builder.stats(reviewMapper.toDto(stats)));
+
+        return builder.content(reviews.stream().map(reviewMapper::toDto).toList()).build();
     }
 
     @Override
@@ -95,7 +101,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Review updateReview(Long id, String userId, Review newReview) {
         Review review = getReview(id);
-        validateUser(review.getReviewerId(), userId);
+        validateUserAccess(review.getReviewerId(), userId);
         ReviewStats reviewStats = getUserReviewStats(review.getReceiverId());
         Double newRatingsSum = reviewStats.getRatingsSum() - review.getRating() + newReview.getRating();
         reviewStats.setRatingsSum(newRatingsSum);
@@ -110,7 +116,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void deleteReview(Long id, String userId) {
         Review review = getReview(id);
-        validateUser(review.getReviewerId(), userId);
+        validateUserOrAdminAccess(review.getReviewerId(), userId);
         ReviewStats reviewStats = getUserReviewStats(review.getReceiverId());
         Integer newReviewsNumber = reviewStats.getReviewsNumber() - 1;
         Double newRatingsSum = reviewStats.getRatingsSum() - review.getRating();
@@ -134,6 +140,9 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private void validateAddReview(Review review) throws Auth0Exception {
+        if (review.getReceiverId().equals(review.getReviewerId())) {
+            throw new BadRequestException("User cannot give review to himself");
+        }
         if (reviewRepository.findByReceiverIdAndReviewerId(review.getReceiverId(), review.getReviewerId()).isPresent()) {
             throw new AlreadyExistsException("User with id: " + review.getReviewerId() + " already gave review to user with id: " + review.getReceiverId());
         }
@@ -142,10 +151,31 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private void validateUser(String userId, String secondUserId) {
-        if (!userId.equals(secondUserId)) {
+    private void validateUserAccess(String userId, String secondUserId) {
+        if (!isUserTheSameUser(userId, secondUserId)) {
             throw new ForbiddenException();
         }
+    }
+
+    private void validateUserOrAdminAccess(String userId, String secondUserId) {
+        if (!isUserTheSameUser(userId, secondUserId) || !isUserAdmin()) {
+            throw new ForbiddenException();
+        }
+    }
+
+    private boolean isUserTheSameUser(String userId, String secondUserId) {
+        return userId.equals(secondUserId);
+    }
+
+    private boolean isUserAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return false;
+        }
+
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        return authorities.stream()
+                .anyMatch(authority -> authority.getAuthority().equals("admin:permission"));
     }
 
     private boolean isUserHasNotConstructorPermission(String userId) throws Auth0Exception {
@@ -154,6 +184,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .execute()
                 .getBody()
                 .getItems();
+
 
         Set<String> userPermissions = auth0UserPermissions.stream()
                 .map(Permission::getName)

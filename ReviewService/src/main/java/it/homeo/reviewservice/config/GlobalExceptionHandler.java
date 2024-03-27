@@ -5,9 +5,13 @@ import it.homeo.reviewservice.exceptions.AlreadyExistsException;
 import it.homeo.reviewservice.exceptions.BadRequestException;
 import it.homeo.reviewservice.exceptions.ForbiddenException;
 import it.homeo.reviewservice.exceptions.NotFoundException;
+import jakarta.annotation.Nonnull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -15,6 +19,9 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,6 +52,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, @Nonnull HttpHeaders headers, @Nonnull HttpStatusCode status, @Nonnull WebRequest request) {
+        Map<String, String> errors = new HashMap<>();
+        Objects.requireNonNull(ex.getBindingResult()).getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        CustomErrors error = new CustomErrors(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST, errors, getPath(request), LocalDateTime.now());
+        return handleExceptionInternal(ex, error, headers, HttpStatus.BAD_REQUEST, request);
+    }
+
     @ExceptionHandler(Auth0Exception.class)
     protected ResponseEntity<Object> handleAuth0Exception(Auth0Exception ex, WebRequest request) {
         int statusCode = extractErrorCodeFromAuth0ExceptionMessage(ex.getMessage());
@@ -72,4 +91,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private record CustomError(int statusCode, HttpStatus status, String message, String path, LocalDateTime timestamp) { }
+
+    private record CustomErrors(int statusCode, HttpStatus status, Map<String, String> errors, String path, LocalDateTime timestamp) { }
 }
