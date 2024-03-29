@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Developer } from '../types/types'
 import { developers } from '../Data/data'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 import greenIcon from '../Assets/icon-cut-green.png'
 import PersonIcon from '@mui/icons-material/Person'
 import GitHubIcon from '@mui/icons-material/GitHub'
@@ -15,6 +16,8 @@ import piotrImg from '../Assets/Piotr.jpg'
 const AboutPage = () => {
   const [developer, setDeveloper] = useState<Developer>(developers[0])
   const [photoStyle, setPhotoStyle] = useState<string>('activate')
+
+  const { dictionary } = useDictionaryContext()
 
   const handleDeveloperChange = (name: string) => {
     setPhotoStyle('activate')
@@ -35,20 +38,15 @@ const AboutPage = () => {
               src={greenIcon}
               alt="icon"
             />
-            <p className="about-description-header-value-text">What</p>
-            <p className="about-description-header-value-text">about</p>
-            <p className="about-description-header-value-text">that</p>
+            <p className="about-description-header-value-text">{dictionary.whatWord}</p>
+            <p className="about-description-header-value-text">{dictionary.aboutWord}</p>
+            <p className="about-description-header-value-text">{dictionary.thatWord}</p>
             <span className="about-description-header-value-title">Homeo</span>
             <p className="about-description-header-value-text">?</p>
           </span>
         </div>
         <p className="about-description-value">
-          Homeo is a project made with passion by a group of three students from
-          the University of Gdańsk. Our main aim? Crafting a web application
-          that simplifies the process of finding optimal assistance. The
-          application is designed to be user-friendly and intuitive. We hope
-          that you will find it useful and that it will help you find what
-          you're looking for.
+          {dictionary.homeoDescription}
         </p>
       </div>
       <div className="about-developers-choice">

@@ -8,6 +8,7 @@ import {
 } from '@mui/material'
 import { SelectChangeEvent } from '@mui/material/Select'
 import { PaymentMethod } from '../types/types'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 
 type AcceptedPaymentMethodSelectProps = {
   acceptedPaymentMethods: PaymentMethod[]
@@ -20,6 +21,8 @@ const AcceptedPaymentMethodSelect = ({
   handlePaymentMethodChange,
   paymentMethods,
 }: AcceptedPaymentMethodSelectProps) => {
+  const { dictionary } = useDictionaryContext()
+
   return (
     <FormControl>
       <InputLabel
@@ -27,7 +30,7 @@ const AcceptedPaymentMethodSelect = ({
         id="acceptedPaymentMethods"
         sx={{ backgroundColor: 'white', padding: '0 5px' }}
       >
-        Accepted payment methods
+        {dictionary.acceptedPaymentMethodsWord}
       </InputLabel>
       <Select
         id="acceptedPaymentMethods"
@@ -45,7 +48,7 @@ const AcceptedPaymentMethodSelect = ({
         ))}
       </Select>
       {acceptedPaymentMethods.length === 0 && (
-        <p className="select-placeholder">Choose accepted payment methods...</p>
+        <p className="select-placeholder">{dictionary.acceptedPaymentMethodsLabel}</p>
       )}
     </FormControl>
   )

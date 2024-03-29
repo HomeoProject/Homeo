@@ -1,6 +1,7 @@
 import { Box, Button, Modal, Typography } from '@mui/material'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useUserContext } from '../Context/UserContext.ts'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 import { useForm } from 'react-hook-form'
 import { TextField } from '@mui/material'
 import { useAuth0 } from '@auth0/auth0-react'
@@ -49,6 +50,8 @@ const UploadPictureModal = ({
   const [errorMessage, setErrorMessage] = useState('')
   const [imgSrc, setImgSrc] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+
+  const {dictionary} = useDictionaryContext()
 
   const internalHandleClose = () => {
     handleClose()
@@ -199,7 +202,7 @@ const UploadPictureModal = ({
             component="h2"
             sx={titleTypographyStyle}
           >
-            Change your profile picture
+            {dictionary.changePicture}
           </Typography>
           <button onClick={internalHandleClose} className="close-modal-button">
             <CloseIcon className="close-icon"></CloseIcon>
@@ -247,7 +250,7 @@ const UploadPictureModal = ({
               sx={saveButtonStyle}
               disabled={isLoading}
             >
-              Save
+              {dictionary.saveWord}
             </Button>
           </form>
         </Box>

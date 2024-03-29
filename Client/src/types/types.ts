@@ -90,3 +90,7 @@ export interface Developer {
   image: string
   role: string
 }
+
+export interface Dictionary {
+  [key: string]: string
+}

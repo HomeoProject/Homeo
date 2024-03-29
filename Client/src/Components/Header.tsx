@@ -3,12 +3,14 @@ import HeaderDrawer from './HeaderDrawer'
 import { Link } from 'react-router-dom'
 import AccountMenu from './AccountMenu'
 import { useAuth0 } from '@auth0/auth0-react'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 import LoginButton from './LoginButton'
 import homeIcon from '../Assets/icon-cut.png'
 import AdminPanelLink from './AdminPanelLink'
 
 const Header = () => {
   const { isAuthenticated } = useAuth0()
+  const { dictionary } = useDictionaryContext()
 
   return (
     <div className="Header">
@@ -20,10 +22,10 @@ const Header = () => {
         <div className="header-nav-normal">
           <div className="header-nav-normal-right">
             <Link className="header-nav-normal-right-link" to="/adverts">
-              {'Adverts'}
+              {dictionary.advertsWord}
             </Link>
             <Link className="header-nav-normal-right-link" to="/about">
-              {'About Us'}
+              {dictionary.aboutUs}
             </Link>
             <AdminPanelLink />
           </div>

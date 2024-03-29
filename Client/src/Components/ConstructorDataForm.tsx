@@ -14,6 +14,7 @@ import CategoriesSelect from './CategoriesSelect'
 import AcceptedPaymentMethodSelect from './AcceptedPaymentMethodSelect'
 import apiClient, { setAuthToken } from '../AxiosClients/apiClient'
 import { useConstructorContext } from '../Context/ConstructorContext'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 
 interface ConstructorDataForm {
   phoneNumber: string
@@ -55,6 +56,8 @@ const ConstructorDataForm = () => {
 
   const { isAuthenticated, getAccessTokenSilently } = useAuth0()
 
+  const { dictionary } = useDictionaryContext()
+
   const handleSelectPlace = (places: string[]) => {
     setSelectedPlaces(places)
   }
@@ -87,27 +90,27 @@ const ConstructorDataForm = () => {
 
   const validateSelectsAndAutocompletes = () => {
     if (selectedPlaces.length === 0) {
-      setPlacesErrorMessage('At least one city is required.')
+      setPlacesErrorMessage(dictionary.cityRequiredErr)
     } else {
       setPlacesErrorMessage('')
     }
 
     if (selectedLanguages.length === 0) {
-      setLanguagesErrorMessage('At least one language is required.')
+      setLanguagesErrorMessage(dictionary.languageRequiredErr)
     } else {
       setLanguagesErrorMessage('')
     }
 
     if (acceptedPaymentMethods.length === 0) {
       setAcceptedPaymentMethodsErrorMessage(
-        'At least one payment method is required.'
+        dictionary.paymentMethodRequiredErr
       )
     } else {
       setAcceptedPaymentMethodsErrorMessage('')
     }
 
     if (selectedCategories.length === 0) {
-      setCategoriesErrorMessage('At least one category is required.')
+      setCategoriesErrorMessage(dictionary.categoryRequiredErr)
     } else {
       setCategoriesErrorMessage('')
     }
@@ -128,11 +131,11 @@ const ConstructorDataForm = () => {
           setConstructor(response.data)
         })
         .then(() => {
-          toast.success('Constructor profile created successfully!')
+          toast.success(dictionary.constructorMessageSucc)
         })
         .catch((error) => {
           console.error(error)
-          toast.error('Failed to create constructor profile.')
+          toast.error(dictionary.constructorMessageErr)
         })
     } else {
       // Updating an existing constructor profile
@@ -142,11 +145,11 @@ const ConstructorDataForm = () => {
           setConstructor(response.data)
         })
         .then(() => {
-          toast.success('Constructor profile updated successfully!')
+          toast.success(dictionary.constructorUpdMessageSucc)
         })
         .catch((error) => {
           console.error(error)
-          toast.error('Failed to update constructor profile.')
+          toast.error(dictionary.constructorUpdMessageErr)
         })
     }
     setIsFormLoading(false)
@@ -174,7 +177,7 @@ const ConstructorDataForm = () => {
 
       if (!isProfileComplete) {
         toast.error(
-          'Please complete your personal profile before creating a constructor profile.'
+          dictionary.constructorBeforePersonalMessageErr
         )
         setIsFormLoading(false)
         return
@@ -185,7 +188,7 @@ const ConstructorDataForm = () => {
       updateConstructorProfile(isConstructor, finalData, token)
     } else {
       toast.error(
-        'There was a problem with your authentication. Please try again in a moment.'
+        dictionary.authErr
       )
     }
   }
@@ -231,7 +234,7 @@ const ConstructorDataForm = () => {
 
   return (
     <div className="ConstructorDataForm">
-      <h1>Constructor Information</h1>
+      <h1>{dictionary.contructorInfoWord}</h1>
       <div className="constructor-data-form-wrapper">
         <form
           className="constructor-data-form"
@@ -239,17 +242,17 @@ const ConstructorDataForm = () => {
         >
           <TextField
             id="phoneNumber"
-            label="Phone number"
+            label={dictionary.phoneNumberWord}
             InputLabelProps={{ shrink: true }}
             type="text"
             {...register('phoneNumber', {
-              required: 'Phone number is required.',
+              required: dictionary.phoneRequiredErr,
               pattern: {
                 value: /^\d{9}$/,
-                message: 'Phone number must be exactly 9 digits.',
+                message: dictionary.phoneLengthErr,
               },
             })}
-            placeholder="Fill in your work phone number (9 digits)"
+            placeholder={dictionary.phoneNumberPlaceholder}
           />
           <ErrorMessage
             errors={errors}
@@ -262,21 +265,21 @@ const ConstructorDataForm = () => {
             InputLabelProps={{ shrink: true }}
             type="text"
             {...register('constructorEmail', {
-              required: 'Email is required.',
+              required: dictionary.emailRequiredErr,
               minLength: {
                 value: 5,
-                message: 'Email must be at least 5 characters long.',
+                message: dictionary.EmailLengthErrSec,
               },
               maxLength: {
                 value: 50,
-                message: 'Email cannot be longer than 50 characters.',
+                message: dictionary.emailLengthErr,
               },
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Invalid email address.',
+                message: dictionary.emailInvalidErr,
               },
             })}
-            placeholder="Fill in your work email address"
+            placeholder={dictionary.emailPlaceholder}
           />
           <ErrorMessage
             errors={errors}
@@ -285,21 +288,21 @@ const ConstructorDataForm = () => {
           />
           <TextField
             id="aboutMe"
-            label="About me"
+            label={dictionary.aboutMe}
             InputLabelProps={{ shrink: true }}
             type="text"
             {...register('aboutMe', {
-              required: 'About me is required.',
+              required: dictionary.aboutMeRequiredErr,
               minLength: {
                 value: 10,
-                message: 'About me must be at least 10 characters long.',
+                message: dictionary.aboutMeLengthErr,
               },
               maxLength: {
                 value: 300,
-                message: 'About me cannot be longer than 300 characters.',
+                message: dictionary.aboutMeLengthErrSec,
               },
             })}
-            placeholder="Write a few words about yourself"
+            placeholder={dictionary.aboutMePlaceholder}
           />
           <ErrorMessage
             errors={errors}
@@ -308,21 +311,21 @@ const ConstructorDataForm = () => {
           />
           <TextField
             id="experience"
-            label="Experience"
+            label={dictionary.experience}
             InputLabelProps={{ shrink: true }}
             type="text"
             {...register('experience', {
-              required: 'Experience is required.',
+              required: dictionary.experienceRequiredErr,
               minLength: {
                 value: 10,
-                message: 'Experience must be at least 10 characters long.',
+                message: dictionary.experienceLengthErr,
               },
               maxLength: {
                 value: 300,
-                message: 'Experience cannot be longer than 300 characters.',
+                message: dictionary.experienceLengthErrSec,
               },
             })}
-            placeholder="Describe your experience"
+            placeholder={dictionary.experiencePlaceholder}
           />
           <ErrorMessage
             errors={errors}
@@ -331,17 +334,17 @@ const ConstructorDataForm = () => {
           />
           <TextField
             id="minRate"
-            label="Minimal rate ($/hour)"
+            label={dictionary.rateWord}
             InputLabelProps={{ shrink: true }}
             type="number"
             {...register('minRate', {
-              required: 'Minimal rate is required.',
+              required: dictionary.rateRequiredErr,
               min: {
                 value: 1.0,
-                message: 'Minimal rate must be at least $1.00.',
+                message: dictionary.rateMinimalErr,
               },
             })}
-            placeholder="Set your minimal rate ($/hour)"
+            placeholder={dictionary.ratePlaveholder}
           />
           <ErrorMessage
             errors={errors}
@@ -382,7 +385,7 @@ const ConstructorDataForm = () => {
             className="submit-button"
             disabled={isFormLoading}
           >
-            Save
+            {dictionary.saveWord}
           </Button>
         </form>
       </div>

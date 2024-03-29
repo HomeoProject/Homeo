@@ -5,6 +5,7 @@ import LoadingSpinner from './LoadingSpinner'
 import { ConstructorProfileReviews, Review } from '../types/types'
 import ReviewComponent from './ReviewComponent'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 import { useAuth0 } from '@auth0/auth0-react'
 
 type ConstructorReviewsProps = {
@@ -15,6 +16,8 @@ const ConstructorReviews = ({ userId }: ConstructorReviewsProps) => {
   const [isLoading, setIsLoading] = useState(true)
   const [reviews, setReviews] = useState<ConstructorProfileReviews | null>(null)
   const [isAdmin, setIsAdmin] = useState(false)
+
+  const { dictionary } = useDictionaryContext()
 
   const { isAuthenticated, getAccessTokenSilently } = useAuth0()
 
@@ -56,7 +59,7 @@ const ConstructorReviews = ({ userId }: ConstructorReviewsProps) => {
           <LoadingSpinner />
         ) : !reviews ? (
           <p className="no-reviews-text">
-            This constructor has no reviews yet...
+            {dictionary.noReviewsYet}
           </p>
         ) : (
           reviews &&

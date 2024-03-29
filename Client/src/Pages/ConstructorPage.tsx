@@ -8,6 +8,7 @@ import {
   CustomUser,
 } from '../types/types'
 import UserContext from '../Context/UserContext'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 import LoadingSpinner from '../Components/LoadingSpinner'
 import UserAvatar from '../Components/UserAvatar'
 import { Button } from '@mui/material'
@@ -41,6 +42,8 @@ const ConstructorPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [constructorNotFound, setConstructorNotFound] = useState(false)
   const [isViewingOwnProfile, setIsViewingOwnProfile] = useState(false)
+
+  const { dictionary } = useDictionaryContext()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,7 +97,7 @@ const ConstructorPage = () => {
                 />
                 <p className="constructor-page-main-section-content-mobile-name">{`${constructorUserData.firstName} ${constructorUserData.lastName}`}</p>
                 <p className="constructor-page-main-section-content-mobile-title">
-                  Homeo Constructor
+                  {dictionary.homeoConstructor}
                 </p>
               </div>
               <div className="constructor-page-main-section-interactive-mobile">
@@ -105,7 +108,7 @@ const ConstructorPage = () => {
                   disabled={isViewingOwnProfile}
                 >
                   <StarHalfIcon />
-                  Add review
+                  {dictionary.addReview}
                 </Button>
                 <Button
                   variant="contained"
@@ -114,13 +117,13 @@ const ConstructorPage = () => {
                   disabled={isViewingOwnProfile}
                 >
                   <ChatIcon />
-                  Chat
+                  {dictionary.chat}
                 </Button>
               </div>
               <div className="constructor-page-main-section-content-info">
                 <p className="constructor-page-main-section-content-info-name">{`${constructorUserData.firstName} ${constructorUserData.lastName}`}</p>
                 <p className="constructor-page-main-section-content-info-title">
-                  Homeo Constructor
+                  {dictionary.homeoConstructor}
                 </p>
                 <div className="constructor-page-main-section-content-info-rating-wrapper">
                   <Rating
@@ -180,7 +183,7 @@ const ConstructorPage = () => {
                 disabled={isViewingOwnProfile}
               >
                 <StarHalfIcon />
-                Add review
+                {dictionary.addReview}
               </Button>
               <Button
                 variant="contained"
@@ -189,7 +192,7 @@ const ConstructorPage = () => {
                 disabled={isViewingOwnProfile}
               >
                 <ChatIcon />
-                Chat
+                {dictionary.chat}
               </Button>
             </div>
           </section>
@@ -199,7 +202,7 @@ const ConstructorPage = () => {
                 className="constructor-page-main-section-icon"
                 color="primary"
               />
-              <h1 className="constructor-page-main-section-title">About me</h1>
+              <h1 className="constructor-page-main-section-title">{dictionary.aboutMe}</h1>
             </div>
             <p className="constructor-page-main-section-content">
               {constructorData.aboutMe}
@@ -210,7 +213,7 @@ const ConstructorPage = () => {
                 color="primary"
               />
               <h1 className="constructor-page-main-section-title">
-                Experience
+                {dictionary.experience}
               </h1>
             </div>
             <p className="constructor-page-main-section-content">
@@ -222,7 +225,7 @@ const ConstructorPage = () => {
                 color="primary"
               />
               <h1 className="constructor-page-main-section-title">
-                Categories
+                {dictionary.categories}
               </h1>
             </div>
             <p className="constructor-page-main-section-content">
@@ -238,7 +241,7 @@ const ConstructorPage = () => {
                 color="primary"
               />
               <h1 className="constructor-page-main-section-title">
-                Cities I work in
+                {dictionary.workingCities}
               </h1>
             </div>
             <p className="constructor-page-main-section-content">
@@ -252,7 +255,7 @@ const ConstructorPage = () => {
                 className="constructor-page-main-section-icon"
                 color="primary"
               />
-              <h1 className="constructor-page-main-section-title">Languages</h1>
+              <h1 className="constructor-page-main-section-title">{dictionary.languages}</h1>
             </div>
             <p className="constructor-page-main-section-content">
               {constructorData.languages.map((language, index) => {
@@ -264,14 +267,14 @@ const ConstructorPage = () => {
           </section>
           <div className="section-header-wrapper">
             <StarHalfIcon className="section-header-icon" />
-            <h1 className="section-header">Reviews</h1>
+            <h1 className="section-header">{dictionary.reviews}</h1>
           </div>
           <section className="constructor-page-main-section">
             <ConstructorReviews userId={id} />
           </section>
         </div>
       ) : (
-        <ErrorPage error="Error while fetching constructor data" />
+        <ErrorPage error={dictionary.contructorDownloadError} />
       )}
     </div>
   )

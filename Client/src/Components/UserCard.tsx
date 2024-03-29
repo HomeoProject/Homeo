@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 import Karol from '../assets/Karol.jpg'
 import UserCardDialog from './UserCardDialog'
 import Card from '@mui/material/Card'
@@ -16,6 +17,8 @@ type UserCardProps = {
 
 const UserCard = ({ isDialog }: UserCardProps) => {
   const [open, setOpen] = useState(false)
+
+  const { dictionary } = useDictionaryContext()
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -79,7 +82,7 @@ const UserCard = ({ isDialog }: UserCardProps) => {
                 sx={{ width: '100%', fontWeight: 700 }}
                 onClick={handleClickOpen}
               >
-                Go to profile
+                {dictionary.goToProfile}
               </Button>
             ) : (
               <Button
@@ -87,7 +90,7 @@ const UserCard = ({ isDialog }: UserCardProps) => {
                 sx={{ width: '100%', fontWeight: 700 }}
                 onClick={handleClickOpen}
               >
-                More
+                {dictionary.moreWord}
               </Button>
             )}
           </div>
