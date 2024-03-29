@@ -89,7 +89,7 @@ const UserPage = () => {
                 }
                 end
               >
-                {dictionary.contructorProfile}
+                {dictionary.constructorProfile}
               </NavLink>
             </div>
           </div>

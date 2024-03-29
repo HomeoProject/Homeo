@@ -338,7 +338,7 @@ const ConstructorDataForm = () => {
                 message: dictionary.rateMinimalErr,
               },
             })}
-            placeholder={dictionary.ratePlaveholder}
+            placeholder={dictionary.ratePlaceholder}
           />
           <ErrorMessage
             errors={errors}
