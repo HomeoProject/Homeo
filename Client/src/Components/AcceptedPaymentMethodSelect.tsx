@@ -48,7 +48,9 @@ const AcceptedPaymentMethodSelect = ({
         ))}
       </Select>
       {acceptedPaymentMethods.length === 0 && (
-        <p className="select-placeholder">{dictionary.acceptedPaymentMethodsLabel}</p>
+        <p className="select-placeholder">
+          {dictionary.acceptedPaymentMethodsLabel}
+        </p>
       )}
     </FormControl>
   )

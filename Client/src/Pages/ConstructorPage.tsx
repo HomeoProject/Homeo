@@ -202,7 +202,9 @@ const ConstructorPage = () => {
                 className="constructor-page-main-section-icon"
                 color="primary"
               />
-              <h1 className="constructor-page-main-section-title">{dictionary.aboutMe}</h1>
+              <h1 className="constructor-page-main-section-title">
+                {dictionary.aboutMe}
+              </h1>
             </div>
             <p className="constructor-page-main-section-content">
               {constructorData.aboutMe}
@@ -255,7 +257,9 @@ const ConstructorPage = () => {
                 className="constructor-page-main-section-icon"
                 color="primary"
               />
-              <h1 className="constructor-page-main-section-title">{dictionary.languages}</h1>
+              <h1 className="constructor-page-main-section-title">
+                {dictionary.languages}
+              </h1>
             </div>
             <p className="constructor-page-main-section-content">
               {constructorData.languages.map((language, index) => {

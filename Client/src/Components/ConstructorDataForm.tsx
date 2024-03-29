@@ -102,9 +102,7 @@ const ConstructorDataForm = () => {
     }
 
     if (acceptedPaymentMethods.length === 0) {
-      setAcceptedPaymentMethodsErrorMessage(
-        dictionary.paymentMethodRequiredErr
-      )
+      setAcceptedPaymentMethodsErrorMessage(dictionary.paymentMethodRequiredErr)
     } else {
       setAcceptedPaymentMethodsErrorMessage('')
     }
@@ -176,9 +174,7 @@ const ConstructorDataForm = () => {
       const isProfileComplete = checkIfUserHasPermission(token, 'user')
 
       if (!isProfileComplete) {
-        toast.error(
-          dictionary.constructorBeforePersonalMessageErr
-        )
+        toast.error(dictionary.constructorBeforePersonalMessageErr)
         setIsFormLoading(false)
         return
       }
@@ -187,9 +183,7 @@ const ConstructorDataForm = () => {
 
       updateConstructorProfile(isConstructor, finalData, token)
     } else {
-      toast.error(
-        dictionary.authErr
-      )
+      toast.error(dictionary.authErr)
     }
   }
 

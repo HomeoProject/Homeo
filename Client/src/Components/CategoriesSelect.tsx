@@ -79,9 +79,7 @@ const CategoriesSelect = ({
           ))}
         </Select>
         {selectedCategories.length === 0 && (
-          <p className="select-placeholder">
-            {dictionary.chooseCategories}
-          </p>
+          <p className="select-placeholder">{dictionary.chooseCategories}</p>
         )}
       </FormControl>
     </>

@@ -22,7 +22,6 @@ const AppProvider = ({ children }: AppProviderProps) => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-
       if (!isAuthenticated) return
 
       // Check if user exists in local database, if not, create it using Auth0 data

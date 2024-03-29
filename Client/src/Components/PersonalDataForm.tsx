@@ -59,9 +59,7 @@ const PersonalDataForm = () => {
           console.error(error)
         })
     } else {
-      toast.error(
-        dictionary.authErr
-      )
+      toast.error(dictionary.authErr)
     }
   }
 
@@ -126,7 +124,8 @@ const PersonalDataForm = () => {
                 value: 30,
                 message: dictionary.lastNameLengthErrSec,
               },
-              validate: (value) => validateSpacesStartOrEnd(value, dictionary.lastNameWord),
+              validate: (value) =>
+                validateSpacesStartOrEnd(value, dictionary.lastNameWord),
             })}
             className="custom-input"
             placeholder={dictionary.fillInLastname}

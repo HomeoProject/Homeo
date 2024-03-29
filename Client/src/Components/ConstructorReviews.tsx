@@ -58,9 +58,7 @@ const ConstructorReviews = ({ userId }: ConstructorReviewsProps) => {
         {isLoading ? (
           <LoadingSpinner />
         ) : !reviews ? (
-          <p className="no-reviews-text">
-            {dictionary.noReviewsYet}
-          </p>
+          <p className="no-reviews-text">{dictionary.noReviewsYet}</p>
         ) : (
           reviews &&
           reviews.content.map((review: Review) => (

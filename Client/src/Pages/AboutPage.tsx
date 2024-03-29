@@ -38,16 +38,20 @@ const AboutPage = () => {
               src={greenIcon}
               alt="icon"
             />
-            <p className="about-description-header-value-text">{dictionary.whatWord}</p>
-            <p className="about-description-header-value-text">{dictionary.aboutWord}</p>
-            <p className="about-description-header-value-text">{dictionary.thatWord}</p>
+            <p className="about-description-header-value-text">
+              {dictionary.whatWord}
+            </p>
+            <p className="about-description-header-value-text">
+              {dictionary.aboutWord}
+            </p>
+            <p className="about-description-header-value-text">
+              {dictionary.thatWord}
+            </p>
             <span className="about-description-header-value-title">Homeo</span>
             <p className="about-description-header-value-text">?</p>
           </span>
         </div>
-        <p className="about-description-value">
-          {dictionary.homeoDescription}
-        </p>
+        <p className="about-description-value">{dictionary.homeoDescription}</p>
       </div>
       <div className="about-developers-choice">
         <img

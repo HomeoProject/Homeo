@@ -16,9 +16,7 @@ const HomePage = () => {
       <div className="home-page-top-banner"></div>
       <div className="home-page-main-wrapper">
         <div className="home-page-main">
-          <p className="home-page-main-title">
-            {dictionary.homePageTitle}
-          </p>
+          <p className="home-page-main-title">{dictionary.homePageTitle}</p>
           <div className="home-page-main-search-wrapper">
             <input
               className="home-page-main-search"
@@ -31,7 +29,10 @@ const HomePage = () => {
           </div>
           <div className="home-page-main-intro">
             <div className="home-page-main-intro-sub">
-              <b>{dictionary.over} {verifiedContractorsCount} {dictionary.homePageIntro}</b>
+              <b>
+                {dictionary.over} {verifiedContractorsCount}{' '}
+                {dictionary.homePageIntro}
+              </b>
               <p>{dictionary.homePageIntroCont}</p>
             </div>
             <ConstructionRoundedIcon className="home-page-main-intro-icon" />
@@ -45,7 +46,9 @@ const HomePage = () => {
           </div>
         </div>
         <div className="home-page-instruction">
-          <p className="home-page-instruction-title">{dictionary.HomePageInstruction}:</p>
+          <p className="home-page-instruction-title">
+            {dictionary.HomePageInstruction}:
+          </p>
           <HomePageTimeline />
         </div>
       </div>

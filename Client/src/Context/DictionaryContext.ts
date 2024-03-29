@@ -2,7 +2,7 @@ import { createContext, Dispatch, SetStateAction, useContext } from 'react'
 import { Dictionary } from '../types/types'
 
 type DictionaryContextType = {
-  dictionary: Dictionary 
+  dictionary: Dictionary
   setDictionary: Dispatch<SetStateAction<Dictionary>>
 }
 
@@ -19,6 +19,7 @@ export const useDictionaryContext = () => {
   return context
 }
 
-export const DictionaryContext = createContext<DictionaryContextType>(defaultContextValue)
+export const DictionaryContext =
+  createContext<DictionaryContextType>(defaultContextValue)
 
 export default DictionaryContext

@@ -51,7 +51,7 @@ const UploadPictureModal = ({
   const [imgSrc, setImgSrc] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  const {dictionary} = useDictionaryContext()
+  const { dictionary } = useDictionaryContext()
 
   const internalHandleClose = () => {
     handleClose()
