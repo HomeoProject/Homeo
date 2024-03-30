@@ -1,0 +1,64 @@
+@use '../Variables' as v;
+
+.CategoriesAccordion {
+    padding: 1rem 0 0 0;
+    .categories-accordion-label {
+        display: flex;
+        align-items: center;
+        .categories-accordion-label-image {
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-right: 0.5rem;
+            border-radius: 90px;
+        }
+    }
+    .categories-accordion-details {
+        display: flex;
+        justify-content: space-around;
+        gap: 1.5rem;
+        padding: 2rem 0 2rem 0rem;
+        @media screen and (max-width: 900px){
+            flex-direction: column;
+            align-items: center;
+        }
+        .categories-accordion-details-container {
+            display: flex;
+            gap: 1.5rem;
+            @media screen and (max-width: 900px){
+                flex-direction: column;
+            }
+        }
+        .categories-accordion-details-image {
+            width: 12rem;
+            height: 12rem;
+            // margin-right: 0.5rem;
+            border-radius: 90px;
+        }
+        .categories-accordion-details-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 1.5rem 0 0 0;
+            .categories-accordion-details-fields-container {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                &.name {
+                    flex-direction: row;
+                }
+                .categories-accordion-details-fields-container-key {
+                    color:v.$primary-color ;
+                }
+            }
+        }
+        .categories-accordion-details-actions {
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 0 0 0;
+            @media screen and (max-width: 900px){
+                width: 50%;
+            }
+            gap: 1rem;
+        }
+    }
+}
