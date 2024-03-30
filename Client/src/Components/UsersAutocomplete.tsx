@@ -6,15 +6,12 @@ type UsersAutocompleteProps = {
   onSelectUser: (user: string) => void
 }
 
-const UsersAutocomplete = ({
-  onSelectUser,
-}: UsersAutocompleteProps) => {
-
+const UsersAutocomplete = ({ onSelectUser }: UsersAutocompleteProps) => {
   const [fetchedOptions, setFetchedOptions] = useState<string[]>([])
   const [inputValue, setInputValue] = useState<string>('')
 
   useEffect(() => {
-    if(inputValue === '' || inputValue.length < 3) {
+    if (inputValue === '' || inputValue.length < 3) {
       setFetchedOptions([])
       return
     }
@@ -39,7 +36,7 @@ const UsersAutocomplete = ({
       getOptionLabel={(option) => option}
       filterSelectedOptions
       onChange={(_, newValue) => {
-        if(newValue !== null) {
+        if (newValue !== null) {
           onSelectUser(newValue)
         }
       }}

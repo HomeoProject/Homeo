@@ -6,7 +6,7 @@ import { TextField } from '@mui/material'
 import { useCategoriesContext } from '../Context/CategoriesContext'
 import { Category } from '../types/types'
 // import UsersAutocomplete from '../Components/UsersAutocomplete'
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import CategoriesAccordion from '../Components/CategoriesAccordion'
 import Swal from 'sweetalert2'
 
@@ -18,7 +18,7 @@ const AdminPanel = () => {
   const [categoriesToShow, setCategoriesToShow] = useState<Category[]>([])
 
   useEffect(() => {
-    if(inputValue === '' || inputValue.length < 3) {
+    if (inputValue === '' || inputValue.length < 3) {
       setCategoriesToShow([])
       return
     }
@@ -28,33 +28,37 @@ const AdminPanel = () => {
     setCategoriesToShow(categoriesFliltred)
   }, [inputValue])
 
-  const handleCategoryInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCategoryInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setInputValue(event.target.value)
   }
 
   const handleCategoryDelete = (id: number) => {
     try {
       Swal.fire({
-        title: "Are you sure?",
+        title: 'Are you sure?',
         text: "You won't be able to revert this!",
-        icon: "warning",
+        icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!"
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
       }).then((result) => {
         if (result.isConfirmed) {
           // apiClient.delete(`/constructors/categories/${id}`)
-          const deletedCategory = categories.filter(category => category.id !== id)
+          const deletedCategory = categories.filter(
+            (category) => category.id !== id
+          )
           setCategories(deletedCategory)
           setCategoriesToShow(deletedCategory)
           Swal.fire({
-            title: "Deleted!",
-            text: "Your file has been deleted.",
-            icon: "success"
-          });
+            title: 'Deleted!',
+            text: 'Your file has been deleted.',
+            icon: 'success',
+          })
         }
-      });
+      })
     } catch (error) {
       console.error(error)
     }
@@ -76,7 +80,10 @@ const AdminPanel = () => {
           fullWidth
         />
         <div>
-          <CategoriesAccordion categories={categoriesToShow} deleteCategory={handleCategoryDelete}/>
+          <CategoriesAccordion
+            categories={categoriesToShow}
+            deleteCategory={handleCategoryDelete}
+          />
         </div>
       </div>
     </div>
