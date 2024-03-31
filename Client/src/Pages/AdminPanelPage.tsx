@@ -64,6 +64,23 @@ const AdminPanel = () => {
     }
   }
 
+  const handleCategoryEdit = (id: number, newCategory: {name: string, description: string}) => {
+    try {
+      // apiClient.put(`/constructors/categories/${id}`, {
+      //   name: newCategory.name,
+      //   description: newCategory.description,
+      // })
+      Swal.fire({
+        icon: "success",
+        title: "Your work has been saved",
+        showConfirmButton: false,
+        timer: 1500
+      });
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return isAuthenticated ? (
     <div className="AdminPanelPage">
       <h1>Users</h1>
@@ -83,6 +100,7 @@ const AdminPanel = () => {
           <CategoriesAccordion
             categories={categoriesToShow}
             deleteCategory={handleCategoryDelete}
+            editCategory={handleCategoryEdit}
           />
         </div>
       </div>

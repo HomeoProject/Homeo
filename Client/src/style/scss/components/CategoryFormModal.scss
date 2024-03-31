@@ -1,0 +1,32 @@
+.category-form {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 2rem 2rem 2rem;
+    .category-form-exit {
+        display: flex;
+        justify-content: flex-end;
+        cursor: pointer;
+        .category-form-exit-value {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 90px;
+            transition: 0.2s ease;
+            width: 1rem;
+            height: 1rem;
+            padding: 0.5rem;
+            &:hover {
+                background-color: rgb(228, 228, 228);
+            }
+        }
+    }
+    .category-form-input {
+        margin: 0.5rem 0 0.5rem 0;
+    }
+    .category-form-actions {
+        display: grid;
+        padding: 1rem 0 0 0;
+        gap: 1rem;
+        grid-template-columns: 2fr 1fr;
+    }
+}

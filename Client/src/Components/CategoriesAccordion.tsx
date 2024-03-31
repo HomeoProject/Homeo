@@ -4,17 +4,20 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Button from '@mui/material/Button'
+import CategoryFormModal from '../Components/CategoryFormModal'
 import { Category } from '../types/types'
 import '../style/scss/components/CategoriesAccordion.scss'
 
 type CategoriesAccordionProps = {
   categories: Category[]
   deleteCategory: (id: number) => void
+  editCategory: (id: number, newCategory: {name: string, description: string}) => void
 }
 
 const CategoriesAccordion = ({
   categories,
   deleteCategory,
+  editCategory,
 }: CategoriesAccordionProps) => {
   return (
     <div className="CategoriesAccordion">
@@ -59,7 +62,10 @@ const CategoriesAccordion = ({
                   </div>
                 </div>
                 <div className="categories-accordion-details-actions">
-                  <Button variant="contained">Edit</Button>
+                  <CategoryFormModal 
+                    category={category}
+                    editCategory={editCategory}
+                  />
                   <Button
                     variant="contained"
                     color="error"
