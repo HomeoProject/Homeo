@@ -12,7 +12,7 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 import CategoriesSelect from './CategoriesSelect'
 import AcceptedPaymentMethodSelect from './AcceptedPaymentMethodSelect'
-import apiClient, { setAuthToken } from '../AxiosClients/apiClient'
+import apiClient from '../AxiosClients/apiClient'
 import { useConstructorContext } from '../Context/ConstructorContext'
 
 interface ConstructorDataForm {
@@ -115,11 +115,8 @@ const ConstructorDataForm = () => {
 
   const updateConstructorProfile = async (
     isConstructor: boolean,
-    finalData: ConstructorDataForm,
-    token: string
+    finalData: ConstructorDataForm
   ) => {
-    setAuthToken(token)
-
     if (!isConstructor) {
       // Creating a new constructor profile
       apiClient
@@ -182,7 +179,7 @@ const ConstructorDataForm = () => {
 
       const isConstructor = checkIfUserHasPermission(token, 'constructor')
 
-      updateConstructorProfile(isConstructor, finalData, token)
+      updateConstructorProfile(isConstructor, finalData)
     } else {
       toast.error(
         'There was a problem with your authentication. Please try again in a moment.'
