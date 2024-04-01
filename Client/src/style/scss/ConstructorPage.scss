@@ -86,16 +86,30 @@
           display: none;
 
           @media (max-width: 550px) {
-            gap: 1rem !important;
             width: 100% !important;
             display: flex !important;
-            flex-direction: column !important;
           }
 
-          > .open-chat-button-mobile,
-          .open-review-modal-button-mobile {
-            gap: 5px !important;
-            width: 100% !important;
+          > .constructor-page-main-section-interactive-mobile-main {
+            display: flex;
+            gap: 1rem;
+            width: 100%;
+
+            > .button-wrapper {
+              width: 100%;
+
+              > .open-review-modal-button {
+                display: flex !important;
+                gap: 5px !important;
+                width: 100% !important;
+              }
+
+              > .open-chat-button {
+                display: flex !important;
+                gap: 5px !important;
+                width: 100% !important;
+              }
+            }
           }
         }
 
@@ -172,34 +186,45 @@
       }
 
       > .constructor-page-main-section-interactive {
-        display: flex;
-        gap: 1rem;
-        flex-direction: column;
-        align-items: flex-end;
         width: 200px;
 
         @media (max-width: 750px) {
-          flex-direction: row;
           width: 100%;
         }
 
-        > .open-review-modal-button {
-          display: flex !important;
-          gap: 5px !important;
+        @media (max-width: 550px) {
+          display: none;
+        }
+
+        > .constructor-page-main-section-interactive-main {
+          display: flex;
+          gap: 1rem;
+          flex-direction: column;
+          align-items: flex-end;
           width: 100%;
+
+          @media (max-width: 750px) {
+            flex-direction: row;
+          }
 
           @media (max-width: 550px) {
             display: none !important;
           }
-        }
 
-        > .open-chat-button {
-          display: flex !important;
-          gap: 5px !important;
-          width: 100%;
+          > .button-wrapper {
+            width: 100%;
 
-          @media (max-width: 550px) {
-            display: none !important;
+            > .open-review-modal-button {
+              display: flex !important;
+              gap: 5px !important;
+              width: 100% !important;
+            }
+
+            > .open-chat-button {
+              display: flex !important;
+              gap: 5px !important;
+              width: 100% !important;
+            }
           }
         }
       }
