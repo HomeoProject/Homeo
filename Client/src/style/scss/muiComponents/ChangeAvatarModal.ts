@@ -13,7 +13,6 @@ export const avatarModalStyle = {
   height: '70%',
   minHeight: '600px',
   bgcolor: 'background.paper',
-  border: '2px solid #000',
   boxShadow: 24,
   p: 4,
   '@media (max-width: 600px)': {

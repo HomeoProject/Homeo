@@ -10,7 +10,7 @@ import {
 import UserContext from '../Context/UserContext'
 import LoadingSpinner from '../Components/LoadingSpinner'
 import UserAvatar from '../Components/UserAvatar'
-import { Button } from '@mui/material'
+import { Button, Tooltip } from '@mui/material'
 import ChatIcon from '@mui/icons-material/Chat'
 import PhoneIcon from '@mui/icons-material/Phone'
 import EmailIcon from '@mui/icons-material/Email'
@@ -27,10 +27,14 @@ import ConstructorReviews from '../Components/ConstructorReviews'
 import StarIcon from '@mui/icons-material/Star'
 import StarBorderIcon from '@mui/icons-material/StarBorder'
 import { Rating } from '@mui/material'
+import ReviewModal from '../Components/ReviewModal'
+import { useAuth0 } from '@auth0/auth0-react'
+import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 
 const ConstructorPage = () => {
-  const id = useParams().id
+  const constructorId = useParams<{ id: string }>().id
   const { customUser } = useContext(UserContext)
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0()
   const [constructorData, setConstructorData] = useState<Constructor | null>(
     null
   )
@@ -41,15 +45,30 @@ const ConstructorPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [constructorNotFound, setConstructorNotFound] = useState(false)
   const [isViewingOwnProfile, setIsViewingOwnProfile] = useState(false)
+  const [openReviewModal, setOpenReviewModal] = useState(false)
+  const [canUserInteract, setCanUserInteract] = useState(false)
+
+  const handleOpenReviewModal = () => {
+    setOpenReviewModal(true)
+  }
+
+  const handleCloseReviewModal = () => {
+    setOpenReviewModal(false)
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const constructorResponse = await apiClient.get(`/constructors/${id}`)
-        const userResponse = await apiClient.get(`/users/${id}`)
-        const reviewsResponse = await apiClient.get(`/reviews/received/${id}`, {
-          params: { lastCreatedAt: new Date().toISOString() },
-        })
+        const constructorResponse = await apiClient.get(
+          `/constructors/${constructorId}`
+        )
+        const userResponse = await apiClient.get(`/users/${constructorId}`)
+        const reviewsResponse = await apiClient.get(
+          `/reviews/received/${constructorId}`,
+          {
+            params: { lastCreatedAt: new Date().toISOString() },
+          }
+        )
 
         setConstructorData(constructorResponse.data)
         setConstructorUserData(userResponse.data)
@@ -62,12 +81,22 @@ const ConstructorPage = () => {
       }
     }
 
-    if (customUser && customUser.id === id) {
+    const checkIfUserCanInteract = async () => {
+      if (isAuthenticated && customUser) {
+        const token = await getAccessTokenSilently()
+        const canInteract = checkIfUserHasPermission(token, 'user')
+
+        canInteract && setCanUserInteract(true)
+      }
+    }
+
+    if (customUser && customUser.id === constructorId) {
       setIsViewingOwnProfile(true)
     }
 
     fetchData()
-  }, [customUser, id])
+    checkIfUserCanInteract()
+  }, [customUser, constructorId, isAuthenticated, getAccessTokenSilently])
 
   return (
     <div className="ConstructorPage">
@@ -79,6 +108,12 @@ const ConstructorPage = () => {
         constructorReviews &&
         !constructorUserData.isDeleted ? (
         <div className="constructor-page-main">
+          <ReviewModal
+            reviewModalOpen={openReviewModal}
+            handleClose={handleCloseReviewModal}
+            receiverId={constructorId!}
+            receiverName={constructorUserData.firstName!}
+          />
           <section className="constructor-page-main-info-section">
             <div className="constructor-page-main-section-content">
               <div className="constructor-page-main-section-content-avatar-wrapper">
@@ -98,24 +133,46 @@ const ConstructorPage = () => {
                 </p>
               </div>
               <div className="constructor-page-main-section-interactive-mobile">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className="open-review-modal-button-mobile"
-                  disabled={isViewingOwnProfile}
-                >
-                  <StarHalfIcon />
-                  Add review
-                </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className="open-chat-button-mobile"
-                  disabled={isViewingOwnProfile}
-                >
-                  <ChatIcon />
-                  Chat
-                </Button>
+                {isAuthenticated && (
+                  <div className="constructor-page-main-section-interactive-mobile-main">
+                    <Tooltip
+                      title="You have to finish your profile in order to do this."
+                      disableHoverListener={canUserInteract}
+                      className="tooltip"
+                    >
+                      <div className="button-wrapper">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          className="open-review-modal-button"
+                          disabled={!canUserInteract || isViewingOwnProfile}
+                          onClick={handleOpenReviewModal}
+                        >
+                          <StarHalfIcon />
+                          Add review
+                        </Button>
+                      </div>
+                    </Tooltip>
+
+                    <Tooltip
+                      title="You have to finish your profile in order to do this."
+                      disableHoverListener={canUserInteract}
+                      className="tooltip"
+                    >
+                      <div className="button-wrapper">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          className="open-chat-button"
+                          disabled={!canUserInteract || isViewingOwnProfile}
+                        >
+                          <ChatIcon />
+                          Chat
+                        </Button>
+                      </div>
+                    </Tooltip>
+                  </div>
+                )}
               </div>
               <div className="constructor-page-main-section-content-info">
                 <p className="constructor-page-main-section-content-info-name">{`${constructorUserData.firstName} ${constructorUserData.lastName}`}</p>
@@ -173,24 +230,54 @@ const ConstructorPage = () => {
               </div>
             </div>
             <div className="constructor-page-main-section-interactive">
-              <Button
-                variant="contained"
-                color="primary"
-                className="open-review-modal-button"
-                disabled={isViewingOwnProfile}
-              >
-                <StarHalfIcon />
-                Add review
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                className="open-chat-button"
-                disabled={isViewingOwnProfile}
-              >
-                <ChatIcon />
-                Chat
-              </Button>
+              {isAuthenticated && (
+                <div className="constructor-page-main-section-interactive-main">
+                  <Tooltip
+                    title={
+                      !canUserInteract
+                        ? 'You have to finish your profile in order to do this.'
+                        : ''
+                    }
+                    disableHoverListener={canUserInteract}
+                    className="tooltip"
+                  >
+                    <div className="button-wrapper">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className="open-review-modal-button"
+                        // disabled={!canUserInteract || isViewingOwnProfile}
+                        onClick={handleOpenReviewModal}
+                      >
+                        <StarHalfIcon />
+                        Add review
+                      </Button>
+                    </div>
+                  </Tooltip>
+
+                  <Tooltip
+                    title={
+                      !canUserInteract
+                        ? 'You have to finish your profile in order to do this.'
+                        : ''
+                    }
+                    disableHoverListener={canUserInteract}
+                    className="tooltip"
+                  >
+                    <div className="button-wrapper">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className="open-chat-button"
+                        // disabled={!canUserInteract || isViewingOwnProfile}
+                      >
+                        <ChatIcon />
+                        Chat
+                      </Button>
+                    </div>
+                  </Tooltip>
+                </div>
+              )}
             </div>
           </section>
           <section className="constructor-page-main-section">
@@ -267,7 +354,7 @@ const ConstructorPage = () => {
             <h1 className="section-header">Reviews</h1>
           </div>
           <section className="constructor-page-main-section">
-            <ConstructorReviews userId={id} />
+            <ConstructorReviews userId={constructorId} />
           </section>
         </div>
       ) : (
