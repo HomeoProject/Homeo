@@ -11,7 +11,10 @@ import '../style/scss/components/CategoriesAccordion.scss'
 type CategoriesAccordionProps = {
   categories: Category[]
   deleteCategory: (id: number) => void
-  handler: (newCategory: {name: string, description: string}, id?: number) => void
+  handler: (
+    newCategory: { name: string; description: string },
+    id?: number
+  ) => void
 }
 
 const CategoriesAccordion = ({
@@ -62,7 +65,7 @@ const CategoriesAccordion = ({
                   </div>
                 </div>
                 <div className="categories-accordion-details-actions">
-                  <CategoryFormModal 
+                  <CategoryFormModal
                     category={category}
                     handler={handler}
                     label="Edit"

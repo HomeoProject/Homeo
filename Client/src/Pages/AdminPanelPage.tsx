@@ -69,7 +69,10 @@ const AdminPanel = () => {
     }
   }
 
-  const handleCategoryEdit = async (newCategory: {name: string, description: string}, id?: number) => {
+  const handleCategoryEdit = async (
+    newCategory: { name: string; description: string },
+    id?: number
+  ) => {
     try {
       const token = await getAccessTokenSilently()
       setAuthToken(token)
@@ -90,17 +93,20 @@ const AdminPanel = () => {
       setCategories(editedCategories)
       setCategoriesToShow(editedCategories)
       Swal.fire({
-        icon: "success",
-        title: "Your work has been saved",
+        icon: 'success',
+        title: 'Your work has been saved',
         showConfirmButton: false,
-        timer: 1500
-      });
+        timer: 1500,
+      })
     } catch (error) {
       console.error(error)
     }
   }
 
-  const handleCategoryAdd = async (newCategory: {name: string, description: string}) => {
+  const handleCategoryAdd = async (newCategory: {
+    name: string
+    description: string
+  }) => {
     try {
       const token = await getAccessTokenSilently()
       setAuthToken(token)
@@ -112,11 +118,11 @@ const AdminPanel = () => {
       setCategories(newCategoryList)
       setCategoriesToShow(newCategoryList)
       Swal.fire({
-        icon: "success",
-        title: "Your work has been saved",
+        icon: 'success',
+        title: 'Your work has been saved',
         showConfirmButton: false,
-        timer: 1500
-      });
+        timer: 1500,
+      })
     } catch (error) {
       console.error(error)
     }
@@ -144,8 +150,8 @@ const AdminPanel = () => {
             handler={handleCategoryEdit}
           />
         </div>
-        <div className='admin-panel-add'>
-          <CategoryFormModal handler={handleCategoryAdd} label="+"/>
+        <div className="admin-panel-add">
+          <CategoryFormModal handler={handleCategoryAdd} label="+" />
         </div>
       </div>
     </div>
