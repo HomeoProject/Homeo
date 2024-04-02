@@ -5,16 +5,21 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Card from '@mui/material/Card';
 import TextField from '@mui/material/TextField';
+import UploadPictureModal from './UploadPictureModal';
+import apiClient from '../AxiosClients/apiClient';
 
 type CategoryFormModalProps = {
-    category: Category,
-    editCategory: (id: number, newCategory: {name: string, description: string}) => void
+    category?: Category,
+    handler: (newCategory: {name: string, description: string}, id?: number) => void,
+    label: string
 }
 
-const CategoryFormModal = ({category, editCategory}: CategoryFormModalProps) => {
+const CategoryFormModal = ({category, handler, label}: CategoryFormModalProps) => {
     const [open, setOpen] = useState(false);
-    const [name, setName] = useState(category.name)
-    const [description, setDescription] = useState(category.description)
+    const [name, setName] = useState((category?.name) ? category.name : '')
+    const [description, setDescription] = useState((category?.description) ? category.description : '')
+
+    const [openPictureModal, setOpenPictureModal] = useState(false)
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -24,8 +29,8 @@ const CategoryFormModal = ({category, editCategory}: CategoryFormModalProps) => 
         setOpen(false);
       };
 
-      const handleEdit = () => {
-        editCategory(category.id, {name, description})
+      const handleAction = () => {
+        handler({name, description}, category?.id)
         setOpen(false)
       }
 
@@ -36,8 +41,8 @@ const CategoryFormModal = ({category, editCategory}: CategoryFormModalProps) => 
 
     return (
         <>
-        <Button variant="contained" onClick={handleClickOpen}>
-            Edit
+        <Button variant="contained" onClick={handleClickOpen} fullWidth>
+            {label}
         </Button>
         <Dialog
             open={open}
@@ -52,6 +57,28 @@ const CategoryFormModal = ({category, editCategory}: CategoryFormModalProps) => 
                             X
                         </span>
                     </div>
+                    {label !== "+" && 
+                    <>
+                        <UploadPictureModal
+                            open={openPictureModal}
+                            handleClose={() => setOpenPictureModal(false)}
+                            minHeight={200}
+                            minWidth={200}
+                            maxSize={1}
+                            client={apiClient}
+                            path={`/constructors/categories/image/${category?.id}`}
+                            method='put'
+                        />  
+                        <div className="category-form-image">
+                            <img
+                                src={category?.image}
+                                alt="category-photo"
+                                className='category-form-image-value'
+                                onClick={() => setOpenPictureModal(true)}
+                            />
+                        </div>
+                    </>
+                    }
                     <TextField 
                         className='category-form-input' 
                         label="Name" 
@@ -70,7 +97,7 @@ const CategoryFormModal = ({category, editCategory}: CategoryFormModalProps) => 
                     />
                     <div className='category-form-actions'>
                         <Button variant="contained" onClick={handleClear}>Clear</Button>
-                        <Button variant="contained" onClick={handleEdit}>Save</Button>
+                        <Button variant="contained" onClick={handleAction}>Save</Button>
                     </div>
                 </div>
             </Card>

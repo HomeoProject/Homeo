@@ -8,11 +8,14 @@ import { Category } from '../types/types'
 // import UsersAutocomplete from '../Components/UsersAutocomplete'
 import { useState, useEffect } from 'react'
 import CategoriesAccordion from '../Components/CategoriesAccordion'
+import CategoryFormModal from '../Components/CategoryFormModal'
 import Swal from 'sweetalert2'
+import { setAuthToken } from '../AxiosClients/apiClient.ts'
 
 const AdminPanel = () => {
   const { isAuthenticated } = useAuth0()
   const { categories, setCategories } = useCategoriesContext()
+  const { getAccessTokenSilently } = useAuth0()
 
   const [inputValue, setInputValue] = useState<string>('')
   const [categoriesToShow, setCategoriesToShow] = useState<Category[]>([])
@@ -34,8 +37,10 @@ const AdminPanel = () => {
     setInputValue(event.target.value)
   }
 
-  const handleCategoryDelete = (id: number) => {
+  const handleCategoryDelete = async (id: number) => {
     try {
+      const token = await getAccessTokenSilently()
+      setAuthToken(token)
       Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -46,7 +51,7 @@ const AdminPanel = () => {
         confirmButtonText: 'Yes, delete it!',
       }).then((result) => {
         if (result.isConfirmed) {
-          // apiClient.delete(`/constructors/categories/${id}`)
+          apiClient.delete(`/constructors/categories/${id}`)
           const deletedCategory = categories.filter(
             (category) => category.id !== id
           )
@@ -64,12 +69,48 @@ const AdminPanel = () => {
     }
   }
 
-  const handleCategoryEdit = (id: number, newCategory: {name: string, description: string}) => {
+  const handleCategoryEdit = async (newCategory: {name: string, description: string}, id?: number) => {
     try {
-      // apiClient.put(`/constructors/categories/${id}`, {
-      //   name: newCategory.name,
-      //   description: newCategory.description,
-      // })
+      const token = await getAccessTokenSilently()
+      setAuthToken(token)
+      apiClient.put(`/constructors/categories/${id}`, {
+        name: newCategory.name,
+        description: newCategory.description,
+      })
+      const editedCategories = categories.map((category) => {
+        if (category.id === id) {
+          return {
+            ...category,
+            name: newCategory.name,
+            description: newCategory.description,
+          }
+        }
+        return category
+      })
+      setCategories(editedCategories)
+      setCategoriesToShow(editedCategories)
+      Swal.fire({
+        icon: "success",
+        title: "Your work has been saved",
+        showConfirmButton: false,
+        timer: 1500
+      });
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const handleCategoryAdd = async (newCategory: {name: string, description: string}) => {
+    try {
+      const token = await getAccessTokenSilently()
+      setAuthToken(token)
+      const createdCategory = await apiClient.post('/constructors/categories', {
+        name: newCategory.name,
+        description: newCategory.description,
+      })
+      const newCategoryList = [...categories, createdCategory.data]
+      setCategories(newCategoryList)
+      setCategoriesToShow(newCategoryList)
       Swal.fire({
         icon: "success",
         title: "Your work has been saved",
@@ -100,8 +141,11 @@ const AdminPanel = () => {
           <CategoriesAccordion
             categories={categoriesToShow}
             deleteCategory={handleCategoryDelete}
-            editCategory={handleCategoryEdit}
+            handler={handleCategoryEdit}
           />
+        </div>
+        <div className='admin-panel-add'>
+          <CategoryFormModal handler={handleCategoryAdd} label="+"/>
         </div>
       </div>
     </div>
