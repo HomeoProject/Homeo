@@ -28,4 +28,8 @@ public class AppUserEventProducer {
     public void produceUserUpdatedAvatarEvent(AppUserDto appUserDto) {
         rabbitTemplate.convertAndSend("", "q.user-updated-avatar", appUserDto);
     }
+
+    public void produceUserUpdatedIsApprovedEvent(AppUserDto appUserDto) {
+        rabbitTemplate.convertAndSend("", "user-updated-is-approved", appUserDto);
+    }
 }

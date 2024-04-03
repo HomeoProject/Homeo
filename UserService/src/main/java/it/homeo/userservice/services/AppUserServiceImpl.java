@@ -150,7 +150,9 @@ public class AppUserServiceImpl implements AppUserService {
         AppUser appUser = getAppUser(id);
         appUser.setApproved(dto.isApproved());
         repository.save(appUser);
-        return mapper.appUserToAppUserDto(appUser);
+        AppUserDto appUserDto = mapper.appUserToAppUserDto(appUser);
+        appUserEventProducer.produceUserUpdatedIsApprovedEvent(appUserDto);
+        return appUserDto;
     }
 
     @Transactional

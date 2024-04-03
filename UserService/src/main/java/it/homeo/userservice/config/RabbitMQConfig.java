@@ -46,6 +46,14 @@ public class RabbitMQConfig {
                 .build();
     }
 
+    @Bean
+    public Queue createUserUpdatedIsApprovedQueue() {
+        return QueueBuilder.durable("q.user-updated-is-approved")
+                .withArgument("x-dead-letter-exchange", "x.user-updated-is-approved-failure")
+                .withArgument("x-dead-letter-routing-key", "fall-back-user-updated-is-approved")
+                .build();
+    }
+
     // Exchange with queues
     @Bean
     public Declarables createUserDeletedSchema() {
@@ -111,6 +119,15 @@ public class RabbitMQConfig {
                 new DirectExchange("x.user-updated-avatar-failure"),
                 new Queue("q.fall-back-user-updated-avatar"),
                 new Binding("q.fall-back-user-updated-avatar", Binding.DestinationType.QUEUE, "x.user-updated-avatar-failure", "fall-back-user-updated-avatar", null)
+        );
+    }
+
+    @Bean
+    public Declarables createDeadLetterSchemaUserUpdatedIsApproved() {
+        return new Declarables(
+                new DirectExchange("x.user-updated-is-approved"),
+                new Queue("q.fall-back-user-updated-is-approved"),
+                new Binding("q.fall-back-user-updated-is-approved", Binding.DestinationType.QUEUE, "x.user-updated-is-approved-failure", "fall-back-user-updated-is-approved", null)
         );
     }
 
