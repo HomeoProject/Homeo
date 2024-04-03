@@ -24,4 +24,8 @@ public class AppUserEventProducer {
     public void produceUserIsBlockedEvent(AppUserDto appUserDto) {
         rabbitTemplate.convertAndSend("", "q.user-is-blocked", appUserDto);
     }
+
+    public void produceUserUpdatedAvatarEvent(AppUserDto appUserDto) {
+        rabbitTemplate.convertAndSend("", "q.user-updated-avatar", appUserDto);
+    }
 }
