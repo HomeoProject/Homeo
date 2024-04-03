@@ -4,7 +4,6 @@ import { useUserContext } from '../Context/UserContext.ts'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 import { useForm } from 'react-hook-form'
 import { TextField } from '@mui/material'
-import { useAuth0 } from '@auth0/auth0-react'
 import Cropper, { ReactCropperElement } from 'react-cropper'
 import 'cropperjs/dist/cropper.css'
 import '../style/scss/components/ChangeAvatarModal.scss'
@@ -20,7 +19,6 @@ import {
 import CloseIcon from '@mui/icons-material/Close'
 import LoadingSpinner from './LoadingSpinner.tsx'
 import { toast } from 'react-toastify'
-import { setAuthToken } from '../AxiosClients/apiClient.ts'
 import DefaultAvatar from '../Assets/default-avatar.svg'
 import { AxiosInstance } from 'axios'
 
@@ -46,7 +44,6 @@ const UploadPictureModal = ({
   handleClose,
 }: UploadPictureModalProps) => {
   const { customUser, setCustomUser } = useUserContext()
-  const { getAccessTokenSilently } = useAuth0()
   const [errorMessage, setErrorMessage] = useState('')
   const [imgSrc, setImgSrc] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -90,8 +87,6 @@ const UploadPictureModal = ({
 
   const onSubmit = async () => {
     setIsLoading(true)
-    const token = await getAccessTokenSilently()
-    setAuthToken(token)
 
     const cropper = cropperRef.current?.cropper
     if (customUser && cropper) {
