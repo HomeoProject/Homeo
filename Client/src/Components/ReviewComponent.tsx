@@ -10,6 +10,7 @@ import StarIcon from '@mui/icons-material/Star'
 import StarBorderIcon from '@mui/icons-material/StarBorder'
 import { Rating, Tooltip } from '@mui/material'
 import { useUserContext } from '../Context/UserContext'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 
 type ReviewComponentProps = {
   review: Review
@@ -28,6 +29,7 @@ const ReviewComponent = ({
   const [isUserReviewer, setIsUserReviewer] = useState(false)
 
   const { customUser } = useUserContext()
+  const { dictionary } = useDictionaryContext()
 
   const deleteReview = () => {
     apiClient
@@ -83,7 +85,7 @@ const ReviewComponent = ({
               alt="Anonymous"
               isApproved={false}
             />
-            <p className="reviewer-name">Anonymous</p>
+            <p className="reviewer-name">{dictionary.anonymousWord}</p>
           </div>
         )}
         <div className="review-component-main-middle">

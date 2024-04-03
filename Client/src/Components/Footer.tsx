@@ -1,7 +1,10 @@
 import '../Style/scss/Footer.scss'
 import Logo from '../Assets/icon-cut.png'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 
 const Footer = () => {
+  const { dictionary } = useDictionaryContext()
+
   return (
     <div className="Footer">
       <div className="footer-main">
@@ -11,7 +14,7 @@ const Footer = () => {
         </div>
         <div className="footer-text-wrapper">
           <p className="footer-text">
-            ©2024 Homeo &nbsp;&nbsp;|&nbsp;&nbsp; All rights reserved
+            ©2024 Homeo &nbsp;&nbsp;|&nbsp;&nbsp; {dictionary.rightsReserved}
           </p>
         </div>
       </div>

@@ -15,6 +15,7 @@ import defaultAvatar from '../Assets/default-avatar.svg'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useConstructorContext } from '../Context/ConstructorContext'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 import { Link } from 'react-router-dom'
 
 const AccountMenu = () => {
@@ -23,6 +24,8 @@ const AccountMenu = () => {
   const { customUser } = useUserContext()
 
   const { constructor } = useConstructorContext()
+
+  const { dictionary } = useDictionaryContext()
 
   const navigate = useNavigate()
 
@@ -121,7 +124,7 @@ const AccountMenu = () => {
             alt={customUser?.email}
             src={customUser ? customUser.avatar : defaultAvatar}
           />{' '}
-          Profile settings
+          {dictionary.profileSettings}
         </MenuItem>
         <Divider />
         {constructor && (
@@ -133,7 +136,7 @@ const AccountMenu = () => {
               <ListItemIcon>
                 <EngineeringIcon fontSize="small" />
               </ListItemIcon>
-              Constructor profile
+              {dictionary.contructorProfile}
             </MenuItem>
           </Link>
         )}
@@ -141,7 +144,7 @@ const AccountMenu = () => {
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
-          Logout
+          {dictionary.logoutWord}
         </MenuItem>
       </Menu>
     </>
