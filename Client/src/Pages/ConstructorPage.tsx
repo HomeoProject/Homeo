@@ -185,14 +185,14 @@ const ConstructorPage = () => {
                 <div className="constructor-page-main-section-content-info-rating-wrapper">
                   <Rating
                     name="simple-controlled"
-                    value={constructorReviews?.stats.averageRating}
+                    value={constructorReviews?.stats?.averageRating || 0}
                     precision={0.5}
                     icon={<StarIcon color="primary" />}
                     emptyIcon={<StarBorderIcon color="primary" />}
                     max={5}
                     readOnly
                   />
-                  <p className="constructor-page-main-section-content-info-rating">{`(${constructorReviews.stats.averageRating})`}</p>
+                  <p className="constructor-page-main-section-content-info-rating">{`(${constructorReviews?.stats?.averageRating || 0})`}</p>
                 </div>
                 <div className="constructor-page-main-section-content-info-icon-wrapper">
                   <EmailIcon color="primary" />
