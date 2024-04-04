@@ -58,6 +58,7 @@ const ReviewComponent = ({
   useEffect(() => {
     if (customUser && customUser.id === review.reviewerId) {
       setReviewer(customUser)
+      setIsUserReviewer(true)
       return
     }
 
@@ -65,7 +66,7 @@ const ReviewComponent = ({
       .get(`/users/${review.reviewerId}`)
       .then((response) => {
         setReviewer(response.data)
-        setIsUserReviewer(true)
+        setIsUserReviewer(false)
       })
       .catch((err) => {
         console.error(err)
@@ -121,26 +122,22 @@ const ReviewComponent = ({
           <p className="text">{review.text}</p>
         </div>
       </div>
+      {isUserReviewer && (
+        <Tooltip title="Edit review" placement="left-end" disableInteractive>
+          <button className="tooltip-button-edit">
+            <EditNoteIcon
+              className="edit-icon"
+              onClick={handleOpenReviewEditModal}
+            />
+          </button>
+        </Tooltip>
+      )}
       {(isAdmin || isUserReviewer) && (
-        <>
-          <Tooltip title="Edit review" placement="left-end" disableInteractive>
-            <button className="tooltip-button-edit">
-              <EditNoteIcon
-                className="edit-icon"
-                onClick={handleOpenReviewEditModal}
-              />
-            </button>
-          </Tooltip>
-          <Tooltip
-            title="Delete review"
-            placement="left-end"
-            disableInteractive
-          >
-            <button className="tooltip-button-delete">
-              <DeleteIcon className="delete-icon" onClick={deleteReview} />
-            </button>
-          </Tooltip>
-        </>
+        <Tooltip title="Delete review" placement="left-end" disableInteractive>
+          <button className="tooltip-button-delete">
+            <DeleteIcon className="delete-icon" onClick={deleteReview} />
+          </button>
+        </Tooltip>
       )}
     </div>
   )
