@@ -102,12 +102,20 @@
                 display: flex !important;
                 gap: 5px !important;
                 width: 100% !important;
+
+                @media (max-width: 400px) {
+                  font-size: v.$font-size-extra-small !important;
+                }
               }
 
               > .open-chat-button {
                 display: flex !important;
                 gap: 5px !important;
                 width: 100% !important;
+
+                @media (max-width: 400px) {
+                  font-size: v.$font-size-extra-small !important;
+                }
               }
             }
           }

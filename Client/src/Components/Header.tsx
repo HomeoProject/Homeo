@@ -41,7 +41,7 @@ const Header = () => {
         <div className="header-nav-normal">
           <div className="header-nav-normal-right">
             <Link className="header-nav-normal-right-link" to="/adverts">
-              {dictionary.advertsWord}
+              {dictionary.adverts}
             </Link>
             <Link className="header-nav-normal-right-link" to="/about">
               {dictionary.aboutUs}

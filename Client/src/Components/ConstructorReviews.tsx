@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import '../style/scss/components/ConstructorReviews.scss'
-import apiClient from '../AxiosClients/apiClient'
 import LoadingSpinner from './LoadingSpinner'
 import { ConstructorProfileReviews, Review } from '../types/types'
 import ReviewComponent from './ReviewComponent'
@@ -9,12 +8,14 @@ import { useDictionaryContext } from '../Context/DictionaryContext'
 import { useAuth0 } from '@auth0/auth0-react'
 
 type ConstructorReviewsProps = {
-  userId: string | undefined
+  reviews: ConstructorProfileReviews
+  fetchReviews: () => void
 }
 
-const ConstructorReviews = ({ userId }: ConstructorReviewsProps) => {
-  const [isLoading, setIsLoading] = useState(true)
-  const [reviews, setReviews] = useState<ConstructorProfileReviews | null>(null)
+const ConstructorReviews = ({
+  reviews,
+  fetchReviews,
+}: ConstructorReviewsProps) => {
   const [isAdmin, setIsAdmin] = useState(false)
 
   const { dictionary } = useDictionaryContext()
@@ -22,29 +23,12 @@ const ConstructorReviews = ({ userId }: ConstructorReviewsProps) => {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0()
 
   useEffect(() => {
-    apiClient
-      .get(`/reviews/received/${userId}`, {
-        params: {
-          lastCreatedAt: new Date().toISOString(),
-        },
-      })
-      .then((reviewsResponse) => {
-        setReviews(reviewsResponse.data)
-        setIsLoading(false)
-      })
-      .catch((err) => {
-        console.error(err)
-        setIsLoading(false)
-      })
-  }, [userId])
-
-  useEffect(() => {
     const checkIfUserIsAdmin = async () => {
       if (!isAuthenticated) return
 
       const token = await getAccessTokenSilently()
 
-      const hasPermission = await checkIfUserHasPermission(token, 'admin')
+      const hasPermission = checkIfUserHasPermission(token, 'admin')
 
       hasPermission && setIsAdmin(true)
     }
@@ -55,9 +39,9 @@ const ConstructorReviews = ({ userId }: ConstructorReviewsProps) => {
   return (
     <div className="ConstructorReviews">
       <div className="constructor-reviews-main">
-        {isLoading ? (
+        {!reviews ? (
           <LoadingSpinner />
-        ) : !reviews ? (
+        ) : !reviews?.content.length ? (
           <p className="no-reviews-text">{dictionary.noReviewsYet}</p>
         ) : (
           reviews &&
@@ -66,8 +50,7 @@ const ConstructorReviews = ({ userId }: ConstructorReviewsProps) => {
               <ReviewComponent
                 review={review}
                 isAdmin={isAdmin}
-                reviews={reviews}
-                setReviews={setReviews}
+                fetchReviews={fetchReviews}
               />
             </div>
           ))

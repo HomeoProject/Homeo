@@ -136,7 +136,7 @@ const AccountMenu = () => {
               <ListItemIcon>
                 <EngineeringIcon fontSize="small" />
               </ListItemIcon>
-              {dictionary.contructorProfile}
+              {dictionary.constructorProfile}
             </MenuItem>
           </Link>
         )}

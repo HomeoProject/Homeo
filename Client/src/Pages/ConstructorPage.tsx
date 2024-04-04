@@ -31,6 +31,7 @@ import { Rating } from '@mui/material'
 import ReviewModal from '../Components/ReviewModal'
 import { useAuth0 } from '@auth0/auth0-react'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
+import { toast } from 'react-toastify'
 
 const ConstructorPage = () => {
   const constructorId = useParams<{ id: string }>().id
@@ -49,6 +50,8 @@ const ConstructorPage = () => {
   const [openReviewModal, setOpenReviewModal] = useState(false)
   const [canUserInteract, setCanUserInteract] = useState(false)
 
+  const { dictionary } = useDictionaryContext()
+
   const handleOpenReviewModal = () => {
     setOpenReviewModal(true)
   }
@@ -57,25 +60,52 @@ const ConstructorPage = () => {
     setOpenReviewModal(false)
   }
 
-  const { dictionary } = useDictionaryContext()
+  const fetchReviews = () => {
+    apiClient
+      .get(`/reviews/received/${constructorId}`, {
+        params: { lastCreatedAt: new Date().toISOString() },
+      })
+      .then((response) => {
+        setConstructorReviews(response.data)
+      })
+      .catch((err) => {
+        console.error(err)
+        toast.error('An error occurred while fetching reviews')
+      })
+  }
 
   useEffect(() => {
+    const fetchConstructorData = () => {
+      const constructorData = apiClient
+        .get(`/constructors/${constructorId}`)
+        .then((response) => {
+          setConstructorData(response.data)
+        })
+        .catch((err) => {
+          console.error(err)
+          toast.error('An error occurred while fetching constructor data')
+        })
+
+      return constructorData
+    }
+
+    const fetchConstructorUserData = () => {
+      apiClient
+        .get(`/users/${constructorId}`)
+        .then((response) => {
+          setConstructorUserData(response.data)
+        })
+        .catch((err) => {
+          console.error(err)
+          toast.error('An error occurred while fetching constructor user data')
+        })
+    }
+
     const fetchData = async () => {
       try {
-        const constructorResponse = await apiClient.get(
-          `/constructors/${constructorId}`
-        )
-        const userResponse = await apiClient.get(`/users/${constructorId}`)
-        const reviewsResponse = await apiClient.get(
-          `/reviews/received/${constructorId}`,
-          {
-            params: { lastCreatedAt: new Date().toISOString() },
-          }
-        )
-
-        setConstructorData(constructorResponse.data)
-        setConstructorUserData(userResponse.data)
-        setConstructorReviews(reviewsResponse.data)
+        fetchConstructorData()
+        fetchConstructorUserData()
+        fetchReviews()
       } catch (err) {
         console.error(err)
         setConstructorNotFound(true)
@@ -99,6 +129,7 @@ const ConstructorPage = () => {
 
     fetchData()
     checkIfUserCanInteract()
+    // eslint-disable-next-line
   }, [customUser, constructorId, isAuthenticated, getAccessTokenSilently])
 
   return (
@@ -114,8 +145,10 @@ const ConstructorPage = () => {
           <ReviewModal
             reviewModalOpen={openReviewModal}
             handleClose={handleCloseReviewModal}
-            receiverId={constructorId!}
             receiverName={constructorUserData.firstName!}
+            type="add"
+            receiverId={constructorId!}
+            fetchReviews={fetchReviews}
           />
           <section className="constructor-page-main-info-section">
             <div className="constructor-page-main-section-content">
@@ -192,7 +225,15 @@ const ConstructorPage = () => {
                     max={5}
                     readOnly
                   />
-                  <p className="constructor-page-main-section-content-info-rating">{`(${constructorReviews?.stats?.averageRating || 0})`}</p>
+                  <p className="constructor-page-main-section-content-info-rating">{`(${
+                    parseFloat(
+                      (
+                        Math.round(
+                          constructorReviews?.stats?.averageRating * 100
+                        ) / 100
+                      ).toFixed(2)
+                    ) || 0
+                  })`}</p>
                 </div>
                 <div className="constructor-page-main-section-content-info-icon-wrapper">
                   <EmailIcon color="primary" />
@@ -361,7 +402,10 @@ const ConstructorPage = () => {
             <h1 className="section-header">{dictionary.reviews}</h1>
           </div>
           <section className="constructor-page-main-section">
-            <ConstructorReviews userId={constructorId} />
+            <ConstructorReviews
+              reviews={constructorReviews}
+              fetchReviews={fetchReviews}
+            />
           </section>
         </div>
       ) : (

@@ -60,12 +60,29 @@
     }
   }
 
-  > .delete-icon {
-    font-size: v.$font-size-normal;
-    color: #b6b6b6;
+  > .tooltip-button-delete {
+    margin-left: 1rem;
+  }
+
+  > .tooltip-button-edit,
+  .tooltip-button-delete {
+    height: min-content;
+    border: none;
+    background: none;
+    padding: 0;
 
     > :hover {
       cursor: pointer;
+    }
+
+    > .delete-icon,
+    .edit-icon {
+      font-size: v.$font-size-normal;
+      color: #b6b6b6;
+
+      @media (max-width: 400px) {
+        font-size: v.$font-size-medium;
+      }
     }
   }
 }
