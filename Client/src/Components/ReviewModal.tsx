@@ -23,34 +23,85 @@ import {
   listContainerStyle,
   textareaStyle,
 } from '../style/scss/muiComponents/ReviewModal'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 import StarIcon from '@mui/icons-material/Star'
 import StarBorderIcon from '@mui/icons-material/StarBorder'
-import apiClient from '../AxiosClients/apiClient'
 import LoadingSpinner from './LoadingSpinner'
 import { toast } from 'react-toastify'
 import { useAuth0 } from '@auth0/auth0-react'
 import theme from '../style/themes/themes'
+import { Review } from '../types/types'
+import apiClient from '../AxiosClients/apiClient'
 
 type ReviewModalProps = {
   reviewModalOpen: boolean
+  review?: Review
   receiverId: string
-  receiverName: string
+  receiverName?: string
+  type: 'add' | 'edit' | 'delete'
   handleClose: () => void
+  fetchReviews: () => void
 }
 
 const ReviewModal = ({
   reviewModalOpen,
+  review,
   receiverId,
   receiverName,
+  type,
   handleClose,
+  fetchReviews,
 }: ReviewModalProps) => {
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [ratingValue, setRatingValue] = useState<number | null>(null)
   const [reviewText, setReviewText] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { isAuthenticated } = useAuth0()
+
+  const addReview = async (
+    text: string,
+    rating: number,
+    receiverId: string
+  ) => {
+    apiClient
+      .post('/reviews', { text, rating, receiverId })
+      .then(() => {
+        toast.success('Review added successfully!')
+        handleClose()
+      })
+      .then(() => {
+        fetchReviews()
+      })
+      .catch((err) => {
+        toast.error('Failed to add review')
+        console.error(err)
+      })
+      .finally(() => {
+        setIsLoading(false)
+        setRatingValue(0)
+        setReviewText('')
+      })
+  }
+
+  const editReview = (text: string, rating: number, reviewId: number) => {
+    apiClient
+      .put(`/reviews/${reviewId}`, { text, rating })
+      .then(() => {
+        fetchReviews()
+        handleClose()
+        toast.success('Review edited successfully')
+      })
+      .catch((err) => {
+        console.error(err)
+        toast.error('An error occurred while editing the review')
+      })
+      .finally(() => {
+        setIsLoading(false)
+        setRatingValue(0)
+        setReviewText('')
+      })
+  }
 
   const handleSubmit = () => {
     setErrorMessage('')
@@ -62,32 +113,25 @@ const ReviewModal = ({
       setErrorMessage(
         'Review text has to be between 10 and 400 characters long'
       )
-    } else if (isAuthenticated) {
+    } else if (isAuthenticated && type === 'edit' && review) {
       setIsLoading(true)
-      const finalData = {
-        text: reviewText,
-        rating: ratingValue,
-        receiverId: receiverId,
-      }
-
-      apiClient
-        .post('/reviews', finalData)
-        .then(() => {
-          toast.success('Review added successfully!')
-          setIsLoading(false)
-          handleClose()
-        })
-        .catch((error) => {
-          setIsLoading(false)
-          console.error(error)
-          toast.error('Failed to add review')
-        })
+      editReview(reviewText, ratingValue, review.id)
+    } else if (isAuthenticated && type === 'add') {
+      setIsLoading(true)
+      addReview(reviewText, ratingValue, receiverId)
     } else {
       toast.error(
         'There was a problem with your authentication. Please try again in a moment.'
       )
     }
   }
+
+  useEffect(() => {
+    if (type === 'edit' && review) {
+      setReviewText(review.text)
+      setRatingValue(review.rating)
+    }
+  }, [type, review])
 
   return (
     <Modal open={reviewModalOpen} onClose={handleClose}>
@@ -99,7 +143,7 @@ const ReviewModal = ({
             component="h2"
             sx={titleTypographyStyle}
           >
-            Add your review
+            {type == 'edit' ? 'Edit your review' : 'Add your review'}
           </Typography>
           <button onClick={handleClose} className="close-modal-button">
             <CloseIcon className="close-icon"></CloseIcon>

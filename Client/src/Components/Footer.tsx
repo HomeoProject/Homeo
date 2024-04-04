@@ -5,6 +5,8 @@ import { useDictionaryContext } from '../Context/DictionaryContext'
 const Footer = () => {
   const { dictionary } = useDictionaryContext()
 
+  const year = new Date().getFullYear()
+
   return (
     <div className="Footer">
       <div className="footer-main">
@@ -14,7 +16,7 @@ const Footer = () => {
         </div>
         <div className="footer-text-wrapper">
           <p className="footer-text">
-            ©2024 Homeo &nbsp;&nbsp;|&nbsp;&nbsp; {dictionary.rightsReserved}
+            ©{year} Homeo &nbsp;&nbsp;|&nbsp;&nbsp; {dictionary.rightsReserved}
           </p>
         </div>
       </div>
