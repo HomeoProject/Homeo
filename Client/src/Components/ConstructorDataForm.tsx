@@ -12,6 +12,7 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 import CategoriesSelect from './CategoriesSelect'
 import AcceptedPaymentMethodSelect from './AcceptedPaymentMethodSelect'
+import CircularProgress from '@mui/material/CircularProgress'
 import apiClient from '../AxiosClients/apiClient'
 import { useConstructorContext } from '../Context/ConstructorContext'
 import { useDictionaryContext } from '../Context/DictionaryContext'
@@ -129,8 +130,28 @@ const ConstructorDataForm = () => {
           toast.success(dictionary.constructorMessageSucc)
         })
         .catch((error) => {
+          if (
+            error.response.status === 409 &&
+            error.response.data.message ==
+              `Constructor with constructor email: ${finalData.constructorEmail} already exists`
+          ) {
+            console.error(error)
+            toast.error(dictionary.constructorMessageEmailConflictErr)
+            return
+          } else if (
+            error.response.status === 409 &&
+            error.response.data.message ==
+              `Constructor with phone number: ${finalData.phoneNumber} already exists`
+          ) {
+            console.error(error)
+            toast.error(dictionary.constructorMessagePhoneConflictErr)
+            return
+          }
           console.error(error)
           toast.error(dictionary.constructorMessageErr)
+        })
+        .finally(() => {
+          setIsFormLoading(false)
         })
     } else {
       // Updating an existing constructor profile
@@ -146,8 +167,10 @@ const ConstructorDataForm = () => {
           console.error(error)
           toast.error(dictionary.constructorUpdMessageErr)
         })
+        .finally(() => {
+          setIsFormLoading(false)
+        })
     }
-    setIsFormLoading(false)
   }
 
   const customHandleSubmit = async (data: ConstructorDataForm) => {
@@ -370,14 +393,17 @@ const ConstructorDataForm = () => {
             paymentMethods={paymentMethods}
           />
           <p className="error-message">{acceptedPaymentMethodsErrorMessage}</p>
-          <Button
-            variant="contained"
-            type="submit"
-            className="submit-button"
-            disabled={isFormLoading}
-          >
-            {dictionary.saveWord}
-          </Button>
+          <div className="submit-button-container">
+            <Button
+              variant="contained"
+              type="submit"
+              className="submit-button"
+              disabled={isFormLoading}
+            >
+              {dictionary.saveWord}
+            </Button>
+            {isFormLoading && <CircularProgress className="loader" />}
+          </div>
         </form>
       </div>
     </div>

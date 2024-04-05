@@ -31,31 +31,29 @@ import LoadingSpinner from './LoadingSpinner'
 import { toast } from 'react-toastify'
 import { useAuth0 } from '@auth0/auth0-react'
 import theme from '../style/themes/themes'
-import { ConstructorProfileReviews, Review } from '../types/types'
+import { Review } from '../types/types'
 import apiClient from '../AxiosClients/apiClient'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 
-type ReviewModalProps = {
+type MyReviewModalProps = {
   reviewModalOpen: boolean
   review?: Review
-  receiverId: string
   receiverName?: string
-  type: 'add' | 'edit' | 'delete'
+  type: 'edit' | 'delete'
   handleClose: () => void
-  constructorReviews: ConstructorProfileReviews
-  setConstructorReviews: (reviews: ConstructorProfileReviews) => void
+  myReviews: Review[]
+  setMyReviews: (reviews: Review[] | null) => void
 }
 
-const ReviewModal = ({
+const MyReviewModal = ({
   reviewModalOpen,
   review,
-  receiverId,
   receiverName,
   type,
   handleClose,
-  constructorReviews,
-  setConstructorReviews,
-}: ReviewModalProps) => {
+  myReviews,
+  setMyReviews,
+}: MyReviewModalProps) => {
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [ratingValue, setRatingValue] = useState<number | null>(null)
   const [reviewText, setReviewText] = useState<string>('')
@@ -64,86 +62,23 @@ const ReviewModal = ({
 
   const { dictionary } = useDictionaryContext()
 
-  const addReview = async (
-    text: string,
-    rating: number,
-    receiverId: string
-  ) => {
-    apiClient
-      .post('/reviews', { text, rating, receiverId })
-      .then((response) => {
-        return response.data
-      })
-      .then((content) => {
-        apiClient
-          .get(`/reviews/stats/${receiverId}`)
-          .then((response) => {
-            const updatedStats = response.data
-            let updatedContent
-            if (constructorReviews === null) {
-              updatedContent = content
-              setConstructorReviews({
-                stats: updatedStats,
-                content: updatedContent,
-              })
-              return
-            }
-            updatedContent = [...constructorReviews.content, content]
-            setConstructorReviews({
-              stats: updatedStats,
-              content: updatedContent,
-            })
-            toast.success(dictionary.reviewAddedSuccessfully)
-          })
-          .catch((err) => {
-            console.error(err)
-            toast.error(dictionary.failedToGetReviewsStats)
-          })
-      })
-      .catch((err) => {
-        if (err.response.status === 409) {
-          toast.error(dictionary.userAlreadyReviewed)
-          return
-        }
-        toast.error(dictionary.failedToAddReview)
-        console.error(err)
-      })
-      .finally(() => {
-        handleClose()
-        setIsLoading(false)
-        setRatingValue(0)
-        setReviewText('')
-      })
-  }
-
   const editReview = (text: string, rating: number, reviewId: number) => {
     apiClient
       .put(`/reviews/${reviewId}`, { text, rating })
-      .then((response) => {
-        return response.data
-      })
-      .then((content) => {
-        apiClient.get(`/reviews/stats/${receiverId}`).then((response) => {
-          const updatedStats = response.data
-          const updatedContent = constructorReviews.content.map((review) =>
-            review.id === reviewId ? content : review
-          )
-          setConstructorReviews({
-            stats: updatedStats,
-            content: updatedContent,
-          })
-          toast.success(dictionary.reviewEditedSuccessfully)
-        })
+      .then(() => {
+        const updatedReviews = myReviews.map((review) =>
+          review.id === reviewId ? { ...review, text, rating } : review
+        )
+        setMyReviews(updatedReviews)
+        handleClose()
+        toast.success(dictionary.reviewEditedSuccesfully)
       })
       .catch((err) => {
         console.error(err)
         toast.error(dictionary.failedToEditReview)
       })
       .finally(() => {
-        handleClose()
         setIsLoading(false)
-        setRatingValue(0)
-        setReviewText('')
       })
   }
 
@@ -158,9 +93,6 @@ const ReviewModal = ({
     } else if (isAuthenticated && type === 'edit' && review) {
       setIsLoading(true)
       editReview(reviewText, ratingValue, review.id)
-    } else if (isAuthenticated && type === 'add') {
-      setIsLoading(true)
-      addReview(reviewText, ratingValue, receiverId)
     } else {
       toast.error(dictionary.authErr)
     }
@@ -215,7 +147,11 @@ const ReviewModal = ({
                 aria-label="minimum height"
                 key="review-textarea"
                 minRows={4}
-                placeholder={`${dictionary.writeSomethingAbout} ${receiverName}...`}
+                placeholder={
+                  receiverName
+                    ? `${dictionary.writeSomethingAbout} ${receiverName}...`
+                    : 'Write something...'
+                }
                 maxLength={400}
                 value={reviewText}
                 style={textareaStyle(theme) as React.CSSProperties}
@@ -262,4 +198,4 @@ const ReviewModal = ({
   )
 }
 
-export default ReviewModal
+export default MyReviewModal

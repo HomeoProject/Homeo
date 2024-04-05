@@ -91,6 +91,17 @@ const UserPage = () => {
               >
                 {dictionary.constructorProfile}
               </NavLink>
+              <NavLink
+                to={`/user/${customUser?.id}/my-reviews`}
+                className={({ isActive }) =>
+                  isActive
+                    ? 'user-page-main-left-nav-link active'
+                    : 'user-page-main-left-nav-link'
+                }
+                end
+              >
+                {dictionary.myReviews}
+              </NavLink>
             </div>
           </div>
           <div className="user-page-main-right">

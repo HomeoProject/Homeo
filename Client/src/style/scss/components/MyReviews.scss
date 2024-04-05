@@ -1,0 +1,78 @@
+@use '../Variables.scss' as v;
+
+.MyReviews {
+  width: 100%;
+  padding-bottom: 1rem;
+
+  > h1 {
+    font-size: v.$font-size-large;
+
+    @media (max-width: 800px) {
+      margin-top: 0;
+      font-size: v.$font-size-normal;
+    }
+  }
+
+  > .my-reviews-main-loading {
+    width: calc(100% - 3rem);
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
+    padding: 1.5rem;
+    border-radius: 10px;
+    min-height: 19.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    > .my-reviews-main-no-reviews-message {
+      font-size: v.$font-size-content;
+      color: #b6b6b6;
+
+      @media (max-width: 370px) {
+        font-size: v.$font-size-small;
+      }
+    }
+  }
+
+  > .my-reviews-main {
+    width: calc(100% - 3rem);
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
+    padding: 1.5rem;
+    border-radius: 10px;
+    min-height: 19.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    > .my-review:not(:last-of-type) {
+      padding-bottom: 1rem;
+      border-bottom: 1px dashed #b6b6b68c;
+      margin-bottom: 1rem;
+    }
+
+    > .my-review {
+      width: 100%;
+    }
+
+    > .submit-button-container {
+      display: flex;
+      align-items: center;
+      align-self: flex-start;
+      gap: 0.5rem;
+
+      > .load-more-button {
+        font-family: v.$font-family;
+        margin-top: 1rem;
+        justify-self: flex-start;
+      }
+
+      > .loader {
+        margin-top: 13px;
+
+        > svg {
+          scale: 0.5;
+        }
+      }
+    }
+  }
+}

@@ -24,7 +24,7 @@ import LocationCityIcon from '@mui/icons-material/LocationCity'
 import PublicIcon from '@mui/icons-material/Public'
 import StarHalfIcon from '@mui/icons-material/StarHalf'
 import ErrorPage from './ErrorPage'
-import ConstructorReviews from '../Components/ConstructorReviews'
+import Reviews from '../Components/Reviews'
 import StarIcon from '@mui/icons-material/Star'
 import StarBorderIcon from '@mui/icons-material/StarBorder'
 import { Rating } from '@mui/material'
@@ -43,12 +43,25 @@ const ConstructorPage = () => {
   const [constructorUserData, setConstructorUserData] =
     useState<CustomUser | null>(null)
   const [constructorReviews, setConstructorReviews] =
-    useState<ConstructorProfileReviews | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [constructorNotFound, setConstructorNotFound] = useState(false)
-  const [isViewingOwnProfile, setIsViewingOwnProfile] = useState(false)
-  const [openReviewModal, setOpenReviewModal] = useState(false)
-  const [canUserInteract, setCanUserInteract] = useState(false)
+    useState<ConstructorProfileReviews | null>({
+      stats: {
+        averageRating: 0,
+        reviewsNumber: 0,
+        userId: '',
+      },
+      content: [],
+    })
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [areReviewsLoading, setAreReviewsLoading] = useState<boolean>(true)
+  const [areNewReviewsLoading, setAreNewReviewsLoading] =
+    useState<boolean>(false)
+  const [constructorNotFound, setConstructorNotFound] = useState<boolean>(false)
+  const [isViewingOwnProfile, setIsViewingOwnProfile] = useState<boolean>(false)
+  const [openReviewModal, setOpenReviewModal] = useState<boolean>(false)
+  const [canUserInteract, setCanUserInteract] = useState<boolean>(false)
+  const [oldestReviewDate, setOldestReviewDate] = useState<string>(
+    new Date().toISOString()
+  )
 
   const { dictionary } = useDictionaryContext()
 
@@ -60,23 +73,54 @@ const ConstructorPage = () => {
     setOpenReviewModal(false)
   }
 
-  const fetchReviews = () => {
+  const fetchReviews = (lastCreatedAt: string) => {
+    if (constructorReviews?.content.length === 0) {
+      setAreReviewsLoading(true)
+    } else {
+      setAreNewReviewsLoading(true)
+    }
+
     apiClient
       .get(`/reviews/received/${constructorId}`, {
-        params: { lastCreatedAt: new Date().toISOString() },
+        params: { lastCreatedAt },
       })
       .then((response) => {
-        setConstructorReviews(response.data)
+        if (
+          constructorReviews?.content.length === 0 &&
+          response.data.content.length === 0
+        ) {
+          setConstructorReviews(null)
+          return
+        }
+        if (
+          response.data.content.length === 0 &&
+          constructorReviews &&
+          constructorReviews.content.length > 0
+        ) {
+          toast.error(dictionary.noMoreReviewsToLoad)
+          return
+        }
+        setConstructorReviews({
+          ...constructorReviews!,
+          content: [...response.data.content],
+        })
+        setOldestReviewDate(
+          response.data.content[response.data.content.length - 1].createdAt
+        )
       })
       .catch((err) => {
         console.error(err)
-        toast.error('An error occurred while fetching reviews')
+        toast.error(dictionary.failedToLoadReviews)
+      })
+      .finally(() => {
+        setAreReviewsLoading(false)
+        setAreNewReviewsLoading(false)
       })
   }
 
   useEffect(() => {
     const fetchConstructorData = () => {
-      const constructorData = apiClient
+      apiClient
         .get(`/constructors/${constructorId}`)
         .then((response) => {
           setConstructorData(response.data)
@@ -85,27 +129,28 @@ const ConstructorPage = () => {
           console.error(err)
           toast.error('An error occurred while fetching constructor data')
         })
-
-      return constructorData
     }
 
-    const fetchConstructorUserData = () => {
-      apiClient
+    const fetchConstructorUserData = async () => {
+      const constructorUserData = await apiClient
         .get(`/users/${constructorId}`)
         .then((response) => {
           setConstructorUserData(response.data)
+          return response.data
         })
         .catch((err) => {
           console.error(err)
           toast.error('An error occurred while fetching constructor user data')
         })
+
+      return constructorUserData
     }
 
     const fetchData = async () => {
       try {
         fetchConstructorData()
         fetchConstructorUserData()
-        fetchReviews()
+        fetchReviews(new Date().toISOString())
       } catch (err) {
         console.error(err)
         setConstructorNotFound(true)
@@ -139,16 +184,16 @@ const ConstructorPage = () => {
       ) : !constructorNotFound &&
         constructorData &&
         constructorUserData &&
-        constructorReviews &&
-        !constructorUserData.isDeleted ? (
+        constructorReviews ? (
         <div className="constructor-page-main">
           <ReviewModal
             reviewModalOpen={openReviewModal}
             handleClose={handleCloseReviewModal}
             receiverName={constructorUserData.firstName!}
             type="add"
-            receiverId={constructorId!}
-            fetchReviews={fetchReviews}
+            receiverId={constructorUserData.id}
+            constructorReviews={constructorReviews}
+            setConstructorReviews={setConstructorReviews}
           />
           <section className="constructor-page-main-info-section">
             <div className="constructor-page-main-section-content">
@@ -402,9 +447,13 @@ const ConstructorPage = () => {
             <h1 className="section-header">{dictionary.reviews}</h1>
           </div>
           <section className="constructor-page-main-section">
-            <ConstructorReviews
-              reviews={constructorReviews}
+            <Reviews
+              constructorReviews={constructorReviews}
+              setConstructorReviews={setConstructorReviews}
+              oldestReviewDate={oldestReviewDate}
               fetchReviews={fetchReviews}
+              areReviewsLoading={areReviewsLoading}
+              areNewReviewsLoading={areNewReviewsLoading}
             />
           </section>
         </div>

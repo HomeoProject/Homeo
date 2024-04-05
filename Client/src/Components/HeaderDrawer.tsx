@@ -66,7 +66,7 @@ const TemporaryDrawer = () => {
               <ListItemIcon>
                 <ListIcon />
               </ListItemIcon>
-              <ListItemText primary={dictionary.advertsWord} />
+              <ListItemText primary={dictionary.adverts} />
             </ListItemButton>
           </ListItem>
         </Link>

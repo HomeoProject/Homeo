@@ -14,6 +14,7 @@ import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import { english, polish } from '../Data/dictionary'
+import { GB, PL } from 'country-flag-icons/react/3x2'
 
 const Header = () => {
   const { isAuthenticated } = useAuth0()
@@ -24,7 +25,6 @@ const Header = () => {
     setAnchorEl(e.currentTarget)
   }
   const handleClose = (e: React.MouseEvent<HTMLElement>) => {
-    console.log(e.currentTarget.dataset.myValue)
     setDictionary(
       e.currentTarget.dataset.myValue === 'polish' ? polish : english
     )
@@ -73,6 +73,7 @@ const Header = () => {
               sx: {
                 overflow: 'visible',
                 filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                backgroundColor: '#e5e5e5fa',
                 mt: 1.5,
                 '& .MuiAvatar-root': {
                   width: 32,
@@ -88,7 +89,7 @@ const Header = () => {
                   right: 14,
                   width: 10,
                   height: 10,
-                  bgcolor: 'background.paper',
+                  bgcolor: '#e5e5e5fa',
                   transform: 'translateY(-50%) rotate(45deg)',
                   zIndex: 0,
                 },
@@ -98,10 +99,16 @@ const Header = () => {
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
             <MenuItem onClick={handleClose} data-my-value="polish">
-              Polish
+              <div style={{ display: 'flex', gap: '10px' }}>
+                Polski
+                <PL width={'20px'} />
+              </div>
             </MenuItem>
             <MenuItem onClick={handleClose} data-my-value="english">
-              English
+              <div style={{ display: 'flex', gap: '10px' }}>
+                English
+                <GB width={'20px'} />
+              </div>
             </MenuItem>
           </Menu>
         </div>
