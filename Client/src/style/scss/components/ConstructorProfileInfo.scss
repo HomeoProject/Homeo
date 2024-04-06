@@ -1,0 +1,69 @@
+@use '../Variables.scss' as v;
+
+.ConstructorProfileInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+
+  > .constructor-page-main-section {
+    width: calc(100% - 3rem);
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
+    border-radius: 10px;
+    padding: 1.5rem;
+
+    > .constructor-page-main-section-title-wrapper:not(:first-child) {
+      padding-top: 2rem;
+
+      @media (max-width: 550px) {
+        padding-top: 1.5rem;
+      }
+    }
+
+    > .constructor-page-main-section-title-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      > .constructor-page-main-section-title {
+        font-size: v.$font-size-medium;
+        margin: 0;
+
+        @media (max-width: 370px) {
+          font-size: v.$font-size-small;
+        }
+      }
+
+      > .constructor-page-main-section-icon {
+        font-size: v.$font-size-normal;
+
+        @media (max-width: 370px) {
+          font-size: v.$font-size-medium;
+        }
+      }
+    }
+
+    > .constructor-page-main-section-content:not(:last-child) {
+      border-bottom: 1px dashed rgba(133, 132, 132, 0.205);
+      padding-bottom: 2rem;
+
+      @media (max-width: 550px) {
+        padding-bottom: 1rem;
+      }
+    }
+
+    > .constructor-page-main-section-content {
+      margin: 0;
+      padding-top: 0.5rem;
+      font-size: v.$font-size-content;
+      text-align: justify;
+
+      @media (max-width: 370px) {
+        font-size: v.$font-size-extra-small;
+      }
+    }
+  }
+}

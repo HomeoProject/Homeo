@@ -17,11 +17,6 @@ import PhoneIcon from '@mui/icons-material/Phone'
 import EmailIcon from '@mui/icons-material/Email'
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn'
 import PaymentsIcon from '@mui/icons-material/Payments'
-import PersonIcon from '@mui/icons-material/Person'
-import BuildIcon from '@mui/icons-material/Build'
-import PlumbingIcon from '@mui/icons-material/Plumbing'
-import LocationCityIcon from '@mui/icons-material/LocationCity'
-import PublicIcon from '@mui/icons-material/Public'
 import StarHalfIcon from '@mui/icons-material/StarHalf'
 import ErrorPage from './ErrorPage'
 import ConstructorReviews from '../Components/ConstructorReviews'
@@ -32,6 +27,7 @@ import ReviewModal from '../Components/ReviewModal'
 import { useAuth0 } from '@auth0/auth0-react'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 import { toast } from 'react-toastify'
+import ConstructorProfileInfo from '../Components/ConstructorProfileInfo'
 
 const ConstructorPage = () => {
   const constructorId = useParams<{ id: string }>().id
@@ -132,15 +128,39 @@ const ConstructorPage = () => {
     // eslint-disable-next-line
   }, [customUser, constructorId, isAuthenticated, getAccessTokenSilently])
 
-  return (
-    <div className="ConstructorPage">
-      {isLoading ? (
+  if (
+    (isLoading ||
+      !constructorData ||
+      !constructorUserData ||
+      !constructorReviews) &&
+    !constructorNotFound
+  ) {
+    return (
+      <div className="ConstructorPage">
         <LoadingSpinner />
-      ) : !constructorNotFound &&
-        constructorData &&
-        constructorUserData &&
-        constructorReviews &&
-        !constructorUserData.isDeleted ? (
+      </div>
+    )
+  }
+
+  if (constructorNotFound) {
+    return (
+      <div className="ConstructorPage">
+        <ErrorPage error={dictionary.constructorNotFound} />
+      </div>
+    )
+  }
+
+  if (constructorUserData && constructorUserData.isDeleted) {
+    return (
+      <div className="ConstructorPage">
+        <ErrorPage error={dictionary.constructorDeleted} />
+      </div>
+    )
+  }
+
+  if (constructorData && constructorUserData && constructorReviews) {
+    return (
+      <div className="ConstructorPage">
         <div className="constructor-page-main">
           <ReviewModal
             reviewModalOpen={openReviewModal}
@@ -298,7 +318,6 @@ const ConstructorPage = () => {
                       </Button>
                     </div>
                   </Tooltip>
-
                   <Tooltip
                     title={
                       !canUserInteract
@@ -324,79 +343,7 @@ const ConstructorPage = () => {
               )}
             </div>
           </section>
-          <section className="constructor-page-main-section">
-            <div className="constructor-page-main-section-title-wrapper">
-              <PersonIcon
-                className="constructor-page-main-section-icon"
-                color="primary"
-              />
-              <h1 className="constructor-page-main-section-title">
-                {dictionary.aboutMe}
-              </h1>
-            </div>
-            <p className="constructor-page-main-section-content">
-              {constructorData.aboutMe}
-            </p>
-            <div className="constructor-page-main-section-title-wrapper">
-              <BuildIcon
-                className="constructor-page-main-section-icon"
-                color="primary"
-              />
-              <h1 className="constructor-page-main-section-title">
-                {dictionary.experience}
-              </h1>
-            </div>
-            <p className="constructor-page-main-section-content">
-              {constructorData.experience}
-            </p>
-            <div className="constructor-page-main-section-title-wrapper">
-              <PlumbingIcon
-                className="constructor-page-main-section-icon"
-                color="primary"
-              />
-              <h1 className="constructor-page-main-section-title">
-                {dictionary.categories}
-              </h1>
-            </div>
-            <p className="constructor-page-main-section-content">
-              {constructorData.categories.map((category, index) => {
-                if (index === constructorData!.categories.length - 1)
-                  return category.name
-                return `${category.name}, `
-              })}
-            </p>
-            <div className="constructor-page-main-section-title-wrapper">
-              <LocationCityIcon
-                className="constructor-page-main-section-icon"
-                color="primary"
-              />
-              <h1 className="constructor-page-main-section-title">
-                {dictionary.workingCities}
-              </h1>
-            </div>
-            <p className="constructor-page-main-section-content">
-              {constructorData.cities.map((city, index) => {
-                if (index === constructorData!.cities.length - 1) return city
-                return `${city}, `
-              })}
-            </p>
-            <div className="constructor-page-main-section-title-wrapper">
-              <PublicIcon
-                className="constructor-page-main-section-icon"
-                color="primary"
-              />
-              <h1 className="constructor-page-main-section-title">
-                {dictionary.languages}
-              </h1>
-            </div>
-            <p className="constructor-page-main-section-content">
-              {constructorData.languages.map((language, index) => {
-                if (index === constructorData.languages.length - 1)
-                  return language
-                return `${language}, `
-              })}
-            </p>
-          </section>
+          <ConstructorProfileInfo constructorData={constructorData} />
           <div className="section-header-wrapper">
             <StarHalfIcon className="section-header-icon" />
             <h1 className="section-header">{dictionary.reviews}</h1>
@@ -408,11 +355,9 @@ const ConstructorPage = () => {
             />
           </section>
         </div>
-      ) : (
-        <ErrorPage error={dictionary.contructorDownloadError} />
-      )}
-    </div>
-  )
+      </div>
+    )
+  }
 }
 
 export default ConstructorPage

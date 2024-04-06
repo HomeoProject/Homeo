@@ -117,6 +117,7 @@ export const english = {
   logoutWord: 'Logout',
   acceptedPaymentMethodsWord: 'Accepted payment methods',
   acceptedPaymentMethodsLabel: 'Choose accepted payment methods...',
+  constructorDeleted: 'This constructor is no longer available',
 }
 
 export const polish = {
@@ -239,4 +240,5 @@ export const polish = {
   logoutWord: 'Wyloguj',
   acceptedPaymentMethodsWord: 'Akceptowalne metody płatności',
   acceptedPaymentMethodsLabel: 'Wybierz akceptowalne metody płatności...',
+  constructorDeleted: 'Ten konstruktor nie jest już dostępny',
 }
