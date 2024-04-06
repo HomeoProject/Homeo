@@ -158,7 +158,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private void validateUserOrAdminAccess(String userId, String secondUserId) {
-        if (!isUserTheSameUser(userId, secondUserId) || !isUserAdmin()) {
+        if (!isUserTheSameUser(userId, secondUserId) && !isUserAdmin()) {
             throw new ForbiddenException();
         }
     }
