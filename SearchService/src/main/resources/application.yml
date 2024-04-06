@@ -1,3 +1,6 @@
+server:
+  port: ${PORT:8080}
+
 spring:
   application:
     name: SearchService
@@ -22,6 +25,12 @@ okta:
   oauth2:
     issuer: ${OKTA_API_ISSUER}
     audience: ${OKTA_API_AUDIENCE}
+
+feign:
+  client:
+    urls:
+      ReviewService: ${FEIGN_URL_REVIEWSERVICE:}
+      UserService: ${FEIGN_URL_USERSERVICE:}
 
 openapi:
   service:
