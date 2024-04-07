@@ -11,4 +11,16 @@
   .admin-panel-add {
     margin: 1rem 10rem 1rem 10rem;
   }
+  .admin-panel-users-search {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+    .admin-panel-users-search-id {
+      grid-column-start: 1;
+      grid-column-end: 3;
+    }
+  }
+  .admin-panel-load-more {
+    margin: 1rem 10rem 1rem 10rem;
+  }
 }

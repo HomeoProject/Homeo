@@ -7,7 +7,7 @@ export interface CustomUser {
   phoneNumber: string | null
   email: string
   avatar: string
-  // isBanned: boolean
+  isBlocked: boolean
   isOnline: boolean
   isApproved: boolean
   isDeleted: boolean
