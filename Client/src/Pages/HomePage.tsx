@@ -1,10 +1,11 @@
 import '../Style/scss/HomePage.scss'
-import ConstructionRoundedIcon from '@mui/icons-material/ConstructionRounded'
-import GrassRoundedIcon from '@mui/icons-material/GrassRounded'
-import HomePageTimeline from '../Components/HomePageTimeline'
-import SearchIcon from '@mui/icons-material/Search'
 import CategoriesCarousel from '../Components/CategoriesCarousel'
 import { useDictionaryContext } from '../Context/DictionaryContext'
+import logo from '../Assets/icon-cut-green.png'
+import houseIcon from '../Assets/house.png'
+import houseSecondIcon from '../Assets/house-second.png'
+import { Button } from '@mui/material'
+import HomePageTimeline from '../Components/HomePageTimeline'
 
 const HomePage = () => {
   const verifiedContractorsCount: number = 8836
@@ -13,42 +14,51 @@ const HomePage = () => {
 
   return (
     <div className="HomePage">
-      <div className="home-page-top-banner"></div>
       <div className="home-page-main-wrapper">
-        <div className="home-page-main">
-          <p className="home-page-main-title">{dictionary.homePageTitle}</p>
-          <div className="home-page-main-search-wrapper">
-            <input
-              className="home-page-main-search"
-              type="text"
-              placeholder={dictionary.homePageSearchPlaceholder}
-            />
-            <button className="home-page-main-search-button">
-              <SearchIcon />
-            </button>
+        <div className="home-page-main-left">
+          <div className="home-page-main-left-title-wrapper">
+            <img src={logo} className="home-page-main-left-title-icon"></img>
+            <p className="home-page-main-left-title">
+              {dictionary.homeServicesPlatform}
+            </p>
           </div>
-          <div className="home-page-main-intro">
-            <div className="home-page-main-intro-sub">
-              <b>
-                {dictionary.over} {verifiedContractorsCount}{' '}
+          <h1 className="home-page-main-left-heading">
+            {dictionary.findTheConstuctorYouNeed}
+          </h1>
+          <div className="home-page-main-left-text">
+            <div className="home-page-main-left-constructors-count-wrapper">
+              <p className="home-page-main-left-constructors-count-standard">
+                {dictionary.overWord}&nbsp;
+              </p>
+              <p className="home-page-main-left-constructors-count-green">
+                {verifiedContractorsCount}&nbsp;
+              </p>
+              <p className="home-page-main-left-constructors-count-standard">
                 {dictionary.homePageIntro}
-              </b>
-              <p>{dictionary.homePageIntroCont}</p>
+              </p>
             </div>
-            <ConstructionRoundedIcon className="home-page-main-intro-icon" />
+            <p className="home-page-main-left-text-find">
+              {dictionary.homePageIntroCont}
+            </p>
           </div>
-          <div className="home-page-main-intro">
-            <div className="home-page-main-intro-sub">
-              <b>{dictionary.homePageIntroBot}</b>
-              <p>{dictionary.HomePageIntroBotCont}</p>
-            </div>
-            <GrassRoundedIcon className="home-page-main-intro-icon" />
-          </div>
+          <Button variant="contained" className="search-button">
+            Search
+          </Button>
         </div>
-        <div className="home-page-instruction">
-          <p className="home-page-instruction-title">
+        <div className="home-page-main-right">
+          <img src={houseIcon} alt="homeo" className="home-page-house-img" />
+        </div>
+      </div>
+      <div className="home-page-timeline-wrapper">
+        <img
+          src={houseSecondIcon}
+          alt="homeo"
+          className="home-page-house-img"
+        />
+        <div className="home-page-timeline">
+          <h1 className="home-page-timeline-headline">
             {dictionary.HomePageInstruction}:
-          </p>
+          </h1>
           <HomePageTimeline />
         </div>
       </div>
