@@ -30,6 +30,6 @@ public class AppUserEventProducer {
     }
 
     public void produceUserUpdatedIsApprovedEvent(AppUserDto appUserDto) {
-        rabbitTemplate.convertAndSend("", "user-updated-is-approved", appUserDto);
+        rabbitTemplate.convertAndSend("", "q.user-updated-is-approved", appUserDto);
     }
 }

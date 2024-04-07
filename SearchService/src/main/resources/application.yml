@@ -31,6 +31,7 @@ feign:
     urls:
       ReviewService: ${FEIGN_URL_REVIEWSERVICE:}
       UserService: ${FEIGN_URL_USERSERVICE:}
+      ConstructorService: ${FEIGN_URL_CONSTRUCTORSERVICE:}
 
 openapi:
   service:
