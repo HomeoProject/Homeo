@@ -63,7 +63,7 @@
       margin-top: -90px;
       gap: 5px;
 
-      @media (max-width: 800px) {
+      @media (max-width: 900px) {
         display: none;
       }
 
@@ -111,7 +111,7 @@
     > .header-nav-small {
       display: none;
 
-      @media (max-width: 800px) {
+      @media (max-width: 900px) {
         display: flex;
         align-items: center;
         justify-content: center;
