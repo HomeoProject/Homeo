@@ -27,6 +27,10 @@ public class ConstructorSearch {
 
     private Integer minRate;
 
+    private String phoneNumber;
+
+    private String email;
+
     private Double averageRating;
 
     private Integer reviewsNumber;
