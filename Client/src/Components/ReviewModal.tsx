@@ -125,17 +125,19 @@ const ReviewModal = ({
         return response.data
       })
       .then((content) => {
-        apiClient.get(`/reviews/stats/${receiverId}`).then((response) => {
-          const updatedStats = response.data
-          const updatedContent = constructorReviews!.content.map((review) =>
-            review.id === reviewId ? content : review
-          )
-          setConstructorReviews({
-            stats: updatedStats,
-            content: updatedContent,
+        apiClient
+          .get(`/reviews/stats/${encodeURI(receiverId)}`)
+          .then((response) => {
+            const updatedStats = response.data
+            const updatedContent = constructorReviews!.content.map((review) =>
+              review.id === reviewId ? content : review
+            )
+            setConstructorReviews({
+              stats: updatedStats,
+              content: updatedContent,
+            })
+            toast.success(dictionary.reviewEditedSuccesfully)
           })
-          toast.success(dictionary.reviewEditedSuccesfully)
-        })
       })
       .catch((err) => {
         console.error(err)

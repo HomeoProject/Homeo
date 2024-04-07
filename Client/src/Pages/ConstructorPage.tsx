@@ -155,8 +155,8 @@ const ConstructorPage = () => {
   }
 
   useEffect(() => {
-    const fetchConstructorData = async () => {
-      return apiClient.get(`/constructors/${constructorUserId}`)
+    const fetchConstructorData = async (constructorUserId: string) => {
+      return apiClient.get(`/constructors/${encodeURI(constructorUserId)}`)
     }
 
     const fetchConstructorUserData = async () => {
@@ -189,20 +189,21 @@ const ConstructorPage = () => {
       setIsViewingOwnProfile(true)
     }
 
-    fetchConstructorData()
-      .then((response) => {
-        setConstructorData(response.data)
-        fetchConstructorUserData()
-        fetchReviews()
-        checkIfUserCanInteract()
-      })
-      .catch((err) => {
-        setConstructorNotFound(true)
-        console.error(err)
-      })
-      .finally(() => {
-        setIsLoading(false)
-      })
+    constructorUserId &&
+      fetchConstructorData(constructorUserId)
+        .then((response) => {
+          setConstructorData(response.data)
+          fetchConstructorUserData()
+          fetchReviews()
+          checkIfUserCanInteract()
+        })
+        .catch((err) => {
+          setConstructorNotFound(true)
+          console.error(err)
+        })
+        .finally(() => {
+          setIsLoading(false)
+        })
     // eslint-disable-next-line
   }, [customUser, constructorUserId])
 

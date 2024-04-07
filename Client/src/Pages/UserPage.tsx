@@ -162,7 +162,7 @@ const UserPage = () => {
             minHeight={200}
             minWidth={200}
             client={apiClient}
-            path={`users/avatar/${customUser.id}`}
+            path={`users/avatar/${encodeURI(customUser.id)}`}
             method={'patch'}
           />
         </div>
