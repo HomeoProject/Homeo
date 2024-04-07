@@ -4,23 +4,24 @@ import GrassRoundedIcon from '@mui/icons-material/GrassRounded'
 import HomePageTimeline from '../Components/HomePageTimeline'
 import SearchIcon from '@mui/icons-material/Search'
 import CategoriesCarousel from '../Components/CategoriesCarousel'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 
 const HomePage = () => {
   const verifiedContractorsCount: number = 8836
+
+  const { dictionary } = useDictionaryContext()
 
   return (
     <div className="HomePage">
       <div className="home-page-top-banner"></div>
       <div className="home-page-main-wrapper">
         <div className="home-page-main">
-          <p className="home-page-main-title">
-            Constructors never had so many forms.
-          </p>
+          <p className="home-page-main-title">{dictionary.homePageTitle}</p>
           <div className="home-page-main-search-wrapper">
             <input
               className="home-page-main-search"
               type="text"
-              placeholder="Search for a service you need..."
+              placeholder={dictionary.homePageSearchPlaceholder}
             />
             <button className="home-page-main-search-button">
               <SearchIcon />
@@ -28,21 +29,26 @@ const HomePage = () => {
           </div>
           <div className="home-page-main-intro">
             <div className="home-page-main-intro-sub">
-              <b>Over {verifiedContractorsCount} verified constructors</b>
-              <p>Find the one that fits you</p>
+              <b>
+                {dictionary.over} {verifiedContractorsCount}{' '}
+                {dictionary.homePageIntro}
+              </b>
+              <p>{dictionary.homePageIntroCont}</p>
             </div>
             <ConstructionRoundedIcon className="home-page-main-intro-icon" />
           </div>
           <div className="home-page-main-intro">
             <div className="home-page-main-intro-sub">
-              <b>No need for a professional?</b>
-              <p>Check out other people's adverts</p>
+              <b>{dictionary.homePageIntroBot}</b>
+              <p>{dictionary.HomePageIntroBotCont}</p>
             </div>
             <GrassRoundedIcon className="home-page-main-intro-icon" />
           </div>
         </div>
         <div className="home-page-instruction">
-          <p className="home-page-instruction-title">It's that easy:</p>
+          <p className="home-page-instruction-title">
+            {dictionary.HomePageInstruction}:
+          </p>
           <HomePageTimeline />
         </div>
       </div>

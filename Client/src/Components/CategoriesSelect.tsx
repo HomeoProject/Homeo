@@ -9,6 +9,7 @@ import {
 import { useCategoriesContext } from '../Context/CategoriesContext'
 import { SelectChangeEvent } from '@mui/material/Select'
 import { Category, SelectedCategory } from '../types/types'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 
 interface CategoriesSelectProps {
   selectedCategories: number[]
@@ -22,6 +23,7 @@ const CategoriesSelect = ({
   categoriesErrorMessage,
 }: CategoriesSelectProps) => {
   const { categories } = useCategoriesContext()
+  const { dictionary } = useDictionaryContext()
 
   const maximumCategoriesLimit = 10
 
@@ -43,7 +45,7 @@ const CategoriesSelect = ({
           shrink={true}
           sx={{ backgroundColor: 'white', padding: '0 5px' }}
         >
-          Categories you work in
+          {dictionary.categoriesYouWorkIn}
         </InputLabel>
         <Select
           labelId="categories-label"
@@ -77,9 +79,7 @@ const CategoriesSelect = ({
           ))}
         </Select>
         {selectedCategories.length === 0 && (
-          <p className="select-placeholder">
-            Choose categories you work in (max 10)...
-          </p>
+          <p className="select-placeholder">{dictionary.chooseCategories}</p>
         )}
       </FormControl>
     </>

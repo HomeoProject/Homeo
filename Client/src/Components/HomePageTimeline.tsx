@@ -1,3 +1,4 @@
+import { useDictionaryContext } from '../Context/DictionaryContext'
 import Timeline from '@mui/lab/Timeline'
 import TimelineItem from '@mui/lab/TimelineItem'
 import TimelineSeparator from '@mui/lab/TimelineSeparator'
@@ -22,6 +23,8 @@ const centeredDotStyle = {
 }
 
 const HomePageTimeline = () => {
+  const { dictionary } = useDictionaryContext()
+
   return (
     <Timeline sx={{ margin: '0', padding: '0' }}>
       <TimelineItem>
@@ -38,7 +41,7 @@ const HomePageTimeline = () => {
             paddingTop={'20px'}
             fontSize={'calc(80% + 0.3vw)'}
           >
-            Choose a person you want to work with
+            {dictionary.chooseTimeline}
           </Typography>
         </TimelineContent>
       </TimelineItem>
@@ -57,7 +60,7 @@ const HomePageTimeline = () => {
             paddingTop={'41px'}
             fontSize={'calc(80% + 0.3vw)'}
           >
-            Fill out a short form
+            {dictionary.formTimeline}
           </Typography>
         </TimelineContent>
       </TimelineItem>
@@ -76,7 +79,7 @@ const HomePageTimeline = () => {
             paddingTop={'49px'}
             fontSize={'calc(80% + 0.3vw)'}
           >
-            Sort out the details
+            {dictionary.detailsTimeline}
           </Typography>
         </TimelineContent>
       </TimelineItem>
@@ -96,7 +99,7 @@ const HomePageTimeline = () => {
             paddingTop={'49px'}
             fontSize={'calc(80% + 0.3vw)'}
           >
-            Get the result you deserve
+            {dictionary.detailsResult}
           </Typography>
         </TimelineContent>
       </TimelineItem>

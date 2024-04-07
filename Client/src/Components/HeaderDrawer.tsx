@@ -1,6 +1,7 @@
 import { useState, Fragment, useEffect } from 'react'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 import { useAuth0 } from '@auth0/auth0-react'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
@@ -25,6 +26,8 @@ const TemporaryDrawer = () => {
     bottom: false,
     right: false,
   })
+
+  const { dictionary } = useDictionaryContext()
 
   const [isAdmin, setIsAdmin] = useState<boolean>(false)
 
@@ -63,7 +66,7 @@ const TemporaryDrawer = () => {
               <ListItemIcon>
                 <ListIcon />
               </ListItemIcon>
-              <ListItemText primary="Adverts" />
+              <ListItemText primary={dictionary.advertsWord} />
             </ListItemButton>
           </ListItem>
         </Link>
@@ -73,7 +76,7 @@ const TemporaryDrawer = () => {
               <ListItemIcon>
                 <GroupsIcon />
               </ListItemIcon>
-              <ListItemText primary="About us" />
+              <ListItemText primary={dictionary.aboutUs} />
             </ListItemButton>
           </ListItem>
         </Link>
@@ -87,7 +90,7 @@ const TemporaryDrawer = () => {
                     <AdminPanelSettingsIcon color="primary" />
                   </ListItemIcon>
                   <ListItemText
-                    primary="Admin panel"
+                    primary={dictionary.adminPanel}
                     primaryTypographyProps={{
                       color: 'primary',
                       fontWeight: 'bold',

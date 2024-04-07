@@ -5,6 +5,7 @@ services:
     container_name: homeo-userservice
     build: ../UserService
     environment:
+      PORT: ${PORT_USERSERVICE}
       OKTA_API_ISSUER: ${OKTA_API_ISSUER}
       OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
       OKTA_API_DOMAIN: ${OKTA_API_DOMAIN}
@@ -27,7 +28,7 @@ services:
       RABBITMQ_HOST: ${RABBITMQ_HOST}
       RABBITMQ_PORT: ${RABBITMQ_PORT}
     ports:
-      - "8081:8080"
+      - "${PORT_USERSERVICE}:${PORT_USERSERVICE}"
     restart: unless-stopped
     depends_on:
       - homeo-apigateway
@@ -36,6 +37,7 @@ services:
     container_name: homeo-constructorservice
     build: ../ConstructorService
     environment:
+      PORT: ${PORT_CONSTRUCTORSERVICE}
       OKTA_API_ISSUER: ${OKTA_API_ISSUER}
       OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
       OKTA_API_DOMAIN: ${OKTA_API_DOMAIN}
@@ -60,15 +62,16 @@ services:
       API_NINJAS_URL: ${API_NINJAS_URL}
       API_NINJAS_KEY: ${API_NINJAS_KEY}
     ports:
-      - "8082:8080"
+      - "${PORT_CONSTRUCTORSERVICE}:${PORT_CONSTRUCTORSERVICE}"
     restart: unless-stopped
     depends_on:
-      - homeo-apigateway
+      - homeo-userservice
 
   homeo-reviewservice:
     container_name: homeo-reviewservice
     build: ../ReviewService
     environment:
+      PORT: ${PORT_REVIEWSERVICE}
       OKTA_API_ISSUER: ${OKTA_API_ISSUER}
       OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
       OKTA_API_DOMAIN: ${OKTA_API_DOMAIN}
@@ -85,15 +88,16 @@ services:
       RABBITMQ_HOST: ${RABBITMQ_HOST}
       RABBITMQ_PORT: ${RABBITMQ_PORT}
     ports:
-      - "8083:8080"
+      - "${PORT_REVIEWSERVICE}:${PORT_REVIEWSERVICE}"
     restart: unless-stopped
     depends_on:
-      - homeo-apigateway
+      - homeo-constructorservice
 
   homeo-searchservice:
     container_name: homeo-searchservice
     build: ../SearchService
     environment:
+      PORT: ${PORT_SEARCHSERVICE}
       OKTA_API_ISSUER: ${OKTA_API_ISSUER}
       OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -106,10 +110,10 @@ services:
       RABBITMQ_HOST: ${RABBITMQ_HOST}
       RABBITMQ_PORT: ${RABBITMQ_PORT}
     ports:
-      - "8084:8080"
+      - "${PORT_SEARCHSERVICE}:${PORT_SEARCHSERVICE}"
     restart: unless-stopped
     depends_on:
-      - homeo-apigateway
+      - homeo-reviewservice
 
   homeo-apigateway:
     container_name: homeo-apigateway

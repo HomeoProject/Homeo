@@ -3,6 +3,7 @@ import { ErrorMessage } from '@hookform/error-message'
 import { Button, TextField } from '@mui/material'
 import '../style/scss/components/PersonalDataForm.scss'
 import { useUserContext } from '../Context/UserContext'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 import { useEffect } from 'react'
 import { toast } from 'react-toastify'
 import axios from 'axios'
@@ -19,6 +20,7 @@ const PersonalDataForm = () => {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0()
 
   const { customUser, setCustomUser } = useUserContext()
+  const { dictionary } = useDictionaryContext()
 
   const {
     register,
@@ -50,16 +52,14 @@ const PersonalDataForm = () => {
         )
         .then((response) => {
           setCustomUser(response.data)
-          toast.success('Personal information updated successfully!')
+          toast.success(dictionary.personalInfoUpdSucc)
         })
         .catch((error) => {
-          toast.error('Failed to update personal information.')
+          toast.error(dictionary.personalInfoUpdErr)
           console.error(error)
         })
     } else {
-      toast.error(
-        'There was a problem with your authentication. Please try again in a moment.'
-      )
+      toast.error(dictionary.authErr)
     }
   }
 
@@ -76,7 +76,7 @@ const PersonalDataForm = () => {
 
   return (
     <div className="PersonalDataForm">
-      <h1>Personal Information</h1>
+      <h1>{dictionary.personalInfo}</h1>
       <div className="personal-data-form-wrapper">
         <form
           className="personal-data-form"
@@ -84,25 +84,25 @@ const PersonalDataForm = () => {
         >
           <TextField
             id="firstName"
-            label="First name"
+            label={dictionary.firstNameWord}
             // shrink the labels so the input text doesn't overlap with the label
             InputLabelProps={{ shrink: true }}
             type="text"
             {...register('firstName', {
-              required: 'First name is required.',
+              required: dictionary.firstNameRequiredErr,
               minLength: {
                 value: 2,
-                message: 'First name must be at least 2 characters long.',
+                message: dictionary.firstNameLengthErr,
               },
               maxLength: {
                 value: 20,
-                message: 'First name cannot be longer than 20 characters.',
+                message: dictionary.firstNameLengthErrSec,
               },
               validate: (value) =>
-                validateSpacesStartOrEnd(value, 'First name'),
+                validateSpacesStartOrEnd(value, dictionary.firstNameWord),
             })}
             className="custom-input"
-            placeholder="Fill in your first name"
+            placeholder={dictionary.fillInName}
           />
           <ErrorMessage
             errors={errors}
@@ -111,23 +111,24 @@ const PersonalDataForm = () => {
           />
           <TextField
             id="lastName"
-            label="Last name"
+            label={dictionary.lastNameWord}
             InputLabelProps={{ shrink: true }}
             type="text"
             {...register('lastName', {
-              required: 'Last name is required.',
+              required: dictionary.lastNameRequiredErr,
               minLength: {
                 value: 2,
-                message: 'Last name must be at least 2 characters long.',
+                message: dictionary.lastNameLengthErr,
               },
               maxLength: {
                 value: 30,
-                message: 'Last name must be at most 30 characters long.',
+                message: dictionary.lastNameLengthErrSec,
               },
-              validate: (value) => validateSpacesStartOrEnd(value, 'Last name'),
+              validate: (value) =>
+                validateSpacesStartOrEnd(value, dictionary.lastNameWord),
             })}
             className="custom-input"
-            placeholder="Fill in your last name"
+            placeholder={dictionary.fillInLastname}
           />
           <ErrorMessage
             errors={errors}
@@ -140,14 +141,14 @@ const PersonalDataForm = () => {
             InputLabelProps={{ shrink: true }}
             type="email"
             {...register('email', {
-              required: 'Email is required.',
+              required: dictionary.emailRequiredErr,
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Invalid email address.',
+                message: dictionary.emailInvalidErr,
               },
               maxLength: {
                 value: 50,
-                message: 'Email must be at most 50 characters long.',
+                message: dictionary.emailLengthErr,
               },
             })}
             className="custom-input"
@@ -159,26 +160,26 @@ const PersonalDataForm = () => {
           />
           <TextField
             id="phoneNumber"
-            label="Phone number"
+            label={dictionary.phoneNumberWord}
             InputLabelProps={{ shrink: true }}
             type="number"
             {...register('phoneNumber', {
-              required: 'Phone number is required.',
+              required: dictionary.phoneNumberRequiredErr,
               pattern: {
                 value: /^\d{9}$/,
-                message: 'Phone number must be exactly 9 digits.',
+                message: dictionary.phoneLengthErr,
               },
               minLength: {
                 value: 9,
-                message: 'Phone number must be exactly 9 characters long.',
+                message: dictionary.phoneLengthErrSec,
               },
               maxLength: {
                 value: 9,
-                message: 'Phone number must be exactly 9 characters long.',
+                message: dictionary.phoneLengthErrSec,
               },
             })}
             className="custom-input"
-            placeholder="Fill in your phone number"
+            placeholder={dictionary.fillInPhoneNumber}
           />
           <ErrorMessage
             errors={errors}
@@ -186,7 +187,7 @@ const PersonalDataForm = () => {
             render={({ message }) => <p className="error-message">{message}</p>}
           />
           <Button variant="contained" type="submit" className="submit-button">
-            Save
+            {dictionary.saveWord}
           </Button>
         </form>
       </div>

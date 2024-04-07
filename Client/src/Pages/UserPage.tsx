@@ -4,6 +4,7 @@ import { Outlet, useParams, NavLink } from 'react-router-dom'
 import ErrorPage from './ErrorPage'
 import LoadingSpinner from '../Components/LoadingSpinner'
 import { useUserContext } from '../Context/UserContext'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 import { useEffect, useState } from 'react'
 import UserAvatar from '../Components/UserAvatar'
 import UploadPictureModal from '../Components/UploadPictureModal'
@@ -19,6 +20,7 @@ const UserPage = () => {
   const [open, setOpen] = useState(false)
 
   const { customUser } = useUserContext()
+  const { dictionary } = useDictionaryContext()
 
   const { id } = useParams<{ id: string }>()
 
@@ -61,7 +63,7 @@ const UserPage = () => {
                 </b>
                 {isConstructor && (
                   <p className="user-page-main-left-info-name-title">
-                    Homeo Constructor
+                    {dictionary.homeoConstructor}
                   </p>
                 )}
               </div>
@@ -76,7 +78,7 @@ const UserPage = () => {
                 }
                 end
               >
-                Personal profile
+                {dictionary.personalProfile}
               </NavLink>
               <NavLink
                 to={`/user/${customUser?.id}/constructor-info`}
@@ -87,7 +89,7 @@ const UserPage = () => {
                 }
                 end
               >
-                Constructor profile
+                {dictionary.constructorProfile}
               </NavLink>
             </div>
           </div>
@@ -95,15 +97,15 @@ const UserPage = () => {
             {!isProfileComplete && (
               <Banner
                 variant="warning"
-                text="In order to comment, leave reviews and communicate with or become a constructor please fill the missing personal information."
-                headline="Your profile is incomplete"
+                text={dictionary.incompleteProfileWarning}
+                headline={dictionary.incompleteProfileWarningHeadline}
               />
             )}
             {!isConstructor && isProfileComplete && (
               <Banner
                 variant="info"
-                text="Fill in the missing constructor information to become one and start offering your services."
-                headline="Want to become a constructor?"
+                text={dictionary.incompleteProfileInfo}
+                headline={dictionary.incompleteProfileInfoHeadline}
               />
             )}
             <Outlet />
@@ -120,7 +122,7 @@ const UserPage = () => {
           />
         </div>
       ) : (
-        <ErrorPage error={'You are not authorized to view this page'} />
+        <ErrorPage error={dictionary.errorPageMessage} />
       )}
     </div>
   )

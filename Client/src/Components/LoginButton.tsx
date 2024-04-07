@@ -1,8 +1,10 @@
 import { useAuth0 } from '@auth0/auth0-react'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 import Button from '@mui/material/Button'
 
 const LoginButton = () => {
   const { loginWithRedirect, isLoading } = useAuth0()
+  const { dictionary } = useDictionaryContext()
 
   return (
     !isLoading && (
@@ -20,7 +22,7 @@ const LoginButton = () => {
           },
         }}
       >
-        Login
+        {dictionary.loginWord}
       </Button>
     )
   )
