@@ -148,6 +148,9 @@ export const english = {
   failedToFetchConstructorData: 'Failed to fetch constructor data',
   genericError: 'An error occurred. Please try again later.',
   noReviewsYetShort: 'No reviews yet',
+  timeoutError: 'Request timed out. Please try again later.',
+  homeServicesPlatform: 'Home services platform',
+  findTheConstuctorYouNeed: 'Find the constructor you need',
 }
 
 export const polish = {
@@ -301,4 +304,7 @@ export const polish = {
   genericError: 'Wystąpił błąd. Proszę spróbować ponownie później.',
   noReviewsYetShort: 'Brak opinii',
   reviewDeletedSuccessfully: 'Opinia usunięta pomyślnie',
+  timeoutError: 'Żądanie przekroczyło limit czasu. Spróbuj ponownie później.',
+  homeServicesPlatform: 'Platforma usług domowych',
+  findTheConstuctorYouNeed: 'Znajdź konstruktora, którego potrzebujesz',
 }

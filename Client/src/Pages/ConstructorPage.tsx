@@ -52,6 +52,7 @@ const ConstructorPage = () => {
   const [areNewReviewsLoading, setAreNewReviewsLoading] =
     useState<boolean>(false)
   const [constructorNotFound, setConstructorNotFound] = useState<boolean>(false)
+  const [constructorDeleted, setConstructorDeleted] = useState<boolean>(false)
   const [isViewingOwnProfile, setIsViewingOwnProfile] = useState<boolean>(false)
   const [openReviewModal, setOpenReviewModal] = useState<boolean>(false)
   const [canUserInteract, setCanUserInteract] = useState<boolean>(false)
@@ -163,7 +164,7 @@ const ConstructorPage = () => {
         .get(`/users/${constructorUserId}`)
         .then((response) => {
           if (response.data.isDeleted) {
-            setConstructorNotFound(true)
+            setConstructorDeleted(true)
           }
           setConstructorUserData(response.data)
         })
@@ -209,6 +210,14 @@ const ConstructorPage = () => {
     return (
       <div className="ConstructorPage">
         <LoadingSpinner />
+      </div>
+    )
+  }
+
+  if (constructorDeleted) {
+    return (
+      <div className="ConstructorPage">
+        <ErrorPage error={dictionary.constructorDeleted} />
       </div>
     )
   }

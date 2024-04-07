@@ -24,10 +24,15 @@ const Header = () => {
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget)
   }
-  const handleClose = (e: React.MouseEvent<HTMLElement>) => {
+
+  const handleLanguageSelect = (e: React.MouseEvent<HTMLElement>) => {
     setDictionary(
       e.currentTarget.dataset.myValue === 'polish' ? polish : english
     )
+    handleClose()
+  }
+
+  const handleClose = () => {
     setAnchorEl(null)
   }
 
@@ -98,13 +103,13 @@ const Header = () => {
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
-            <MenuItem onClick={handleClose} data-my-value="polish">
+            <MenuItem onClick={handleLanguageSelect} data-my-value="polish">
               <div style={{ display: 'flex', gap: '10px' }}>
                 Polski
                 <PL width={'20px'} />
               </div>
             </MenuItem>
-            <MenuItem onClick={handleClose} data-my-value="english">
+            <MenuItem onClick={handleLanguageSelect} data-my-value="english">
               <div style={{ display: 'flex', gap: '10px' }}>
                 English
                 <GB width={'20px'} />

@@ -12,9 +12,11 @@ import 'react-toastify/dist/ReactToastify.css'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 import Banner from '../Components/Banner'
 import apiClient from '../AxiosClients/apiClient'
+import { toast } from 'react-toastify'
 
 const UserPage = () => {
-  const { isLoading, getAccessTokenSilently } = useAuth0()
+  const { getAccessTokenSilently } = useAuth0()
+  const [isLoading, setIsLoading] = useState(true)
   const [isConstructor, setIsConstructor] = useState<boolean>(false)
   const [isProfileComplete, setIsProfileComplete] = useState<boolean>(false)
   const [open, setOpen] = useState(false)
@@ -30,19 +32,51 @@ const UserPage = () => {
   const handleClose = () => setOpen(false)
 
   useEffect(() => {
-    getAccessTokenSilently().then((token) => {
-      const isConstructor = checkIfUserHasPermission(token, 'constructor')
-      const isProfileComplete = checkIfUserHasPermission(token, 'user')
-      setIsConstructor(isConstructor)
-      setIsProfileComplete(isProfileComplete)
-    })
-  }, [getAccessTokenSilently])
+    customUser &&
+      getAccessTokenSilently()
+        .then((token) => {
+          const isConstructor = checkIfUserHasPermission(token, 'constructor')
+          const isProfileComplete = checkIfUserHasPermission(token, 'user')
+          setIsConstructor(isConstructor)
+          setIsProfileComplete(isProfileComplete)
+        })
+        .catch((error) => {
+          console.error(error)
+          toast.error(dictionary.errorLoadingUser)
+          setIsConstructor(false)
+          setIsProfileComplete(false)
+        })
+        .finally(() => {
+          setIsLoading(false)
+        })
 
-  return (
-    <div className="UserPage">
-      {isLoading || !customUser ? (
-        <LoadingSpinner />
-      ) : customUser && customUser.id === id ? (
+    // If the user is not loaded in 10 seconds, stop loading
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 10000)
+
+    // eslint-disable-next-line
+  }, [getAccessTokenSilently, customUser])
+
+  if (!isLoading && !customUser) {
+    return (
+      <div className="UserPage">
+        <ErrorPage error={dictionary.timeoutError} />
+      </div>
+    )
+  }
+
+  if (customUser && customUser.id !== id) {
+    return (
+      <div className="UserPage">
+        <ErrorPage error={dictionary.errorPageMessage} />
+      </div>
+    )
+  }
+
+  if (customUser) {
+    return (
+      <div className="UserPage">
         <div className="user-page-main">
           <div className="user-page-main-left">
             <div className="user-page-main-left-info">
@@ -132,9 +166,13 @@ const UserPage = () => {
             method={'patch'}
           />
         </div>
-      ) : (
-        <ErrorPage error={dictionary.errorPageMessage} />
-      )}
+      </div>
+    )
+  }
+
+  return (
+    <div className="UserPage">
+      <LoadingSpinner />
     </div>
   )
 }
