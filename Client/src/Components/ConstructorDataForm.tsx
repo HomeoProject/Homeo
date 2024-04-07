@@ -357,6 +357,10 @@ const ConstructorDataForm = () => {
                 value: 1.0,
                 message: dictionary.rateMinimalErr,
               },
+              max: {
+                value: 10000.0,
+                message: dictionary.rateMaximalErr,
+              },
             })}
             placeholder={dictionary.ratePlaceholder}
           />

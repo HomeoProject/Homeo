@@ -6,8 +6,7 @@ import { useUserContext } from '../Context/UserContext'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import axios from 'axios'
-import { useAuth0 } from '@auth0/auth0-react'
+import apiClient from '../AxiosClients/apiClient'
 
 interface PersonalDataForm {
   firstName: string
@@ -18,7 +17,6 @@ interface PersonalDataForm {
 
 const PersonalDataForm = () => {
   const [isFormLoading, setIsFormLoading] = useState(false)
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0()
   const { customUser, setCustomUser } = useUserContext()
   const { dictionary } = useDictionaryContext()
 
@@ -38,19 +36,9 @@ const PersonalDataForm = () => {
 
   const handleSubmitForm = async (data: PersonalDataForm) => {
     setIsFormLoading(true)
-    if (isAuthenticated) {
-      const token = await getAccessTokenSilently()
-
-      await axios
-        .put(
-          `${import.meta.env.VITE_REACT_APIGATEWAY_URL}/api/users/${customUser?.id}`,
-          data,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
+    if (customUser) {
+      apiClient
+        .put(`/users/${encodeURI(customUser.id)}`, data)
         .then((response) => {
           setCustomUser(response.data)
           toast.success(dictionary.personalInfoUpdSucc)
@@ -105,6 +93,10 @@ const PersonalDataForm = () => {
               },
               validate: (value) =>
                 validateSpacesStartOrEnd(value, dictionary.firstNameWord),
+              pattern: {
+                value: /^[A-Za-ząćęłńóśźż\s]*$/,
+                message: dictionary.specialCharErr,
+              },
             })}
             className="custom-input"
             placeholder={dictionary.fillInName}
@@ -131,6 +123,10 @@ const PersonalDataForm = () => {
               },
               validate: (value) =>
                 validateSpacesStartOrEnd(value, dictionary.lastNameWord),
+              pattern: {
+                value: /^[A-Za-ząćęłńóśźż\s]*$/,
+                message: dictionary.specialCharErr,
+              },
             })}
             className="custom-input"
             placeholder={dictionary.fillInLastname}

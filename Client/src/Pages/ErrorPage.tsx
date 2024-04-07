@@ -39,7 +39,7 @@ const ErrorPage = ({ error }: ErrorPageProps) => {
           }}
         >
           <BackIcon />
-          {dictionary.goBackButton}
+          {dictionary.goBackButton || 'Go back'}
         </Button>
       </div>
       <img src={ErrorImg} alt="error" className="error-page-img" />
