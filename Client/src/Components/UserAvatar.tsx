@@ -1,4 +1,5 @@
 import { Avatar, Badge } from '@mui/material'
+import { Link } from 'react-router-dom'
 import ApprovedIcon from '../Assets/approved.svg'
 import CameraIcon from '../Assets/camera.svg'
 
@@ -27,6 +28,11 @@ const UserAvatar = ({
   badgeWidth,
   badgeHeight,
 }: UserAvatarProps) => {
+  if (variant === 'link' && !viewHref) {
+    console.error('viewHref is required when variant is "link"!')
+    variant = 'standard'
+  }
+
   switch (variant) {
     case 'page':
       return isApproved ? (
@@ -120,7 +126,7 @@ const UserAvatar = ({
       )
     case 'link':
       return isApproved ? (
-        <a href={viewHref} className="user-avatar-link">
+        <Link to={viewHref!} className="user-avatar-link" target="_blank">
           <Badge
             overlap="circular"
             anchorOrigin={{
@@ -149,18 +155,20 @@ const UserAvatar = ({
               }}
             />
           </Badge>
-        </a>
+        </Link>
       ) : (
-        <Avatar
-          alt={alt}
-          src={src}
-          sx={{
-            width: '100%',
-            height: '100%',
-            maxWidth: maxWidth || 40,
-            maxHeight: maxHeight || 40,
-          }}
-        />
+        <Link to={viewHref!} className="user-avatar-link" target="_blank">
+          <Avatar
+            alt={alt}
+            src={src}
+            sx={{
+              width: '100%',
+              height: '100%',
+              maxWidth: maxWidth || 40,
+              maxHeight: maxHeight || 40,
+            }}
+          />
+        </Link>
       )
     default:
       return isApproved ? (

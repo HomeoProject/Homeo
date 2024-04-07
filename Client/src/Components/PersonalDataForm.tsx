@@ -1,10 +1,10 @@
 import { useForm } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
-import { Button, TextField } from '@mui/material'
+import { Button, CircularProgress, TextField } from '@mui/material'
 import '../style/scss/components/PersonalDataForm.scss'
 import { useUserContext } from '../Context/UserContext'
 import { useDictionaryContext } from '../Context/DictionaryContext'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import { useAuth0 } from '@auth0/auth0-react'
@@ -17,8 +17,8 @@ interface PersonalDataForm {
 }
 
 const PersonalDataForm = () => {
+  const [isFormLoading, setIsFormLoading] = useState(false)
   const { isAuthenticated, getAccessTokenSilently } = useAuth0()
-
   const { customUser, setCustomUser } = useUserContext()
   const { dictionary } = useDictionaryContext()
 
@@ -37,6 +37,7 @@ const PersonalDataForm = () => {
   }
 
   const handleSubmitForm = async (data: PersonalDataForm) => {
+    setIsFormLoading(true)
     if (isAuthenticated) {
       const token = await getAccessTokenSilently()
 
@@ -58,8 +59,12 @@ const PersonalDataForm = () => {
           toast.error(dictionary.personalInfoUpdErr)
           console.error(error)
         })
+        .finally(() => {
+          setIsFormLoading(false)
+        })
     } else {
       toast.error(dictionary.authErr)
+      setIsFormLoading(false)
     }
   }
 
@@ -186,9 +191,17 @@ const PersonalDataForm = () => {
             name="phoneNumber"
             render={({ message }) => <p className="error-message">{message}</p>}
           />
-          <Button variant="contained" type="submit" className="submit-button">
-            {dictionary.saveWord}
-          </Button>
+          <div className="submit-button-container">
+            <Button
+              variant="contained"
+              type="submit"
+              className="submit-button"
+              disabled={isFormLoading}
+            >
+              {dictionary.saveWord}
+            </Button>
+            {isFormLoading && <CircularProgress className="loader" />}
+          </div>
         </form>
       </div>
     </div>

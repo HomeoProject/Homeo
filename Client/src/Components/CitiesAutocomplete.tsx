@@ -31,7 +31,7 @@ const CustomGooglePlacesAutocomplete = ({
     }
 
     apiNinjasClient
-      .get<City[]>(`city?name=${inputValue}&country=PL&limit=5`)
+      .get<City[]>(`city?name=${encodeURI(inputValue)}&country=PL&limit=5`)
       .then((response: AxiosResponse<City[]>) => {
         setFetchedOptions(response.data)
       })

@@ -26,9 +26,28 @@
       }
     }
 
-    > .review-wrapper:not(:last-child) {
+    > .review-wrapper:not(:last-of-type) {
       border-bottom: 1px dashed rgba(133, 132, 132, 0.205);
       padding-bottom: 1rem;
+    }
+
+    > .submit-button-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      > .load-more-button {
+        font-family: v.$font-family;
+        margin-top: 1rem;
+      }
+
+      > .loader {
+        margin-top: 13px;
+
+        > svg {
+          scale: 0.5;
+        }
+      }
     }
   }
 }

@@ -40,7 +40,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
       if (isConstructor) {
         const userId = userResponse.data.id
         const constructorResponse = await apiClient.get<Constructor>(
-          `/constructors/${userId}`
+          `/constructors/${encodeURI(userId)}`
         )
         setConstructor(constructorResponse.data)
       }

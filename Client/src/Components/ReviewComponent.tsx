@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import '../style/scss/components/ReviewComponent.scss'
-import { CustomUser, Review } from '../types/types'
+import { ConstructorProfileReviews, CustomUser, Review } from '../types/types'
 import apiClient from '../AxiosClients/apiClient'
 import DefaultAvatar from '../Assets/default-avatar.svg'
 import UserAvatar from './UserAvatar'
@@ -17,13 +17,15 @@ import ReviewModal from './ReviewModal'
 type ReviewComponentProps = {
   review: Review
   isAdmin: boolean
-  fetchReviews: () => void
+  constructorReviews: ConstructorProfileReviews
+  setConstructorReviews: (reviews: ConstructorProfileReviews) => void
 }
 
 const ReviewComponent = ({
   review,
   isAdmin,
-  fetchReviews,
+  constructorReviews,
+  setConstructorReviews,
 }: ReviewComponentProps) => {
   const [reviewer, setReviewer] = useState<CustomUser | null>(null)
   const [isUserReviewer, setIsUserReviewer] = useState(false)
@@ -40,18 +42,39 @@ const ReviewComponent = ({
     setOpenReviewEditModal(false)
   }
 
-  const deleteReview = () => {
+  const deleteReview = async () => {
+    if (!isUserReviewer && !isAdmin) {
+      toast.error(dictionary.failedToDeleteReview)
+      return
+    }
+
     apiClient
       .delete(`/reviews/${review.id}`)
       .then(() => {
-        toast.success('Review deleted successfully')
+        const updatedContent = constructorReviews.content.filter(
+          (reviewToEdit) => reviewToEdit.id !== review.id
+        )
+        return updatedContent
       })
-      .then(() => {
-        fetchReviews()
+      .then((updatedContent) => {
+        apiClient
+          .get(`/reviews/stats/${review.receiverId}`)
+          .then((response) => {
+            const updatedStats = response.data
+            setConstructorReviews({
+              content: updatedContent,
+              stats: updatedStats,
+            })
+            toast.success(dictionary.reviewDeletedSuccessfully)
+          })
+          .catch((err) => {
+            console.error(err)
+            toast.error(dictionary.failedToGetReviewsStats)
+          })
       })
       .catch((err) => {
         console.error(err)
-        toast.error('Failed to delete the review')
+        toast.error(dictionary.failedToDeleteReview)
       })
   }
 
@@ -66,7 +89,6 @@ const ReviewComponent = ({
       .get(`/users/${review.reviewerId}`)
       .then((response) => {
         setReviewer(response.data)
-        setIsUserReviewer(false)
       })
       .catch((err) => {
         console.error(err)
@@ -79,10 +101,11 @@ const ReviewComponent = ({
         <ReviewModal
           reviewModalOpen={openReviewEditModal}
           review={review}
-          receiverId={review.receiverId!}
+          receiverId={review.receiverId}
           type="edit"
           handleClose={handleCloseReviewEditModal}
-          fetchReviews={fetchReviews}
+          constructorReviews={constructorReviews}
+          setConstructorReviews={setConstructorReviews}
         />
         {reviewer && !reviewer.isDeleted ? (
           <div className="review-component-main-top">
@@ -105,7 +128,17 @@ const ReviewComponent = ({
         )}
         <div className="review-component-main-middle">
           <span className="rating">
-            <p className="rating-value">{review.rating}</p>
+            <p
+              className={
+                constructorReviews.stats.reviewsNumber === 0
+                  ? 'rating-value-empty'
+                  : 'rating-value'
+              }
+            >
+              {constructorReviews.stats.reviewsNumber === 0
+                ? 'No reviews yet'
+                : review.rating}
+            </p>
             <div className="divider"></div>
             <Rating
               name="simple-controlled"
@@ -123,7 +156,11 @@ const ReviewComponent = ({
         </div>
       </div>
       {isUserReviewer && (
-        <Tooltip title="Edit review" placement="left-end" disableInteractive>
+        <Tooltip
+          title={dictionary.editReview}
+          placement="left-end"
+          disableInteractive
+        >
           <button className="tooltip-button-edit">
             <EditNoteIcon
               className="edit-icon"
@@ -133,7 +170,11 @@ const ReviewComponent = ({
         </Tooltip>
       )}
       {(isAdmin || isUserReviewer) && (
-        <Tooltip title="Delete review" placement="left-end" disableInteractive>
+        <Tooltip
+          title={dictionary.deleteReview}
+          placement="left-end"
+          disableInteractive
+        >
           <button className="tooltip-button-delete">
             <DeleteIcon className="delete-icon" onClick={deleteReview} />
           </button>

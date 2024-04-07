@@ -3,7 +3,7 @@
 .ReviewComponent {
   display: flex;
 
-  .review-component-main {
+  > .review-component-main {
     width: 100%;
 
     > .review-component-main-top {
@@ -11,12 +11,17 @@
       gap: 0.7rem;
       align-items: center;
 
-      > .reviewer-name {
-        font-size: v.$font-size-content;
-        font-weight: 600;
+      > .reviewer-name-link {
+        text-decoration: none;
+        color: black;
 
-        @media (max-width: 370px) {
-          font-size: v.$font-size-small;
+        > .reviewer-name {
+          font-size: v.$font-size-content;
+          font-weight: 600;
+
+          @media (max-width: 400px) {
+            font-size: v.$font-size-extra-small;
+          }
         }
       }
     }
@@ -32,7 +37,7 @@
           height: v.$font-size-content;
           background-color: #b6b6b6;
 
-          @media (max-width: 370px) {
+          @media (max-width: 400px) {
             height: v.$font-size-small;
           }
         }
@@ -41,17 +46,7 @@
           font-size: v.$font-size-content;
           font-weight: 600;
 
-          @media (max-width: 370px) {
-            font-size: v.$font-size-small;
-          }
-        }
-
-        > .rating-value-empty {
-          font-size: v.$font-size-content;
-          font-weight: 600;
-          color: #b6b6b6;
-
-          @media (max-width: 370px) {
+          @media (max-width: 400px) {
             font-size: v.$font-size-small;
           }
         }
@@ -62,8 +57,11 @@
       > .text {
         font-size: v.$font-size-content;
         margin: 0.5rem 0;
+        background-color: #b6b6b61f;
+        padding: 15px 10px;
+        border-radius: 10px;
 
-        @media (max-width: 370px) {
+        @media (max-width: 400px) {
           font-size: v.$font-size-extra-small;
         }
       }
@@ -72,6 +70,10 @@
 
   > .tooltip-button-delete {
     margin-left: 1rem;
+
+    @media (max-width: 400px) {
+      margin-left: 0.5rem;
+    }
   }
 
   > .tooltip-button-edit,
@@ -89,6 +91,7 @@
     .edit-icon {
       font-size: v.$font-size-normal;
       color: #b6b6b6;
+      margin-top: 10px;
 
       @media (max-width: 400px) {
         font-size: v.$font-size-medium;
