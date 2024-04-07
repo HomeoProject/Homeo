@@ -8,6 +8,7 @@ WORKDIR /app
 COPY --from=build /home/gradle/ConstructorService/build/libs/ConstructorService-0.0.1-SNAPSHOT.jar /app
 
 # ENV variables to replace
+ENV PORT=${PORT_CONSTRUCTORSERVICE:-8080}
 ENV OKTA_API_ISSUER=${OKTA_API_ISSUER:-REPLACE}
 ENV OKTA_API_AUDIENCE=${OKTA_API_AUDIENCE:-REPLACE}
 ENV OKTA_API_DOMAIN=${OKTA_API_DOMAIN:-REPLACE}
