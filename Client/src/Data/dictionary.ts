@@ -151,6 +151,8 @@ export const english = {
   timeoutError: 'Request timed out. Please try again later.',
   homeServicesPlatform: 'Home services platform',
   findTheConstuctorYouNeed: 'Find the constructor you need',
+  specialCharErr: 'Special characters are not allowed',
+  rateMaximalErr: 'Maximal rate is $10000.00',
 }
 
 export const polish = {
@@ -308,4 +310,6 @@ export const polish = {
   timeoutError: 'Żądanie przekroczyło limit czasu. Spróbuj ponownie później.',
   homeServicesPlatform: 'Platforma usług domowych',
   findTheConstuctorYouNeed: 'Znajdź konstruktora, którego potrzebujesz',
+  specialCharErr: 'Znaki specjalne nie są dozwolone',
+  rateMaximalErr: 'Maksymalna stawka wynosi 10000.00Zł',
 }
