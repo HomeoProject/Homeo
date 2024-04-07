@@ -80,12 +80,14 @@ const ReviewModal = ({
           .then((response) => {
             const updatedStats = response.data
             let updatedContent
-            if (constructorReviews === null) {
+            // If there are no reviews yet, we need to create an array with the first review
+            if (constructorReviews.stats.reviewsNumber === 0) {
               updatedContent = content
               setConstructorReviews({
                 stats: updatedStats,
-                content: updatedContent,
+                content: [updatedContent],
               })
+              toast.success(dictionary.reviewAddedSuccessfully)
               return
             }
             updatedContent = [...constructorReviews.content, content]
@@ -125,14 +127,14 @@ const ReviewModal = ({
       .then((content) => {
         apiClient.get(`/reviews/stats/${receiverId}`).then((response) => {
           const updatedStats = response.data
-          const updatedContent = constructorReviews.content.map((review) =>
+          const updatedContent = constructorReviews!.content.map((review) =>
             review.id === reviewId ? content : review
           )
           setConstructorReviews({
             stats: updatedStats,
             content: updatedContent,
           })
-          toast.success(dictionary.reviewEditedSuccessfully)
+          toast.success(dictionary.reviewEditedSuccesfully)
         })
       })
       .catch((err) => {
@@ -142,8 +144,6 @@ const ReviewModal = ({
       .finally(() => {
         handleClose()
         setIsLoading(false)
-        setRatingValue(0)
-        setReviewText('')
       })
   }
 

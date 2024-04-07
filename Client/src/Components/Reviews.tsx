@@ -9,10 +9,10 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { Button, CircularProgress } from '@mui/material'
 
 type ReviewsProps = {
-  constructorReviews: ConstructorProfileReviews | null
-  setConstructorReviews: (reviews: ConstructorProfileReviews | null) => void
+  constructorReviews: ConstructorProfileReviews
+  setConstructorReviews: (reviews: ConstructorProfileReviews) => void
   oldestReviewDate: string
-  fetchReviews: (lastCreatedAt: string) => void
+  fetchNewReviews: (lastCreatedAt: string) => void
   areReviewsLoading: boolean
   areNewReviewsLoading: boolean
 }
@@ -21,7 +21,7 @@ const Reviews = ({
   constructorReviews,
   setConstructorReviews,
   oldestReviewDate,
-  fetchReviews,
+  fetchNewReviews,
   areReviewsLoading,
   areNewReviewsLoading,
 }: ReviewsProps) => {
@@ -43,7 +43,7 @@ const Reviews = ({
     checkIfUserIsAdmin()
   }, [isAuthenticated, getAccessTokenSilently])
 
-  if (constructorReviews === null) {
+  if (constructorReviews.stats.reviewsNumber === 0) {
     return (
       <div className="ConstructorReviews">
         <div className="constructor-reviews-main">
@@ -80,7 +80,7 @@ const Reviews = ({
           import.meta.env.VITE_REACT_REVIEWS_FETCH_LIMIT && (
           <span className="submit-button-container">
             <Button
-              onClick={() => fetchReviews(oldestReviewDate)}
+              onClick={() => fetchNewReviews(oldestReviewDate)}
               variant="contained"
               color="primary"
               className="load-more-button"

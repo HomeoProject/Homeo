@@ -57,6 +57,9 @@
       > .text {
         font-size: v.$font-size-content;
         margin: 0.5rem 0;
+        background-color: #b6b6b61f;
+        padding: 15px 10px;
+        border-radius: 10px;
 
         @media (max-width: 400px) {
           font-size: v.$font-size-extra-small;

@@ -4,12 +4,28 @@
   width: 100%;
   padding-bottom: 1rem;
 
-  > h1 {
-    font-size: v.$font-size-large;
+  > .my-reviews-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 
-    @media (max-width: 800px) {
-      margin-top: 0;
+    > h1 {
+      font-size: v.$font-size-large;
+
+      @media (max-width: 800px) {
+        font-size: v.$font-size-normal;
+      }
+    }
+
+    > h2 {
       font-size: v.$font-size-normal;
+      font-weight: 600;
+      color: #b6b6b6;
+      margin: 0;
+
+      @media (max-width: 800px) {
+        font-size: v.$font-size-medium;
+      }
     }
   }
 
@@ -18,7 +34,7 @@
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
     padding: 1.5rem;
     border-radius: 10px;
-    min-height: 19.5rem;
+    height: 19.5rem;
     margin-bottom: 1rem;
     display: flex;
     justify-content: center;

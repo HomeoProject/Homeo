@@ -143,6 +143,11 @@ export const english = {
   failedToDeleteReview: 'Failed to delete review',
   deleteReview: 'Delete review',
   failedToGetReviewsStats: 'Failed to get reviews stats',
+  constructorDeleted: 'This constructor is no longer available',
+  constructorNotFound: 'Constructor not found',
+  failedToFetchConstructorData: 'Failed to fetch constructor data',
+  genericError: 'An error occurred. Please try again later.',
+  noReviewsYetShort: 'No reviews yet',
 }
 
 export const polish = {
@@ -286,9 +291,14 @@ export const polish = {
   doNotIncludePersonal: 'Nie załączaniu żadnych informacji osobowych',
   alwaysBeRespectful: 'Zachowaniu szacunku do innych',
   cancelWord: 'Anuluj',
-  reviewDeletedSuccessfully: 'Opinia usunięta pomyślnie',
   failedToDeleteReview: 'Nie udało się usunąć opinii',
   deleteReview: 'Usuń opinię',
   failedToLoadReviews: 'Nie udało się załadować opinii',
   failedToGetReviewsStats: 'Nie udało się pobrać statystyk opinii',
+  constructorDeleted: 'Ten konstruktor nie jest już dostępny',
+  constructorNotFound: 'Nie znaleziono konstruktora',
+  failedToFetchConstructorData: 'Nie udało się pobrać danych konstruktora',
+  genericError: 'Wystąpił błąd. Proszę spróbować ponownie później.',
+  noReviewsYetShort: 'Brak opinii',
+  reviewDeletedSuccessfully: 'Opinia usunięta pomyślnie',
 }

@@ -11,15 +11,40 @@ import { toast } from 'react-toastify'
 const MyReviews = () => {
   const { dictionary } = useDictionaryContext()
   const [myReviews, setMyReviews] = useState<Review[] | null>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [areMyReviewsLoading, setAreMyReviewsLoading] = useState(false)
+  const [areMyNewReviewsLoading, setAreMyNewReviewsLoading] = useState(false)
   const [oldestReviewDate, setOldestReviewDate] = useState<string>(
     new Date().toISOString()
   )
 
-  const fetchMyReviews = async (lastCreatedAt: string) => {
-    setIsLoading(true)
+  const fetchMyReviews = async () => {
+    setAreMyReviewsLoading(true)
     apiClient
-      .get(`/reviews/user/reviewed?lastCreatedAt=${lastCreatedAt}`)
+      .get('/reviews/user/reviewed', {
+        params: { lastCreatedAt: new Date().toISOString() },
+      })
+      .then((response) => {
+        if (response.data.length === 0) {
+          setMyReviews(null)
+          return
+        }
+        setMyReviews(response.data)
+        setOldestReviewDate(response.data[response.data.length - 1].createdAt)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+      .finally(() => {
+        setAreMyReviewsLoading(false)
+      })
+  }
+
+  const fetchMyNewReviews = async (lastCreatedAt: string) => {
+    setAreMyNewReviewsLoading(true)
+    apiClient
+      .get(`/reviews/user/reviewed`, {
+        params: { lastCreatedAt },
+      })
       .then((response) => {
         if (myReviews?.length === 0 && response.data.length === 0) {
           setMyReviews(null)
@@ -36,15 +61,12 @@ const MyReviews = () => {
         console.error(error)
       })
       .finally(() => {
-        setTimeout(() => {
-          setIsLoading(false)
-        }, 2000)
+        setAreMyNewReviewsLoading(false)
       })
   }
 
   useEffect(() => {
-    fetchMyReviews(oldestReviewDate)
-    // eslint-disable-next-line
+    fetchMyReviews()
   }, [])
 
   if (myReviews === null) {
@@ -60,7 +82,7 @@ const MyReviews = () => {
     )
   }
 
-  if (myReviews?.length === 0) {
+  if (areMyReviewsLoading) {
     return (
       <div className="MyReviews">
         <h1>{dictionary.myReviews}</h1>
@@ -73,7 +95,10 @@ const MyReviews = () => {
 
   return (
     <div className="MyReviews">
-      <h1>{dictionary.myReviews}</h1>
+      <div className="my-reviews-header">
+        <h1>{dictionary.myReviews}</h1>
+        <h2>{myReviews ? `( ${myReviews.length} )` : ''}</h2>
+      </div>
       <div className="my-reviews-main">
         {myReviews.map((review: Review) => (
           <div key={review.id} className="my-review">
@@ -87,15 +112,15 @@ const MyReviews = () => {
         {myReviews.length >= import.meta.env.VITE_REACT_REVIEWS_FETCH_LIMIT && (
           <span className="submit-button-container">
             <Button
-              onClick={() => fetchMyReviews(oldestReviewDate)}
+              onClick={() => fetchMyNewReviews(oldestReviewDate)}
               variant="contained"
               color="primary"
               className="load-more-button"
-              disabled={isLoading}
+              disabled={areMyNewReviewsLoading}
             >
               {dictionary.loadMore}
             </Button>
-            {isLoading && <CircularProgress className="loader" />}
+            {areMyNewReviewsLoading && <CircularProgress className="loader" />}
           </span>
         )}
       </div>

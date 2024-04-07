@@ -128,7 +128,17 @@ const ReviewComponent = ({
         )}
         <div className="review-component-main-middle">
           <span className="rating">
-            <p className="rating-value">{review.rating}</p>
+            <p
+              className={
+                constructorReviews.stats.reviewsNumber === 0
+                  ? 'rating-value-empty'
+                  : 'rating-value'
+              }
+            >
+              {constructorReviews.stats.reviewsNumber === 0
+                ? 'No reviews yet'
+                : review.rating}
+            </p>
             <div className="divider"></div>
             <Rating
               name="simple-controlled"
@@ -159,18 +169,17 @@ const ReviewComponent = ({
           </button>
         </Tooltip>
       )}
-      {isAdmin ||
-        (isUserReviewer && (
-          <Tooltip
-            title={dictionary.deleteReview}
-            placement="left-end"
-            disableInteractive
-          >
-            <button className="tooltip-button-delete">
-              <DeleteIcon className="delete-icon" onClick={deleteReview} />
-            </button>
-          </Tooltip>
-        ))}
+      {(isAdmin || isUserReviewer) && (
+        <Tooltip
+          title={dictionary.deleteReview}
+          placement="left-end"
+          disableInteractive
+        >
+          <button className="tooltip-button-delete">
+            <DeleteIcon className="delete-icon" onClick={deleteReview} />
+          </button>
+        </Tooltip>
+      )}
     </div>
   )
 }

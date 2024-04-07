@@ -42,17 +42,16 @@ const MyReviewComponent = ({
     apiClient
       .delete(`/reviews/${id}`)
       .then(() => {
-        toast.success(dictionary.reviewDeletedSuccessfully)
-      })
-      .then(() => {
         const updatedReviews = myReviews!.filter(
           (review: Review) => review.id !== id
         )
         if (updatedReviews.length === 0) {
           setMyReviews(null)
+          toast.success(dictionary.reviewDeletedSuccessfully)
           return
         }
         setMyReviews(updatedReviews)
+        toast.success(dictionary.reviewDeletedSuccessfully)
       })
       .catch((err) => {
         console.error(err)

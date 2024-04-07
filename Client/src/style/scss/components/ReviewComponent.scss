@@ -45,6 +45,16 @@
             font-size: v.$font-size-small;
           }
         }
+
+        > .rating-value-empty {
+          font-size: v.$font-size-content;
+          font-weight: 600;
+          color: #b6b6b6;
+
+          @media (max-width: 370px) {
+            font-size: v.$font-size-small;
+          }
+        }
       }
     }
 

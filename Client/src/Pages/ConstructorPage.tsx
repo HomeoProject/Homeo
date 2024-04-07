@@ -17,11 +17,6 @@ import PhoneIcon from '@mui/icons-material/Phone'
 import EmailIcon from '@mui/icons-material/Email'
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn'
 import PaymentsIcon from '@mui/icons-material/Payments'
-import PersonIcon from '@mui/icons-material/Person'
-import BuildIcon from '@mui/icons-material/Build'
-import PlumbingIcon from '@mui/icons-material/Plumbing'
-import LocationCityIcon from '@mui/icons-material/LocationCity'
-import PublicIcon from '@mui/icons-material/Public'
 import StarHalfIcon from '@mui/icons-material/StarHalf'
 import ErrorPage from './ErrorPage'
 import Reviews from '../Components/Reviews'
@@ -32,18 +27,19 @@ import ReviewModal from '../Components/ReviewModal'
 import { useAuth0 } from '@auth0/auth0-react'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 import { toast } from 'react-toastify'
+import ConstructorProfileInfo from '../Components/ConstructorProfileInfo'
 
 const ConstructorPage = () => {
-  const constructorId = useParams<{ id: string }>().id
+  const constructorUserId = useParams<{ id: string }>().id
   const { customUser } = useContext(UserContext)
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0()
+  const { getAccessTokenSilently } = useAuth0()
   const [constructorData, setConstructorData] = useState<Constructor | null>(
     null
   )
   const [constructorUserData, setConstructorUserData] =
     useState<CustomUser | null>(null)
   const [constructorReviews, setConstructorReviews] =
-    useState<ConstructorProfileReviews | null>({
+    useState<ConstructorProfileReviews>({
       stats: {
         averageRating: 0,
         reviewsNumber: 0,
@@ -73,37 +69,76 @@ const ConstructorPage = () => {
     setOpenReviewModal(false)
   }
 
-  const fetchReviews = (lastCreatedAt: string) => {
-    if (constructorReviews?.content.length === 0) {
-      setAreReviewsLoading(true)
-    } else {
-      setAreNewReviewsLoading(true)
-    }
+  // Fetch reviews - triggered only once on page load
+  const fetchReviews = () => {
+    setAreReviewsLoading(true)
 
     apiClient
-      .get(`/reviews/received/${constructorId}`, {
+      .get(`/reviews/received/${constructorUserId}`, {
+        params: { lastCreatedAt: new Date().toISOString() },
+      })
+      .then((response) => {
+        apiClient
+          .get(`/reviews/stats/${constructorUserId}`)
+          .then((stats) => {
+            setConstructorReviews({
+              stats: stats.data,
+              content: response.data.content,
+            })
+          })
+          .catch((err) => {
+            console.error(err)
+            toast.error(dictionary.failedToGetReviewsStats)
+          })
+      })
+      .catch((err) => {
+        console.error(err)
+        toast.error(dictionary.failedToLoadReviews)
+      })
+      .finally(() => {
+        setAreReviewsLoading(false)
+      })
+  }
+
+  // Fetch new reviews - triggered only by the "Load more" button
+  const fetchNewReviews = (lastCreatedAt: string) => {
+    setAreNewReviewsLoading(true)
+
+    apiClient
+      .get(`/reviews/received/${constructorUserId}`, {
         params: { lastCreatedAt },
       })
       .then((response) => {
         if (
-          constructorReviews?.content.length === 0 &&
+          constructorReviews.stats.reviewsNumber === 0 &&
           response.data.content.length === 0
         ) {
-          setConstructorReviews(null)
           return
         }
         if (
-          response.data.content.length === 0 &&
-          constructorReviews &&
-          constructorReviews.content.length > 0
+          constructorReviews.stats.reviewsNumber > 0 &&
+          response.data.content.length === 0
         ) {
           toast.error(dictionary.noMoreReviewsToLoad)
           return
         }
-        setConstructorReviews({
-          ...constructorReviews!,
-          content: [...response.data.content],
-        })
+
+        apiClient
+          .get(`/reviews/stats/${constructorUserId}`)
+          .then((stats) => {
+            setConstructorReviews({
+              stats: stats.data,
+              content: [
+                ...constructorReviews.content,
+                ...response.data.content,
+              ],
+            })
+          })
+          .catch((err) => {
+            console.error(err)
+            toast.error(dictionary.failedToGetReviewsStats)
+          })
+
         setOldestReviewDate(
           response.data.content[response.data.content.length - 1].createdAt
         )
@@ -119,48 +154,29 @@ const ConstructorPage = () => {
   }
 
   useEffect(() => {
-    const fetchConstructorData = () => {
-      apiClient
-        .get(`/constructors/${constructorId}`)
-        .then((response) => {
-          setConstructorData(response.data)
-        })
-        .catch((err) => {
-          console.error(err)
-          toast.error('An error occurred while fetching constructor data')
-        })
+    const fetchConstructorData = async () => {
+      return apiClient.get(`/constructors/${constructorUserId}`)
     }
 
     const fetchConstructorUserData = async () => {
       const constructorUserData = await apiClient
-        .get(`/users/${constructorId}`)
+        .get(`/users/${constructorUserId}`)
         .then((response) => {
+          if (response.data.isDeleted) {
+            setConstructorNotFound(true)
+          }
           setConstructorUserData(response.data)
-          return response.data
         })
         .catch((err) => {
           console.error(err)
-          toast.error('An error occurred while fetching constructor user data')
+          toast.error(dictionary.failedToFetchConstructorData)
         })
 
       return constructorUserData
     }
 
-    const fetchData = async () => {
-      try {
-        fetchConstructorData()
-        fetchConstructorUserData()
-        fetchReviews(new Date().toISOString())
-      } catch (err) {
-        console.error(err)
-        setConstructorNotFound(true)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
     const checkIfUserCanInteract = async () => {
-      if (isAuthenticated && customUser) {
+      if (customUser) {
         const token = await getAccessTokenSilently()
         const canInteract = checkIfUserHasPermission(token, 'user')
 
@@ -168,23 +184,46 @@ const ConstructorPage = () => {
       }
     }
 
-    if (customUser && customUser.id === constructorId) {
+    if (customUser && customUser.id === constructorUserId) {
       setIsViewingOwnProfile(true)
     }
 
-    fetchData()
-    checkIfUserCanInteract()
+    fetchConstructorData()
+      .then((response) => {
+        setConstructorData(response.data)
+        fetchConstructorUserData()
+        fetchReviews()
+        checkIfUserCanInteract()
+      })
+      .catch((err) => {
+        setConstructorNotFound(true)
+        console.error(err)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
     // eslint-disable-next-line
-  }, [customUser, constructorId, isAuthenticated, getAccessTokenSilently])
+  }, [customUser, constructorUserId])
 
-  return (
-    <div className="ConstructorPage">
-      {isLoading ? (
+  if (isLoading) {
+    return (
+      <div className="ConstructorPage">
         <LoadingSpinner />
-      ) : !constructorNotFound &&
-        constructorData &&
-        constructorUserData &&
-        constructorReviews ? (
+      </div>
+    )
+  }
+
+  if (constructorNotFound) {
+    return (
+      <div className="ConstructorPage">
+        <ErrorPage error={dictionary.constructorNotFound} />
+      </div>
+    )
+  }
+
+  if (constructorData && constructorUserData) {
+    return (
+      <div className="ConstructorPage">
         <div className="constructor-page-main">
           <ReviewModal
             reviewModalOpen={openReviewModal}
@@ -214,7 +253,7 @@ const ConstructorPage = () => {
                 </p>
               </div>
               <div className="constructor-page-main-section-interactive-mobile">
-                {isAuthenticated && (
+                {customUser && (
                   <div className="constructor-page-main-section-interactive-mobile-main">
                     <Tooltip
                       title="You have to finish your profile in order to do this."
@@ -263,21 +302,23 @@ const ConstructorPage = () => {
                 <div className="constructor-page-main-section-content-info-rating-wrapper">
                   <Rating
                     name="simple-controlled"
-                    value={constructorReviews?.stats?.averageRating || 0}
+                    value={constructorReviews.stats.averageRating || 0}
                     precision={0.5}
                     icon={<StarIcon color="primary" />}
                     emptyIcon={<StarBorderIcon color="primary" />}
-                    max={5}
+                    max={constructorReviews.stats.reviewsNumber > 0 ? 5 : 1}
                     readOnly
                   />
                   <p className="constructor-page-main-section-content-info-rating">{`(${
-                    parseFloat(
-                      (
-                        Math.round(
-                          constructorReviews?.stats?.averageRating * 100
-                        ) / 100
-                      ).toFixed(2)
-                    ) || 0
+                    constructorReviews.stats.reviewsNumber > 0
+                      ? parseFloat(
+                          (
+                            Math.round(
+                              constructorReviews.stats.averageRating * 100
+                            ) / 100
+                          ).toFixed(2)
+                        )
+                      : dictionary.noReviewsYetShort
                   })`}</p>
                 </div>
                 <div className="constructor-page-main-section-content-info-icon-wrapper">
@@ -319,7 +360,7 @@ const ConstructorPage = () => {
               </div>
             </div>
             <div className="constructor-page-main-section-interactive">
-              {isAuthenticated && (
+              {customUser && (
                 <div className="constructor-page-main-section-interactive-main">
                   <Tooltip
                     title={
@@ -343,7 +384,6 @@ const ConstructorPage = () => {
                       </Button>
                     </div>
                   </Tooltip>
-
                   <Tooltip
                     title={
                       !canUserInteract
@@ -369,79 +409,7 @@ const ConstructorPage = () => {
               )}
             </div>
           </section>
-          <section className="constructor-page-main-section">
-            <div className="constructor-page-main-section-title-wrapper">
-              <PersonIcon
-                className="constructor-page-main-section-icon"
-                color="primary"
-              />
-              <h1 className="constructor-page-main-section-title">
-                {dictionary.aboutMe}
-              </h1>
-            </div>
-            <p className="constructor-page-main-section-content">
-              {constructorData.aboutMe}
-            </p>
-            <div className="constructor-page-main-section-title-wrapper">
-              <BuildIcon
-                className="constructor-page-main-section-icon"
-                color="primary"
-              />
-              <h1 className="constructor-page-main-section-title">
-                {dictionary.experience}
-              </h1>
-            </div>
-            <p className="constructor-page-main-section-content">
-              {constructorData.experience}
-            </p>
-            <div className="constructor-page-main-section-title-wrapper">
-              <PlumbingIcon
-                className="constructor-page-main-section-icon"
-                color="primary"
-              />
-              <h1 className="constructor-page-main-section-title">
-                {dictionary.categories}
-              </h1>
-            </div>
-            <p className="constructor-page-main-section-content">
-              {constructorData.categories.map((category, index) => {
-                if (index === constructorData!.categories.length - 1)
-                  return category.name
-                return `${category.name}, `
-              })}
-            </p>
-            <div className="constructor-page-main-section-title-wrapper">
-              <LocationCityIcon
-                className="constructor-page-main-section-icon"
-                color="primary"
-              />
-              <h1 className="constructor-page-main-section-title">
-                {dictionary.workingCities}
-              </h1>
-            </div>
-            <p className="constructor-page-main-section-content">
-              {constructorData.cities.map((city, index) => {
-                if (index === constructorData!.cities.length - 1) return city
-                return `${city}, `
-              })}
-            </p>
-            <div className="constructor-page-main-section-title-wrapper">
-              <PublicIcon
-                className="constructor-page-main-section-icon"
-                color="primary"
-              />
-              <h1 className="constructor-page-main-section-title">
-                {dictionary.languages}
-              </h1>
-            </div>
-            <p className="constructor-page-main-section-content">
-              {constructorData.languages.map((language, index) => {
-                if (index === constructorData.languages.length - 1)
-                  return language
-                return `${language}, `
-              })}
-            </p>
-          </section>
+          <ConstructorProfileInfo constructorData={constructorData} />
           <div className="section-header-wrapper">
             <StarHalfIcon className="section-header-icon" />
             <h1 className="section-header">{dictionary.reviews}</h1>
@@ -451,15 +419,19 @@ const ConstructorPage = () => {
               constructorReviews={constructorReviews}
               setConstructorReviews={setConstructorReviews}
               oldestReviewDate={oldestReviewDate}
-              fetchReviews={fetchReviews}
+              fetchNewReviews={fetchNewReviews}
               areReviewsLoading={areReviewsLoading}
               areNewReviewsLoading={areNewReviewsLoading}
             />
           </section>
         </div>
-      ) : (
-        <ErrorPage error={dictionary.contructorDownloadError} />
-      )}
+      </div>
+    )
+  }
+
+  return (
+    <div className="ConstructorPage">
+      <LoadingSpinner />
     </div>
   )
 }
