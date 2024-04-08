@@ -46,9 +46,20 @@
         margin-top: -10px;
       }
 
-      > .submit-button {
-        font-family: v.$font-family;
-        width: 5rem;
+      > .submit-button-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        > .submit-button {
+          font-family: v.$font-family;
+          width: 5rem;
+        }
+
+        > .loader {
+          width: 10px;
+          height: 10px;
+        }
       }
     }
   }

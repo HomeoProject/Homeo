@@ -17,12 +17,19 @@ public class AppUserEventProducer {
         rabbitTemplate.convertAndSend("", "q.user-updated", appUserDto);
     }
 
-    public void produceUserDeletedEvents(String userId) {
-        rabbitTemplate.convertAndSend("", "q.user-delete-reviews", userId);
-        rabbitTemplate.convertAndSend("", "q.user-delete-constructor", userId);
+    public void produceUserDeletedEvent(String userId) {
+        rabbitTemplate.convertAndSend("x.user-deleted", "", userId);
     }
 
     public void produceUserIsBlockedEvent(AppUserDto appUserDto) {
         rabbitTemplate.convertAndSend("", "q.user-is-blocked", appUserDto);
+    }
+
+    public void produceUserUpdatedAvatarEvent(AppUserDto appUserDto) {
+        rabbitTemplate.convertAndSend("", "q.user-updated-avatar", appUserDto);
+    }
+
+    public void produceUserUpdatedIsApprovedEvent(AppUserDto appUserDto) {
+        rabbitTemplate.convertAndSend("", "q.user-updated-is-approved", appUserDto);
     }
 }

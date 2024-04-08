@@ -31,6 +31,7 @@
       color: white;
       font-family: v.$font-family;
       margin-top: -90px;
+      font-weight: 600;
 
       > img {
         width: 45px;
@@ -58,9 +59,11 @@
     > .header-nav-normal {
       display: flex;
       align-items: center;
+      justify-content: center;
       margin-top: -90px;
+      gap: 5px;
 
-      @media (max-width: 800px) {
+      @media (max-width: 900px) {
         display: none;
       }
 
@@ -100,15 +103,15 @@
 
       > .header-nav-user-wrapper {
         display: flex;
-        justify-content: flex-end;
-        margin-left: 1rem;
+        justify-content: center;
+        // margin-left: 1rem;
       }
     }
 
     > .header-nav-small {
       display: none;
 
-      @media (max-width: 800px) {
+      @media (max-width: 900px) {
         display: flex;
         align-items: center;
         justify-content: center;

@@ -15,6 +15,7 @@ import CategoryFormModal from '../Components/CategoryFormModal'
 import Swal from 'sweetalert2'
 import { setAuthToken } from '../AxiosClients/apiClient.ts'
 import RefreshIcon from '@mui/icons-material/Refresh'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 
 const AdminPanel = () => {
   const { isAuthenticated } = useAuth0()
@@ -304,6 +305,8 @@ const AdminPanel = () => {
     }
   }
 
+  const { dictionary } = useDictionaryContext()
+
   return isAuthenticated ? (
     <div className="AdminPanelPage">
       <h1>Users</h1>
@@ -396,7 +399,7 @@ const AdminPanel = () => {
       </div>
     </div>
   ) : (
-    <ErrorPage error="You are not authorized to view this page." />
+    <ErrorPage error={dictionary.errorPageMessage} />
   )
 }
 

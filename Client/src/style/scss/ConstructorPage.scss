@@ -86,16 +86,38 @@
           display: none;
 
           @media (max-width: 550px) {
-            gap: 1rem !important;
             width: 100% !important;
             display: flex !important;
-            flex-direction: column !important;
           }
 
-          > .open-chat-button-mobile,
-          .open-review-modal-button-mobile {
-            gap: 5px !important;
-            width: 100% !important;
+          > .constructor-page-main-section-interactive-mobile-main {
+            display: flex;
+            gap: 1rem;
+            width: 100%;
+
+            > .button-wrapper {
+              width: 100%;
+
+              > .open-review-modal-button {
+                display: flex !important;
+                gap: 5px !important;
+                width: 100% !important;
+
+                @media (max-width: 400px) {
+                  font-size: v.$font-size-extra-small !important;
+                }
+              }
+
+              > .open-chat-button {
+                display: flex !important;
+                gap: 5px !important;
+                width: 100% !important;
+
+                @media (max-width: 400px) {
+                  font-size: v.$font-size-extra-small !important;
+                }
+              }
+            }
           }
         }
 
@@ -172,37 +194,55 @@
       }
 
       > .constructor-page-main-section-interactive {
-        display: flex;
-        gap: 1rem;
-        flex-direction: column;
-        align-items: flex-end;
         width: 200px;
 
         @media (max-width: 750px) {
-          flex-direction: row;
           width: 100%;
         }
 
-        > .open-review-modal-button {
-          display: flex !important;
-          gap: 5px !important;
+        @media (max-width: 550px) {
+          display: none;
+        }
+
+        > .constructor-page-main-section-interactive-main {
+          display: flex;
+          gap: 1rem;
+          flex-direction: column;
+          align-items: flex-end;
           width: 100%;
+
+          @media (max-width: 750px) {
+            flex-direction: row;
+          }
 
           @media (max-width: 550px) {
             display: none !important;
           }
-        }
 
-        > .open-chat-button {
-          display: flex !important;
-          gap: 5px !important;
-          width: 100%;
+          > .button-wrapper {
+            width: 100%;
 
-          @media (max-width: 550px) {
-            display: none !important;
+            > .open-review-modal-button {
+              display: flex !important;
+              gap: 5px !important;
+              width: 100% !important;
+            }
+
+            > .open-chat-button {
+              display: flex !important;
+              gap: 5px !important;
+              width: 100% !important;
+            }
           }
         }
       }
+    }
+
+    > .constructor-page-main-section {
+      width: calc(100% - 3rem);
+      box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
+      border-radius: 10px;
+      padding: 1.5rem;
     }
 
     > .section-header-wrapper {
@@ -217,64 +257,6 @@
       > .section-header {
         margin: 1rem 0;
         font-size: v.$font-size-large;
-      }
-    }
-
-    > .constructor-page-main-section {
-      width: calc(100% - 3rem);
-      box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
-      border-radius: 10px;
-      padding: 1.5rem;
-
-      > .constructor-page-main-section-title-wrapper:not(:first-child) {
-        padding-top: 2rem;
-
-        @media (max-width: 550px) {
-          padding-top: 1.5rem;
-        }
-      }
-
-      > .constructor-page-main-section-title-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-
-        > .constructor-page-main-section-title {
-          font-size: v.$font-size-medium;
-          margin: 0;
-
-          @media (max-width: 370px) {
-            font-size: v.$font-size-small;
-          }
-        }
-
-        > .constructor-page-main-section-icon {
-          font-size: v.$font-size-normal;
-
-          @media (max-width: 370px) {
-            font-size: v.$font-size-medium;
-          }
-        }
-      }
-
-      > .constructor-page-main-section-content:not(:last-child) {
-        border-bottom: 1px dashed rgba(133, 132, 132, 0.205);
-        padding-bottom: 2rem;
-
-        @media (max-width: 550px) {
-          padding-bottom: 1rem;
-        }
-      }
-
-      > .constructor-page-main-section-content {
-        margin: 0;
-        padding-top: 0.5rem;
-        font-size: v.$font-size-content;
-        text-align: justify;
-
-        @media (max-width: 370px) {
-          font-size: v.$font-size-extra-small;
-        }
       }
     }
   }

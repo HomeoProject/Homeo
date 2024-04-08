@@ -8,77 +8,242 @@ import {
   CustomUser,
 } from '../types/types'
 import UserContext from '../Context/UserContext'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 import LoadingSpinner from '../Components/LoadingSpinner'
 import UserAvatar from '../Components/UserAvatar'
-import { Button } from '@mui/material'
+import { Button, Tooltip } from '@mui/material'
 import ChatIcon from '@mui/icons-material/Chat'
 import PhoneIcon from '@mui/icons-material/Phone'
 import EmailIcon from '@mui/icons-material/Email'
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn'
 import PaymentsIcon from '@mui/icons-material/Payments'
-import PersonIcon from '@mui/icons-material/Person'
-import BuildIcon from '@mui/icons-material/Build'
-import PlumbingIcon from '@mui/icons-material/Plumbing'
-import LocationCityIcon from '@mui/icons-material/LocationCity'
-import PublicIcon from '@mui/icons-material/Public'
 import StarHalfIcon from '@mui/icons-material/StarHalf'
 import ErrorPage from './ErrorPage'
-import ConstructorReviews from '../Components/ConstructorReviews'
+import Reviews from '../Components/Reviews'
 import StarIcon from '@mui/icons-material/Star'
 import StarBorderIcon from '@mui/icons-material/StarBorder'
 import { Rating } from '@mui/material'
+import ReviewModal from '../Components/ReviewModal'
+import { useAuth0 } from '@auth0/auth0-react'
+import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
+import { toast } from 'react-toastify'
+import ConstructorProfileInfo from '../Components/ConstructorProfileInfo'
 
 const ConstructorPage = () => {
-  const id = useParams().id
+  const constructorUserId = useParams<{ id: string }>().id
   const { customUser } = useContext(UserContext)
+  const { getAccessTokenSilently } = useAuth0()
   const [constructorData, setConstructorData] = useState<Constructor | null>(
     null
   )
   const [constructorUserData, setConstructorUserData] =
     useState<CustomUser | null>(null)
   const [constructorReviews, setConstructorReviews] =
-    useState<ConstructorProfileReviews | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [constructorNotFound, setConstructorNotFound] = useState(false)
-  const [isViewingOwnProfile, setIsViewingOwnProfile] = useState(false)
+    useState<ConstructorProfileReviews>({
+      stats: {
+        averageRating: 0,
+        reviewsNumber: 0,
+        userId: '',
+      },
+      content: [],
+    })
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [areReviewsLoading, setAreReviewsLoading] = useState<boolean>(true)
+  const [areNewReviewsLoading, setAreNewReviewsLoading] =
+    useState<boolean>(false)
+  const [constructorNotFound, setConstructorNotFound] = useState<boolean>(false)
+  const [constructorDeleted, setConstructorDeleted] = useState<boolean>(false)
+  const [isViewingOwnProfile, setIsViewingOwnProfile] = useState<boolean>(false)
+  const [openReviewModal, setOpenReviewModal] = useState<boolean>(false)
+  const [canUserInteract, setCanUserInteract] = useState<boolean>(false)
+  const [oldestReviewDate, setOldestReviewDate] = useState<string>(
+    new Date().toISOString()
+  )
+
+  const { dictionary } = useDictionaryContext()
+
+  const handleOpenReviewModal = () => {
+    setOpenReviewModal(true)
+  }
+
+  const handleCloseReviewModal = () => {
+    setOpenReviewModal(false)
+  }
+
+  // Fetch reviews - triggered only once on page load
+  const fetchReviews = () => {
+    setAreReviewsLoading(true)
+
+    apiClient
+      .get(`/reviews/received/${constructorUserId}`, {
+        params: { lastCreatedAt: new Date().toISOString() },
+      })
+      .then((response) => {
+        apiClient
+          .get(`/reviews/stats/${constructorUserId}`)
+          .then((stats) => {
+            setConstructorReviews({
+              stats: stats.data,
+              content: response.data.content,
+            })
+          })
+          .catch((err) => {
+            console.error(err)
+            toast.error(dictionary.failedToGetReviewsStats)
+          })
+      })
+      .catch((err) => {
+        console.error(err)
+        toast.error(dictionary.failedToLoadReviews)
+      })
+      .finally(() => {
+        setAreReviewsLoading(false)
+      })
+  }
+
+  // Fetch new reviews - triggered only by the "Load more" button
+  const fetchNewReviews = (lastCreatedAt: string) => {
+    setAreNewReviewsLoading(true)
+
+    apiClient
+      .get(`/reviews/received/${constructorUserId}`, {
+        params: { lastCreatedAt },
+      })
+      .then((response) => {
+        if (
+          constructorReviews.stats.reviewsNumber === 0 &&
+          response.data.content.length === 0
+        ) {
+          return
+        }
+        if (
+          constructorReviews.stats.reviewsNumber > 0 &&
+          response.data.content.length === 0
+        ) {
+          toast.error(dictionary.noMoreReviewsToLoad)
+          return
+        }
+
+        apiClient
+          .get(`/reviews/stats/${constructorUserId}`)
+          .then((stats) => {
+            setConstructorReviews({
+              stats: stats.data,
+              content: [
+                ...constructorReviews.content,
+                ...response.data.content,
+              ],
+            })
+          })
+          .catch((err) => {
+            console.error(err)
+            toast.error(dictionary.failedToGetReviewsStats)
+          })
+
+        setOldestReviewDate(
+          response.data.content[response.data.content.length - 1].createdAt
+        )
+      })
+      .catch((err) => {
+        console.error(err)
+        toast.error(dictionary.failedToLoadReviews)
+      })
+      .finally(() => {
+        setAreReviewsLoading(false)
+        setAreNewReviewsLoading(false)
+      })
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const constructorResponse = await apiClient.get(`/constructors/${id}`)
-        const userResponse = await apiClient.get(`/users/${id}`)
-        const reviewsResponse = await apiClient.get(`/reviews/received/${id}`, {
-          params: { lastCreatedAt: new Date().toISOString() },
+    const fetchConstructorData = async (constructorUserId: string) => {
+      return apiClient.get(`/constructors/${encodeURI(constructorUserId)}`)
+    }
+
+    const fetchConstructorUserData = async () => {
+      const constructorUserData = await apiClient
+        .get(`/users/${constructorUserId}`)
+        .then((response) => {
+          if (response.data.isDeleted) {
+            setConstructorDeleted(true)
+          }
+          setConstructorUserData(response.data)
+        })
+        .catch((err) => {
+          console.error(err)
+          toast.error(dictionary.failedToFetchConstructorData)
         })
 
-        setConstructorData(constructorResponse.data)
-        setConstructorUserData(userResponse.data)
-        setConstructorReviews(reviewsResponse.data)
-      } catch (err) {
-        console.error(err)
-        setConstructorNotFound(true)
-      } finally {
-        setIsLoading(false)
+      return constructorUserData
+    }
+
+    const checkIfUserCanInteract = async () => {
+      if (customUser) {
+        const token = await getAccessTokenSilently()
+        const canInteract = checkIfUserHasPermission(token, 'user')
+
+        canInteract && setCanUserInteract(true)
       }
     }
 
-    if (customUser && customUser.id === id) {
+    if (customUser && customUser.id === constructorUserId) {
       setIsViewingOwnProfile(true)
     }
 
-    fetchData()
-  }, [customUser, id])
+    constructorUserId &&
+      fetchConstructorData(constructorUserId)
+        .then((response) => {
+          setConstructorData(response.data)
+          fetchConstructorUserData()
+          fetchReviews()
+          checkIfUserCanInteract()
+        })
+        .catch((err) => {
+          setConstructorNotFound(true)
+          console.error(err)
+        })
+        .finally(() => {
+          setIsLoading(false)
+        })
+    // eslint-disable-next-line
+  }, [customUser, constructorUserId])
 
-  return (
-    <div className="ConstructorPage">
-      {isLoading ? (
+  if (isLoading) {
+    return (
+      <div className="ConstructorPage">
         <LoadingSpinner />
-      ) : !constructorNotFound &&
-        constructorData &&
-        constructorUserData &&
-        constructorReviews &&
-        !constructorUserData.isDeleted ? (
+      </div>
+    )
+  }
+
+  if (constructorDeleted) {
+    return (
+      <div className="ConstructorPage">
+        <ErrorPage error={dictionary.constructorDeleted} />
+      </div>
+    )
+  }
+
+  if (constructorNotFound) {
+    return (
+      <div className="ConstructorPage">
+        <ErrorPage error={dictionary.constructorNotFound} />
+      </div>
+    )
+  }
+
+  if (constructorData && constructorUserData) {
+    return (
+      <div className="ConstructorPage">
         <div className="constructor-page-main">
+          <ReviewModal
+            reviewModalOpen={openReviewModal}
+            handleClose={handleCloseReviewModal}
+            receiverName={constructorUserData.firstName!}
+            type="add"
+            receiverId={constructorUserData.id}
+            constructorReviews={constructorReviews}
+            setConstructorReviews={setConstructorReviews}
+          />
           <section className="constructor-page-main-info-section">
             <div className="constructor-page-main-section-content">
               <div className="constructor-page-main-section-content-avatar-wrapper">
@@ -94,45 +259,77 @@ const ConstructorPage = () => {
                 />
                 <p className="constructor-page-main-section-content-mobile-name">{`${constructorUserData.firstName} ${constructorUserData.lastName}`}</p>
                 <p className="constructor-page-main-section-content-mobile-title">
-                  Homeo Constructor
+                  {dictionary.homeoConstructor}
                 </p>
               </div>
               <div className="constructor-page-main-section-interactive-mobile">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className="open-review-modal-button-mobile"
-                  disabled={isViewingOwnProfile}
-                >
-                  <StarHalfIcon />
-                  Add review
-                </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className="open-chat-button-mobile"
-                  disabled={isViewingOwnProfile}
-                >
-                  <ChatIcon />
-                  Chat
-                </Button>
+                {customUser && (
+                  <div className="constructor-page-main-section-interactive-mobile-main">
+                    <Tooltip
+                      title="You have to finish your profile in order to do this."
+                      disableHoverListener={canUserInteract}
+                      className="tooltip"
+                    >
+                      <div className="button-wrapper">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          className="open-review-modal-button"
+                          disabled={!canUserInteract || isViewingOwnProfile}
+                          onClick={handleOpenReviewModal}
+                        >
+                          <StarHalfIcon />
+                          {dictionary.addReview}
+                        </Button>
+                      </div>
+                    </Tooltip>
+
+                    <Tooltip
+                      title="You have to finish your profile in order to do this."
+                      disableHoverListener={canUserInteract}
+                      className="tooltip"
+                    >
+                      <div className="button-wrapper">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          className="open-chat-button"
+                          disabled={!canUserInteract || isViewingOwnProfile}
+                        >
+                          <ChatIcon />
+                          {dictionary.chat}
+                        </Button>
+                      </div>
+                    </Tooltip>
+                  </div>
+                )}
               </div>
               <div className="constructor-page-main-section-content-info">
                 <p className="constructor-page-main-section-content-info-name">{`${constructorUserData.firstName} ${constructorUserData.lastName}`}</p>
                 <p className="constructor-page-main-section-content-info-title">
-                  Homeo Constructor
+                  {dictionary.homeoConstructor}
                 </p>
                 <div className="constructor-page-main-section-content-info-rating-wrapper">
                   <Rating
                     name="simple-controlled"
-                    value={constructorReviews?.stats.averageRating}
+                    value={constructorReviews.stats.averageRating || 0}
                     precision={0.5}
                     icon={<StarIcon color="primary" />}
                     emptyIcon={<StarBorderIcon color="primary" />}
-                    max={5}
+                    max={constructorReviews.stats.reviewsNumber > 0 ? 5 : 1}
                     readOnly
                   />
-                  <p className="constructor-page-main-section-content-info-rating">{`(${constructorReviews.stats.averageRating})`}</p>
+                  <p className="constructor-page-main-section-content-info-rating">{`(${
+                    constructorReviews.stats.reviewsNumber > 0
+                      ? parseFloat(
+                          (
+                            Math.round(
+                              constructorReviews.stats.averageRating * 100
+                            ) / 100
+                          ).toFixed(2)
+                        )
+                      : dictionary.noReviewsYetShort
+                  })`}</p>
                 </div>
                 <div className="constructor-page-main-section-content-info-icon-wrapper">
                   <EmailIcon color="primary" />
@@ -173,106 +370,78 @@ const ConstructorPage = () => {
               </div>
             </div>
             <div className="constructor-page-main-section-interactive">
-              <Button
-                variant="contained"
-                color="primary"
-                className="open-review-modal-button"
-                disabled={isViewingOwnProfile}
-              >
-                <StarHalfIcon />
-                Add review
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                className="open-chat-button"
-                disabled={isViewingOwnProfile}
-              >
-                <ChatIcon />
-                Chat
-              </Button>
+              {customUser && (
+                <div className="constructor-page-main-section-interactive-main">
+                  <Tooltip
+                    title={
+                      !canUserInteract
+                        ? 'You have to finish your profile in order to do this.'
+                        : ''
+                    }
+                    disableHoverListener={canUserInteract}
+                    className="tooltip"
+                  >
+                    <div className="button-wrapper">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className="open-review-modal-button"
+                        disabled={!canUserInteract || isViewingOwnProfile}
+                        onClick={handleOpenReviewModal}
+                      >
+                        <StarHalfIcon />
+                        {dictionary.addReview}
+                      </Button>
+                    </div>
+                  </Tooltip>
+                  <Tooltip
+                    title={
+                      !canUserInteract
+                        ? 'You have to finish your profile in order to do this.'
+                        : ''
+                    }
+                    disableHoverListener={canUserInteract}
+                    className="tooltip"
+                  >
+                    <div className="button-wrapper">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className="open-chat-button"
+                        disabled={!canUserInteract || isViewingOwnProfile}
+                      >
+                        <ChatIcon />
+                        {dictionary.chat}
+                      </Button>
+                    </div>
+                  </Tooltip>
+                </div>
+              )}
             </div>
           </section>
-          <section className="constructor-page-main-section">
-            <div className="constructor-page-main-section-title-wrapper">
-              <PersonIcon
-                className="constructor-page-main-section-icon"
-                color="primary"
-              />
-              <h1 className="constructor-page-main-section-title">About me</h1>
-            </div>
-            <p className="constructor-page-main-section-content">
-              {constructorData.aboutMe}
-            </p>
-            <div className="constructor-page-main-section-title-wrapper">
-              <BuildIcon
-                className="constructor-page-main-section-icon"
-                color="primary"
-              />
-              <h1 className="constructor-page-main-section-title">
-                Experience
-              </h1>
-            </div>
-            <p className="constructor-page-main-section-content">
-              {constructorData.experience}
-            </p>
-            <div className="constructor-page-main-section-title-wrapper">
-              <PlumbingIcon
-                className="constructor-page-main-section-icon"
-                color="primary"
-              />
-              <h1 className="constructor-page-main-section-title">
-                Categories
-              </h1>
-            </div>
-            <p className="constructor-page-main-section-content">
-              {constructorData.categories.map((category, index) => {
-                if (index === constructorData!.categories.length - 1)
-                  return category.name
-                return `${category.name}, `
-              })}
-            </p>
-            <div className="constructor-page-main-section-title-wrapper">
-              <LocationCityIcon
-                className="constructor-page-main-section-icon"
-                color="primary"
-              />
-              <h1 className="constructor-page-main-section-title">
-                Cities I work in
-              </h1>
-            </div>
-            <p className="constructor-page-main-section-content">
-              {constructorData.cities.map((city, index) => {
-                if (index === constructorData!.cities.length - 1) return city
-                return `${city}, `
-              })}
-            </p>
-            <div className="constructor-page-main-section-title-wrapper">
-              <PublicIcon
-                className="constructor-page-main-section-icon"
-                color="primary"
-              />
-              <h1 className="constructor-page-main-section-title">Languages</h1>
-            </div>
-            <p className="constructor-page-main-section-content">
-              {constructorData.languages.map((language, index) => {
-                if (index === constructorData.languages.length - 1)
-                  return language
-                return `${language}, `
-              })}
-            </p>
-          </section>
+          <ConstructorProfileInfo constructorData={constructorData} />
           <div className="section-header-wrapper">
             <StarHalfIcon className="section-header-icon" />
-            <h1 className="section-header">Reviews</h1>
+            <h1 className="section-header">{dictionary.reviews}</h1>
           </div>
           <section className="constructor-page-main-section">
-            <ConstructorReviews userId={id} />
+            <Reviews
+              constructorReviews={constructorReviews}
+              setConstructorReviews={setConstructorReviews}
+              oldestReviewDate={oldestReviewDate}
+              fetchNewReviews={fetchNewReviews}
+              areReviewsLoading={areReviewsLoading}
+              areNewReviewsLoading={areNewReviewsLoading}
+            />
           </section>
         </div>
-      ) : (
-        <ErrorPage error="Error while fetching constructor data" />
-      )}
+      </div>
+    )
+  }
+
+  return (
+    <div className="ConstructorPage">
+      <LoadingSpinner />
     </div>
   )
 }

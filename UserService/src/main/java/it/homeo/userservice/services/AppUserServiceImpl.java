@@ -109,7 +109,7 @@ public class AppUserServiceImpl implements AppUserService {
         // Local DB update
         appUser.setAvatar(cloudinaryProperties.getDefaultAvatar());
         appUser.setDeleted(true);
-        appUserEventProducer.produceUserDeletedEvents(appUser.getId());
+        appUserEventProducer.produceUserDeletedEvent(appUser.getId());
         repository.save(appUser);
     }
 
@@ -150,7 +150,9 @@ public class AppUserServiceImpl implements AppUserService {
         AppUser appUser = getAppUser(id);
         appUser.setApproved(dto.isApproved());
         repository.save(appUser);
-        return mapper.appUserToAppUserDto(appUser);
+        AppUserDto appUserDto = mapper.appUserToAppUserDto(appUser);
+        appUserEventProducer.produceUserUpdatedIsApprovedEvent(appUserDto);
+        return appUserDto;
     }
 
     @Transactional
@@ -196,7 +198,9 @@ public class AppUserServiceImpl implements AppUserService {
         appUser.setAvatar(cloudinaryDto.imageUrl());
         appUser = repository.save(appUser);
 
-        return mapper.appUserToAppUserDto(appUser);
+        AppUserDto appUserDto = mapper.appUserToAppUserDto(appUser);
+        appUserEventProducer.produceUserUpdatedAvatarEvent(appUserDto);
+        return appUserDto;
     }
 
     @Transactional
@@ -219,7 +223,9 @@ public class AppUserServiceImpl implements AppUserService {
         appUser.setAvatar(cloudinaryProperties.getDefaultAvatar());
         appUser = repository.save(appUser);
 
-        return mapper.appUserToAppUserDto(appUser);
+        AppUserDto appUserDto = mapper.appUserToAppUserDto(appUser);
+        appUserEventProducer.produceUserUpdatedAvatarEvent(appUserDto);
+        return appUserDto;
     }
 
     private AppUser synchronizeAppUserWithAuth0User(AppUser appUser, User auth0User, boolean isAuth0UserBlocked) {

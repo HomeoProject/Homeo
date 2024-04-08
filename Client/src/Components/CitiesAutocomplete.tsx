@@ -3,6 +3,7 @@ import { TextField, Autocomplete } from '@mui/material'
 import { City } from '../types/types'
 import apiNinjasClient from '../AxiosClients/apiNinjasClient'
 import { AxiosError, AxiosResponse } from 'axios'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 
 type CustomGooglePlacesAutocompleteProps = {
   selectedPlaces: string[]
@@ -16,6 +17,7 @@ const CustomGooglePlacesAutocomplete = ({
   const [inputValue, setInputValue] = useState<string>('')
   const [fetchedOptions, setFetchedOptions] = useState<City[]>([])
   const maximumCitiesLimit = 6
+  const { dictionary } = useDictionaryContext()
 
   // Combine fetched city names with selected city names to ensure selected city names are always valid and to take care of duplicates
   const options = Array.from(
@@ -29,7 +31,7 @@ const CustomGooglePlacesAutocomplete = ({
     }
 
     apiNinjasClient
-      .get<City[]>(`city?name=${inputValue}&country=PL&limit=5`)
+      .get<City[]>(`city?name=${encodeURI(inputValue)}&country=PL&limit=5`)
       .then((response: AxiosResponse<City[]>) => {
         setFetchedOptions(response.data)
       })
@@ -59,8 +61,8 @@ const CustomGooglePlacesAutocomplete = ({
         renderInput={(params) => (
           <TextField
             {...params}
-            placeholder="Search for cities (max 6)..."
-            label="Cities I can work in"
+            placeholder={dictionary.citiesSearchPlaceholder}
+            label={dictionary.citiesSearchLabel}
             InputLabelProps={{ shrink: true }}
           />
         )}

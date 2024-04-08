@@ -61,6 +61,12 @@ export interface Constructor {
   updatedAt: string
 }
 
+export interface ConstructorReviewsStats {
+  userId: string
+  averageRating: number
+  reviewsNumber: number
+}
+
 export interface ConstructorProfileReviews {
   stats: {
     userId: string
@@ -89,4 +95,8 @@ export interface Developer {
   linkedin: string
   image: string
   role: string
+}
+
+export interface Dictionary {
+  [key: string]: string
 }

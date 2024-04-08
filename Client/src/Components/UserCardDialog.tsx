@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 
 import UserCard from './UserCard'
 import '../style/scss/components/UserCardDialog.scss'
@@ -23,6 +24,8 @@ const SimpleDialog = (props: SimpleDialogProps) => {
   const accrodionRef = useRef<HTMLDivElement>(null)
   const cardsRef = useRef<HTMLDivElement>(null)
   const [openAccordion, setOpenAccordion] = useState(false)
+
+  const { dictionary } = useDictionaryContext()
 
   const handleOpenAccrordion = () => {
     if (!openAccordion) {
@@ -54,7 +57,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
             <div className="simple-dialog-container">
               <div className="simple-dialog-container-row">
                 <span className="simple-dialog-container-row-key">
-                  About me:
+                  {dictionary.aboutMe}:
                 </span>
                 <span className="simple-dialog-container-row-value">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad
@@ -65,7 +68,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
               </div>
               <div className="simple-dialog-container-row">
                 <span className="simple-dialog-container-row-key">
-                  Experience:
+                  {dictionary.experience}:
                 </span>
                 <span className="simple-dialog-container-row-value">
                   Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ad
@@ -76,7 +79,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
               </div>
               <div className="simple-dialog-container-row">
                 <span className="simple-dialog-container-row-key">
-                  Why should you hire me:
+                  {dictionary.whyHire}
                 </span>
                 <span className="simple-dialog-container-row-value">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. In
@@ -98,7 +101,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
                   onClick={handleOpenAccrordion}
                   sx={{ fontWeight: 700 }}
                 >
-                  I want to hire you
+                  {dictionary.wantHire}
                   <ExpandMoreIcon
                     sx={{
                       transition: '0.2s ease-in-out',
@@ -113,20 +116,17 @@ const SimpleDialog = (props: SimpleDialogProps) => {
                 <div className="accordion-form-description">
                   <div className="accordion-form-description-value">
                     <span>
-                      Here you write a{' '}
+                      {dictionary.writeHere}{' '}
                       <span className="accordion-form-description-value-bold">
-                        description
+                        {dictionary.descriptionHere}
                       </span>{' '}
-                      of your problem. In it, you should try to explain what you
-                      need as precise as possible. Remember - the more
-                      information about the problem you provide, the better
-                      chances you your problem will be fixed!
+                      {dictionary.descriptionExplain}
                     </span>
                   </div>
                 </div>
                 <div className="accordion-form-details">
                   <TextField
-                    label="Description of your problem"
+                    label={dictionary.descriptionLabel}
                     variant="outlined"
                     multiline
                     minRows={6}
@@ -134,7 +134,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
                   <div>
                     <input type="checkbox" />
                     <span>
-                      I have read and agreed to the Terms and Conditions
+                      {dictionary.termsAgree}
                       <span>*</span>
                     </span>
                   </div>

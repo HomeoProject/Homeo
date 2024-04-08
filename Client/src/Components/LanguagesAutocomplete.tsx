@@ -1,4 +1,5 @@
 import { Autocomplete, TextField } from '@mui/material'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 import isoLangs from 'iso-639-1'
 import { useMemo } from 'react'
 
@@ -14,6 +15,8 @@ const LanguagesAutocomplete = ({
   const languages = useMemo(() => {
     return isoLangs.getAllNames()
   }, [])
+
+  const { dictionary } = useDictionaryContext()
 
   const maximumLanguagesLimit = 6
 
@@ -39,8 +42,8 @@ const LanguagesAutocomplete = ({
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Languages I can speak"
-          placeholder="Search for languages (max 6)..."
+          label={dictionary.languagesSpoken}
+          placeholder={dictionary.languagesSearch}
           InputLabelProps={{ shrink: true }}
         />
       )}
