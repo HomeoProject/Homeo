@@ -3,9 +3,11 @@ version: "3.8"
 services:
   homeo-userservice:
     container_name: homeo-userservice
-    build: ../UserService
+    build: ../../UserService
     environment:
       PORT: ${PORT_USERSERVICE}
+      HIKARI_MAX_POOL_SIZE: ${HIKARI_MAX_POOL_SIZE_USERSERVICE}
+      HIKARI_MINIMUM_IDLE: ${HIKARI_MINIMUM_IDLE_USERSERVICE}
       OKTA_API_ISSUER: ${OKTA_API_ISSUER}
       OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
       OKTA_API_DOMAIN: ${OKTA_API_DOMAIN}
@@ -35,9 +37,11 @@ services:
 
   homeo-constructorservice:
     container_name: homeo-constructorservice
-    build: ../ConstructorService
+    build: ../../ConstructorService
     environment:
       PORT: ${PORT_CONSTRUCTORSERVICE}
+      HIKARI_MAX_POOL_SIZE: ${HIKARI_MAX_POOL_SIZE_CONSTRUCTORSERVICE}
+      HIKARI_MINIMUM_IDLE: ${HIKARI_MINIMUM_IDLE_CONSTRUCTORSERVICE}
       OKTA_API_ISSUER: ${OKTA_API_ISSUER}
       OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
       OKTA_API_DOMAIN: ${OKTA_API_DOMAIN}
@@ -69,9 +73,11 @@ services:
 
   homeo-reviewservice:
     container_name: homeo-reviewservice
-    build: ../ReviewService
+    build: ../../ReviewService
     environment:
       PORT: ${PORT_REVIEWSERVICE}
+      HIKARI_MAX_POOL_SIZE: ${HIKARI_MAX_POOL_SIZE_REVIEWSERVICE}
+      HIKARI_MINIMUM_IDLE: ${HIKARI_MINIMUM_IDLE_REVIEWSERVICE}
       OKTA_API_ISSUER: ${OKTA_API_ISSUER}
       OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
       OKTA_API_DOMAIN: ${OKTA_API_DOMAIN}
@@ -95,9 +101,11 @@ services:
 
   homeo-searchservice:
     container_name: homeo-searchservice
-    build: ../SearchService
+    build: ../../SearchService
     environment:
       PORT: ${PORT_SEARCHSERVICE}
+      HIKARI_MAX_POOL_SIZE: ${HIKARI_MAX_POOL_SIZE_SEARCHSERVICE}
+      HIKARI_MINIMUM_IDLE: ${HIKARI_MINIMUM_IDLE_SEARCHSERVICE}
       OKTA_API_ISSUER: ${OKTA_API_ISSUER}
       OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -117,46 +125,26 @@ services:
 
   homeo-apigateway:
     container_name: homeo-apigateway
-    build: ../ApiGateway
+    build: ../../ApiGateway
     environment:
       EUREKA_URL: ${EUREKA_URL}
       REDIS_PASSWORD_APIGATEWAY: ${REDIS_PASSWORD_APIGATEWAY}
+      REDIS_PORT_APIGATEWAY: ${REDIS_PORT_APIGATEWAY}
+      REDIS_HOST_APIGATEWAY: ${REDIS_HOST_APIGATEWAY}
+      REDIS_USERNAME_APIGATEWAY: ${REDIS_USERNAME_APIGATEWAY}
+      REDIS_SSL_APIGATEWAY: ${REDIS_SSL_APIGATEWAY}
       ALLOWED_CORS_URLS: ${ALLOWED_CORS_URLS}
     ports:
       - "8080:8080"
     restart: unless-stopped
     depends_on:
       - homeo-eureka
-      - homeo-redis-apigateway
-      - homeo-rabbit
 
   homeo-eureka:
     container_name: homeo-eureka
-    build: ../Eureka
+    build: ../../Eureka
     ports:
       - "8761:8761"
-    restart: unless-stopped
-
-  homeo-postgres:
-    container_name: homeo-postgres
-    build: Postgres/
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      PGDATA: ${PGDATA}
-    volumes:
-      - homeo-postgres:/data/homeo-postgres
-    ports:
-      - "5432:5432"
-    restart: unless-stopped
-
-  homeo-redis-apigateway:
-    image: redis:alpine
-    container_name: homeo-redis-apigateway
-    environment:
-      REDIS_PASSWORD: ${REDIS_PASSWORD_APIGATEWAY}
-    ports:
-      - "6380:6379"
     restart: unless-stopped
 
   homeo-rabbit:
@@ -172,5 +160,4 @@ services:
       - "15672:15672"
 
 volumes:
-  homeo-postgres:
   homeo-rabbit:
