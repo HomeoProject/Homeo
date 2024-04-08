@@ -32,7 +32,8 @@
     "react-router-dom": "^6.18.0",
     "react-slick": "^0.29.0",
     "react-toastify": "^10.0.4",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "sweetalert2": "^11.10.7"
   },
   "devDependencies": {
     "@types/node": "^20.8.10",
