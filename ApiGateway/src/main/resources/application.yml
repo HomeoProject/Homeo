@@ -7,10 +7,13 @@ spring:
   data:
     redis:
       database: 0
-      host: localhost
-      port: 6380
+      host: ${REDIS_HOST_APIGATEWAY:localhost}
+      port: ${REDIS_PORT_APIGATEWAY:6380}
       password: ${REDIS_PASSWORD_APIGATEWAY}
       connect-timeout: 60000
+      username: ${REDIS_USERNAME_APIGATEWAY:}
+      ssl:
+        enabled: ${REDIS_SSL_APIGATEWAY:false}
   cloud:
     gateway:
       default-filters:
