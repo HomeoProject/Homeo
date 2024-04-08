@@ -36,7 +36,7 @@ public class ConstructorSearchServiceImpl implements ConstructorSearchService {
 
     @Override
     public Page<ConstructorSearch> searchConstructorsSearch(ConstructorSearchFilterDto dto, Pageable pageable) {
-        return null;
+        return constructorSearchRepository.searchConstructorSearch(dto, pageable);
     }
 
     @Override

@@ -49,3 +49,5 @@ springdoc:
         name: ConstructorService
       - url: /reviewservice/api-docs
         name: ReviewService
+      - url: /searchservice/api-docs
+        name: SearchService

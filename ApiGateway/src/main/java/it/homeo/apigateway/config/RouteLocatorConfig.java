@@ -35,7 +35,7 @@ public class RouteLocatorConfig {
                         .filters(f -> f.requestRateLimiter(r -> r.setRateLimiter(redisRateLimiter())))
                         .uri("lb://ConstructorService"))
 
-                // Review Service
+                // ReviewService
                 .route("ReviewServiceSwagger-Route", request -> request
                         .path("/reviewservice/api-docs")
                         .and().method(HttpMethod.GET)
@@ -44,6 +44,16 @@ public class RouteLocatorConfig {
                         .path("/api/reviews/**")
                         .filters(f -> f.requestRateLimiter(r -> r.setRateLimiter(redisRateLimiter())))
                         .uri("lb://ReviewService"))
+
+                // SearchService
+                .route("SearchServiceSwagger-Route", request -> request
+                        .path("/searchservice/api-docs")
+                        .and().method(HttpMethod.GET)
+                        .uri("lb://SearchService"))
+                .route("SearchService-Route", request -> request
+                        .path("/api/search/**")
+                        .filters(f -> f.requestRateLimiter(r -> r.setRateLimiter(redisRateLimiter())))
+                        .uri("lb://SearchService"))
 
                 .build();
     }
