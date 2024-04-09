@@ -7,6 +7,8 @@ import LoadingSpinner from './LoadingSpinner'
 import MyReviewComponent from './MyReviewComponent'
 import { Button, CircularProgress } from '@mui/material'
 import { toast } from 'react-toastify'
+import { useAuth0 } from '@auth0/auth0-react'
+import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 
 const MyReviews = () => {
   const { dictionary } = useDictionaryContext()
@@ -16,6 +18,7 @@ const MyReviews = () => {
   const [oldestReviewDate, setOldestReviewDate] = useState<string>(
     new Date().toISOString()
   )
+  const { getAccessTokenSilently } = useAuth0()
 
   const fetchMyReviews = async () => {
     setAreMyReviewsLoading(true)
@@ -66,8 +69,17 @@ const MyReviews = () => {
   }
 
   useEffect(() => {
-    fetchMyReviews()
-  }, [])
+    const fetchData = async () => {
+      const token = await getAccessTokenSilently()
+      const isProfileComplete = checkIfUserHasPermission(token, 'user')
+      if (isProfileComplete) {
+        fetchMyReviews()
+      } else {
+        setMyReviews(null)
+      }
+    }
+    fetchData()
+  }, [getAccessTokenSilently])
 
   if (myReviews === null) {
     return (

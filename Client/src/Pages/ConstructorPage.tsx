@@ -75,12 +75,12 @@ const ConstructorPage = () => {
     setAreReviewsLoading(true)
 
     apiClient
-      .get(`/reviews/received/${constructorUserId}`, {
+      .get(`/reviews/received/${encodeURI(constructorUserId!)}`, {
         params: { lastCreatedAt: new Date().toISOString() },
       })
       .then((response) => {
         apiClient
-          .get(`/reviews/stats/${constructorUserId}`)
+          .get(`/reviews/stats/${encodeURI(constructorUserId!)}`)
           .then((stats) => {
             setConstructorReviews({
               stats: stats.data,
@@ -88,11 +88,17 @@ const ConstructorPage = () => {
             })
           })
           .catch((err) => {
+            if (err.response.status === 404) {
+              return
+            }
             console.error(err)
             toast.error(dictionary.failedToGetReviewsStats)
           })
       })
       .catch((err) => {
+        if (err.response.status === 404) {
+          return
+        }
         console.error(err)
         toast.error(dictionary.failedToLoadReviews)
       })
@@ -106,7 +112,7 @@ const ConstructorPage = () => {
     setAreNewReviewsLoading(true)
 
     apiClient
-      .get(`/reviews/received/${constructorUserId}`, {
+      .get(`/reviews/received/${encodeURI(constructorUserId!)}`, {
         params: { lastCreatedAt },
       })
       .then((response) => {
@@ -125,7 +131,7 @@ const ConstructorPage = () => {
         }
 
         apiClient
-          .get(`/reviews/stats/${constructorUserId}`)
+          .get(`/reviews/stats/${encodeURI(constructorUserId!)}`)
           .then((stats) => {
             setConstructorReviews({
               stats: stats.data,

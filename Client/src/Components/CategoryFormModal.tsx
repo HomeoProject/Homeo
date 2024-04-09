@@ -5,8 +5,8 @@ import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import Card from '@mui/material/Card'
 import TextField from '@mui/material/TextField'
-import UploadPictureModal from './UploadPictureModal'
-import apiClient from '../AxiosClients/apiClient'
+import defaultCategory from '../Assets/default-category.svg'
+import UserAvatar from './UserAvatar'
 
 type CategoryFormModalProps = {
   category?: Category
@@ -27,8 +27,6 @@ const CategoryFormModal = ({
   const [description, setDescription] = useState(
     category?.description ? category.description : ''
   )
-
-  const [openPictureModal, setOpenPictureModal] = useState(false)
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -58,8 +56,9 @@ const CategoryFormModal = ({
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        sx={{ width: '100%' }}
       >
-        <Card sx={{ minWidth: 500 }}>
+        <Card sx={{ maxWidth: 500, width: '100%' }}>
           <div className="category-form">
             <div className="category-form-exit">
               <span className="category-form-exit-value" onClick={handleClose}>
@@ -67,26 +66,14 @@ const CategoryFormModal = ({
               </span>
             </div>
             {label !== '+' && (
-              <>
-                <UploadPictureModal
-                  open={openPictureModal}
-                  handleClose={() => setOpenPictureModal(false)}
-                  minHeight={200}
-                  minWidth={200}
-                  maxSize={1}
-                  client={apiClient}
-                  path={`/constructors/categories/image/${category?.id}`}
-                  method="put"
-                />
-                <div className="category-form-image">
-                  <img
-                    src={category?.image}
-                    alt="category-photo"
-                    className="category-form-image-value"
-                    onClick={() => setOpenPictureModal(true)}
-                  />
-                </div>
-              </>
+              <UserAvatar
+                src={category?.image || defaultCategory}
+                alt="category-photo"
+                variant="standard"
+                isApproved={false}
+                maxHeight="15rem"
+                maxWidth="15rem"
+              />
             )}
             <TextField
               className="category-form-input"

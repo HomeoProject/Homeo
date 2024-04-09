@@ -13,6 +13,7 @@ import { Rating, Tooltip } from '@mui/material'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 import { Link } from 'react-router-dom'
 import MyReviewModal from './MyReviewModal'
+import Swal from 'sweetalert2'
 
 type MyReviewComponentProps = {
   review: Review
@@ -39,24 +40,37 @@ const MyReviewComponent = ({
   }
 
   const deleteMyReview = (id: number) => {
-    apiClient
-      .delete(`/reviews/${id}`)
-      .then(() => {
-        const updatedReviews = myReviews!.filter(
-          (review: Review) => review.id !== id
-        )
-        if (updatedReviews.length === 0) {
-          setMyReviews(null)
-          toast.success(dictionary.reviewDeletedSuccessfully)
-          return
-        }
-        setMyReviews(updatedReviews)
-        toast.success(dictionary.reviewDeletedSuccessfully)
-      })
-      .catch((err) => {
-        console.error(err)
-        toast.error(dictionary.failedToDeleteReview)
-      })
+    Swal.fire({
+      title: dictionary.areYouSure,
+      text: dictionary.youWillNotBeAbleToRevert,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: dictionary.yesDeleteIt,
+      cancelButtonText: dictionary.cancelWord,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        apiClient
+          .delete(`/reviews/${id}`)
+          .then(() => {
+            const updatedReviews = myReviews!.filter(
+              (review: Review) => review.id !== id
+            )
+            if (updatedReviews.length === 0) {
+              setMyReviews(null)
+              toast.success(dictionary.reviewDeletedSuccessfully)
+              return
+            }
+            setMyReviews(updatedReviews)
+            toast.success(dictionary.reviewDeletedSuccessfully)
+          })
+          .catch((err) => {
+            console.error(err)
+            toast.error(dictionary.failedToDeleteReview)
+          })
+      }
+    })
   }
 
   useEffect(() => {

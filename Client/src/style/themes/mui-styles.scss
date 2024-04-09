@@ -35,3 +35,40 @@
   width: 75%;
   box-sizing: border-box;
 }
+
+.MuiCard-root {
+  width: 100% !important;
+  max-width: 600px !important;
+}
+
+.MuiDialog-paper {
+  border-radius: 10px !important;
+  width: 100% !important;
+}
+
+.swal2-confirm,
+.swal2-cancel,
+.swal2-title,
+.swal2-html-container {
+  font-family: v.$font-family !important;
+}
+
+.swal2-confirm {
+  background-color: v.$primary-color !important;
+}
+
+.swal2-icon {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  color: black !important;
+}
+
+.swal2-popup {
+  border-radius: 10px !important;
+  padding: 2rem 1.5rem !important;
+}
+
+div:where(.swal2-icon).swal2-warning {
+  border-color: red !important;
+  color: red !important;
+}
