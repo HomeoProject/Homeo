@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Dialog from '@mui/material/Dialog'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
@@ -13,7 +13,10 @@ import Rating from '@mui/material/Rating'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
-import { PL, UA, DE } from 'country-flag-icons/react/3x2'
+import LanguagesAutocomplete from './LanguagesAutocomplete'
+import { PaymentMethod } from '../types/types'
+import CitiesAutocomplete from './CitiesAutocomplete'
+import { useCategoriesContext } from '../Context/CategoriesContext'
 import '../style/scss/FiltersDialog.scss'
 
 export interface FiltersDialogProps {
@@ -26,7 +29,17 @@ const FiltersDialog = (props: FiltersDialogProps) => {
     const { open, handleClose, openFilter } = props
     const [priceValue, setPriceValue] = useState<number[]>([0, 100])
     const [ratingValue, setRatingValue] = useState(5.0)
+    const [languages, setLanguages] = useState<string[]>([])
     const [directionValue, setDirectionValue] = useState<string>('or less')
+    const [selectedPlaces, setSelectedPlaces] = useState<string[]>([])
+
+    const paymentMethods: Array<PaymentMethod> = [
+        PaymentMethod.CASH,
+        PaymentMethod.CARD,
+        PaymentMethod.TRANSFER,
+      ]
+
+    const { categories, setCategories } = useCategoriesContext()
 
     const handleSliderChange = (event: Event, newValue) => {
         setPriceValue(newValue)
@@ -35,6 +48,10 @@ const FiltersDialog = (props: FiltersDialogProps) => {
     const handleInputChangeMin = (event) => {
         setPriceValue([event.target.value, priceValue[1]])
     }
+
+    const handleSelectPlace = (places: string[]) => {
+        setSelectedPlaces(places)
+      }
 
     const handleInputChangeMax = (event) => {
         setPriceValue([priceValue[0], event.target.value])
@@ -68,11 +85,21 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                         <span className="filters-dialog-summary">Category</span>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <span>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. Suspendisse malesuada lacus ex, sit amet
-                            blandit leo lobortis eget.
-                        </span>
+                        <div className='filters-dialog-category'>
+                            {categories.map((category, index) => (
+                                <div key={index} className='filters-dialog-category-value'>
+                                    <span>
+                                        <span>{category.name}</span>
+                                    </span>
+                                    <Checkbox
+                                            color="primary"
+                                            inputProps={{
+                                                'aria-label': 'secondary checkbox',
+                                            }}
+                                        />
+                                </div>
+                            ))}
+                        </div>
                     </AccordionDetails>
                 </Accordion>
                 <Accordion
@@ -208,99 +235,6 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                 </Accordion>
                 <Accordion
                     disableGutters
-                    defaultExpanded={openFilter === 3 ? true : false}
-                >
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                    >
-                        <span className="filters-dialog-summary">
-                            Experience
-                        </span>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <div className="filters-dialog-details experience">
-                            <div>
-                                <div>
-                                    <Checkbox
-                                        color="primary"
-                                        inputProps={{
-                                            'aria-label': 'secondary checkbox',
-                                        }}
-                                    />
-                                    <span>Novice</span>
-                                </div>
-                                <div>
-                                    <Checkbox
-                                        color="primary"
-                                        inputProps={{
-                                            'aria-label': 'secondary checkbox',
-                                        }}
-                                    />
-                                    <span>Intermediete</span>
-                                </div>
-                                <div>
-                                    <Checkbox
-                                        color="primary"
-                                        inputProps={{
-                                            'aria-label': 'secondary checkbox',
-                                        }}
-                                    />
-                                    <span>Experienced</span>
-                                </div>
-                                <div>
-                                    <Checkbox
-                                        color="primary"
-                                        inputProps={{
-                                            'aria-label': 'secondary checkbox',
-                                        }}
-                                    />
-                                    <span>Expert</span>
-                                </div>
-                                <div>
-                                    <Checkbox
-                                        color="primary"
-                                        inputProps={{
-                                            'aria-label': 'secondary checkbox',
-                                        }}
-                                    />
-                                    <span>Master Craftsman</span>
-                                </div>
-                            </div>
-                            <div className="filters-dialog-details-approved">
-                                <div>
-                                    <span className="filters-dialog-details-approved-label">
-                                        This
-                                        <span className="filters-dialog-details-approved-label-bold">
-                                            &nbsp;special&nbsp;
-                                        </span>
-                                        attribute is gifted to the most
-                                        experienced and talented on our site.
-                                        It's a badge of honor, and not many have
-                                        it. But those who do, are the best of
-                                        the best.
-                                    </span>
-                                </div>
-                                <div>
-                                    <Checkbox
-                                        inputProps={{
-                                            'aria-label': 'secondary checkbox',
-                                        }}
-                                        sx={{
-                                            '&.Mui-checked': {
-                                                color: '#D4AF37',
-                                            },
-                                        }}
-                                    />
-                                    <span>Homeo Approved</span>
-                                </div>
-                            </div>
-                        </div>
-                    </AccordionDetails>
-                </Accordion>
-                <Accordion
-                    disableGutters
                     defaultExpanded={openFilter === 4 ? true : false}
                 >
                     <AccordionSummary
@@ -311,39 +245,11 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                         <span className="filters-dialog-summary">Language</span>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <div className="filters-dialog-details language">
-                            <div>
-                                <div className="filters-dialog-details-language">
-                                    <Checkbox
-                                        color="primary"
-                                        inputProps={{
-                                            'aria-label': 'secondary checkbox',
-                                        }}
-                                    />
-                                    <span>Polish</span>
-                                    <PL className="filters-dialog-details-language-flag" />
-                                </div>
-                                <div className="filters-dialog-details-language">
-                                    <Checkbox
-                                        color="primary"
-                                        inputProps={{
-                                            'aria-label': 'secondary checkbox',
-                                        }}
-                                    />
-                                    <span>Ukrainian</span>
-                                    <UA className="filters-dialog-details-language-flag" />
-                                </div>
-                                <div className="filters-dialog-details-language">
-                                    <Checkbox
-                                        color="primary"
-                                        inputProps={{
-                                            'aria-label': 'secondary checkbox',
-                                        }}
-                                    />
-                                    <span>German</span>
-                                    <DE className="filters-dialog-details-language-flag" />
-                                </div>
-                            </div>
+                        <div className='filters-dialog-languages'>
+                            <LanguagesAutocomplete
+                                selectedLanguages={languages}
+                                onSelectLanguage={setLanguages}
+                            />
                         </div>
                     </AccordionDetails>
                 </Accordion>
@@ -361,11 +267,21 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                         </span>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <span>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. Suspendisse malesuada lacus ex, sit amet
-                            blandit leo lobortis eget.
-                        </span>
+                        <div>
+                            {paymentMethods.map((payment, index) => (
+                                <div key={index} className='filters-dialog-payment-value'>
+                                    <span>
+                                        <span>{payment}</span>
+                                    </span>
+                                    <Checkbox
+                                            color="primary"
+                                            inputProps={{
+                                                'aria-label': 'secondary checkbox',
+                                            }}
+                                        />
+                                </div>
+                            ))}
+                        </div>
                     </AccordionDetails>
                 </Accordion>
                 <Accordion
@@ -380,11 +296,12 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                         <span className="filters-dialog-summary">Location</span>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <span>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. Suspendisse malesuada lacus ex, sit amet
-                            blandit leo lobortis eget.
-                        </span>
+                        <div>
+                            <CitiesAutocomplete
+                                selectedPlaces={selectedPlaces}
+                                onSelectPlace={handleSelectPlace}
+                            />
+                        </div>
                     </AccordionDetails>
                 </Accordion>
             </div>

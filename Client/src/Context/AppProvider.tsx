@@ -29,7 +29,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
       setAuthToken(token) // Set the auth token for the axios client
 
       // Get user data
-      const userResponse = await apiClient.get<CustomUser>('/users/sync')
+      const userResponse = await apiClient.get<CustomUser>('users/sync')
       if (userResponse.status === 200 && userResponse.data) {
         setCustomUser(userResponse.data)
       }
@@ -40,7 +40,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
       if (isConstructor) {
         const userId = userResponse.data.id
         const constructorResponse = await apiClient.get<Constructor>(
-          `/constructors/${encodeURI(userId)}`
+          `constructors/${encodeURI(userId)}`
         )
         setConstructor(constructorResponse.data)
       }
@@ -49,7 +49,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
     const fetchCategories = async () => {
       try {
         const categoriesResponse = await apiClient.get<Category[]>(
-          '/constructors/categories'
+          'constructors/categories'
         )
         setCategories(categoriesResponse.data)
       } catch (error) {

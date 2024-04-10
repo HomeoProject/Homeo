@@ -92,7 +92,7 @@ const AdvertsPage = () => {
                         <>
                             {filters.map((filter, index) => {
                                 return (
-                                    <div
+                                    <div key={index}
                                         onClick={() =>
                                             handleClickOpenSearch(index)
                                         }

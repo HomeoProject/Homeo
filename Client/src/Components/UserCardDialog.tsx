@@ -124,87 +124,9 @@ const SimpleDialog = (props: SimpleDialogProps) => {
                     </span>
                   </div>
                 </div>
-                <div className="accordion">
-                    <Accordion sx={{ width: '880px' }} ref={accrodionRef}>
-                        <AccordionSummary>
-                            <div className="accordion-summary">
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleOpenAccrordion}
-                                    sx={{ fontWeight: 700 }}
-                                >
-                                    I want to hire you
-                                    <ExpandMoreIcon
-                                        sx={{
-                                            transition: '0.2s ease-in-out',
-                                            transform: openAccordion
-                                                ? 'rotate(180deg)'
-                                                : '',
-                                        }}
-                                    />
-                                </Button>
-                            </div>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <div className="accordion-form">
-                                <div className="accordion-form-description">
-                                    <div className="accordion-form-description-value">
-                                        <span>
-                                            Here you write a{' '}
-                                            <span className="accordion-form-description-value-bold">
-                                                description
-                                            </span>{' '}
-                                            of your problem. In it, you should
-                                            try to explain what you need as
-                                            precise as possible. Remember - the
-                                            more information about the problem
-                                            you provide, the better chances your
-                                            problem will be fixed!
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="accordion-form-details">
-                                    <TextField
-                                        label="Description of your problem"
-                                        variant="outlined"
-                                        multiline
-                                        minRows={6}
-                                    />
-                                    <div>
-                                        <input type="checkbox" />
-                                        <span>
-                                            I have read and agreed to the Terms
-                                            and Conditions
-                                            <span>*</span>
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <Button
-                                            variant="contained"
-                                            sx={{
-                                                fontWeight: 700,
-                                                width: '100%',
-                                            }}
-                                        >
-                                            <span className="accordion-form-details-button">
-                                                Send{' '}
-                                                <SendIcon
-                                                    fontSize="small"
-                                                    sx={{
-                                                        padding: '0 0 0 5px',
-                                                    }}
-                                                />
-                                            </span>
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </AccordionDetails>
-                    </Accordion>
                 <div className="accordion-form-details">
                   <TextField
-                    label={dictionary.descriptionLabel}
+                    label="Description of your problem"
                     variant="outlined"
                     multiline
                     minRows={6}
@@ -212,7 +134,8 @@ const SimpleDialog = (props: SimpleDialogProps) => {
                   <div>
                     <input type="checkbox" />
                     <span>
-                      {dictionary.termsAgree}
+                      I have read and agreed to the Terms
+                      and Conditions
                       <span>*</span>
                     </span>
                   </div>
@@ -238,7 +161,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
                 </div>
               </div>
             </AccordionDetails>
-          </Accordion>
+          </Accordion> {/* Closing tag for inner Accordion */}
         </div>
       </div>
     </Dialog>
