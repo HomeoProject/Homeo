@@ -1,63 +1,102 @@
-export interface RawUser {
-    id: string | undefined
-    email: string | undefined
-    avatar: string | undefined
-    isBlocked: boolean
-}
+import { JwtPayload } from 'jwt-decode'
 
 export interface CustomUser {
-    id: string | undefined
-    firstName: string | undefined
-    lastName: string | undefined
-    phoneNumber: string | undefined
-    email: string | undefined
-    avatar: string | undefined
-    isBlocked: boolean
-    isOnline: boolean
-    isConstructor: boolean
-    isApproved: boolean
-    createdAt: string
-    updatedAt: string
+  id: string
+  firstName: string | null
+  lastName: string | null
+  phoneNumber: string | null
+  email: string
+  avatar: string
+  isBlocked: boolean
+  isOnline: boolean
+  isApproved: boolean
+  isDeleted: boolean
+  createdAt: string
+  updatedAt: string
 }
 
 export interface Category {
-    id: string | undefined
-    name: string | undefined
-    createdAt: string
-    updatedAt: string
+  id: number
+  name: string
+  description: string
+  image: string
+  createdAt: string
+  updatedAt: string
 }
 
 export enum PaymentMethod {
-    CASH = 'cash',
-    CARD = 'card',
-    TRANSFER = 'transfer',
+  CASH = 'Cash',
+  CARD = 'Card',
+  TRANSFER = 'Transfer',
+}
+
+export interface SelectedCategory {
+  id: number
+  name: string
 }
 
 export interface Review {
-    id: string | undefined
-    reviewerId: string | undefined
-    receiverId: string | undefined
-    text: string | undefined
-    rating: string | undefined
-    createdAt: string
-    updatedAt: string
+  id: number
+  reviewerId: string
+  receiverId: string
+  rating: number
+  text: string
+  createdAt: string
+  updatedAt: string
 }
 
 export interface Constructor {
-    id: string | undefined
-    userId: string | undefined
-    companyName: string | undefined
-    companyAddress: string | undefined
-    companyPhoneNumber: string | undefined
-    companyEmail: string | undefined
-    aboutMe: string | undefined
-    experience: string | undefined
-    rate: number | undefined
-    categories: Array<Category>
-    city: string | undefined
-    language: string | undefined
-    receivedReviews: Array<Review>
-    acceptedPaymentMethods: Array<PaymentMethod>
-    createdAt: string
-    updatedAt: string
+  id: number
+  userId: string
+  phoneNumber: string
+  constructorEmail: string
+  aboutMe: string
+  experience: string
+  minRate: number
+  categories: Array<Category>
+  cities: Array<string>
+  languages: Array<string>
+  paymentMethods: Array<string>
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ConstructorReviewsStats {
+  userId: string
+  averageRating: number
+  reviewsNumber: number
+}
+
+export interface ConstructorProfileReviews {
+  stats: {
+    userId: string
+    averageRating: number
+    reviewsNumber: number
+  }
+  content: Array<Review>
+}
+
+export interface City {
+  name: string
+  latitude: number
+  longitude: number
+  country: string
+  population: number
+  is_capital: boolean
+}
+
+export interface CustomJwtPayload extends JwtPayload {
+  permissions: string[] // We're assuming permissions is an array of strings that is included in the JWT (it is)
+}
+
+export interface Developer {
+  name: string
+  github: string
+  linkedin: string
+  image: string
+  role: string
+}
+
+export interface Dictionary {
+  [key: string]: string
 }

@@ -1,0 +1,26 @@
+.AdminPanelPage {
+  width: calc(100% - 40rem);
+  min-height: calc(100vh - 26rem);
+  padding: 0 2rem;
+  @media screen and (max-width: 1400px) {
+    width: calc(100% - 20rem);
+  }
+  @media screen and (max-width: 650px) {
+    width: calc(100% - 5rem);
+  }
+  .admin-panel-add {
+    margin: 1rem 10rem 1rem 10rem;
+  }
+  .admin-panel-users-search {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+    .admin-panel-users-search-id {
+      grid-column-start: 1;
+      grid-column-end: 3;
+    }
+  }
+  .admin-panel-load-more {
+    margin: 1rem 10rem 1rem 10rem;
+  }
+}

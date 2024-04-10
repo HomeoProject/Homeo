@@ -1,0 +1,53 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: ReviewService
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    hikari:
+      maximum-pool-size: ${HIKARI_MAX_POOL_SIZE:10}
+      minimum-idle: ${HIKARI_MINIMUM_IDLE:10}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
+
+okta:
+  oauth2:
+    issuer: ${OKTA_API_ISSUER}
+    audience: ${OKTA_API_AUDIENCE}
+  sdk:
+    domain: ${OKTA_API_DOMAIN}
+    client-id: ${OKTA_MTM_CLIENT_ID}
+    client-secret: ${OKTA_MTM_CLIENT_SECRET}
+    audience: ${OKTA_MANAGEMENT_API_AUDIENCE}
+
+openapi:
+  service:
+    title: ReviewService
+    version: 1.0.0
+    url: ${OPENAPI_URL}
+springdoc:
+  api-docs:
+    path: /reviewservice/api-docs
+  swagger-ui:
+    path: /reviewservice/swagger-ui
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL}
+    healthcheck:
+      enabled: true

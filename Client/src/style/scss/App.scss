@@ -2,21 +2,21 @@
 @import url('https://fonts.googleapis.com/css?family=Gabarito&display=swap');
 
 html {
+  margin: 0;
+  width: calc(100vw - (100vw - 100%));
+  font-family: v.$font-family;
+
+  > body {
+    width: 100%;
     margin: 0;
-    width: calc(100vw - (100vw - 100%));
-    font-family: v.$font-family;
 
-    > body {
+    > #root {
+      > .App {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         width: 100%;
-        margin: 0;
-
-        > #root {
-            > .App {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                width: 100%;
-            }
-        }
+      }
     }
+  }
 }

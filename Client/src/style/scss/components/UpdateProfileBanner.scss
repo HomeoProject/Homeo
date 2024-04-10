@@ -1,31 +1,31 @@
 @use '../Variables' as v;
 
 .UpdateProfileBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(1, 179, 126, 0.582);
+  width: 100%;
+
+  > .user-page-banner-text {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(1, 179, 126, 0.582);
-    width: 100%;
+    gap: 20px;
 
-    > .user-page-banner-text {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 20px;
-
-        > h1 {
-            font-size: 1.5rem;
-            color: white;
-        }
-
-        > .btn {
-            > .user-page-banner-text-link {
-                color: white;
-                text-decoration: none;
-                font-weight: 600;
-                cursor: pointer;
-                font-family: v.$font-family;
-            }
-        }
+    > h1 {
+      font-size: v.$font-size-normal;
+      color: white;
     }
+
+    > .btn {
+      > .user-page-banner-text-link {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: v.$font-family;
+      }
+    }
+  }
 }

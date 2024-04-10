@@ -1,7 +1,5 @@
 server:
-  port: 8080
-  error:
-    include-message: always
+  port: ${PORT:8080}
 
 spring:
   application:
@@ -9,10 +7,13 @@ spring:
   data:
     redis:
       database: 0
-      host: localhost
-      port: 6380
+      host: ${REDIS_HOST_APIGATEWAY:localhost}
+      port: ${REDIS_PORT_APIGATEWAY:6380}
       password: ${REDIS_PASSWORD_APIGATEWAY}
       connect-timeout: 60000
+      username: ${REDIS_USERNAME_APIGATEWAY:}
+      ssl:
+        enabled: ${REDIS_SSL_APIGATEWAY:false}
   cloud:
     gateway:
       default-filters:
@@ -21,7 +22,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: "http://localhost:5173, http://127.0.0.1:5173"
+            allowedOrigins: ${ALLOWED_CORS_URLS}
             allowedHeaders: "*"
             allowCredentials: true
             allowedMethods: "*"
@@ -29,11 +30,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://homeo-eureka:8761/eureka
-
-logging:
-  level:
-    org.springframework.security: DEBUG
+      defaultZone: ${EUREKA_URL}
 
 springdoc:
   enable-native-support: true
@@ -48,3 +45,9 @@ springdoc:
         name: API Gateway Service
       - url: /userservice/api-docs
         name: User Service
+      - url: /constructorservice/api-docs
+        name: ConstructorService
+      - url: /reviewservice/api-docs
+        name: ReviewService
+      - url: /searchservice/api-docs
+        name: SearchService

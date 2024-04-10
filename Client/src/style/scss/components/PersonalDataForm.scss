@@ -1,51 +1,65 @@
 @use '../Variables' as v;
 
 .PersonalDataForm {
-    width: 100%;
-    padding-bottom: 2rem;
+  width: 100%;
+  padding-bottom: 2rem;
 
-    > h1 {
-        @media (max-width: 800px) {
-            margin-top: 0;
-        }
+  > h1 {
+    font-size: v.$font-size-large;
+
+    @media (max-width: 800px) {
+      margin-top: 0;
+      font-size: v.$font-size-normal;
     }
+  }
 
-    > .personal-data-form-wrapper {
-        width: calc(100% - 3rem);
-        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
-        padding: 1.5rem;
-        border-radius: 10px;
+  > .personal-data-form-wrapper {
+    width: calc(100% - 3rem);
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
+    padding: 1.5rem;
+    border-radius: 10px;
 
-        > .personal-data-form {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+    > .personal-data-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
 
-            > .custom-input {
-                font-family: v.$font-family;
-            }
+      > .custom-input {
+        font-family: v.$font-family;
+      }
 
-            > input::-webkit-outer-spin-button,
-            input::-webkit-inner-spin-button {
-                -webkit-appearance: none;
-                margin: 0;
-            }
+      > input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
 
-            > input[type='number'] {
-                -moz-appearance: textfield;
-                appearance: textfield;
-            }
+      > input[type='number'] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
 
-            > .error-message {
-                color: v.$error-color;
-                margin: 0;
-            }
+      > .error-message {
+        color: v.$error-color;
+        margin: 0;
+      }
 
-            > .submit-button {
-                font-family: v.$font-family;
-                width: 5rem;
-            }
+      > .submit-button-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        > .submit-button {
+          font-family: v.$font-family;
+          width: 5rem;
         }
+
+        > .loader {
+          width: 10px;
+          height: 10px;
+        }
+      }
     }
+  }
 }
