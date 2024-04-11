@@ -203,6 +203,15 @@ public class AppUserServiceImpl implements AppUserService {
         return appUserDto;
     }
 
+    @Override
+    public void updateAppUserIsOnline(String id, Boolean isOnline) {
+        AppUser appUser = getAppUser(id);
+        if (appUser.isOnline() != isOnline) {
+            appUser.setOnline(isOnline);
+            repository.save(appUser);
+        }
+    }
+
     @Transactional
     public AppUserDto deleteAppUserAvatar(String id) throws Auth0Exception {
         compareAppUserIdWithTokenId(id);
