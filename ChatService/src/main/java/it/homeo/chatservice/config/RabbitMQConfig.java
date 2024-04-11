@@ -1,6 +1,7 @@
 package it.homeo.chatservice.config;
 
 import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.interceptor.RetryOperationsInterceptor;
@@ -19,6 +20,23 @@ public class RabbitMQConfig {
 
     public RabbitMQConfig(CachingConnectionFactory cachingConnectionFactory) {
         this.cachingConnectionFactory = cachingConnectionFactory;
+    }
+
+    @Bean
+    public Queue createUserIsOnlineQueue() {
+        return QueueBuilder.durable("q.user-is-online")
+                .withArgument("x-dead-letter-exchange", "x.user-is-online-failure")
+                .withArgument("x-dead-letter-routing-key", "fall-back-user-is-online")
+                .build();
+    }
+
+    @Bean
+    public Declarables createUserIsOnlineDeadLetterQueue() {
+        return new Declarables(
+                new DirectExchange("x.user-is-online-failure"),
+                new Queue("q.fall-back-user-is-online"),
+                new Binding("q.fall-back-user-is-online", Binding.DestinationType.QUEUE, "x.user-is-online-failure", "fall-back-user-is-online", null)
+        );
     }
 
     @Bean
@@ -42,5 +60,12 @@ public class RabbitMQConfig {
     @Bean
     public Jackson2JsonMessageConverter converter() {
         return new Jackson2JsonMessageConverter();
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate(Jackson2JsonMessageConverter converter) {
+        RabbitTemplate template = new RabbitTemplate(cachingConnectionFactory);
+        template.setMessageConverter(converter);
+        return template;
     }
 }

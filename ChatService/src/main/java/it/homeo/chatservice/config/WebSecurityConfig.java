@@ -14,8 +14,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private static final String USER_PERMISSION = "user:permission";
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         /*
@@ -24,9 +22,13 @@ public class WebSecurityConfig {
         */
         return http
                 .authorizeHttpRequests(authorize -> authorize
-                        // Thanks to handshake, I can normally secure websocket connections via http
-                        .requestMatchers("/chat/websocket/**").hasAuthority(USER_PERMISSION)
-                        .requestMatchers("/chat/sockjs/**").hasAuthority(USER_PERMISSION)
+                        /*
+                        Permitting WebSocket connections via HTTP due to limitations in custom header usage during handshake
+                        Security layer for WebSocket connections will be handled elsewhere
+                         */
+                        .requestMatchers("/chat/websocket/**").permitAll()
+//                        .requestMatchers("/chat/sockjs/**").permitAll()
+
                         .anyRequest().permitAll()
                 )
                 .cors(withDefaults())
@@ -36,8 +38,7 @@ public class WebSecurityConfig {
                 .build();
     }
 
-    @Bean
-    public JwtAuthenticationConverter makePermissionsConverter() {
+    private JwtAuthenticationConverter makePermissionsConverter() {
         final var jwtAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         jwtAuthoritiesConverter.setAuthoritiesClaimName("permissions");
         jwtAuthoritiesConverter.setAuthorityPrefix("");

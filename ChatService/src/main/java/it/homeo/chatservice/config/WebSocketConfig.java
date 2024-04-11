@@ -26,13 +26,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.enableStompBrokerRelay("/queue", "/topic")
                 .setRelayHost(brokerRelayHost)
                 .setSystemLogin(brokerRelayUsername)
-                .setSystemPasscode(brokerRelayPassword);
+                .setSystemPasscode(brokerRelayPassword)
+                .setClientLogin(brokerRelayUsername)
+                .setClientPasscode(brokerRelayPassword);
         registry.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("chat/websocket").setAllowedOrigins("*");
-        registry.addEndpoint("chat/sockjs").setAllowedOrigins("*").withSockJS();
+//        registry.addEndpoint("chat/sockjs").setAllowedOrigins("*").withSockJS();
     }
 }
