@@ -11,8 +11,15 @@ import Tooltip from '@mui/material/Tooltip'
 import Pagination from '@mui/material/Pagination'
 import '../style/scss/AdvertsPage.scss'
 
+import { useAuth0 } from '@auth0/auth0-react'
+import { setAuthToken } from '../AxiosClients/apiClient.ts'
+import apiClient from '../AxiosClients/apiClient'
+import { set } from 'react-hook-form'
+
 const AdvertsPage = () => {
     const searchValue = 'search'
+
+    const { getAccessTokenSilently } = useAuth0()
 
     const getCurrentDimension = () => {
         return window.innerWidth
@@ -21,9 +28,13 @@ const AdvertsPage = () => {
     const [screenSize, setScreenSize] = useState(getCurrentDimension())
     const [openSearch, setOpenSearch] = useState<boolean>(false)
     const [filterClicked, setFilterClicked] = useState<number>(0)
-    const [sortValue, setSortValue] = useState<string>('')
-    const [perPageValue, setPerPageValue] = useState<string>('12')
+    const [sortValue, setSortValue] = useState<string>('asc')
     const [onlyActiveUsers, setOnlyActiveUsers] = useState<boolean>(true)
+
+    const [perPageValue, setPerPageValue] = useState<string>('12')
+    const [page, setPage] = useState<number>(0)
+    const [totalPages, setTotalPages] = useState<number>(1)
+    const [constructors, setConstructors] = useState<any[]>([])
 
     const filters = [
         'Category',
@@ -67,7 +78,38 @@ const AdvertsPage = () => {
         }
     }, [screenSize])
 
-    // comment
+    const searchForConstructors = async (filters) => {
+        const body = {
+            categoryIds: [...filters.selectedCategories.map((category) => parseInt(category))],
+            minMinRate: filters.priceValue[0],
+            maxMinRate: filters.priceValue[1],
+            minAverageRating: (filters.directionValue === 'or less') ? 0 : filters.ratingValue,
+            maxAverageRating: (filters.directionValue === 'or more') ? 5 : filters.ratingValue,
+            exactAverageRating: (filters.directionValue === 'exactly that') ? filters.ratingValue : null,
+            isApproved: false,
+            languages: filters.languages,
+            paymentMethods: filters.selectedPaymentMethods,
+            location: filters.selectedPlaces,
+        }
+
+        console.log(body)
+
+        try {
+            const token = await getAccessTokenSilently()
+            setAuthToken(token)
+            const response = await apiClient.post('/search',{
+                params: {
+                    page: page,
+                    size: perPageValue,
+                    sort: ['minMinRate', sortValue]
+                },
+                body: body
+            })
+            setConstructors(response.data.content)
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     return (
         <div className="AdvertsPage">
@@ -167,10 +209,10 @@ const AdvertsPage = () => {
                                 inputProps={{ 'aria-label': 'Without label' }}
                             >
                                 <MenuItem value="">None</MenuItem>
-                                <MenuItem value={'ascending'}>
+                                <MenuItem value={'asc'}>
                                     Price ascending
                                 </MenuItem>
-                                <MenuItem value={'descending'}>
+                                <MenuItem value={'desc'}>
                                     Price descending
                                 </MenuItem>
                                 <MenuItem value={'newest'}>Newest</MenuItem>
@@ -179,10 +221,25 @@ const AdvertsPage = () => {
                     </div>
                 </div>
                 <div className="adverts-page-cards-grid">
-                    <UserCard isDialog={false} />
-                    <UserCard isDialog={false} />
-                    <UserCard isDialog={false} />
-                    <UserCard isDialog={false} />
+                    {constructors.map((constructor, index) => (
+                        <UserCard
+                            key={index}
+                            isDialog={false}
+                            constructor={
+                                {
+                                    avatar: constructor.avatar,
+                                    firstName: constructor.firstName,
+                                    categoryIds: constructor.categoryIds,
+                                    phoneNumber: constructor.phoneNumber,
+                                    cities: constructor.cities,
+                                    email: constructor.email,
+                                    minRate: constructor.minRate,
+                                    avarageRate: constructor.avarageRate
+                                }
+                            }
+                        />
+                    
+                    ))}
                 </div>
                 <div className="adverts-page-cards-pagination">
                     <Pagination count={10} color="primary" />
@@ -191,6 +248,7 @@ const AdvertsPage = () => {
             <FiltersDialog
                 open={openSearch}
                 handleClose={handleCloseSearch}
+                handleSearch={searchForConstructors}
                 openFilter={filterClicked}
             />
         </div>

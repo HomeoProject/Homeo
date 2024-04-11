@@ -9,16 +9,28 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
 import StarOutlineIcon from '@mui/icons-material/StarOutline'
 import SmartphoneIcon from '@mui/icons-material/Smartphone'
+import { useCategoriesContext } from '../Context/CategoriesContext'
 import '../style/scss/components/UserCard.scss'
 
 type UserCardProps = {
-  isDialog?: boolean
+  isDialog?: boolean,
+  constructor?: {
+    avatar: string,
+    firstName: string,
+    categoryIds: string[],
+    phoneNumber: string,
+    cities: string[],
+    email: string,
+    minRate: number,
+    avarageRate: number
+  }
 }
 
-const UserCard = ({ isDialog }: UserCardProps) => {
+const UserCard = ({ isDialog, constructor }: UserCardProps) => {
   const [open, setOpen] = useState(false)
 
   const { dictionary } = useDictionaryContext()
+  const { categories, setCategories } = useCategoriesContext()
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -33,45 +45,51 @@ const UserCard = ({ isDialog }: UserCardProps) => {
   return (
     <div className="UserCard">
       <div className="user-card-avatar">
-        <img src={Karol} alt="avatar" />
+        <img src={constructor?.avatar} alt="avatar" />
       </div>
       <Card sx={{ padding: '15px' }}>
         <div className="user-card-container">
           <div className="user-card-container-user-section">
-            <span className="user-card-container-user-section-name">Darek</span>
+            <span className="user-card-container-user-section-name">
+              {constructor?.firstName}
+            </span>
             <span className="user-card-container-user-section-title">
-              Plumber
+              {categories.map((category) => {
+                if (constructor?.categoryIds.includes(category.id)) {
+                  return category.name + ' '
+                }
+              })}
             </span>
           </div>
           <div className="user-card-container-info-section">
             <div className="user-card-container-info-section-row">
               <SmartphoneIcon />
               <span className="user-card-container-info-section-row-value">
-                501 474 375
+                {constructor?.phoneNumber}
               </span>
             </div>
             <div className="user-card-container-info-section-row">
               <PublicIcon />
               <span className="user-card-container-info-section-row-value">
-                Pomorskie, Poland
+                {constructor?.cities.join(', ')}
               </span>
             </div>
             <div className="user-card-container-info-section-row">
               <MailOutlineIcon />
               <span className="user-card-container-info-section-row-value">
-                darek@gmail.com
+                {constructor?.email}
               </span>
             </div>
             <div className="user-card-container-info-section-row">
               <AttachMoneyIcon />
               <span className="user-card-container-info-section-row-value">
-                40-50 zł/h
+                {constructor?.minRate} zł/h
               </span>
             </div>
             <div className="user-card-container-info-section-row">
               <StarOutlineIcon />
               <span className="user-card-container-info-section-row-value">
-                4.5
+                {constructor?.avarageRate}
               </span>
             </div>
           </div>

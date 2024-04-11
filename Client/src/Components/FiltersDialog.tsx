@@ -4,7 +4,9 @@ import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox'
+import Card from '@mui/material/Card';
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Slider from '@mui/material/Slider'
@@ -23,15 +25,18 @@ export interface FiltersDialogProps {
     open: boolean
     handleClose: () => void
     openFilter: number
+    handleSearch: (filters) => void
 }
 
 const FiltersDialog = (props: FiltersDialogProps) => {
-    const { open, handleClose, openFilter } = props
+    const { open, handleClose, openFilter, handleSearch } = props
     const [priceValue, setPriceValue] = useState<number[]>([0, 100])
     const [ratingValue, setRatingValue] = useState(5.0)
     const [languages, setLanguages] = useState<string[]>([])
     const [directionValue, setDirectionValue] = useState<string>('or less')
     const [selectedPlaces, setSelectedPlaces] = useState<string[]>([])
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+    const [selectedPaymentMethods, setSelectedPaymentMethods] = useState<string[]>([])
 
     const paymentMethods: Array<PaymentMethod> = [
         PaymentMethod.CASH,
@@ -65,14 +70,58 @@ const FiltersDialog = (props: FiltersDialogProps) => {
         }
     }
 
+    const handleSearchClick = () => {
+        handleSearch({
+            priceValue, 
+            ratingValue, 
+            languages, 
+            directionValue, 
+            selectedPlaces, 
+            selectedCategories, 
+            selectedPaymentMethods
+        })
+    }
+
+    const handleSelectCategory = (e: React.ChangeEvent<HTMLInputElement> ) => {
+        if (selectedCategories.includes(e.target.name)) {
+            setSelectedCategories(selectedCategories.filter((cat) => cat !== e.target.name))
+        } else {
+            setSelectedCategories([...selectedCategories, e.target.name])
+        }
+    }
+
+    const handleSelectPayment = (e: React.ChangeEvent<HTMLInputElement> ) => {
+        if (selectedPaymentMethods.includes(e.target.name)) {
+            setSelectedPaymentMethods(selectedPaymentMethods.filter((pay) => pay !== e.target.name))
+        } else {
+            setSelectedPaymentMethods([...selectedPaymentMethods, e.target.name])
+        }
+    }
+
+    const resetValues = () => {
+        setPriceValue([0, 100])
+        setRatingValue(5.0)
+        setLanguages([])
+        setDirectionValue('or less')
+        setSelectedPlaces([])
+        setSelectedCategories([])
+        setSelectedPaymentMethods([])
+    }
+
+    const handleCloseFromDialog = () => {
+        resetValues()
+        handleClose()
+    }
+
     return (
         <Dialog
-            onClose={handleClose}
+            onClose={handleCloseFromDialog}
             open={open}
             maxWidth={'xl'}
             className="dialog"
         >
             <div className="filtersDialog">
+                <div>
                 <Accordion
                     disableGutters
                     defaultExpanded={openFilter === 0 ? true : false}
@@ -96,6 +145,8 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                                             inputProps={{
                                                 'aria-label': 'secondary checkbox',
                                             }}
+                                            name={`${category.id}`}
+                                            onChange={handleSelectCategory}
                                         />
                                 </div>
                             ))}
@@ -278,6 +329,8 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                                             inputProps={{
                                                 'aria-label': 'secondary checkbox',
                                             }}
+                                            name={payment}
+                                            onChange={handleSelectPayment}
                                         />
                                 </div>
                             ))}
@@ -304,6 +357,17 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                         </div>
                     </AccordionDetails>
                 </Accordion>
+                </div>
+                <Card 
+                    sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '10px', marginTop: '10px'}}
+                >
+                    <Button
+                        variant="contained"
+                        onClick={handleSearchClick}
+                    >
+                        Look for constructors
+                    </Button>
+                </Card>
             </div>
         </Dialog>
     )
