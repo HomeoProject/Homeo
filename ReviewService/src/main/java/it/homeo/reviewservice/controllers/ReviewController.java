@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -53,13 +53,13 @@ public class ReviewController {
     }
 
     @GetMapping("/received/{userId}")
-    public ResponseEntity<ReviewPageDto> getUserReceivedReviews(@PathVariable String userId, @RequestParam("lastCreatedAt") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime lastCreatedAt) {
+    public ResponseEntity<ReviewPageDto> getUserReceivedReviews(@PathVariable String userId, @RequestParam("lastCreatedAt") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant lastCreatedAt) {
         LOGGER.info("Inside: ReviewController -> getUserReceivedReviews()...");
         return ResponseEntity.ok(reviewService.getUserReceivedReviews(userId, lastCreatedAt));
     }
 
     @GetMapping("/user/reviewed")
-    public ResponseEntity<List<ReviewDto>> getUserReviewedReviews(@RequestParam("lastCreatedAt") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime lastCreatedAt) {
+    public ResponseEntity<List<ReviewDto>> getUserReviewedReviews(@RequestParam("lastCreatedAt") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant lastCreatedAt) {
         LOGGER.info("Inside: ReviewController -> getUserReviewedReviews()...");
         String userId = getUserId();
         List<Review> reviews = reviewService.getUserReviewedReviews(userId, lastCreatedAt);
