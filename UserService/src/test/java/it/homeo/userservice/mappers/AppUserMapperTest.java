@@ -1,12 +1,12 @@
 package it.homeo.userservice.mappers;
 
-import it.homeo.userservice.dtos.response.AppUserDto;
 import it.homeo.userservice.dtos.request.UpdateAppUserRequest;
+import it.homeo.userservice.dtos.response.AppUserDto;
 import it.homeo.userservice.models.AppUser;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import java.util.Date;
+import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,6 +34,7 @@ class AppUserMapperTest {
         assertThat(appUserDto.avatar()).isEqualTo(appUser.getAvatar());
         assertThat(appUserDto.isBlocked()).isEqualTo(appUser.isBlocked());
         assertThat(appUserDto.isOnline()).isEqualTo(appUser.isOnline());
+        assertThat(appUserDto.lastOnlineAt()).isEqualTo(appUser.getLastOnlineAt());
         assertThat(appUserDto.isApproved()).isEqualTo(appUser.isApproved());
         assertThat(appUserDto.createdAt()).isEqualTo(appUser.getCreatedAt());
         assertThat(appUserDto.updatedAt()).isEqualTo(appUser.getUpdatedAt());
@@ -73,9 +74,10 @@ class AppUserMapperTest {
         appUser.setAvatar("avatar-url");
         appUser.setBlocked(false);
         appUser.setOnline(true);
+        appUser.setLastOnlineAt(Instant.now());
         appUser.setApproved(true);
-        appUser.setCreatedAt(new Date());
-        appUser.setUpdatedAt(new Date());
+        appUser.setCreatedAt(Instant.now());
+        appUser.setUpdatedAt(Instant.now());
         return appUser;
     }
 }
