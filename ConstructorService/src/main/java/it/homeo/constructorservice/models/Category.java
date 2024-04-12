@@ -1,10 +1,13 @@
 package it.homeo.constructorservice.models;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Objects;
 
 @Getter
@@ -28,17 +31,20 @@ public class Category {
 
     private String imageId;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @Column(nullable = false)
+    private Instant updatedAt;
 
     @PrePersist
     protected void onCreate() {
-        updatedAt = createdAt = LocalDateTime.now();
+        updatedAt = createdAt = Instant.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+        updatedAt = Instant.now();
     }
 
     @Override

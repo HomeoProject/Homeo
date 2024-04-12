@@ -1,12 +1,12 @@
 package it.homeo.searchservice.dtos.request;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record CategoryDto(
         Long id,
         String name,
         String description,
         String image,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        Instant createdAt,
+        Instant updatedAt
 ) { }

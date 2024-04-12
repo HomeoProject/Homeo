@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -29,17 +30,20 @@ public class ReviewStats {
     @Column(nullable = false)
     private Double ratingsSum;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @Column(nullable = false)
+    private Instant updatedAt;
 
     @PrePersist
     protected void onCreate() {
-        updatedAt = createdAt = LocalDateTime.now();
+        updatedAt = createdAt = Instant.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+        updatedAt = Instant.now();
     }
 
     @Override
