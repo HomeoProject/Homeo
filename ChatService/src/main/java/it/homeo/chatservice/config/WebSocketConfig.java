@@ -29,8 +29,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setSystemPasscode(brokerRelayPassword)
                 .setClientLogin(brokerRelayUsername)
                 .setClientPasscode(brokerRelayPassword);
-        registry.setApplicationDestinationPrefixes("/app");
         registry.setUserDestinationPrefix("/user");
+        registry.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
