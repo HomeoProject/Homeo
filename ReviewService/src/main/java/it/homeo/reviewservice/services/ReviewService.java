@@ -5,12 +5,12 @@ import it.homeo.reviewservice.dtos.response.ReviewPageDto;
 import it.homeo.reviewservice.models.Review;
 import it.homeo.reviewservice.models.ReviewStats;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 public interface ReviewService {
-    ReviewPageDto getUserReceivedReviews(String userId, LocalDateTime lastCreatedAt);
-    List<Review> getUserReviewedReviews(String userId, LocalDateTime lastCreatedAt);
+    ReviewPageDto getUserReceivedReviews(String userId, Instant lastCreatedAt);
+    List<Review> getUserReviewedReviews(String userId, Instant lastCreatedAt);
     Review getReview(Long id);
     Review addReview(Review review) throws Auth0Exception;
     Review updateReview(Long id, String userId, Review newReview);

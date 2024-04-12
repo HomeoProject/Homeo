@@ -23,7 +23,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +48,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewPageDto getUserReceivedReviews(String userId, LocalDateTime lastCreatedAt) {
+    public ReviewPageDto getUserReceivedReviews(String userId, Instant lastCreatedAt) {
         Pageable pageable = PageRequest.of(0, 5);
         List<Review> reviews = reviewRepository.findByReceiverIdAndCreatedAtBeforeOrderByCreatedAtDesc(userId, lastCreatedAt, pageable);
 
@@ -61,7 +61,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<Review> getUserReviewedReviews(String userId, LocalDateTime lastCreatedAt) {
+    public List<Review> getUserReviewedReviews(String userId, Instant lastCreatedAt) {
         Pageable pageable = PageRequest.of(0, 5);
         return reviewRepository.findByReviewerIdAndCreatedAtBeforeOrderByCreatedAtDesc(userId, lastCreatedAt, pageable);
     }

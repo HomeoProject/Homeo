@@ -2,7 +2,7 @@ package it.homeo.constructorservice.dtos.response;
 
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Builder
 public record CategoryDto(
@@ -10,6 +10,6 @@ public record CategoryDto(
     String name,
     String description,
     String image,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt
+    Instant createdAt,
+    Instant updatedAt
 ) { }

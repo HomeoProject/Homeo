@@ -2,7 +2,7 @@ package it.homeo.userservice.dtos.response;
 
 import lombok.Builder;
 
-import java.util.Date;
+import java.time.Instant;
 
 @Builder
 public record AppUserDto(
@@ -14,8 +14,9 @@ public record AppUserDto(
         String avatar,
         boolean isBlocked,
         boolean isOnline,
+        Instant lastOnlineAt,
         boolean isApproved,
         boolean isDeleted,
-        Date createdAt,
-        Date updatedAt
+        Instant createdAt,
+        Instant updatedAt
 ) { }

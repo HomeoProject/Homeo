@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +13,6 @@ import java.util.Optional;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     Optional<Review> findByReceiverIdAndReviewerId(String receiverId, String reviewerId);
     void deleteAllByReceiverId(String receiverId);
-    List<Review> findByReviewerIdAndCreatedAtBeforeOrderByCreatedAtDesc(String userId, LocalDateTime lastCreatedAt, Pageable pageable);
-    List<Review> findByReceiverIdAndCreatedAtBeforeOrderByCreatedAtDesc(String userId, LocalDateTime lastCreatedAt, Pageable pageable);
+    List<Review> findByReviewerIdAndCreatedAtBeforeOrderByCreatedAtDesc(String userId, Instant lastCreatedAt, Pageable pageable);
+    List<Review> findByReceiverIdAndCreatedAtBeforeOrderByCreatedAtDesc(String userId, Instant lastCreatedAt, Pageable pageable);
 }
