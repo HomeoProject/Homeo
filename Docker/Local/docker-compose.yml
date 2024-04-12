@@ -31,7 +31,7 @@ services:
       - "${PORT_USERSERVICE}:${PORT_USERSERVICE}"
     restart: unless-stopped
     depends_on:
-      - homeo-apigateway
+      - homeo-chatservice
 
   homeo-constructorservice:
     container_name: homeo-constructorservice
@@ -112,6 +112,32 @@ services:
     restart: unless-stopped
     depends_on:
       - homeo-reviewservice
+
+  homeo-chatservice:
+    container_name: homeo-chatservice
+    build: ../../ChatService
+    environment:
+      PORT: ${PORT_CHATSERVICE}
+      OKTA_API_ISSUER: ${OKTA_API_ISSUER}
+      OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_URL: ${POSTGRES_URL_CHATSERVICE}
+      EUREKA_URL: ${EUREKA_URL}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      CLOUDINARY_FOLDER_NAME: ${CLOUDINARY_FOLDER_NAME_CHATSERVICE}
+      OPENAPI_URL: ${OPENAPI_URL}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    ports:
+      - "${PORT_CHATSERVICE}:${PORT_CHATSERVICE}"
+    restart: unless-stopped
+    depends_on:
+      - homeo-apigateway
 
   homeo-apigateway:
     container_name: homeo-apigateway

@@ -29,10 +29,12 @@ drop_database "userservice"
 drop_database "constructorservice"
 drop_database "reviewservice"
 drop_database "searchservice"
+drop_database "chatservice"
 
 create_database "userservice"
 create_database "constructorservice"
 create_database "reviewservice"
 create_database "searchservice"
+create_database "chatservice"
 
 echo "All databases have been dropped and recreated."
