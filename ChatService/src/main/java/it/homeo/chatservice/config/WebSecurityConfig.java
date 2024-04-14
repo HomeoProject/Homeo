@@ -14,6 +14,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+    private static final String USER_AUTHORITY = "user:permission";
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         /*
@@ -27,8 +29,7 @@ public class WebSecurityConfig {
                         Security layer for WebSocket connections will be handled elsewhere
                          */
                         .requestMatchers("/chat/websocket/**").permitAll()
-//                        .requestMatchers("/chat/sockjs/**").permitAll()
-
+                        .requestMatchers("/api/chat/**").hasAuthority(USER_AUTHORITY)
                         .anyRequest().permitAll()
                 )
                 .cors(withDefaults())

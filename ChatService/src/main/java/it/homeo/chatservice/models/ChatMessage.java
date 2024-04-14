@@ -31,11 +31,6 @@ public class ChatMessage {
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = Instant.now();
-    }
-
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
