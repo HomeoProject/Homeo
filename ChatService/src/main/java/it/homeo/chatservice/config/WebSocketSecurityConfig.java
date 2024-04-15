@@ -13,18 +13,20 @@ import org.springframework.security.messaging.access.intercept.MessageMatcherDel
 @EnableWebSocketSecurity
 public class WebSocketSecurityConfig {
 
+    private static final String USER_AUTHORITY = "user:permission";
+
     @Bean
     public AuthorizationManager<Message<?>> messageAuthorizationManager(MessageMatcherDelegatingAuthorizationManager.Builder messages) {
         messages
 //                .nullDestMatcher().authenticated()
 //                .simpDestMatchers("/app/**").authenticated()
-                .anyMessage().authenticated();
+                .anyMessage().hasAuthority(USER_AUTHORITY);
 
         return messages.build();
     }
 
     @Bean(name = "csrfChannelInterceptor")
     ChannelInterceptor csrfChannelInterceptor() {
-        return new ChannelInterceptor() {};
+        return new ChannelInterceptor() { };
     }
 }

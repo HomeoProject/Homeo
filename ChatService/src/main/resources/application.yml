@@ -41,6 +41,11 @@ cloudinary:
   api-secret: ${CLOUDINARY_API_SECRET}
   folder-name: ${CLOUDINARY_FOLDER_NAME}
 
+feign:
+  client:
+    urls:
+      UserService: ${FEIGN_URL_USERSERVICE:}
+
 openapi:
   service:
     title: ChatService

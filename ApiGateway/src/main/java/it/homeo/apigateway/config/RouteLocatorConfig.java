@@ -55,6 +55,19 @@ public class RouteLocatorConfig {
                         .filters(f -> f.requestRateLimiter(r -> r.setRateLimiter(redisRateLimiter())))
                         .uri("lb://SearchService"))
 
+                // ChatService
+                .route("ChatServiceSwagger-Route", request -> request
+                        .path("/chatservice/api-docs")
+                        .and().method(HttpMethod.GET)
+                        .uri("lb://ChatService"))
+                .route("ChatService-Route", request -> request
+                        .path("/api/chat/**")
+                        .filters(f -> f.requestRateLimiter(r -> r.setRateLimiter(redisRateLimiter())))
+                        .uri("lb://ChatService"))
+                .route("SearchService-WS-Route", request -> request
+                        .path("/chat/**")
+                        .uri("lb://ChatService"))
+
                 .build();
     }
 
