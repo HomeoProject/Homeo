@@ -1,12 +1,9 @@
-name: UserService CI
+name: SearchServiceTest
 
 on:
-  push:
-    branches: [ "main", "dev" ]
-    paths: [ "UserService/**" ]
   pull_request:
     branches: [ "main", "dev" ]
-    paths: [ "UserService/**" ]
+    paths: [ "SearchService/**" ]
 
 permissions:
   contents: read
@@ -14,10 +11,6 @@ permissions:
 env:
   OKTA_API_ISSUER: ${{ secrets.OKTA_API_ISSUER }}
   OKTA_API_AUDIENCE: ${{ secrets.OKTA_API_AUDIENCE }}
-  OKTA_API_DOMAIN: ${{ secrets.OKTA_API_DOMAIN }}
-  OKTA_MTM_CLIENT_ID: ${{ secrets.OKTA_MTM_CLIENT_ID }}
-  OKTA_MTM_CLIENT_SECRET: ${{ secrets.OKTA_MTM_CLIENT_SECRET }}
-  OKTA_MANAGEMENT_API_AUDIENCE: ${{ secrets.OKTA_MANAGEMENT_API_AUDIENCE }}
 
 jobs:
   build:
@@ -36,7 +29,7 @@ jobs:
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       
     - name: Grant execute permission to gradlew
-      run: chmod +x UserService/gradlew
+      run: chmod +x SearchService/gradlew
       
     - name: Run build with Gradle Wrapper
-      run: cd UserService && ./gradlew build
+      run: cd SearchService && ./gradlew build
