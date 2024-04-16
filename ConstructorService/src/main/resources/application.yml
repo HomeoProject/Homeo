@@ -68,3 +68,7 @@ eureka:
 
 init:
   categories: Plumber, Painter, Electrician, Renovation, Cleaning, Transport, Garden
+
+category:
+  initializer:
+    enabled: false
