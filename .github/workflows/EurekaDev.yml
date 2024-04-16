@@ -2,16 +2,16 @@ name: EurekaDev
 
 on:
   push:
-    branches:
-      - dev
+    branches: ["dev"]
+    paths: ["Eureka/**"]
 
 jobs:
   release:
     runs-on: ubuntu-latest
 
     env:
-      image_tag: ${{ secrets.DOCKER_IMAGE_OWNER_EUREKA }}/homeo-eureka-dev:${GITHUB_SHA}
-      image_latest: ${{ secrets.DOCKER_IMAGE_OWNER_EUREKA }}/homeo-eureka-dev:latest
+      image_tag: ${{ vars.DOCKER_IMAGE_OWNER_EUREKA }}/homeo-eureka-dev:${GITHUB_SHA}
+      image_latest: ${{ vars.DOCKER_IMAGE_OWNER_EUREKA }}/homeo-eureka-dev:latest
 
     steps:
       - uses: actions/checkout@v4

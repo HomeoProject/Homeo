@@ -2,16 +2,16 @@ name: ReviewServiceDev
 
 on:
   push:
-    branches:
-      - dev
+    branches: ["dev"]
+    paths: ["ReviewService/**"]
 
 jobs:
   release:
     runs-on: ubuntu-latest
 
     env:
-      image_tag: ${{ secrets.DOCKER_IMAGE_OWNER_REVIEWSERVICE }}/homeo-reviewservice-dev:${GITHUB_SHA}
-      image_latest: ${{ secrets.DOCKER_IMAGE_OWNER_REVIEWSERVICE }}/homeo-reviewservice-dev:latest
+      image_tag: ${{ vars.DOCKER_IMAGE_OWNER_REVIEWSERVICE }}/homeo-reviewservice-dev:${GITHUB_SHA}
+      image_latest: ${{ vars.DOCKER_IMAGE_OWNER_REVIEWSERVICE }}/homeo-reviewservice-dev:latest
 
     steps:
       - uses: actions/checkout@v4
