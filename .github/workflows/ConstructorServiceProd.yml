@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      image_tag: ${{ vars.DOCKER_IMAGE_OWNER_CONSTRUCTORERVICE }}/homeo-constructorservice-prod:${GITHUB_SHA}
+      image_tag: ${{ vars.DOCKER_IMAGE_OWNER_CONSTRUCTORSERVICE }}/homeo-constructorservice-prod:${GITHUB_SHA}
       image_latest: ${{ vars.DOCKER_IMAGE_OWNER_CONSTRUCTORSERVICE }}/homeo-constructorservice-prod:latest
 
     steps:
