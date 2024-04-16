@@ -80,6 +80,7 @@ const FiltersDialog = (props: FiltersDialogProps) => {
             selectedCategories, 
             selectedPaymentMethods
         })
+        handleClose()
     }
 
     const handleSelectCategory = (e: React.ChangeEvent<HTMLInputElement> ) => {

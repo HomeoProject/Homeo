@@ -76,12 +76,17 @@
     }
     .adverts-page-cards {
         display: flex;
+        justify-content: center;
         flex-direction: column;
         align-items: center;
         .adverts-page-cards-grid {
             display: grid;
+            justify-content: center;
             grid-template-columns: repeat(3, 1fr);
             gap: 3rem;
+            .adverts-page-cards-grid-spinner {
+                grid-column-start: 2;
+            }
         }
         @media screen and (max-width: 1200px) {
             .adverts-page-cards-grid {

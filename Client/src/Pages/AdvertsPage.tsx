@@ -9,6 +9,7 @@ import Badge from '@mui/material/Badge'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Tooltip from '@mui/material/Tooltip'
 import Pagination from '@mui/material/Pagination'
+import LoadingSpinner from '../Components/LoadingSpinner.tsx'
 import '../style/scss/AdvertsPage.scss'
 
 import { useAuth0 } from '@auth0/auth0-react'
@@ -29,11 +30,20 @@ const AdvertsPage = () => {
     const [openSearch, setOpenSearch] = useState<boolean>(false)
     const [filterClicked, setFilterClicked] = useState<number>(0)
     const [sortValue, setSortValue] = useState<string>('asc')
-    const [onlyActiveUsers, setOnlyActiveUsers] = useState<boolean>(true)
-
+    const [onlyActiveUsers, setOnlyActiveUsers] = useState<boolean>(false)
+    const [constructorFilters, setConstructorFilters] = useState<any>({
+        selectedCategories: [],
+        priceValue: [0, 100],
+        ratingValue: 5,
+        directionValue: 'or less',
+        languages: [],
+        selectedPaymentMethods: [],
+        selectedPlaces: [],
+    })
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const [perPageValue, setPerPageValue] = useState<string>('12')
     const [page, setPage] = useState<number>(0)
-    const [totalPages, setTotalPages] = useState<number>(1)
+    const [totalPages, setTotalPages] = useState<number>(0)
     const [constructors, setConstructors] = useState<any[]>([])
 
     const filters = [
@@ -78,37 +88,36 @@ const AdvertsPage = () => {
         }
     }, [screenSize])
 
-    const searchForConstructors = async (filters) => {
+    useEffect(() => {
+        searchForConstructors()
+    }, [constructorFilters, page, perPageValue, sortValue])
+
+    const searchForConstructors = async () => {
         const body = {
-            categoryIds: [...filters.selectedCategories.map((category) => parseInt(category))],
-            minMinRate: filters.priceValue[0],
-            maxMinRate: filters.priceValue[1],
-            minAverageRating: (filters.directionValue === 'or less') ? 0 : filters.ratingValue,
-            maxAverageRating: (filters.directionValue === 'or more') ? 5 : filters.ratingValue,
-            exactAverageRating: (filters.directionValue === 'exactly that') ? filters.ratingValue : null,
+            categoryIds: constructorFilters.selectedCategories.length !== 0 ? [...constructorFilters.selectedCategories.map((category) => parseInt(category))] : null,
+            minMinRate: constructorFilters.priceValue[0],
+            maxMinRate: constructorFilters.priceValue[1],
+            minAverageRating: (constructorFilters.directionValue === 'or less') ? 0 : constructorFilters.ratingValue,
+            maxAverageRating: (constructorFilters.directionValue === 'or more') ? 5 : constructorFilters.ratingValue,
+            exactAverageRating: (constructorFilters.directionValue === 'exactly that') ? constructorFilters.ratingValue : null,
             isApproved: false,
-            languages: filters.languages,
-            paymentMethods: filters.selectedPaymentMethods,
-            location: filters.selectedPlaces,
+            languages: constructorFilters.languages.length !== 0 ? constructorFilters.languages : null,
+            paymentMethods: constructorFilters.selectedPaymentMethods.length !== 0 ? constructorFilters.selectedPaymentMethods : null,
+            location: constructorFilters.selectedPlaces ? constructorFilters.selectedPlaces : null,
         }
-
         console.log(body)
-
+        setIsLoading(true)
         try {
             const token = await getAccessTokenSilently()
             setAuthToken(token)
-            const response = await apiClient.post('/search',{
-                params: {
-                    page: page,
-                    size: perPageValue,
-                    sort: ['minMinRate', sortValue]
-                },
-                body: body
-            })
+            const response = await apiClient.post(`/search?page=${page}&size=${perPageValue}&sort=minRate,${sortValue}`, body)
+            console.log(response)
+            setTotalPages(response.data.totalPages)
             setConstructors(response.data.content)
         } catch (error) {
             console.error(error)
         }
+        setIsLoading(false)
     }
 
     return (
@@ -194,7 +203,6 @@ const AdvertsPage = () => {
                                 displayEmpty
                                 inputProps={{ 'aria-label': 'Without label' }}
                             >
-                                <MenuItem value="">None</MenuItem>
                                 <MenuItem value={'12'}>12</MenuItem>
                                 <MenuItem value={'24'}>24</MenuItem>
                                 <MenuItem value={'36'}>36</MenuItem>
@@ -215,13 +223,12 @@ const AdvertsPage = () => {
                                 <MenuItem value={'desc'}>
                                     Price descending
                                 </MenuItem>
-                                <MenuItem value={'newest'}>Newest</MenuItem>
                             </Select>
                         </div>
                     </div>
                 </div>
                 <div className="adverts-page-cards-grid">
-                    {constructors.map((constructor, index) => (
+                    {!isLoading ? constructors.map((constructor, index) => (
                         <UserCard
                             key={index}
                             isDialog={false}
@@ -239,16 +246,21 @@ const AdvertsPage = () => {
                             }
                         />
                     
-                    ))}
+                    )) : (
+                        <div className='adverts-page-cards-grid-spinner'>
+                            <LoadingSpinner />
+                        </div>
+                    )
+                    }
                 </div>
                 <div className="adverts-page-cards-pagination">
-                    <Pagination count={10} color="primary" />
+                    <Pagination count={totalPages} color="primary" onChange={(_, page) => setPage(page-1)}/>
                 </div>
             </div>
             <FiltersDialog
                 open={openSearch}
                 handleClose={handleCloseSearch}
-                handleSearch={searchForConstructors}
+                handleSearch={setConstructorFilters}
                 openFilter={filterClicked}
             />
         </div>
