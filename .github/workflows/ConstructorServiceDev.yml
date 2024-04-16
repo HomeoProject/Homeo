@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      image_tag: ${{ secrets.DOCKER_IMAGE_OWNER_CONSTRUCTORERVICE }}/homeo-constructorservice-dev:${GITHUB_SHA}
-      image_latest: ${{ secrets.DOCKER_IMAGE_OWNER_CONSTRUCTORSERVICE }}/homeo-constructorservice-dev:latest
+      image_tag: ${{ vars.DOCKER_IMAGE_OWNER_CONSTRUCTORERVICE }}/homeo-constructorservice-dev:${GITHUB_SHA}
+      image_latest: ${{ vars.DOCKER_IMAGE_OWNER_CONSTRUCTORSERVICE }}/homeo-constructorservice-dev:latest
 
     steps:
       - uses: actions/checkout@v4
