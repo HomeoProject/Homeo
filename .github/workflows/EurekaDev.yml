@@ -24,6 +24,7 @@ jobs:
 
       - name: Build Docker Images
         run: |
+          cd Eureka
           docker build -t ${{ env.image_tag }} .
           docker tag ${{ env.image_tag }} ${{ env.image_latest }}
 
