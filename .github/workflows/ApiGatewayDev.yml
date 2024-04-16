@@ -2,8 +2,8 @@ name: ApiGatewayDev
 
 on:
   push:
-    branches:
-      - dev
+    branches: ["dev"]
+    paths: ["ApiGateway/**"]
 
 jobs:
   release:

@@ -2,8 +2,8 @@ name: EurekaDev
 
 on:
   push:
-    branches:
-      - dev
+    branches: ["dev"]
+    paths: ["Eureka/**"]
 
 jobs:
   release:

@@ -2,8 +2,8 @@ name: SearchServiceDev
 
 on:
   push:
-    branches:
-      - dev
+    branches: ["dev"]
+    paths: ["SearchService/**"]
 
 jobs:
   release:

@@ -2,8 +2,8 @@ name: ConstructorServiceDev
 
 on:
   push:
-    branches:
-      - dev
+    branches: ["dev"]
+    paths: ["ConstructorService/**"]
 
 jobs:
   release:

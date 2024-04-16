@@ -2,8 +2,8 @@ name: ChatServiceDev
 
 on:
   push:
-    branches:
-      - dev
+    branches: ["dev"]
+    paths: ["ChatService/**"]
 
 jobs:
   release:

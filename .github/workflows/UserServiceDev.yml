@@ -2,8 +2,8 @@ name: UserServiceDev
 
 on:
   push:
-    branches:
-      - dev
+    branches: ["dev"]
+    paths: ["UserService/**"]
 
 jobs:
   release:

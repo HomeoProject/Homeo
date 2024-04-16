@@ -2,8 +2,8 @@ name: ReviewServiceDev
 
 on:
   push:
-    branches:
-      - dev
+    branches: ["dev"]
+    paths: ["ReviewService/**"]
 
 jobs:
   release:
