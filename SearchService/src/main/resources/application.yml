@@ -32,6 +32,10 @@ feign:
       ConstructorService: ${FEIGN_URL_CONSTRUCTORSERVICE:}
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
   metrics:
     tags:
       application: ${spring.application.name}
