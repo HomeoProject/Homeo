@@ -21,7 +21,7 @@ spring:
         - AddResponseHeader=Access-Control-Allow-Origin, *
       globalcors:
         cors-configurations:
-          '[/**]':
+          "[/**]":
             allowedOrigins: ${ALLOWED_CORS_URLS}
             allowedHeaders: "*"
             allowCredentials: true
@@ -33,6 +33,10 @@ eureka:
       defaultZone: ${EUREKA_URL}
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
   metrics:
     tags:
       application: ${spring.application.name}

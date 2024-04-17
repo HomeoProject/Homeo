@@ -45,6 +45,10 @@ cloudinary:
   default-avatar: ${CLOUDINARY_DEFAULT_AVATAR_URL}
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
   metrics:
     tags:
       application: ${spring.application.name}

@@ -35,6 +35,10 @@ okta:
     audience: ${OKTA_MANAGEMENT_API_AUDIENCE}
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
   metrics:
     tags:
       application: ${spring.application.name}

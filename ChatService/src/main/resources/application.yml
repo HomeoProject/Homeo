@@ -47,6 +47,10 @@ feign:
       UserService: ${FEIGN_URL_USERSERVICE:}
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
   metrics:
     tags:
       application: ${spring.application.name}
