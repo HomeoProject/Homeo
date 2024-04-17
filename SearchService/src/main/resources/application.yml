@@ -31,9 +31,14 @@ feign:
       UserService: ${FEIGN_URL_USERSERVICE:}
       ConstructorService: ${FEIGN_URL_CONSTRUCTORSERVICE:}
 
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
 openapi:
   service:
-    title: SearchService
+    title: ${spring.application.name}
     version: 1.0.0
     url: ${OPENAPI_URL}
 springdoc:

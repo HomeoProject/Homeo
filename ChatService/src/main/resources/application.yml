@@ -46,9 +46,14 @@ feign:
     urls:
       UserService: ${FEIGN_URL_USERSERVICE:}
 
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
 openapi:
   service:
-    title: ChatService
+    title: ${spring.application.name}
     version: 1.0.0
     url: ${OPENAPI_URL}
 springdoc:

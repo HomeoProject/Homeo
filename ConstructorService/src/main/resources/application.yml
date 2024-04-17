@@ -48,9 +48,14 @@ api-ninjas:
   url: ${API_NINJAS_URL}
   key: ${API_NINJAS_KEY}
 
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
 openapi:
   service:
-    title: ConstructorService
+    title: ${spring.application.name}
     version: 1.0.0
     url: ${OPENAPI_URL}
 springdoc:
