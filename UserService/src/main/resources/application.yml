@@ -44,9 +44,14 @@ cloudinary:
   folder-name: ${CLOUDINARY_FOLDER_NAME}
   default-avatar: ${CLOUDINARY_DEFAULT_AVATAR_URL}
 
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
 openapi:
   service:
-    title: UserService
+    title: ${spring.application.name}
     version: 1.0.0
     url: ${OPENAPI_URL}
 springdoc:
