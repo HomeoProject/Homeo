@@ -27,6 +27,34 @@
       @media screen and (max-width: 900px) {
         flex-direction: column;
       }
+
+      > .overlay-btn {
+        border: none;
+        border-radius: 50%;
+        background: none;
+        position: relative;
+        transition: filter 0.15s ease-in-out;
+        padding: 0;
+        min-width: 60px;
+
+        &:hover {
+          filter: brightness(0.9);
+          cursor: pointer;
+
+          > .overlay-pic {
+            opacity: 1;
+          }
+        }
+
+        > .overlay-pic {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          opacity: 0;
+          transition: opacity 0.15s ease-in-out;
+        }
+      }
     }
     .categories-accordion-details-image {
       width: 12rem;

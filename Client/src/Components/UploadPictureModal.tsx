@@ -1,5 +1,5 @@
 import { Box, Button, Modal, Typography } from '@mui/material'
-import { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, useRef, useState } from 'react'
 import { useUserContext } from '../Context/UserContext.ts'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 import { useForm } from 'react-hook-form'
@@ -19,7 +19,6 @@ import {
 import CloseIcon from '@mui/icons-material/Close'
 import LoadingSpinner from './LoadingSpinner.tsx'
 import { toast } from 'react-toastify'
-import DefaultAvatar from '../Assets/default-avatar.svg'
 import { AxiosInstance } from 'axios'
 
 type UploadPictureModalProps = {
@@ -31,6 +30,9 @@ type UploadPictureModalProps = {
   path: string
   method: 'patch' | 'post' | 'put'
   handleClose: () => void
+  customInitSource: string
+  setCustomExternalSource?: (source: string) => void
+  customHeadline: string
 }
 
 const UploadPictureModal = ({
@@ -42,17 +44,20 @@ const UploadPictureModal = ({
   path,
   method,
   handleClose,
+  customInitSource,
+  setCustomExternalSource,
+  customHeadline,
 }: UploadPictureModalProps) => {
   const { customUser, setCustomUser } = useUserContext()
   const [errorMessage, setErrorMessage] = useState('')
-  const [imgSrc, setImgSrc] = useState('')
+  const [imgSrc, setImgSrc] = useState(customInitSource)
   const [isLoading, setIsLoading] = useState(false)
 
   const { dictionary } = useDictionaryContext()
 
   const internalHandleClose = () => {
     handleClose()
-    customUser && setImgSrc(customUser?.avatar)
+    customUser && setImgSrc(customInitSource || customUser?.avatar)
     setErrorMessage('')
     setIsLoading(false)
   }
@@ -77,15 +82,15 @@ const UploadPictureModal = ({
 
   const { register, handleSubmit } = useForm()
 
-  useEffect(() => {
-    if (customUser?.avatar) {
-      setImgSrc(customUser.avatar)
-    }
-  }, [customUser])
-
   const cropperRef = useRef<ReactCropperElement>(null)
 
   const onSubmit = async () => {
+    if (setCustomExternalSource) {
+      setCustomExternalSource(imgSrc)
+      internalHandleClose()
+      return
+    }
+
     setIsLoading(true)
 
     const cropper = cropperRef.current?.cropper
@@ -108,18 +113,18 @@ const UploadPictureModal = ({
               ...customUser,
               avatar: response.data.avatar,
             })
-            toast.success('Picture uploaded successfully!')
           }
+          toast.success(dictionary.successfulyUploadedPicture)
         })
         .catch((error) => {
           console.error(error)
-          setErrorMessage('Error while uploading file')
-          setImgSrc(customUser.avatar)
+          setErrorMessage(dictionary.errorWhileUploadingFile)
+          setImgSrc(customInitSource)
         })
         .finally(() => setIsLoading(false))
     } else {
-      setErrorMessage('Something went wrong, please try again later.')
-      setImgSrc(DefaultAvatar)
+      setErrorMessage(dictionary.authErr)
+      setImgSrc(customInitSource)
       setIsLoading(false)
     }
   }
@@ -139,7 +144,7 @@ const UploadPictureModal = ({
           image.height < (minHeight || 220)
         ) {
           setErrorMessage(
-            `Image must be at least ${minWidth || 220}x${minHeight || 220} pixels`
+            `${dictionary.imageMustBeAtLeast} ${minWidth || 220}x${minHeight || 220} ${dictionary.pixels}`
           ) // Default: 220x220
           setIsLoading(false)
           return
@@ -147,9 +152,7 @@ const UploadPictureModal = ({
 
         const maxSizeInBytes = (maxSize || 1) * 1024 * 1024 // Default: 1MB
         if (file.size > maxSizeInBytes) {
-          setErrorMessage(
-            `Image size exceeds the maximum allowed size (${maxSize || 1}MB)`
-          )
+          setErrorMessage(`${dictionary.imageSizeExceeds} (${maxSize || 1}MB)`)
           setIsLoading(false)
           return
         }
@@ -162,7 +165,7 @@ const UploadPictureModal = ({
         reader.readAsDataURL(file)
       }
     } else {
-      setErrorMessage('Unsupported file type')
+      setErrorMessage(dictionary.unsupportedFileType)
       setIsLoading(false)
     }
   }
@@ -197,7 +200,7 @@ const UploadPictureModal = ({
             component="h2"
             sx={titleTypographyStyle}
           >
-            {dictionary.changePicture}
+            {customHeadline}
           </Typography>
           <button onClick={internalHandleClose} className="close-modal-button">
             <CloseIcon className="close-icon"></CloseIcon>
@@ -229,7 +232,7 @@ const UploadPictureModal = ({
           variant="body1"
           sx={errorMessageTypographyStyle}
         >
-          {<Warning></Warning> && errorMessage}
+          {<Warning /> && errorMessage}
         </Typography>
         <Box>
           <form onSubmit={handleSubmit(onSubmit)} className="modal-form">

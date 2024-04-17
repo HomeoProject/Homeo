@@ -7,6 +7,8 @@ import { useDictionaryContext } from '../Context/DictionaryContext'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import apiClient from '../AxiosClients/apiClient'
+import { useAuth0 } from '@auth0/auth0-react'
+import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 
 interface PersonalDataForm {
   firstName: string
@@ -16,7 +18,9 @@ interface PersonalDataForm {
 }
 
 const PersonalDataForm = () => {
-  const [isFormLoading, setIsFormLoading] = useState(false)
+  const [isFormLoading, setIsFormLoading] = useState<boolean>(false)
+  const [isProfileComplete, setIsProfileComplete] = useState<boolean>(false)
+  const { getAccessTokenSilently } = useAuth0()
   const { customUser, setCustomUser } = useUserContext()
   const { dictionary } = useDictionaryContext()
 
@@ -54,7 +58,24 @@ const PersonalDataForm = () => {
       toast.error(dictionary.authErr)
       setIsFormLoading(false)
     }
+    if (!isProfileComplete) {
+      window.location.reload()
+    }
   }
+
+  useEffect(() => {
+    getAccessTokenSilently()
+      .then((token) => {
+        const isProfileComplete = checkIfUserHasPermission(token, 'user')
+        setIsProfileComplete(isProfileComplete)
+      })
+      .catch((error) => {
+        console.error(error)
+        toast.error(dictionary.errorLoadingUser)
+        setIsProfileComplete(false)
+      })
+    // eslint-disable-next-line
+  }, [getAccessTokenSilently])
 
   useEffect(() => {
     if (customUser) {

@@ -16,6 +16,9 @@ import Swal from 'sweetalert2'
 import { setAuthToken } from '../AxiosClients/apiClient.ts'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import { useDictionaryContext } from '../Context/DictionaryContext'
+import { checkIfUserHasPermission } from '../Auth0/auth0Helpers.ts'
+import LoadingSpinner from '../Components/LoadingSpinner.tsx'
+import { toast } from 'react-toastify'
 
 const AdminPanel = () => {
   const { isAuthenticated } = useAuth0()
@@ -33,6 +36,16 @@ const AdminPanel = () => {
   const [pageNumber, setPageNumber] = useState<number>(0)
   const [pageCount, setPageCount] = useState<number>(0)
   const [users, setUsers] = useState<CustomUser[]>([])
+  const [isUserAdmin, setIsUserAdmin] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    const checkIfUserIsAdmin = async () => {
+      const token = await getAccessTokenSilently()
+      const isAdmin = checkIfUserHasPermission(token, 'admin')
+      setIsUserAdmin(isAdmin)
+    }
+    checkIfUserIsAdmin()
+  }, [getAccessTokenSilently])
 
   useEffect(() => {
     if (inputValue === '' || inputValue.length < 3) {
@@ -43,9 +56,28 @@ const AdminPanel = () => {
       category.name.toLowerCase().includes(inputValue.toLowerCase())
     )
     setCategoriesToShow(categoriesFliltred)
-  }, [inputValue])
+  }, [categories, inputValue])
 
   useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const token = await getAccessTokenSilently()
+        setAuthToken(token)
+        const response = await apiClient.post(`/users/search?page=0&size=5`, {
+          id: idInputValue,
+          firstName: nameInputValue,
+          lastName: lastNameInputValue,
+          phoneNumber: phoneNumberInputValue,
+          email: emailInputValue,
+        })
+        setPageNumber(response.data.number)
+        setPageCount(response.data.totalPages)
+        setUsers(response.data.content)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
     if (
       idInputValue.length < 3 &&
       nameInputValue.length < 3 &&
@@ -64,26 +96,8 @@ const AdminPanel = () => {
     lastNameInputValue,
     phoneNumberInputValue,
     emailInputValue,
+    getAccessTokenSilently,
   ])
-
-  const getUsers = async () => {
-    try {
-      const token = await getAccessTokenSilently()
-      setAuthToken(token)
-      const response = await apiClient.post(`/users/search?page=0&size=5`, {
-        id: idInputValue,
-        firstName: nameInputValue,
-        lastName: lastNameInputValue,
-        phoneNumber: phoneNumberInputValue,
-        email: emailInputValue,
-      })
-      setPageNumber(response.data.number)
-      setPageCount(response.data.totalPages)
-      setUsers(response.data.content)
-    } catch (error) {
-      console.error(error)
-    }
-  }
 
   const getUsersByPage = async (page: number) => {
     try {
@@ -111,22 +125,24 @@ const AdminPanel = () => {
       const token = await getAccessTokenSilently()
       setAuthToken(token)
       Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: dictionary.areYouSure,
+        text: dictionary.youWillNotBeAbleToRevert,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!',
+        confirmButtonText: dictionary.yesDeleteIt,
       }).then((result) => {
         if (result.isConfirmed) {
           apiClient.delete(`/users/${id}`)
           const deletedUser = users.filter((user) => user.id !== id)
           setUsers(deletedUser)
+          toast.success(dictionary.userDeletedSuccessfully)
         }
       })
     } catch (error) {
       console.error(error)
+      toast.error(dictionary.failedToDeleteUser)
     }
   }
 
@@ -135,17 +151,17 @@ const AdminPanel = () => {
       const token = await getAccessTokenSilently()
       setAuthToken(token)
       Swal.fire({
-        title: 'Are you sure?',
+        title: dictionary.areYouSure,
         text: isApproved
-          ? 'Do you want to approve this user?'
-          : 'Do you want to revoke approval for this user?',
+          ? dictionary.doYouWantToApproveThisUser
+          : dictionary.doYouWantToDisapproveThisUser,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: isApproved
-          ? 'Yes, approve user!'
-          : 'Yes, revoke approval!',
+          ? dictionary.yesApproveUser
+          : dictionary.yesDisapproveUser,
       }).then((result) => {
         if (result.isConfirmed) {
           apiClient.patch(`/users/approve/${id}`, {
@@ -162,10 +178,14 @@ const AdminPanel = () => {
             return user
           })
           setUsers(newUsers)
+          isApproved
+            ? toast.success(dictionary.userDisapprovedSuccessfully)
+            : toast.success(dictionary.userApprovedSuccessfully)
         }
       })
     } catch (error) {
       console.error(error)
+      toast.error(dictionary.failedToApproveUser)
     }
   }
 
@@ -174,17 +194,18 @@ const AdminPanel = () => {
       const token = await getAccessTokenSilently()
       setAuthToken(token)
       Swal.fire({
-        title: 'Are you sure?',
+        title: dictionary.areYouSure,
         text: isBlocked
-          ? 'Do you want to block this user?'
-          : 'Do you want to unblock this user?',
+          ? dictionary.doYouWantToBlockThisUser
+          : dictionary.doYouWantToUnblockThisUser,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: isBlocked
-          ? 'Yes, block user!'
-          : 'Yes, unblock user!',
+          ? dictionary.yesBlockUser
+          : dictionary.yesUnblockUser,
+        cancelButtonText: dictionary.cancelWord,
       }).then((result) => {
         if (result.isConfirmed) {
           apiClient.patch(`/users/block/${id}`, {
@@ -201,10 +222,16 @@ const AdminPanel = () => {
           })
 
           setUsers(newUsers)
+          isBlocked
+            ? toast.success(dictionary.userBlockedSuccessfully)
+            : toast.success(dictionary.userUnblockedSuccessfully)
         }
       })
     } catch (error) {
       console.error(error)
+      isBlocked
+        ? toast.error(dictionary.failedToBlockUser)
+        : toast.error(dictionary.failedToUnblockUser)
     }
   }
 
@@ -219,13 +246,13 @@ const AdminPanel = () => {
       const token = await getAccessTokenSilently()
       setAuthToken(token)
       Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: dictionary.areYouSure,
+        text: dictionary.youWillNotBeAbleToRevert,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!',
+        confirmButtonText: dictionary.yesDeleteIt,
       }).then((result) => {
         if (result.isConfirmed) {
           apiClient.delete(`/constructors/categories/${id}`)
@@ -234,15 +261,12 @@ const AdminPanel = () => {
           )
           setCategories(deletedCategory)
           setCategoriesToShow(deletedCategory)
-          Swal.fire({
-            title: 'Deleted!',
-            text: 'Your file has been deleted.',
-            icon: 'success',
-          })
+          toast.success(dictionary.categoryDeletedSuccessfully)
         }
       })
     } catch (error) {
       console.error(error)
+      toast.error(dictionary.failedToDeleteCategory)
     }
   }
 
@@ -269,14 +293,10 @@ const AdminPanel = () => {
       })
       setCategories(editedCategories)
       setCategoriesToShow(editedCategories)
-      Swal.fire({
-        icon: 'success',
-        title: 'Your work has been saved',
-        showConfirmButton: false,
-        timer: 1500,
-      })
+      toast.success(dictionary.categoryEditedSuccessfully)
     } catch (error) {
       console.error(error)
+      toast.error(dictionary.failedToEditCategory)
     }
   }
 
@@ -285,8 +305,6 @@ const AdminPanel = () => {
     description: string
   }) => {
     try {
-      const token = await getAccessTokenSilently()
-      setAuthToken(token)
       const createdCategory = await apiClient.post('/constructors/categories', {
         name: newCategory.name,
         description: newCategory.description,
@@ -294,18 +312,30 @@ const AdminPanel = () => {
       const newCategoryList = [...categories, createdCategory.data]
       setCategories(newCategoryList)
       setCategoriesToShow(newCategoryList)
-      Swal.fire({
-        icon: 'success',
-        title: 'Your work has been saved',
-        showConfirmButton: false,
-        timer: 1500,
-      })
+      toast.success('Category added successfully')
     } catch (error) {
       console.error(error)
+      toast.error('Failed to add category')
     }
   }
 
   const { dictionary } = useDictionaryContext()
+
+  if (isUserAdmin === null) {
+    return (
+      <div className="AdminPanelPage">
+        <LoadingSpinner />
+      </div>
+    )
+  }
+
+  if (!isUserAdmin) {
+    return (
+      <div className="AdminPanelPage">
+        <ErrorPage error={dictionary.errorPageMessage} />
+      </div>
+    )
+  }
 
   return isAuthenticated ? (
     <div className="AdminPanelPage">

@@ -16,6 +16,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import apiClient from '../AxiosClients/apiClient'
 import { useConstructorContext } from '../Context/ConstructorContext'
 import { useDictionaryContext } from '../Context/DictionaryContext'
+import Banner from './Banner'
 
 interface ConstructorDataForm {
   phoneNumber: string
@@ -31,32 +32,23 @@ interface ConstructorDataForm {
 
 const ConstructorDataForm = () => {
   const { constructor, setConstructor } = useConstructorContext()
-
   const [selectedPlaces, setSelectedPlaces] = useState<string[]>([])
-
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
-
   const [acceptedPaymentMethods, setAcceptedPaymentMethods] = useState<
     PaymentMethod[]
   >([])
-
   const [placesErrorMeessage, setPlacesErrorMessage] = useState<string>('')
-
   const [languagesErrorMessage, setLanguagesErrorMessage] = useState<string>('')
-
   const [
     acceptedPaymentMethodsErrorMessage,
     setAcceptedPaymentMethodsErrorMessage,
   ] = useState<string>('')
-
   const [selectedCategories, setSelectedCategories] = useState<number[]>([])
-
   const [categoriesErrorMessage, setCategoriesErrorMessage] = useState('')
-
   const [isFormLoading, setIsFormLoading] = useState<boolean>(false)
-
+  const [isProfileComplete, setIsProfileComplete] = useState<boolean>(false)
+  const [isUserConstructor, setIsUserConstructor] = useState<boolean>(false)
   const { isAuthenticated, getAccessTokenSilently } = useAuth0()
-
   const { dictionary } = useDictionaryContext()
 
   const handleSelectPlace = (places: string[]) => {
@@ -189,23 +181,34 @@ const ConstructorDataForm = () => {
     }
 
     if (isAuthenticated) {
-      const token = await getAccessTokenSilently()
-
-      const isProfileComplete = checkIfUserHasPermission(token, 'user')
-
       if (!isProfileComplete) {
         toast.error(dictionary.constructorBeforePersonalMessageErr)
         setIsFormLoading(false)
         return
       }
 
-      const isConstructor = checkIfUserHasPermission(token, 'constructor')
-
-      updateConstructorProfile(isConstructor, finalData)
+      updateConstructorProfile(isUserConstructor, finalData)
     } else {
       toast.error(dictionary.authErr)
     }
   }
+
+  useEffect(() => {
+    const checkIfProfileComplete = async () => {
+      const token = await getAccessTokenSilently()
+      const profileComplete = checkIfUserHasPermission(token, 'user')
+      setIsProfileComplete(profileComplete)
+    }
+
+    const checkIfConstructor = async () => {
+      const token = await getAccessTokenSilently()
+      const isConstructor = checkIfUserHasPermission(token, 'constructor')
+      setIsUserConstructor(isConstructor)
+    }
+
+    checkIfProfileComplete()
+    checkIfConstructor()
+  }, [getAccessTokenSilently])
 
   useEffect(() => {
     if (isAuthenticated && constructor !== null) {
@@ -248,6 +251,13 @@ const ConstructorDataForm = () => {
 
   return (
     <div className="ConstructorDataForm">
+      {!isUserConstructor && isProfileComplete && (
+        <Banner
+          variant="info"
+          text={dictionary.incompleteProfileInfo}
+          headline={dictionary.incompleteProfileInfoHeadline}
+        />
+      )}
       <h1>{dictionary.contructorInfoWord}</h1>
       <div className="constructor-data-form-wrapper">
         <form
@@ -402,7 +412,7 @@ const ConstructorDataForm = () => {
               variant="contained"
               type="submit"
               className="submit-button"
-              disabled={isFormLoading}
+              disabled={isFormLoading || !isProfileComplete}
             >
               {dictionary.saveWord}
             </Button>
