@@ -21,7 +21,7 @@ spring:
         - AddResponseHeader=Access-Control-Allow-Origin, *
       globalcors:
         cors-configurations:
-          "[/**]":
+          '[/**]':
             allowedOrigins: ${ALLOWED_CORS_URLS}
             allowedHeaders: "*"
             allowCredentials: true
