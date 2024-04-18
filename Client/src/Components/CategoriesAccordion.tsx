@@ -40,12 +40,13 @@ const CategoriesAccordion = ({
               handleClose={() => setOpenPictureModal(false)}
               minHeight={200}
               minWidth={200}
-              maxSize={1}
+              maxSize={2}
               client={apiClient}
               path={`/constructors/categories/image/${category.id}`}
               method="put"
               customInitSource={category.image}
               customHeadline={dictionary.changeCategoryImage}
+              aspectRatio="rectangle"
             />
             <Accordion>
               <AccordionSummary
@@ -69,9 +70,9 @@ const CategoriesAccordion = ({
                       src={category.image}
                       alt={'Category'}
                       isApproved={false}
-                      variant="page"
-                      maxHeight="10rem"
-                      maxWidth="10rem"
+                      variant="category"
+                      maxHeight="9rem"
+                      maxWidth="16rem"
                       customOnClick={() => setOpenPictureModal(true)}
                     />
                     <div className="categories-accordion-details-fields">

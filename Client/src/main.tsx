@@ -16,6 +16,7 @@ import ConstructorPage from './Pages/ConstructorPage.tsx'
 import ErrorHeader from './Components/ErrorHeader.tsx'
 import MyReviews from './Components/MyReviews.tsx'
 import Footer from './Components/Footer.tsx'
+import ChatPage from './Pages/ChatPage.tsx'
 
 const domain: string | undefined = import.meta.env.VITE_REACT_APP_AUTH0_DOMAIN
 const clientId: string | undefined = import.meta.env
@@ -70,6 +71,10 @@ const router = createBrowserRouter([
       {
         path: '/constructor/:id',
         element: <ConstructorPage />,
+      },
+      {
+        path: '/chat',
+        element: <ChatPage />,
       },
     ],
   },

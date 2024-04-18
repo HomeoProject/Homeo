@@ -23,7 +23,7 @@
           width: calc(100% - 10px);
           height: 10rem;
           position: relative;
-          background: linear-gradient(0deg, rgba(0, 0, 0, 0.75), transparent);
+          background: linear-gradient(0deg, rgba(0, 0, 0, 0.863), transparent);
           border-radius: 10px;
           overflow: hidden;
 
@@ -59,7 +59,11 @@
             justify-content: center;
             flex-direction: column;
             border-radius: 10px;
-            background: linear-gradient(0deg, rgba(0, 0, 0, 0.75), transparent);
+            background: linear-gradient(
+              0deg,
+              rgba(0, 0, 0, 0.877),
+              transparent
+            );
 
             > b {
               font-size: v.$font-size-normal;

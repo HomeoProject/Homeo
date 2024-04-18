@@ -69,10 +69,10 @@ const CategoryFormModal = ({
               <UserAvatar
                 src={category?.image || defaultCategory}
                 alt="category-photo"
-                variant="standard"
+                variant="category-view"
                 isApproved={false}
-                maxHeight="15rem"
-                maxWidth="15rem"
+                maxHeight="9rem"
+                maxWidth="16rem"
               />
             )}
             <TextField

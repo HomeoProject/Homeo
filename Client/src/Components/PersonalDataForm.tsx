@@ -53,13 +53,13 @@ const PersonalDataForm = () => {
         })
         .finally(() => {
           setIsFormLoading(false)
+          if (!isProfileComplete) {
+            window.location.reload()
+          }
         })
     } else {
       toast.error(dictionary.authErr)
       setIsFormLoading(false)
-    }
-    if (!isProfileComplete) {
-      window.location.reload()
     }
   }
 

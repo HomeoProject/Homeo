@@ -16,6 +16,7 @@ import GroupsIcon from '@mui/icons-material/Groups'
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
 import burgerIcon from '../Assets/burger.svg'
 import { Link } from 'react-router-dom'
+import '../style/scss/components/HeaderDrawer.scss'
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right'
 

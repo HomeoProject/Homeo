@@ -7,7 +7,7 @@ type UserAvatarProps = {
   src: string
   alt: string
   isApproved: boolean
-  variant?: 'page' | 'standard' | 'link'
+  variant?: 'page' | 'standard' | 'link' | 'category' | 'category-view'
   viewHref?: string
   customOnClick?: () => void
   maxWidth?: string
@@ -81,6 +81,37 @@ const UserAvatar = ({
           />
           <img src={CameraIcon} alt="Change picture" className="overlay-pic" />
         </button>
+      )
+    case 'category':
+      return (
+        <button className="overlay-btn" onClick={customOnClick}>
+          <Avatar
+            alt={alt}
+            src={src}
+            sx={{
+              width: '100%',
+              height: '100%',
+              maxWidth: maxWidth || '100%',
+              maxHeight: maxHeight || '100%',
+              borderRadius: '10px',
+            }}
+          />
+          <img src={CameraIcon} alt="Change picture" className="overlay-pic" />
+        </button>
+      )
+    case 'category-view':
+      return (
+        <Avatar
+          alt={alt}
+          src={src}
+          sx={{
+            width: '100%',
+            height: '100%',
+            maxWidth: maxWidth || '100%',
+            maxHeight: maxHeight || '100%',
+            borderRadius: '10px',
+          }}
+        />
       )
     case 'standard':
       return isApproved ? (
