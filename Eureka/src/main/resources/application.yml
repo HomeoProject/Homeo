@@ -8,7 +8,7 @@ management:
         include: health, metrics, prometheus
   metrics:
     tags:
-      application: ${spring.application.name}
+      application: Eureka
 
 eureka:
   client:
