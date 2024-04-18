@@ -33,6 +33,7 @@ type UploadPictureModalProps = {
   customInitSource: string
   setCustomExternalSource?: (source: string) => void
   customHeadline: string
+  aspectRatio?: 'square' | 'rectangle'
 }
 
 const UploadPictureModal = ({
@@ -47,6 +48,7 @@ const UploadPictureModal = ({
   customInitSource,
   setCustomExternalSource,
   customHeadline,
+  aspectRatio = 'square',
 }: UploadPictureModalProps) => {
   const { customUser, setCustomUser } = useUserContext()
   const [errorMessage, setErrorMessage] = useState('')
@@ -214,7 +216,7 @@ const UploadPictureModal = ({
               src={imgSrc}
               style={{ height: 400, width: '100%' }}
               initialAspectRatio={1}
-              aspectRatio={1}
+              aspectRatio={aspectRatio === 'square' ? 1 : 16 / 9}
               guides={false}
               ref={cropperRef}
               viewMode={1}

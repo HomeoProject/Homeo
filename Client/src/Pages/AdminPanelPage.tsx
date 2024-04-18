@@ -64,11 +64,11 @@ const AdminPanel = () => {
         const token = await getAccessTokenSilently()
         setAuthToken(token)
         const response = await apiClient.post(`/users/search?page=0&size=5`, {
-          id: idInputValue,
-          firstName: nameInputValue,
-          lastName: lastNameInputValue,
-          phoneNumber: phoneNumberInputValue,
-          email: emailInputValue,
+          id: idInputValue || null,
+          firstName: nameInputValue || null,
+          lastName: lastNameInputValue || null,
+          phoneNumber: phoneNumberInputValue || null,
+          email: emailInputValue || null,
         })
         setPageNumber(response.data.number)
         setPageCount(response.data.totalPages)
