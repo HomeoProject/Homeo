@@ -17,6 +17,8 @@ import ErrorHeader from './Components/ErrorHeader.tsx'
 import MyReviews from './Components/MyReviews.tsx'
 import Footer from './Components/Footer.tsx'
 import ChatPage from './Pages/ChatPage.tsx'
+import UserAdminSearch from './Components/UserAdminSearch.tsx'
+import CategoriesAdminSearch from './Components/CategoriesAdminSearch.tsx'
 
 const domain: string | undefined = import.meta.env.VITE_REACT_APP_AUTH0_DOMAIN
 const clientId: string | undefined = import.meta.env
@@ -49,6 +51,16 @@ const router = createBrowserRouter([
       {
         path: '/admin-panel',
         element: <AdminPanel />,
+        children: [
+          {
+            index: true,
+            element: <UserAdminSearch />,
+          },
+          {
+            path: 'categories',
+            element: <CategoriesAdminSearch />,
+          },
+        ]
       },
       {
         path: '/user/:id',
