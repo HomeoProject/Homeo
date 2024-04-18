@@ -124,12 +124,11 @@ public class AppUserController {
     ADMIN ENDPOINT
      */
     @PostMapping("/search")
-    public ResponseEntity<Page<AppUserDto>> searchAppUsers(@RequestBody @Valid AppUserFilterDto dto,  Pageable pageable) {
+    public ResponseEntity<Page<AppUserDto>> searchAppUsers(@RequestBody @Valid AppUserFilterDto dto, Pageable pageable) {
         LOGGER.info("Inside: AppUserController -> searchAppUsers()...");
         Page<AppUserDto> appUsers = service.searchAppUsers(dto, pageable);
         return ResponseEntity.ok(appUsers);
     }
-
 
     private String getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

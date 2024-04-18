@@ -23,6 +23,7 @@ repositories {
 
 ext {
 	set('springCloudVersion', "2023.0.1")
+	set('otelVersion', "2.3.0")
 }
 
 dependencies {
@@ -42,6 +43,7 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'com.cloudinary:cloudinary-http45:1.38.0'
 	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly("io.opentelemetry.javaagent:opentelemetry-javaagent:${otelVersion}")
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"

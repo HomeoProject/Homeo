@@ -1,6 +1,10 @@
 server:
   port: ${PORT:8761}
 
+spring:
+  application:
+    name: Eureka
+
 management:
   endpoints:
     web:
@@ -8,7 +12,11 @@ management:
         include: health, metrics, prometheus
   metrics:
     tags:
-      application: Eureka
+      application: ${spring.application.name}
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
 
 eureka:
   client:
