@@ -102,8 +102,8 @@ const AdvertsPage = () => {
             exactAverageRating: (constructorFilters.directionValue === 'exactly that') ? constructorFilters.ratingValue : null,
             isApproved: false,
             languages: constructorFilters.languages.length !== 0 ? constructorFilters.languages : null,
-            paymentMethods: constructorFilters.selectedPaymentMethods.length !== 0 ? constructorFilters.selectedPaymentMethods : null,
-            location: constructorFilters.selectedPlaces ? constructorFilters.selectedPlaces : null,
+            paymentMethods: constructorFilters.selectedPaymentMethods.length !== 0 ? constructorFilters.selectedPaymentMethods.map((payment:string) => payment.toUpperCase()) : null,
+            cities: constructorFilters.selectedPlaces.length !== 0 ? constructorFilters.selectedPlaces : null,
         }
         console.log(body)
         setIsLoading(true)
