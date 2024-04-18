@@ -17,6 +17,7 @@ repositories {
 
 ext {
 	set('springCloudVersion', "2022.0.4")
+	set('otelVersion', "2.3.0")
 }
 
 dependencies {
@@ -37,6 +38,7 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 	implementation 'com.okta.spring:okta-spring-boot-starter:3.0.6'
 	implementation 'com.auth0:auth0:2.7.0'
+	runtimeOnly 'io.opentelemetry.javaagent:opentelemetry-javaagent:${otelVersion}'
 	runtimeOnly 'org.postgresql:postgresql'
 	testCompileOnly 'org.projectlombok:lombok:1.18.30'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'

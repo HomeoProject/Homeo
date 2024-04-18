@@ -23,6 +23,7 @@ repositories {
 
 ext {
 	set('springCloudVersion', "2023.0.0")
+	set('otelVersion', "2.3.0")
 }
 
 dependencies {
@@ -40,6 +41,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'com.auth0:auth0:2.7.0'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+	runtimeOnly 'io.opentelemetry.javaagent:opentelemetry-javaagent:${otelVersion}'
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.testcontainers:junit-jupiter'
 	testImplementation 'org.testcontainers:postgresql'
