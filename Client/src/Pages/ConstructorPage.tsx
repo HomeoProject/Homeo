@@ -28,6 +28,7 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 import { toast } from 'react-toastify'
 import ConstructorProfileInfo from '../Components/ConstructorProfileInfo'
+import ChatMessageModal from '../Components/ChatMessageModal'
 
 const ConstructorPage = () => {
   const constructorUserId = useParams<{ id: string }>().id
@@ -55,12 +56,22 @@ const ConstructorPage = () => {
   const [constructorDeleted, setConstructorDeleted] = useState<boolean>(false)
   const [isViewingOwnProfile, setIsViewingOwnProfile] = useState<boolean>(false)
   const [openReviewModal, setOpenReviewModal] = useState<boolean>(false)
+  const [openChatMessageModal, setOpenChatMessageModal] =
+    useState<boolean>(false)
   const [canUserInteract, setCanUserInteract] = useState<boolean>(false)
   const [oldestReviewDate, setOldestReviewDate] = useState<string>(
     new Date().toISOString()
   )
 
   const { dictionary } = useDictionaryContext()
+
+  const handleOpenChatMessageModal = () => {
+    setOpenChatMessageModal(true)
+  }
+
+  const handleCloseChatMessageModal = () => {
+    setOpenChatMessageModal(false)
+  }
 
   const handleOpenReviewModal = () => {
     setOpenReviewModal(true)
@@ -250,6 +261,11 @@ const ConstructorPage = () => {
             constructorReviews={constructorReviews}
             setConstructorReviews={setConstructorReviews}
           />
+          <ChatMessageModal
+            messageModalOpen={openChatMessageModal}
+            receiverName={constructorUserData.firstName!}
+            handleClose={handleCloseChatMessageModal}
+          />
           <section className="constructor-page-main-info-section">
             <div className="constructor-page-main-section-content">
               <div className="constructor-page-main-section-content-avatar-wrapper">
@@ -415,6 +431,7 @@ const ConstructorPage = () => {
                         color="primary"
                         className="open-chat-button"
                         disabled={!canUserInteract || isViewingOwnProfile}
+                        onClick={handleOpenChatMessageModal}
                       >
                         <ChatIcon />
                         {dictionary.chat}

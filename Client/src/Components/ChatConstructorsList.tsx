@@ -1,0 +1,16 @@
+import '../style/scss/components/ChatConstructorsList.scss'
+import { ChatParticipant } from '../types/types'
+
+type ChatConstructorsListProps = {
+  participants: ChatParticipant[]
+}
+
+const ChatConstructorsList = ({ participants }: ChatConstructorsListProps) => {
+  return (
+    <div className="ChatConstructorList">
+      <div></div>
+    </div>
+  )
+}
+
+export default ChatConstructorsList

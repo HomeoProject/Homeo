@@ -100,3 +100,11 @@ export interface Developer {
 export interface Dictionary {
   [key: string]: string
 }
+
+export interface ChatParticipant {
+  id: number
+  userId: string
+  lastViewedAt: string
+  createdAt: string
+  updatedAt: string
+}

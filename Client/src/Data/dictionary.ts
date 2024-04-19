@@ -187,6 +187,16 @@ export const english = {
   failedToDisapproveUser: 'Failed to revoke approval',
   yesApproveUser: 'Yes, approve',
   yesDisapproveUser: 'Yes, revoke approval',
+  sendWord: 'Send',
+  writeTo: 'Write to',
+  messageSentSuccessfully: 'Message sent successfully',
+  failedToSendMessage: 'Failed to send message',
+  sendMessage: 'Send message',
+  whenWritingMessage: 'When writing a message, remember about:',
+  beforeFullyDescribing:
+    'Asking about the constructor availability before fully describing the problem',
+  youWillBeAbleToAttachPictures:
+    'You will be able to attach pictures after sending the message and opening the full chat',
 }
 
 export const polish = {
@@ -194,7 +204,7 @@ export const polish = {
   personalProfile: 'Twój profil',
   constructorProfile: 'Profil konstrutora',
   incompleteProfileWarning:
-    'Aby komentować, zostawiać recenzje, kontaktować się z konstruktorami lub nim zostać, proszę wypełnić brakujące informacje osobowe.',
+    'Aby komentować, zostawiać recenzje, kontaktować się z konstruktorami lub nim zostać, wypełnij brakujące informacje osobowe.',
   incompleteProfileWarningHeadline: 'Twój profil jest niekompletny',
   incompleteProfileInfo:
     'Uzupełnij brakujące informacje w profilu konstruktora i zacznij oferować innym swoje usługi.',
@@ -380,4 +390,14 @@ export const polish = {
   failedToDisapproveUser: 'Nie udało się cofnąć weryfikacji',
   yesApproveUser: 'Tak, weryfikuj',
   yesDisapproveUser: 'Tak, cofnij weryfikację',
+  sendWord: 'Wyślij',
+  writeTo: 'Napisz do',
+  messageSentSuccessfully: 'Wiadomość wysłana pomyślnie',
+  failedToSendMessage: 'Nie udało się wysłać wiadomości',
+  sendMessage: 'Wyślij wiadomość',
+  whenWritingMessage: 'Kiedy piszesz wiadomość, pamiętaj o:',
+  beforeFullyDescribing:
+    'Zapytaniu o dostępność konstruktora przed dokładnym opisaniem problemu',
+  youWillBeAbleToAttachPictures:
+    'Będziesz mógł załączyć zdjęcia po wysłaniu wiadomości i otwarciu pełnego czatu',
 }

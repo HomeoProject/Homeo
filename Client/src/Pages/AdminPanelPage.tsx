@@ -42,23 +42,31 @@ const AdminPanel = () => {
 
   return isAuthenticated ? (
     <div className="AdminPanelPage">
-      <div className='admin-panel-nav'>
-        <NavLink 
-          to='/admin-panel'
-          className={({ isActive }) => {return isActive ? 'admin-panel-nav-link active' : 'admin-panel-nav-link'}} 
+      <div className="admin-panel-nav">
+        <NavLink
+          to="/admin-panel"
+          className={({ isActive }) => {
+            return isActive
+              ? 'admin-panel-nav-link active'
+              : 'admin-panel-nav-link'
+          }}
           end
         >
           Users
         </NavLink>
-        <NavLink 
-          to='/admin-panel/categories' 
-          className={({ isActive }) => {return isActive ? 'admin-panel-nav-link active' : 'admin-panel-nav-link'}}   
+        <NavLink
+          to="/admin-panel/categories"
+          className={({ isActive }) => {
+            return isActive
+              ? 'admin-panel-nav-link active'
+              : 'admin-panel-nav-link'
+          }}
           end
         >
           Categories
         </NavLink>
       </div>
-      <Outlet/>
+      <Outlet />
     </div>
   ) : (
     <ErrorPage error={dictionary.errorPageMessage} />
