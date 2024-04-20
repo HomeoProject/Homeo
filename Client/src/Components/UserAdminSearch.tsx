@@ -1,70 +1,33 @@
 import {useState, useEffect} from 'react'
 import UserAccordion from '../Components/UsersAccordion'
 import { TextField } from '@mui/material'
-import Button from '@mui/material/Button'
-import RefreshIcon from '@mui/icons-material/Refresh'
 import { useAuth0 } from '@auth0/auth0-react'
 import { CustomUser } from '../types/types'
 import { setAuthToken } from '../AxiosClients/apiClient.ts'
 import apiClient from '../AxiosClients/apiClient'
 import Swal from 'sweetalert2'
 import { toast } from 'react-toastify'
+import Pagination from '@mui/material/Pagination';
 import { useDictionaryContext } from '../Context/DictionaryContext'
+import LoadingSpinner from './LoadingSpinner.tsx'
+import { set } from 'react-hook-form'
 
 const UserAdminSearch = () => {
   const { getAccessTokenSilently } = useAuth0()
   const { dictionary } = useDictionaryContext()
 
+  const [loading, setLoading] = useState<boolean>(false)
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null) 
   const [idInputValue, setIdInputValue] = useState<string>('')
   const [nameInputValue, setNameInputValue] = useState<string>('')
   const [lastNameInputValue, setLastNameInputValue] = useState<string>('')
   const [phoneNumberInputValue, setPhoneNumberInputValue] = useState<string>('')
   const [emailInputValue, setEmailInputValue] = useState<string>('')
   const [pageNumber, setPageNumber] = useState<number>(0)
-  const [pageCount, setPageCount] = useState<number>(0)
+  const [totalPages, setTotalPages] = useState<number>(0)
   const [users, setUsers] = useState<CustomUser[]>([])
 
     useEffect(() => {
-        const getUsers = async () => {
-          try {
-            const token = await getAccessTokenSilently()
-            setAuthToken(token)
-            const response = await apiClient.post(`/users/search?page=0&size=5`, {
-              id: idInputValue || null,
-              firstName: nameInputValue || null,
-              lastName: lastNameInputValue || null,
-              phoneNumber: phoneNumberInputValue || null,
-              email: emailInputValue || null,
-            })
-            setPageNumber(response.data.number)
-            setPageCount(response.data.totalPages)
-            setUsers(response.data.content)
-          } catch (error) {
-            console.error(error)
-          }
-        }
-    
-        if (
-          idInputValue.length < 3 &&
-          nameInputValue.length < 3 &&
-          lastNameInputValue.length < 3 &&
-          phoneNumberInputValue.length < 3 &&
-          emailInputValue.length < 3
-        ) {
-          setUsers([])
-          return
-        }
-    
-        getUsers()
-      }, [
-        idInputValue,
-        nameInputValue,
-        lastNameInputValue,
-        phoneNumberInputValue,
-        emailInputValue,
-        getAccessTokenSilently,
-      ])
-    
       const getUsersByPage = async (page: number) => {
         try {
           const token = await getAccessTokenSilently()
@@ -72,19 +35,37 @@ const UserAdminSearch = () => {
           const response = await apiClient.post(
             `/users/search?page=${page}&size=5`,
             {
-              id: idInputValue,
-              firstName: nameInputValue,
-              lastName: lastNameInputValue,
-              phoneNumber: phoneNumberInputValue,
-              email: emailInputValue,
+              id: idInputValue || null,
+              firstName: nameInputValue || null,
+              lastName: lastNameInputValue || null,
+              phoneNumber: phoneNumberInputValue || null,
+              email: emailInputValue || null,
             }
           )
-    
-          setUsers([...users, ...response.data.content])
+          setTotalPages(response.data.totalPages)
+          setUsers(response.data.content)
+          setLoading(false)
         } catch (error) {
           console.error(error)
         }
       }
+      setLoading(true)
+      if(searchTimeout) {
+        clearTimeout(searchTimeout)
+      }
+      const timeout = setTimeout(() => {
+        getUsersByPage(pageNumber)
+      }, 500)
+      setSearchTimeout(timeout)
+      }, [
+        idInputValue,
+        nameInputValue,
+        lastNameInputValue,
+        phoneNumberInputValue,
+        emailInputValue,
+        getAccessTokenSilently,
+        pageNumber
+      ])
     
       const handleUserDelete = async (id: string) => {
         try {
@@ -248,24 +229,19 @@ const UserAdminSearch = () => {
           />
         </div>
         <div>
-          <UserAccordion
-            users={users}
-            handleApporveUser={handleUserApprove}
-            handleDeleteUser={handleUserDelete}
-            handleBlockUser={handleBlockUser}
-          />
-        </div>
-        <div className="admin-panel-load-more">
-          {pageNumber < pageCount && pageCount > 1 && (
-            <Button
-              fullWidth
-              variant="contained"
-              onClick={() => getUsersByPage(pageNumber + 1)}
-            >
-              Load more&nbsp;
-              <RefreshIcon />
-            </Button>
+          {loading ? (
+            <LoadingSpinner maxWidth='100vh' maxHeight='256px'/>
+          ) : (
+            <UserAccordion
+              users={users}
+              handleApporveUser={handleUserApprove}
+              handleDeleteUser={handleUserDelete}
+              handleBlockUser={handleBlockUser}
+            />
           )}
+        </div>
+        <div className='admin-panel-user-search-pagination'>
+          <Pagination count={totalPages} color="primary" onChange={(_, page) => setPageNumber(page-1)}/>
         </div>
       </div>
     </div>

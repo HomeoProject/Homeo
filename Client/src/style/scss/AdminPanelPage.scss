@@ -50,6 +50,11 @@
       grid-column-end: 3;
     }
   }
+  .admin-panel-user-search-pagination {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0 0 0;
+  }
   .admin-panel-load-more {
     margin: 1rem 10rem 1rem 10rem;
   }

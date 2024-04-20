@@ -2,6 +2,17 @@
 
 .UsersAccordion {
   padding: 1rem 0 0 0;
+  width: 700px;
+  @media screen and (max-width: 1200px) {
+    width:500px;
+  }
+  @media screen and (max-width: 1000px) {
+    display: flex;
+    flex-direction: column;
+  }
+  @media screen and (max-width: 700px){
+    width: 300px;
+  }
   .users-accordion-label {
     display: flex;
     align-items: center;

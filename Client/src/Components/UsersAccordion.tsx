@@ -36,7 +36,7 @@ const UsersAccordion = ({
                   src={user.avatar}
                   alt="category-photo"
                 />
-                {user.id} - {user.firstName}&nbsp;{user.lastName}
+                {user.id} - {user.firstName ? `${user.firstName} ${user.lastName}` : user.email}
               </div>
             </AccordionSummary>
             <AccordionDetails>
