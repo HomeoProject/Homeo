@@ -60,7 +60,7 @@ const router = createBrowserRouter([
             path: 'categories',
             element: <CategoriesAdminSearch />,
           },
-        ]
+        ],
       },
       {
         path: '/user/:id',

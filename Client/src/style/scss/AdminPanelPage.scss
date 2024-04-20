@@ -34,13 +34,13 @@
     display: grid;
     width: 700px;
     @media screen and (max-width: 1200px) {
-      width:500px;
+      width: 500px;
     }
     @media screen and (max-width: 1000px) {
       display: flex;
       flex-direction: column;
     }
-    @media screen and (max-width: 700px){
+    @media screen and (max-width: 700px) {
       width: 300px;
     }
     gap: 1rem;
@@ -49,6 +49,11 @@
       grid-column-start: 1;
       grid-column-end: 3;
     }
+  }
+  .admin-panel-user-search-pagination {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0 0 0;
   }
   .admin-panel-load-more {
     margin: 1rem 10rem 1rem 10rem;
