@@ -59,9 +59,9 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-tasks.register('copyAllDependencies', Copy) {
+tasks.register('copyOpenTelemetryDependency', Copy) {
 	from configurations.runtimeClasspath.filter { it.name == "opentelemetry-javaagent-${otelVersion}.jar"}
 	into "${project.layout.buildDirectory.get().getAsFile()}/output/libs"
 	rename("opentelemetry-javaagent-${otelVersion}.jar", "opentelemetry-javaagent.jar")
 }
-build.dependsOn(copyAllDependencies)
+build.dependsOn(copyOpenTelemetryDependency)
