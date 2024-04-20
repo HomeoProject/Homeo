@@ -44,6 +44,20 @@ public class ChatController {
         return ResponseEntity.ok(chatMessages.stream().map(chatMapper::toDto).toList());
     }
 
+    @GetMapping("/unread-chats")
+    public ResponseEntity<List<Long>> getUnreadChats() {
+        LOGGER.info("Inside: ChatController -> getUnreadChats()...");
+        String userId = getUserId();
+        return ResponseEntity.ok(chatService.getUnreadChats(userId));
+    }
+
+    @GetMapping("/room/{id}")
+    public ResponseEntity<ChatRoom> getChatRoom(@PathVariable Long id) {
+        LOGGER.info("Inside: ChatController -> getChatRoom()...");
+        String userId = getUserId();
+        return ResponseEntity.ok(chatService.getChatRoom(userId, id));
+    }
+
     private String getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
