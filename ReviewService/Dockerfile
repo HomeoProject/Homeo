@@ -6,6 +6,7 @@ RUN gradle clean build -x test
 FROM openjdk:17-jdk-alpine
 WORKDIR /app
 COPY --from=build /home/gradle/ReviewService/build/libs/ReviewService-0.0.1-SNAPSHOT.jar /app
+COPY --from=build /home/gradle/ReviewService/build/output/libs/opentelemetry-javaagent.jar /app
 
 # ENV variables to replace
 ENV PORT=${PORT_REVIEWSERVICE:-8080}
