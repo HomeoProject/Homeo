@@ -1,7 +1,6 @@
 package it.homeo.userservice.services;
 
 import com.auth0.client.mgmt.ManagementAPI;
-
 import com.auth0.client.mgmt.filter.UserFilter;
 import com.auth0.exception.Auth0Exception;
 import com.auth0.json.mgmt.users.User;
@@ -23,7 +22,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class AppUserServiceImpl implements AppUserService {
@@ -201,6 +202,18 @@ public class AppUserServiceImpl implements AppUserService {
         AppUserDto appUserDto = mapper.appUserToAppUserDto(appUser);
         appUserEventProducer.produceUserUpdatedAvatarEvent(appUserDto);
         return appUserDto;
+    }
+
+    @Override
+    public void updateAppUserIsOnline(String id, Boolean isOnline) {
+        AppUser appUser = getAppUser(id);
+        if (appUser.isOnline() != isOnline) {
+            if (!isOnline) {
+                appUser.setLastOnlineAt(Instant.now());
+            }
+            appUser.setOnline(isOnline);
+            repository.save(appUser);
+        }
     }
 
     @Transactional

@@ -1,10 +1,13 @@
 package it.homeo.userservice.models;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Objects;
 
 @Getter
@@ -35,26 +38,28 @@ public class AppUser {
     // Auth0
     private boolean isBlocked;
 
-    private boolean isOnline;
-
     private boolean isApproved;
 
     private boolean isDeleted;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
+    private boolean isOnline;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedAt;
+    private Instant lastOnlineAt;
+
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @Column(nullable = false)
+    private Instant updatedAt;
 
     @PrePersist
     protected void onCreate() {
-        updatedAt = createdAt = new Date();
+        updatedAt = createdAt = Instant.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = new Date();
+        updatedAt = Instant.now();
     }
 
     @Override

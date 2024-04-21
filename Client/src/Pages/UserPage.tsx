@@ -146,13 +146,6 @@ const UserPage = () => {
                 headline={dictionary.incompleteProfileWarningHeadline}
               />
             )}
-            {!isConstructor && isProfileComplete && (
-              <Banner
-                variant="info"
-                text={dictionary.incompleteProfileInfo}
-                headline={dictionary.incompleteProfileInfoHeadline}
-              />
-            )}
             <Outlet />
           </div>
           <UploadPictureModal
@@ -164,6 +157,8 @@ const UserPage = () => {
             client={apiClient}
             path={`users/avatar/${encodeURI(customUser.id)}`}
             method={'patch'}
+            customInitSource={customUser.avatar}
+            customHeadline={dictionary.changeYourAvatar}
           />
         </div>
       </div>

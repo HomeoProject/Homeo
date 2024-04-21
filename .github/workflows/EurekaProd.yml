@@ -1,0 +1,34 @@
+name: EurekaProd
+
+on:
+  push:
+    branches: ["main"]
+    paths: ["Eureka/**"]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    env:
+      image_tag: ${{ vars.DOCKER_IMAGE_OWNER_EUREKA }}/homeo-eureka-prod:${GITHUB_SHA}
+      image_latest: ${{ vars.DOCKER_IMAGE_OWNER_EUREKA }}/homeo-eureka-prod:latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker Images
+        run: |
+          cd Eureka
+          docker build -t ${{ env.image_tag }} .
+          docker tag ${{ env.image_tag }} ${{ env.image_latest }}
+
+      - name: Push Docker Images
+        run: |
+          docker push ${{ env.image_tag }}
+          docker push ${{ env.image_latest }}

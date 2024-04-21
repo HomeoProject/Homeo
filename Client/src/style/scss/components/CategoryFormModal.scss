@@ -2,10 +2,16 @@
   display: flex;
   flex-direction: column;
   padding: 1.5rem 2rem 2rem 2rem;
+  align-items: center;
+  width: calc(100% - 4rem);
+  gap: 0.5rem;
+
   .category-form-exit {
     display: flex;
     justify-content: flex-end;
     cursor: pointer;
+    width: 100%;
+
     .category-form-exit-value {
       display: flex;
       align-items: center;
@@ -20,25 +26,16 @@
       }
     }
   }
+
   .category-form-input {
     margin: 0.5rem 0 0.5rem 0;
+    width: 100%;
   }
+
   .category-form-actions {
     display: grid;
     padding: 1rem 0 0 0;
     gap: 1rem;
     grid-template-columns: 2fr 1fr;
-  }
-  .category-form-image {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 0 1rem 0;
-    .category-form-image-value {
-      width: 12rem;
-      height: 12rem;
-      border-radius: 100px;
-      cursor: pointer;
-    }
   }
 }

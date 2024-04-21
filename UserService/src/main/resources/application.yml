@@ -44,9 +44,22 @@ cloudinary:
   folder-name: ${CLOUDINARY_FOLDER_NAME}
   default-avatar: ${CLOUDINARY_DEFAULT_AVATAR_URL}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
+
 openapi:
   service:
-    title: UserService
+    title: ${spring.application.name}
     version: 1.0.0
     url: ${OPENAPI_URL}
 springdoc:

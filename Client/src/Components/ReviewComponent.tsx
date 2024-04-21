@@ -13,6 +13,7 @@ import { Rating, Tooltip } from '@mui/material'
 import { useUserContext } from '../Context/UserContext'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 import ReviewModal from './ReviewModal'
+import Swal from 'sweetalert2'
 
 type ReviewComponentProps = {
   review: Review
@@ -48,34 +49,47 @@ const ReviewComponent = ({
       return
     }
 
-    apiClient
-      .delete(`/reviews/${review.id}`)
-      .then(() => {
-        const updatedContent = constructorReviews.content.filter(
-          (reviewToEdit) => reviewToEdit.id !== review.id
-        )
-        return updatedContent
-      })
-      .then((updatedContent) => {
+    Swal.fire({
+      title: dictionary.areYouSure,
+      text: dictionary.youWillNotBeAbleToRevert,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: dictionary.yesDeleteIt,
+      cancelButtonText: dictionary.cancelWord,
+    }).then((result) => {
+      if (result.isConfirmed) {
         apiClient
-          .get(`/reviews/stats/${review.receiverId}`)
-          .then((response) => {
-            const updatedStats = response.data
-            setConstructorReviews({
-              content: updatedContent,
-              stats: updatedStats,
-            })
-            toast.success(dictionary.reviewDeletedSuccessfully)
+          .delete(`/reviews/${review.id}`)
+          .then(() => {
+            const updatedContent = constructorReviews.content.filter(
+              (reviewToEdit) => reviewToEdit.id !== review.id
+            )
+            return updatedContent
+          })
+          .then((updatedContent) => {
+            apiClient
+              .get(`/reviews/stats/${review.receiverId}`)
+              .then((response) => {
+                const updatedStats = response.data
+                setConstructorReviews({
+                  content: updatedContent,
+                  stats: updatedStats,
+                })
+                toast.success(dictionary.reviewDeletedSuccessfully)
+              })
+              .catch((err) => {
+                console.error(err)
+                toast.error(dictionary.failedToGetReviewsStats)
+              })
           })
           .catch((err) => {
             console.error(err)
-            toast.error(dictionary.failedToGetReviewsStats)
+            toast.error(dictionary.failedToDeleteReview)
           })
-      })
-      .catch((err) => {
-        console.error(err)
-        toast.error(dictionary.failedToDeleteReview)
-      })
+      }
+    })
   }
 
   useEffect(() => {

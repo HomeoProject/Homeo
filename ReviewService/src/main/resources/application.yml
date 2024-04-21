@@ -34,9 +34,22 @@ okta:
     client-secret: ${OKTA_MTM_CLIENT_SECRET}
     audience: ${OKTA_MANAGEMENT_API_AUDIENCE}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
+
 openapi:
   service:
-    title: ReviewService
+    title: ${spring.application.name}
     version: 1.0.0
     url: ${OPENAPI_URL}
 springdoc:

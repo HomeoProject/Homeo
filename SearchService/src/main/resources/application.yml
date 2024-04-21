@@ -31,9 +31,22 @@ feign:
       UserService: ${FEIGN_URL_USERSERVICE:}
       ConstructorService: ${FEIGN_URL_CONSTRUCTORSERVICE:}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
+
 openapi:
   service:
-    title: SearchService
+    title: ${spring.application.name}
     version: 1.0.0
     url: ${OPENAPI_URL}
 springdoc:

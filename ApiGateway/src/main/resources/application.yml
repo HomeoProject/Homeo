@@ -32,6 +32,19 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_URL}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
+
 springdoc:
   enable-native-support: true
   api-docs:
@@ -42,7 +55,7 @@ springdoc:
     path: /swagger-ui
     urls:
       - url: /api-docs
-        name: API Gateway Service
+        name: API Gateway
       - url: /userservice/api-docs
         name: User Service
       - url: /constructorservice/api-docs

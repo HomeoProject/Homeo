@@ -23,10 +23,13 @@ repositories {
 
 ext {
 	set('springCloudVersion', "2023.0.0")
+	set('otelVersion', "2.3.0")
 }
 
 dependencies {
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -35,6 +38,7 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly("io.opentelemetry.javaagent:opentelemetry-javaagent:${otelVersion}")
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -51,3 +55,10 @@ dependencyManagement {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+tasks.register('copyOpenTelemetryDependency', Copy) {
+	from configurations.runtimeClasspath.filter { it.name == "opentelemetry-javaagent-${otelVersion}.jar"}
+	into "${project.layout.buildDirectory.get().getAsFile()}/output/libs"
+	rename("opentelemetry-javaagent-${otelVersion}.jar", "opentelemetry-javaagent.jar")
+}
+build.dependsOn(copyOpenTelemetryDependency)

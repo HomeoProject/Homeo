@@ -2,7 +2,7 @@ package it.homeo.searchservice.dtos.request;
 
 import it.homeo.searchservice.enums.PaymentMethod;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Set;
 
 public record ConstructorDto(
@@ -17,6 +17,6 @@ public record ConstructorDto(
         Set<String> cities,
         Set<CategoryDto> categories,
         Set<PaymentMethod> paymentMethods,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        Instant createdAt,
+        Instant updatedAt
 ) { }

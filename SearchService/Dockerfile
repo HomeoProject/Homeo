@@ -6,6 +6,7 @@ RUN gradle clean build -x test
 FROM openjdk:17-jdk-alpine
 WORKDIR /app
 COPY --from=build /home/gradle/SearchService/build/libs/SearchService-0.0.1-SNAPSHOT.jar /app
+COPY --from=build /home/gradle/SearchService/build/output/libs/opentelemetry-javaagent.jar /app
 
 # ENV variables to replace
 ENV PORT=${PORT_SEARCHSERVICE:-8080}
