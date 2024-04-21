@@ -13,7 +13,6 @@ import Pagination from '@mui/material/Pagination'
 import { useAuth0 } from '@auth0/auth0-react'
 import LoadingSpinner from './LoadingSpinner.tsx'
 import '../style/scss/components/CategoriesAdminSearch.scss'
-import { set } from 'react-hook-form'
 
 const CategoriesAdminSearch = () => {
   const { categories, setCategories } = useCategoriesContext()
