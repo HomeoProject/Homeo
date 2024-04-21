@@ -52,7 +52,7 @@ const AdminPanel = () => {
           }}
           end
         >
-          Users
+          {dictionary.usersWord}
         </NavLink>
         <NavLink
           to="/admin-panel/categories"
@@ -63,7 +63,7 @@ const AdminPanel = () => {
           }}
           end
         >
-          Categories
+          {dictionary.categories}
         </NavLink>
       </div>
       <Outlet />

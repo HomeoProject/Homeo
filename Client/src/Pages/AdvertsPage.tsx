@@ -11,16 +11,16 @@ import Tooltip from '@mui/material/Tooltip'
 import Pagination from '@mui/material/Pagination'
 import LoadingSpinner from '../Components/LoadingSpinner.tsx'
 import '../style/scss/AdvertsPage.scss'
-
+import { useDictionaryContext } from '../Context/DictionaryContext'
 import { useAuth0 } from '@auth0/auth0-react'
 import { setAuthToken } from '../AxiosClients/apiClient.ts'
 import apiClient from '../AxiosClients/apiClient'
-import { set } from 'react-hook-form'
 
 const AdvertsPage = () => {
   const searchValue = 'search'
 
   const { getAccessTokenSilently } = useAuth0()
+  const { dictionary } = useDictionaryContext()
 
   const getCurrentDimension = () => {
     return window.innerWidth
@@ -47,13 +47,13 @@ const AdvertsPage = () => {
   const [constructors, setConstructors] = useState<any[]>([])
 
   const filters = [
-    'Category',
-    'Price',
-    'Rating',
-    'Experience',
-    'Language',
-    'Payment methods',
-    'Location',
+    dictionary.categories,
+    dictionary.priceWord,
+    dictionary.ratingWord,
+    dictionary.experience,
+    dictionary.languages,
+    dictionary.paymentMethodsWord,
+    dictionary.locationWord,
   ]
 
   const handleClickOpenSearch = (index: number) => {
@@ -156,8 +156,8 @@ const AdvertsPage = () => {
         <div className="adverts-page-search-slogan">
           <span className="adverts-page-search-slogan-value">
             {screenSize > 1250
-              ? 'The best people, for the worst problems'
-              : 'The best constructors'}
+              ? dictionary.advertsTitle
+              : dictionary.secondAdvertsTitle}
           </span>
         </div>
         <div className="adverts-page-search-wrapper">
@@ -166,8 +166,8 @@ const AdvertsPage = () => {
             type="text"
             placeholder={
               screenSize > 900
-                ? 'Search for a service you need...'
-                : 'Search...'
+                ? dictionary.homePageSearchPlaceholder
+                : `${dictionary.searchWord}...`
             }
           />
           <button className="adverts-page-search-wrapper-button">
@@ -195,7 +195,7 @@ const AdvertsPage = () => {
           ) : (
             <div className="adverts-page-search-filters-container">
               <span className="adverts-page-search-filters-container-label mobile">
-                Filters
+                {dictionary.filtersWord}
               </span>
               <ExpandMoreIcon />
             </div>
@@ -205,12 +205,16 @@ const AdvertsPage = () => {
       <div className="adverts-page-cards">
         <div className="adverts-page-cards-label">
           <span className="adverts-page-cards-label-value">
-            Adverts for {searchValue}
+            {dictionary.advertsFor}&nbsp;{searchValue}
           </span>
           <div className="adverts-page-cards-label-right">
             <div>
               <Tooltip
-                title={onlyActiveUsers ? 'active users only' : 'all users'}
+                title={
+                  onlyActiveUsers
+                    ? dictionary.activeUsersOnly
+                    : dictionary.allUsersWord
+                }
               >
                 <Badge
                   color="primary"
@@ -226,7 +230,7 @@ const AdvertsPage = () => {
             </div>
             {screenSize > 900 && (
               <div className="adverts-page-cards-label-page">
-                <span>Per page:</span>
+                <span>{dictionary.perPageWord}:</span>
                 <Select
                   value={perPageValue}
                   onChange={handlePerPageChange}
@@ -240,16 +244,15 @@ const AdvertsPage = () => {
               </div>
             )}
             <div className="adverts-page-cards-label-filters">
-              <span>Sort by:</span>
+              <span>{dictionary.sortByWord}:</span>
               <Select
                 value={sortValue}
                 onChange={handleSortChange}
                 displayEmpty
                 inputProps={{ 'aria-label': 'Without label' }}
               >
-                <MenuItem value="">None</MenuItem>
-                <MenuItem value={'asc'}>Price ascending</MenuItem>
-                <MenuItem value={'desc'}>Price descending</MenuItem>
+                <MenuItem value={'asc'}>{dictionary.priceAscending}</MenuItem>
+                <MenuItem value={'desc'}>{dictionary.priceDescending}</MenuItem>
               </Select>
             </div>
           </div>

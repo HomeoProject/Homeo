@@ -272,7 +272,7 @@ const ConstructorPage = () => {
                 {customUser && (
                   <div className="constructor-page-main-section-interactive-mobile-main">
                     <Tooltip
-                      title="You have to finish your profile in order to do this."
+                      title={dictionary.finishProfile}
                       disableHoverListener={canUserInteract}
                       className="tooltip"
                     >
@@ -291,7 +291,7 @@ const ConstructorPage = () => {
                     </Tooltip>
 
                     <Tooltip
-                      title="You have to finish your profile in order to do this."
+                      title={dictionary.finishProfile}
                       disableHoverListener={canUserInteract}
                       className="tooltip"
                     >
@@ -379,11 +379,7 @@ const ConstructorPage = () => {
               {customUser && (
                 <div className="constructor-page-main-section-interactive-main">
                   <Tooltip
-                    title={
-                      !canUserInteract
-                        ? 'You have to finish your profile in order to do this.'
-                        : ''
-                    }
+                    title={!canUserInteract ? dictionary.finishProfile : ''}
                     disableHoverListener={canUserInteract}
                     className="tooltip"
                   >
@@ -401,11 +397,7 @@ const ConstructorPage = () => {
                     </div>
                   </Tooltip>
                   <Tooltip
-                    title={
-                      !canUserInteract
-                        ? 'You have to finish your profile in order to do this.'
-                        : ''
-                    }
+                    title={!canUserInteract ? dictionary.finishProfile : ''}
                     disableHoverListener={canUserInteract}
                     className="tooltip"
                   >
