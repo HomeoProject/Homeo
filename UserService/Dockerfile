@@ -36,6 +36,6 @@ ENV RABBITMQ_USER=${RABBITMQ_USER:-REPLACE}
 ENV RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-REPLACE}
 
 COPY --from=build /home/gradle/UserService/build/libs/UserService-0.0.1-SNAPSHOT.jar /app
-COPY --from=build /home/gradle/UserServices/build/output/libs/opentelemetry-javaagent.jar /app
+COPY --from=build /home/gradle/UserService/build/output/libs/opentelemetry-javaagent.jar /app
 
 ENTRYPOINT ["java","-jar","UserService-0.0.1-SNAPSHOT.jar"]
