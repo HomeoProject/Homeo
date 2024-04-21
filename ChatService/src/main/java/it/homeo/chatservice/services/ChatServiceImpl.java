@@ -4,6 +4,7 @@ import it.homeo.chatservice.clients.UserClient;
 import it.homeo.chatservice.dtos.request.CreateChatMessageDto;
 import it.homeo.chatservice.dtos.response.CloudinaryDto;
 import it.homeo.chatservice.exceptions.ForbiddenException;
+import it.homeo.chatservice.exceptions.NotFoundException;
 import it.homeo.chatservice.models.ChatMessage;
 import it.homeo.chatservice.models.ChatParticipant;
 import it.homeo.chatservice.models.ChatRoom;
@@ -116,6 +117,24 @@ public class ChatServiceImpl implements ChatService {
         ChatParticipant chatParticipant = optionalChatParticipant.get();
         chatParticipant.setLastViewedAt(Instant.now());
         chatParticipantRepository.save(chatParticipant);
+
+        return chatRoom;
+    }
+
+    @Override
+    public List<Long> getUnreadChats(String userId) {
+        return chatRoomRepository.getUnreadChatRoomIdsByUserId(userId);
+    }
+
+    @Override
+    public ChatRoom getChatRoom(String userId, Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new NotFoundException("ChatRoom with id: " + chatRoomId + " not found."));
+
+        boolean participantExists = doesParticipantExist(chatRoom, userId);
+        if (!participantExists) {
+            throw new ForbiddenException();
+        }
 
         return chatRoom;
     }
