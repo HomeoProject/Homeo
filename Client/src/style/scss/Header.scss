@@ -21,11 +21,16 @@
     justify-content: space-between;
     padding: 0 2rem;
 
+    @media (max-width: 430px) {
+      padding: 0 1rem;
+      width: calc(100% - 2rem);
+    }
+
     > .header-logo {
       display: flex;
       align-items: center;
       font-size: v.$font-size-logo;
-      padding: 0;
+      padding: 5px;
       margin: 0;
       text-decoration: none;
       color: white;
@@ -37,6 +42,10 @@
         width: 45px;
         height: 60px;
         padding-right: 10px;
+
+        @media (max-width: 430px) {
+          display: none;
+        }
       }
 
       @media (max-width: 500px) {
@@ -61,7 +70,7 @@
       align-items: center;
       justify-content: center;
       margin-top: -90px;
-      gap: 5px;
+      gap: 10px;
 
       @media (max-width: 900px) {
         display: none;
@@ -116,6 +125,11 @@
         align-items: center;
         justify-content: center;
         margin-top: -90px;
+        gap: 10px;
+      }
+
+      @media (max-width: 400px) {
+        gap: 5px;
       }
 
       > .header-nav-user-wrapper {

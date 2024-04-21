@@ -7,15 +7,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@ConditionalOnProperty(prefix = "category.initializer", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class CategoryInitializer implements CommandLineRunner {
 
     @Value("${init.categories}")
     private String[] categoryNames;
 
-    private final Logger logger = LoggerFactory.getLogger(CategoryInitializer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CategoryInitializer.class);
     private final CategoryService categoryService;
 
     public CategoryInitializer(CategoryService categoryService) {
@@ -30,9 +32,9 @@ public class CategoryInitializer implements CommandLineRunner {
                 category.setName(name);
                 category.setDescription("%s category description".formatted(name));
                 categoryService.addCategory(category);
-                logger.info("Inside: CategoryInitializer -> Category with name: '%s' added".formatted(name));
+                LOGGER.info("Inside: CategoryInitializer -> Category with name: '%s' added".formatted(name));
             } catch (AlreadyExistsException e) {
-                logger.warn("Inside: CategoryInitializer -> '%s'".formatted(e.getMessage()));
+                LOGGER.warn("Inside: CategoryInitializer -> '%s'".formatted(e.getMessage()));
             }
         }
     }

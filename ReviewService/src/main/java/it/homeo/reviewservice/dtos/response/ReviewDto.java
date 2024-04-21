@@ -2,7 +2,7 @@ package it.homeo.reviewservice.dtos.response;
 
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Builder
 public record ReviewDto(
@@ -11,6 +11,6 @@ public record ReviewDto(
         String receiverId,
         Double rating,
         String text,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        Instant createdAt,
+        Instant updatedAt
 ) { }

@@ -35,6 +35,8 @@ public abstract class AppUserMapper {
                     .avatar(cloudinaryProperties.getDefaultAvatar())
                     .isDeleted(appUser.isDeleted())
                     .isBlocked(appUser.isBlocked())
+                    .isOnline(appUser.isOnline())
+                    .lastOnlineAt(appUser.getLastOnlineAt())
                     .createdAt(appUser.getCreatedAt())
                     .build();
         }
@@ -48,6 +50,7 @@ public abstract class AppUserMapper {
                 .avatar(appUser.getAvatar())
                 .isBlocked(appUser.isBlocked())
                 .isOnline(appUser.isOnline())
+                .lastOnlineAt(appUser.getLastOnlineAt())
                 .isApproved(appUser.isApproved())
                 .isDeleted(appUser.isDeleted())
                 .createdAt(appUser.getCreatedAt())

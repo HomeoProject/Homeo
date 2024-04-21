@@ -23,14 +23,17 @@ repositories {
 
 ext {
 	set('springCloudVersion', "2023.0.0")
+	set('otelVersion', "2.3.0")
 }
 
 dependencies {
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	annotationProcessor 'org.projectlombok:lombok'
 	compileOnly 'org.projectlombok:lombok'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'com.okta.spring:okta-spring-boot-starter:3.0.6'
@@ -38,6 +41,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'com.auth0:auth0:2.7.0'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+	runtimeOnly("io.opentelemetry.javaagent:opentelemetry-javaagent:${otelVersion}")
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.testcontainers:junit-jupiter'
 	testImplementation 'org.testcontainers:postgresql'
@@ -54,3 +58,10 @@ dependencyManagement {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+tasks.register('copyOpenTelemetryDependency', Copy) {
+	from configurations.runtimeClasspath.filter { it.name == "opentelemetry-javaagent-${otelVersion}.jar"}
+	into "${project.layout.buildDirectory.get().getAsFile()}/output/libs"
+	rename("opentelemetry-javaagent-${otelVersion}.jar", "opentelemetry-javaagent.jar")
+}
+build.dependsOn(copyOpenTelemetryDependency)

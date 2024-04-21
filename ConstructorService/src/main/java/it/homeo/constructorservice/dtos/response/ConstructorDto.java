@@ -3,7 +3,7 @@ package it.homeo.constructorservice.dtos.response;
 import it.homeo.constructorservice.enums.PaymentMethod;
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Set;
 
 @Builder
@@ -19,6 +19,6 @@ public record ConstructorDto(
     Set<String> cities,
     Set<CategoryDto> categories,
     Set<PaymentMethod> paymentMethods,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt
+    Instant createdAt,
+    Instant updatedAt
 ) { }

@@ -2,7 +2,7 @@ package it.homeo.searchservice.dtos.request;
 
 import lombok.Builder;
 
-import java.util.Date;
+import java.time.Instant;
 
 @Builder
 public record AppUserDto(
@@ -16,6 +16,7 @@ public record AppUserDto(
         boolean isOnline,
         boolean isApproved,
         boolean isDeleted,
-        Date createdAt,
-        Date updatedAt
+        Instant lastOnlineAt,
+        Instant createdAt,
+        Instant updatedAt
 ) { }

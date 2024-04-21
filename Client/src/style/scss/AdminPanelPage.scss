@@ -1,18 +1,48 @@
+@use './Variables' as v;
+
 .AdminPanelPage {
   width: 1000px;
+  display: flex;
+  justify-content: center;
   min-height: calc(100vh - 26rem);
   padding: 0 2rem;
   @media screen and (max-width: 1400px) {
     width: calc(100% - 20rem);
   }
   @media screen and (max-width: 650px) {
-    width: calc(100% - 5rem);
+    width: 100%;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
   }
   .admin-panel-add {
-    margin: 1rem 10rem 1rem 10rem;
+    margin: 2rem 10rem 0 10rem;
+    @media screen and (max-width: 1000px) {
+      margin: 2rem 8rem 0 8rem;
+    }
+    @media screen and (max-width: 900px) {
+      margin: 2rem 5rem 0 5rem;
+    }
+    @media screen and (max-width: 800px) {
+      margin: 2rem 2rem 0 2rem;
+    }
+    @media screen and (max-width: 650px) {
+      margin: 2rem 0 0 0;
+    }
   }
   .admin-panel-users-search {
     display: grid;
+    width: 700px;
+    @media screen and (max-width: 1200px) {
+      width: 500px;
+    }
+    @media screen and (max-width: 1000px) {
+      display: flex;
+      flex-direction: column;
+    }
+    @media screen and (max-width: 700px) {
+      width: 300px;
+    }
     gap: 1rem;
     grid-template-columns: 1fr 1fr;
     .admin-panel-users-search-id {
@@ -20,7 +50,45 @@
       grid-column-end: 3;
     }
   }
+  .admin-panel-user-search-pagination {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0 0 0;
+  }
   .admin-panel-load-more {
     margin: 1rem 10rem 1rem 10rem;
+  }
+  .admin-panel-nav {
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    padding: 5rem 2rem 0 0;
+    font-size: v.$font-size-medium;
+    @media (max-width: 1000px) {
+      font-size: v.$font-size-small;
+    }
+    @media screen and (max-width: 650px) {
+      width: 100%;
+      padding: 0;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+    }
+    > .admin-panel-nav-link {
+      text-decoration: none;
+      color: black;
+      font-weight: 600;
+      padding: 0.5rem 0;
+      transition: color 0.15s ease-in-out;
+
+      &:hover {
+        color: v.$primary-color;
+      }
+    }
+
+    > .admin-panel-nav-link.active {
+      color: v.$primary-color;
+    }
   }
 }

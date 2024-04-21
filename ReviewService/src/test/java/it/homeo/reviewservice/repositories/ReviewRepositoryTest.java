@@ -15,7 +15,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -81,7 +81,7 @@ public class ReviewRepositoryTest {
     @Test
     @DisplayName("Should retrieve reviews created before given timestamp with receiver id")
     void testFindReviewByReceiverIdBeforeGivenCreatedAt() {
-        LocalDateTime lastCreatedAt = LocalDateTime.now();
+        Instant lastCreatedAt = Instant.now();
         Pageable pageable = PageRequest.of(0, PAGE_SIZE);
 
         List<Review> sortedReviews = receiverReviews.stream()
@@ -117,7 +117,7 @@ public class ReviewRepositoryTest {
     @Test
     @DisplayName("Should retrieve reviews created before given timestamp with reviewer id")
     void testFindReviewByReviewerIdBeforeGivenCreatedAt() {
-        LocalDateTime lastCreatedAt = LocalDateTime.now();
+        Instant lastCreatedAt = Instant.now();
         Pageable pageable = PageRequest.of(0, PAGE_SIZE);
 
         List<Review> sortedReviews = reviewerReviews.stream()

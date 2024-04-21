@@ -48,9 +48,22 @@ api-ninjas:
   url: ${API_NINJAS_URL}
   key: ${API_NINJAS_KEY}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
+
 openapi:
   service:
-    title: ConstructorService
+    title: ${spring.application.name}
     version: 1.0.0
     url: ${OPENAPI_URL}
 springdoc:
@@ -68,3 +81,7 @@ eureka:
 
 init:
   categories: Plumber, Painter, Electrician, Renovation, Cleaning, Transport, Garden
+
+category:
+  initializer:
+    enabled: false

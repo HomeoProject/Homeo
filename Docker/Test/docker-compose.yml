@@ -3,7 +3,7 @@ version: "3.8"
 services:
   homeo-userservice:
     container_name: homeo-userservice
-    build: ../../UserService
+    image: piotrdamrych/homeo-userservice-dev:latest
     environment:
       PORT: ${PORT_USERSERVICE}
       HIKARI_MAX_POOL_SIZE: ${HIKARI_MAX_POOL_SIZE_USERSERVICE}
@@ -33,11 +33,11 @@ services:
       - "${PORT_USERSERVICE}:${PORT_USERSERVICE}"
     restart: unless-stopped
     depends_on:
-      - homeo-apigateway
+      - homeo-chatservice
 
   homeo-constructorservice:
     container_name: homeo-constructorservice
-    build: ../../ConstructorService
+    image: piotrdamrych/homeo-constructorservice-dev:latest
     environment:
       PORT: ${PORT_CONSTRUCTORSERVICE}
       HIKARI_MAX_POOL_SIZE: ${HIKARI_MAX_POOL_SIZE_CONSTRUCTORSERVICE}
@@ -73,7 +73,7 @@ services:
 
   homeo-reviewservice:
     container_name: homeo-reviewservice
-    build: ../../ReviewService
+    image: piotrdamrych/homeo-reviewservice-dev:latest
     environment:
       PORT: ${PORT_REVIEWSERVICE}
       HIKARI_MAX_POOL_SIZE: ${HIKARI_MAX_POOL_SIZE_REVIEWSERVICE}
@@ -101,7 +101,7 @@ services:
 
   homeo-searchservice:
     container_name: homeo-searchservice
-    build: ../../SearchService
+    image: piotrdamrych/homeo-searchservice-dev:latest
     environment:
       PORT: ${PORT_SEARCHSERVICE}
       HIKARI_MAX_POOL_SIZE: ${HIKARI_MAX_POOL_SIZE_SEARCHSERVICE}
@@ -121,9 +121,37 @@ services:
     depends_on:
       - homeo-reviewservice
 
+  homeo-chatservice:
+    container_name: homeo-chatservice
+    image: piotrdamrych/homeo-chatservice-dev:latest
+    environment:
+      PORT: ${PORT_CHATSERVICE}
+      HIKARI_MAX_POOL_SIZE: ${HIKARI_MAX_POOL_SIZE_CHATSERVICE}
+      HIKARI_MINIMUM_IDLE: ${HIKARI_MINIMUM_IDLE_CHATSERVICE}
+      OKTA_API_ISSUER: ${OKTA_API_ISSUER}
+      OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_URL: ${POSTGRES_URL_CHATSERVICE}
+      EUREKA_URL: ${EUREKA_URL}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      CLOUDINARY_FOLDER_NAME: ${CLOUDINARY_FOLDER_NAME_CHATSERVICE}
+      OPENAPI_URL: ${OPENAPI_URL}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    ports:
+      - "${PORT_CHATSERVICE}:${PORT_CHATSERVICE}"
+    restart: unless-stopped
+    depends_on:
+      - homeo-apigateway
+
   homeo-apigateway:
     container_name: homeo-apigateway
-    build: ../../ApiGateway
+    image: piotrdamrych/homeo-apigateway-dev:latest
     environment:
       EUREKA_URL: ${EUREKA_URL}
       REDIS_PASSWORD_APIGATEWAY: ${REDIS_PASSWORD_APIGATEWAY}
@@ -140,7 +168,7 @@ services:
 
   homeo-eureka:
     container_name: homeo-eureka
-    build: ../../Eureka
+    image: piotrdamrych/homeo-eureka-dev:latest
     ports:
       - "8761:8761"
     restart: unless-stopped
@@ -156,6 +184,7 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+      - "61613:61613"
 
 volumes:
   homeo-rabbit:
