@@ -10,7 +10,6 @@ import { toast } from 'react-toastify'
 import Pagination from '@mui/material/Pagination'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 import LoadingSpinner from './LoadingSpinner.tsx'
-import { set } from 'react-hook-form'
 
 const UserAdminSearch = () => {
   const { getAccessTokenSilently } = useAuth0()
@@ -190,7 +189,7 @@ const UserAdminSearch = () => {
         <div className="admin-panel-users-search">
           <TextField
             className="admin-panel-users-search-id"
-            label="Search for users by id..."
+            label={`${dictionary.searchForUsersBy} id...`}
             variant="outlined"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setIdInputValue(e.target.value)
@@ -198,7 +197,7 @@ const UserAdminSearch = () => {
             fullWidth
           />
           <TextField
-            label="Search for users by name..."
+            label={`${dictionary.searchForUsersBy} ${dictionary.firstNameWord}...`}
             variant="outlined"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setNameInputValue(e.target.value)
@@ -206,7 +205,7 @@ const UserAdminSearch = () => {
             fullWidth
           />
           <TextField
-            label="Search for users by last name..."
+            label={`${dictionary.searchForUsersBy} ${dictionary.lastNameWord}...`}
             variant="outlined"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setLastNameInputValue(e.target.value)
@@ -214,7 +213,7 @@ const UserAdminSearch = () => {
             fullWidth
           />
           <TextField
-            label="Search for users by phone number..."
+            label={`${dictionary.searchForUsersBy} ${dictionary.phoneNumberWord}...`}
             variant="outlined"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setPhoneNumberInputValue(e.target.value)
@@ -222,7 +221,7 @@ const UserAdminSearch = () => {
             fullWidth
           />
           <TextField
-            label="Search for users by email..."
+            label={`${dictionary.searchForUsersBy} email...`}
             variant="outlined"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setEmailInputValue(e.target.value)

@@ -42,7 +42,7 @@ const HomePage = () => {
             </p>
           </div>
           <Button variant="contained" className="search-button">
-            Search
+            {dictionary.searchWord}
           </Button>
         </div>
         <div className="home-page-main-right">

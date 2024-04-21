@@ -150,7 +150,7 @@ const ReviewComponent = ({
               }
             >
               {constructorReviews.stats.reviewsNumber === 0
-                ? 'No reviews yet'
+                ? dictionary.noReviewsYetShort
                 : review.rating}
             </p>
             <div className="divider"></div>
