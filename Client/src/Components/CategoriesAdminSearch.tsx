@@ -9,7 +9,9 @@ import { setAuthToken } from '../AxiosClients/apiClient.ts'
 import Swal from 'sweetalert2'
 import apiClient from '../AxiosClients/apiClient'
 import { toast } from 'react-toastify'
+import Pagination from '@mui/material/Pagination'
 import { useAuth0 } from '@auth0/auth0-react'
+import LoadingSpinner from './LoadingSpinner.tsx'
 import '../style/scss/components/CategoriesAdminSearch.scss'
 
 const CategoriesAdminSearch = () => {
@@ -19,16 +21,41 @@ const CategoriesAdminSearch = () => {
   const [inputValue, setInputValue] = useState<string>('')
   const [categoriesToShow, setCategoriesToShow] = useState<Category[]>([])
 
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(0)
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  )
+  const [loading, setLoading] = useState(false)
+  const perPage = 5
+
   useEffect(() => {
-    if (inputValue === '' || inputValue.length < 3) {
-      setCategoriesToShow([])
-      return
+    if (searchTimeout) {
+      clearTimeout(searchTimeout)
     }
-    const categoriesFliltred = categories.filter((category) =>
-      category.name.toLowerCase().includes(inputValue.toLowerCase())
-    )
-    setCategoriesToShow(categoriesFliltred)
-  }, [categories, inputValue])
+    setLoading(true)
+    const timeout = setTimeout(() => {
+      const categoriesFliltred = categories.filter((category) =>
+        category.name.toLowerCase().includes(inputValue.toLowerCase())
+      )
+
+      const categoriesPagination = []
+
+      for (let i = 0; i < categoriesFliltred.length; i += perPage) {
+        categoriesPagination.push(categoriesFliltred.slice(i, i + perPage))
+      }
+      console.log(categoriesPagination, page)
+      setTotalPages(categoriesPagination.length)
+      setCategoriesToShow(categoriesPagination[page - 1])
+      setLoading(false)
+    }, 500)
+
+    setSearchTimeout(timeout)
+  }, [categories, inputValue, page])
+
+  const handlePageChange = (value: number) => {
+    setPage(value)
+  }
 
   const handleCategoryInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -126,10 +153,21 @@ const CategoriesAdminSearch = () => {
           fullWidth
         />
         <div>
-          <CategoriesAccordion
-            categories={categoriesToShow}
-            deleteCategory={handleCategoryDelete}
-            handler={handleCategoryEdit}
+          {loading ? (
+            <LoadingSpinner maxHeight="266px" maxWidth="100vh" />
+          ) : (
+            <CategoriesAccordion
+              categories={categoriesToShow}
+              deleteCategory={handleCategoryDelete}
+              handler={handleCategoryEdit}
+            />
+          )}
+        </div>
+        <div className="category-admin-pagination">
+          <Pagination
+            count={totalPages}
+            color="primary"
+            onChange={(_, page) => handlePageChange(page)}
           />
         </div>
         <div className="admin-panel-add">

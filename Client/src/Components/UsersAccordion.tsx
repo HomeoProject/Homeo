@@ -5,6 +5,7 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Button from '@mui/material/Button'
 import { CustomUser } from '../types/types'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 import '../style/scss/components/CategoriesAccordion.scss'
 
 type UsersAccordionProps = {
@@ -20,6 +21,8 @@ const UsersAccordion = ({
   handleBlockUser,
   handleDeleteUser,
 }: UsersAccordionProps) => {
+  const { dictionary } = useDictionaryContext()
+
   return (
     <div className="UsersAccordion">
       {users.map((user) => {
@@ -36,7 +39,10 @@ const UsersAccordion = ({
                   src={user.avatar}
                   alt="category-photo"
                 />
-                {user.id} - {user.firstName}&nbsp;{user.lastName}
+                {user.id} -{' '}
+                {user.firstName
+                  ? `${user.firstName} ${user.lastName}`
+                  : user.email}
               </div>
             </AccordionSummary>
             <AccordionDetails>
@@ -56,13 +62,13 @@ const UsersAccordion = ({
                     </div>
                     <div className="users-accordion-details-fields-container name">
                       <span className="users-accordion-details-fields-container-key">
-                        First Name:
+                        {dictionary.firstNameWord}:&nbsp;
                       </span>
                       <span>{user.firstName}</span>
                     </div>
                     <div className="users-accordion-details-fields-container name">
                       <span className="users-accordion-details-fields-container-key">
-                        Last Name:
+                        {dictionary.lastNameWord}:&nbsp;
                       </span>
                       <span>{user.lastName}</span>
                     </div>
@@ -74,7 +80,7 @@ const UsersAccordion = ({
                     </div>
                     <div className="users-accordion-details-fields-container name">
                       <span className="users-accordion-details-fields-container-key">
-                        Phone number:
+                        {dictionary.phoneNumberWord}:&nbsp;
                       </span>
                       <span>{user.phoneNumber}</span>
                     </div>
@@ -87,7 +93,7 @@ const UsersAccordion = ({
                       color="primary"
                       onClick={() => handleApporveUser(user.id, true)}
                     >
-                      Approve
+                      {dictionary.approveWord}
                     </Button>
                   ) : (
                     <Button
@@ -95,7 +101,7 @@ const UsersAccordion = ({
                       color="error"
                       onClick={() => handleApporveUser(user.id, false)}
                     >
-                      Revoke approval
+                      {dictionary.revokeApproval}
                     </Button>
                   )}
                   {!user.isBlocked ? (
@@ -104,7 +110,7 @@ const UsersAccordion = ({
                       color="error"
                       onClick={() => handleBlockUser(user.id, true)}
                     >
-                      Block
+                      {dictionary.blockWord}
                     </Button>
                   ) : (
                     <Button
@@ -112,7 +118,7 @@ const UsersAccordion = ({
                       color="error"
                       onClick={() => handleBlockUser(user.id, false)}
                     >
-                      Unblock
+                      {dictionary.unblockWord}
                     </Button>
                   )}
                   <Button

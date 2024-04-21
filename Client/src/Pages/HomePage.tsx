@@ -44,7 +44,7 @@ const HomePage = () => {
           </div>
           <Button variant="contained" className="search-button">
             <Link to="/adverts" className="search-button-link">
-              Search
+              {dictionary.searchWord}
             </Link>
           </Button>
         </div>

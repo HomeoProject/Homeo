@@ -2,6 +2,7 @@ package it.homeo.chatservice.config;
 
 import it.homeo.chatservice.exceptions.BadRequestException;
 import it.homeo.chatservice.exceptions.ForbiddenException;
+import it.homeo.chatservice.exceptions.NotFoundException;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleForbiddenException(ForbiddenException ex, WebRequest request) {
         CustomError error = new CustomError(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN, ex.getMessage(), getPath(request), Instant.now());
         return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    protected ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest request) {
+        CustomError error = new CustomError(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND, ex.getMessage(), getPath(request), Instant.now());
+        return handleExceptionInternal(ex, error, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler(BadRequestException.class)

@@ -6,6 +6,7 @@ RUN gradle build --no-daemon
 FROM openjdk:17-jdk-alpine
 WORKDIR /app
 COPY --from=build /home/gradle/ApiGateway/build/libs/ApiGateway-0.0.1-SNAPSHOT.jar /app
+COPY --from=build /home/gradle/ApiGateway/build/output/libs/opentelemetry-javaagent.jar /app
 
 ENV PORT=${PORT_APIGATEWAY:-8080}
 ENV REDIS_PASSWORD_APIGATEWAY=${REDIS_PASSWORD_APIGATEWAY:-REPLACE}

@@ -15,4 +15,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     @Query("SELECT cr FROM ChatRoom cr JOIN cr.chatParticipants cp WHERE :userId IN (SELECT cp.userId FROM ChatParticipant cp) AND cr.lastMessageCreatedAt > :lastCreatedAt")
     List<ChatRoom> findChatRoomsByParticipantUserId(@Param("userId") String userId, @Param("lastCreatedAt") Instant lastCreatedAt, Pageable pageable);
+
+    @Query("SELECT cr.id FROM ChatRoom cr JOIN cr.chatParticipants cp WHERE cp.userId = :userId AND cp.lastViewedAt < cr.lastMessageCreatedAt")
+    List<Long> getUnreadChatRoomIdsByUserId(@Param("userId") String userId);
 }

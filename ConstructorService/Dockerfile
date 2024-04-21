@@ -6,6 +6,7 @@ RUN gradle clean build -x test
 FROM openjdk:17-jdk-alpine
 WORKDIR /app
 COPY --from=build /home/gradle/ConstructorService/build/libs/ConstructorService-0.0.1-SNAPSHOT.jar /app
+COPY --from=build /home/gradle/ConstructorService/build/output/libs/opentelemetry-javaagent.jar /app
 
 # ENV variables to replace
 ENV PORT=${PORT_CONSTRUCTORSERVICE:-8080}

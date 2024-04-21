@@ -12,4 +12,6 @@ public interface ChatService {
     List<ChatMessage> getChatMessages(Long chatRoomId, String userId, Instant lastCreatedAt);
     ChatMessage createChatMessage(CreateChatMessageDto dto, String userId);
     ChatRoom markAsReadChatRoom(Long chatRoomId, String userId);
+    List<Long> getUnreadChats(String userId);
+    ChatRoom getChatRoom(String userId, Long chatRoomId);
 }

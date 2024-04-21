@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 
 import UserCard from './UserCard'
@@ -11,21 +11,59 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import Button from '@mui/material/Button'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
 import SendIcon from '@mui/icons-material/Send'
+import { useAuth0 } from '@auth0/auth0-react'
+import { setAuthToken } from '../AxiosClients/apiClient.ts'
+import { Constructor } from '../types/types.ts'
+import apiClient from '../AxiosClients/apiClient'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 
 export interface SimpleDialogProps {
   open: boolean
   handleClose: () => void
+  constructor: {
+    userId: string
+    avatar: string
+    firstName: string
+    categoryIds: string[]
+    phoneNumber: string
+    cities: string[]
+    email: string
+    minRate: number
+    avarageRate: number
+  }
 }
 
 const SimpleDialog = (props: SimpleDialogProps) => {
-  const { open, handleClose } = props
+  const { open, handleClose, constructor } = props
   const accrodionRef = useRef<HTMLDivElement>(null)
   const cardsRef = useRef<HTMLDivElement>(null)
   const [openAccordion, setOpenAccordion] = useState(false)
+  const [fullConstructor, setFullConstructor] = useState<Constructor | null>(
+    null
+  )
+  const [valid, setValid] = useState<boolean>(false)
 
+  const { getAccessTokenSilently } = useAuth0()
   const { dictionary } = useDictionaryContext()
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = await getAccessTokenSilently()
+        setAuthToken(token)
+        const response = await apiClient.get(
+          `/constructors/${constructor.userId}`
+        )
+        setFullConstructor(response.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchUser()
+  }, [])
 
   const handleOpenAccrordion = () => {
     if (!openAccordion) {
@@ -46,53 +84,32 @@ const SimpleDialog = (props: SimpleDialogProps) => {
     >
       <div className="before-simple-dialog">
         <div className="SimpleDialog" ref={cardsRef}>
-          <UserCard isDialog={true} />
-          <Card
-            sx={{
-              margin: '185px 0 0 20px',
-              padding: '15px 30px 15px 30px',
-              height: '335px',
-            }}
-          >
-            <div className="simple-dialog-container">
-              <div className="simple-dialog-container-row">
-                <span className="simple-dialog-container-row-key">
-                  {dictionary.aboutMe}:
-                </span>
-                <span className="simple-dialog-container-row-value">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad
-                  odio nemo rerum similique soluta. Asperiores voluptates quas
-                  consequuntur nam repellendus cumque ipsam iusto tempora quae
-                  veniam magni excepturi, esse aliquam!
-                </span>
+          <UserCard isDialog={true} constructor={constructor} />
+          <Card className="simple-dialog-card">
+            {fullConstructor && (
+              <div className="simple-dialog-container">
+                <div className="simple-dialog-container-row">
+                  <span className="simple-dialog-container-row-key">
+                    {dictionary.aboutMe}:
+                  </span>
+                  <span className="simple-dialog-container-row-value">
+                    {fullConstructor.aboutMe}
+                  </span>
+                </div>
+                <div className="simple-dialog-container-row">
+                  <span className="simple-dialog-container-row-key">
+                    {dictionary.experience}:
+                  </span>
+                  <span className="simple-dialog-container-row-value">
+                    {fullConstructor.experience}
+                  </span>
+                </div>
               </div>
-              <div className="simple-dialog-container-row">
-                <span className="simple-dialog-container-row-key">
-                  {dictionary.experience}:
-                </span>
-                <span className="simple-dialog-container-row-value">
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ad
-                  hic itaque veniam animi. Amet, in illo suscipit repellat fuga
-                  veniam incidunt cum nam iure facere? Ipsum voluptas
-                  reprehenderit omnis veritatis.
-                </span>
-              </div>
-              <div className="simple-dialog-container-row">
-                <span className="simple-dialog-container-row-key">
-                  {dictionary.whyHire}
-                </span>
-                <span className="simple-dialog-container-row-value">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. In
-                  mollitia accusantium eos ducimus veniam. Deleniti tenetur
-                  adipisci tempora? Porro, tempore! Necessitatibus, voluptates
-                  dolore nostrum adipisci optio temporibus autem illo inventore?
-                </span>
-              </div>
-            </div>
+            )}
           </Card>
         </div>
         <div className="accordion">
-          <Accordion sx={{ width: '880px' }} ref={accrodionRef}>
+          <Accordion sx={{ maxWidth: '880px' }} ref={accrodionRef}>
             <AccordionSummary>
               <div className="accordion-summary">
                 <Button
@@ -126,13 +143,13 @@ const SimpleDialog = (props: SimpleDialogProps) => {
                 </div>
                 <div className="accordion-form-details">
                   <TextField
-                    label={dictionary.descriptionLabel}
+                    label="Description of your problem"
                     variant="outlined"
                     multiline
                     minRows={6}
                   />
                   <div>
-                    <input type="checkbox" />
+                    <Checkbox onChange={(e) => setValid(e.target.checked)} />
                     <span>
                       {dictionary.termsAgree}
                       <span>*</span>
@@ -140,6 +157,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
                   </div>
                   <div>
                     <Button
+                      disabled={!valid}
                       variant="contained"
                       sx={{
                         fontWeight: 700,
@@ -160,7 +178,8 @@ const SimpleDialog = (props: SimpleDialogProps) => {
                 </div>
               </div>
             </AccordionDetails>
-          </Accordion>
+          </Accordion>{' '}
+          {/* Closing tag for inner Accordion */}
         </div>
       </div>
     </Dialog>

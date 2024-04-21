@@ -150,7 +150,7 @@ const MyReviewModal = ({
                 placeholder={
                   receiverName
                     ? `${dictionary.writeSomethingAbout} ${receiverName}...`
-                    : 'Write something...'
+                    : `${dictionary.writeSomething}...`
                 }
                 maxLength={400}
                 value={reviewText}
