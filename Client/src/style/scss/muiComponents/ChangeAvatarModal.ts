@@ -15,8 +15,9 @@ export const avatarModalStyle = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
-  '@media (max-width: 600px)': {
+  '@media (max-width: 840px)': {
     width: 'calc(80% - 32px)',
+    height: 'min-content',
   },
 }
 
@@ -24,7 +25,7 @@ export const titleTypographyStyle = {
   fontWeight: 600,
   fontFamily: 'Gabarito',
   width: '100%',
-  '@media (max-width: 600px)': {
+  '@media (max-width: 840px)': {
     fontSize: '1rem',
   },
 }
@@ -38,7 +39,7 @@ export const cropperBoxStyle = {
   maxWidth: '600px',
   maxHeight: '400px',
   padding: '2rem',
-  '@media (max-width: 600px)': {
+  '@media (max-width: 840px)': {
     padding: '1rem',
   },
 }
@@ -52,7 +53,7 @@ export const errorMessageTypographyStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  '@media (max-width: 600px)': {
+  '@media (max-width: 840px)': {
     fontSize: '0.8rem',
     paddingBottom: '1rem',
   },
@@ -63,8 +64,7 @@ export const saveButtonStyle = {
   fontFamily: 'Gabarito',
   height: '47px',
   width: '70px',
-  marginLeft: '0.5rem',
-  '@media (max-width: 600px)': {
+  '@media (max-width: 840px)': {
     marginTop: '0.5rem',
     marginLeft: '0',
   },
