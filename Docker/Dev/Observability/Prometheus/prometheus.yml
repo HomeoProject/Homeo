@@ -1,0 +1,44 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: "homeo-userservice"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["homeo-userservice:8081"]
+
+  - job_name: "homeo-constructorservice"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["homeo-constructorservice:8082"]
+
+  - job_name: "homeo-reviewservice"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["homeo-reviewservice:8083"]
+
+  - job_name: "homeo-searchservice"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["homeo-searchservice:8084"]
+
+  - job_name: "homeo-chatservice"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["homeo-chatservice:8085"]
+
+  - job_name: "homeo-apigateway"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["homeo-apigateway:8080"]
+
+  - job_name: "homeo-eureka"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["homeo-eureka:8761"]
+
+  - job_name: "homeo-rabbitmq"
+    metrics_path: "/metrics"
+    static_configs:
+      - targets: ["homeo-rabbit:15692"]
