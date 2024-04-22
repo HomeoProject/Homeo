@@ -220,6 +220,8 @@ export const english = {
   unblockWord: 'Unblock',
   deleteWord: 'Delete',
   searchForUsersBy: 'Search for users by',
+  noFileSelected: 'No file selected...',
+  uploadFile: 'Upload file',
 }
 
 export const polish = {
@@ -446,4 +448,6 @@ export const polish = {
   unblockWord: 'Odblokuj',
   deleteWord: 'Usuń',
   searchForUsersBy: 'Szukaj użytkowników po',
+  noFileSelected: 'Nie wybrano pliku...',
+  uploadFile: 'Prześlij',
 }

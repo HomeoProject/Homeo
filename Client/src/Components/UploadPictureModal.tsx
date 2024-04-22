@@ -1,9 +1,9 @@
-import { Box, Button, Modal, Typography } from '@mui/material'
-import { ChangeEvent, useRef, useState } from 'react'
+import { Box, Button, Modal, Typography, styled } from '@mui/material'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useUserContext } from '../Context/UserContext.ts'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 import { useForm } from 'react-hook-form'
-import { TextField } from '@mui/material'
+import UploadIcon from '@mui/icons-material/Upload'
 import Cropper, { ReactCropperElement } from 'react-cropper'
 import 'cropperjs/dist/cropper.css'
 import '../style/scss/components/ChangeAvatarModal.scss'
@@ -50,16 +50,17 @@ const UploadPictureModal = ({
   customHeadline,
   aspectRatio = 'square',
 }: UploadPictureModalProps) => {
-  const { customUser, setCustomUser } = useUserContext()
-  const [errorMessage, setErrorMessage] = useState('')
-  const [imgSrc, setImgSrc] = useState(customInitSource)
-  const [isLoading, setIsLoading] = useState(false)
-
   const { dictionary } = useDictionaryContext()
+  const { customUser, setCustomUser } = useUserContext()
+  const [errorMessage, setErrorMessage] = useState<string>('')
+  const [imgSrc, setImgSrc] = useState<string>('')
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [fileName, setFileName] = useState<string>('')
 
   const internalHandleClose = () => {
     handleClose()
-    customUser && setImgSrc(customInitSource || customUser?.avatar)
+    customUser && setImgSrc(customInitSource)
+    setFileName(dictionary.noFileSelected)
     setErrorMessage('')
     setIsLoading(false)
   }
@@ -85,6 +86,10 @@ const UploadPictureModal = ({
   const { register, handleSubmit } = useForm()
 
   const cropperRef = useRef<ReactCropperElement>(null)
+
+  const Input = styled('input')({
+    display: 'none',
+  })
 
   const onSubmit = async () => {
     if (setCustomExternalSource) {
@@ -163,6 +168,7 @@ const UploadPictureModal = ({
         reader.onload = () => {
           setImgSrc(reader.result as string)
           setIsLoading(false)
+          setFileName(file.name)
         }
         reader.readAsDataURL(file)
       }
@@ -187,6 +193,13 @@ const UploadPictureModal = ({
 
     return new Blob([ia], { type: mimeString })
   }
+
+  useEffect(() => {
+    if (open) {
+      setImgSrc(customInitSource)
+      setFileName(dictionary.noFileSelected)
+    }
+  }, [open, customInitSource, dictionary.noFileSelected])
 
   return (
     <Modal
@@ -236,13 +249,46 @@ const UploadPictureModal = ({
         >
           {<Warning /> && errorMessage}
         </Typography>
-        <Box>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+          }}
+        >
           <form onSubmit={handleSubmit(onSubmit)} className="modal-form">
-            <TextField
-              type="file"
-              {...register('file')}
-              onChange={handleChange}
-            />
+            <label htmlFor="contained-button-file" className="modal-form-left">
+              <Input
+                accept="image/*"
+                id="contained-button-file"
+                multiple
+                type="file"
+                {...register('file')}
+                onChange={handleChange}
+              />
+              <Button
+                variant="outlined"
+                component="span"
+                sx={{ minWidth: '150px', height: '47px' }}
+              >
+                {dictionary.uploadFile}
+                <UploadIcon />
+              </Button>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: '#b6b6b6',
+                  overflow: 'hidden',
+                  textWrap: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  maxWidth: '150px',
+                  fontFamily: 'Gabarito',
+                }}
+              >
+                {fileName}
+              </Typography>
+            </label>
             <Button
               type="submit"
               variant="contained"
