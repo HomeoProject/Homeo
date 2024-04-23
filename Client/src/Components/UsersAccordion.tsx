@@ -25,7 +25,7 @@ const UsersAccordion = ({
 
   return (
     <div className="UsersAccordion">
-      {users.map((user) => {
+      {users.length ? (users.map((user) => {
         return (
           <Accordion key={user.id}>
             <AccordionSummary
@@ -133,7 +133,11 @@ const UsersAccordion = ({
             </AccordionDetails>
           </Accordion>
         )
-      })}
+      })) : (
+        <div className='users-accordion-exaption'>
+          {dictionary.noUsersFound}
+        </div>
+      )}
     </div>
   )
 }

@@ -72,4 +72,11 @@
       gap: 1rem;
     }
   }
+  .users-accordion-exaption {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 256px;
+    font-size: v.$font-size-large;
+  }
 }

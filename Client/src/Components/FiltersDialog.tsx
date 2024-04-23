@@ -19,7 +19,7 @@ import LanguagesAutocomplete from './LanguagesAutocomplete'
 import { PaymentMethod } from '../types/types'
 import CitiesAutocomplete from './CitiesAutocomplete'
 import { useCategoriesContext } from '../Context/CategoriesContext'
-import '../style/scss/FiltersDialog.scss'
+import '../style/scss/components/FiltersDialog.scss'
 
 export interface FiltersDialogProps {
   open: boolean
@@ -30,7 +30,7 @@ export interface FiltersDialogProps {
 
 const FiltersDialog = (props: FiltersDialogProps) => {
   const { open, handleClose, openFilter, handleSearch } = props
-  const [priceValue, setPriceValue] = useState<number[]>([0, 100])
+  const [priceValue, setPriceValue] = useState<number[]>([0, 500])
   const [ratingValue, setRatingValue] = useState(5.0)
   const [languages, setLanguages] = useState<string[]>([])
   const [directionValue, setDirectionValue] = useState<string>('or less')
@@ -358,6 +358,7 @@ const FiltersDialog = (props: FiltersDialogProps) => {
             alignItems: 'center',
             padding: '10px',
             marginTop: '10px',
+            width: '100%',
           }}
         >
           <Button variant="contained" onClick={handleSearchClick}>

@@ -12,6 +12,12 @@ import { Link } from 'react-router-dom'
 import { useCategoriesContext } from '../Context/CategoriesContext'
 import '../style/scss/components/UserCard.scss'
 
+import StarIcon from '@mui/icons-material/Star'
+import EmailIcon from '@mui/icons-material/Email'
+import PhoneIcon from '@mui/icons-material/Phone'
+import PaymentsIcon from '@mui/icons-material/Payments'
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn'
+
 type UserCardProps = {
   isDialog?: boolean
   constructor: {
@@ -23,7 +29,8 @@ type UserCardProps = {
     cities: string[]
     email: string
     minRate: number
-    avarageRate: number
+    avarageRate: number,
+    paymentMethods: string[]
   }
 }
 
@@ -63,33 +70,33 @@ const UserCard = ({ isDialog, constructor }: UserCardProps) => {
           </div>
           <div className="user-card-container-info-section">
             <div className="user-card-container-info-section-row">
-              <SmartphoneIcon />
+              <StarIcon color="primary"/>
+              <span className="user-card-container-info-section-row-value">
+                {constructor.avarageRate ? constructor.avarageRate : 'No reviews yet'} 
+              </span>
+            </div>
+            <div className="user-card-container-info-section-row">
+              <PhoneIcon color="primary"/>
               <span className="user-card-container-info-section-row-value">
                 {constructor.phoneNumber}
               </span>
             </div>
             <div className="user-card-container-info-section-row">
-              <PublicIcon />
+              <PublicIcon color="primary"/>
               <span className="user-card-container-info-section-row-value">
                 {constructor.cities.join(', ')}
               </span>
             </div>
             <div className="user-card-container-info-section-row">
-              <MailOutlineIcon />
-              <span className="user-card-container-info-section-row-value">
-                {constructor?.email}
-              </span>
-            </div>
-            <div className="user-card-container-info-section-row">
-              <AttachMoneyIcon />
+              <MonetizationOnIcon color="primary"/>
               <span className="user-card-container-info-section-row-value">
                 {constructor.minRate} zł/h
               </span>
             </div>
             <div className="user-card-container-info-section-row">
-              <StarOutlineIcon />
+              <PaymentsIcon color="primary"/>
               <span className="user-card-container-info-section-row-value">
-                {constructor.avarageRate}
+                {constructor.paymentMethods.map(el => el.charAt(0) + el.slice(1).toLowerCase()).join(', ')}
               </span>
             </div>
           </div>

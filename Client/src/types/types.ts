@@ -100,3 +100,30 @@ export interface Developer {
 export interface Dictionary {
   [key: string]: string
 }
+
+export interface ConstructorFilters {
+    selectedCategories: Array<number>,
+    priceValue: Array<number>,
+    ratingValue: number,
+    directionValue: string,
+    languages: Array<string>,
+    selectedPaymentMethods: Array<string>,
+    selectedPlaces: Array<string>,
+}
+
+export interface ConstructorByFilters {
+  userId: string
+  firstName: string
+  lastName: string
+  isApproved: boolean
+  avatar: string
+  minRate: number
+  phoneNumber: string
+  email: string
+  averageRating: number
+  reviewsNumber: number
+  languages: Array<string>
+  cities: Array<string>
+  paymentMethods: Array<string>
+  categoryIds: Array<number>
+}

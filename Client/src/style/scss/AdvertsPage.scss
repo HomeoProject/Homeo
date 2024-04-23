@@ -20,6 +20,9 @@
     @media screen and (max-width: 850px) {
       margin: 3rem 5rem 0 5rem;
     }
+    @media screen and (max-width: 425px) {
+      margin: 3rem 2rem 0 2rem;
+    }
     > .adverts-page-search-slogan {
       display: flex;
       text-align: center;
@@ -94,9 +97,18 @@
       display: grid;
       justify-content: center;
       grid-template-columns: repeat(3, 1fr);
-      gap: 3rem;
+      gap: 5rem;
       .adverts-page-cards-grid-spinner {
         grid-column-start: 2;
+      }
+      .adverts-page-cards-grid-exaption {
+        display: flex;
+        justify-content: center;
+        grid-column-start: 1;
+        grid-column-end: 4;
+        align-items: center;
+        height: 256px;
+        font-size: $font-size-large;
       }
     }
     @media screen and (max-width: 1200px) {

@@ -210,6 +210,9 @@ export const english = {
   unblockWord: 'Unblock',
   deleteWord: 'Delete',
   searchForUsersBy: 'Search for users by',
+  noCategoriesFound: 'No categories found :(',
+  noUsersFound: 'No users found :(',
+  noConstructorsFound: 'No constructors found :(',
 }
 
 export const polish = {
@@ -426,4 +429,7 @@ export const polish = {
   unblockWord: 'Odblokuj',
   deleteWord: 'Usuń',
   searchForUsersBy: 'Szukaj użytkowników po',
+  noCategoriesFound: 'Nie znaleziono kategorii :(',
+  noUsersFound: 'Nie znaleziono użytkowników :(',
+  noConstructorsFound: 'Nie znaleziono konstruktorów :(',
 }
