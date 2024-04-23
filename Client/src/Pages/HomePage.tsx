@@ -6,6 +6,7 @@ import houseIcon from '../Assets/house.png'
 import houseSecondIcon from '../Assets/house-second.png'
 import { Button } from '@mui/material'
 import HomePageTimeline from '../Components/HomePageTimeline'
+import { Link } from 'react-router-dom'
 
 const HomePage = () => {
   const verifiedContractorsCount: number = 8836
@@ -42,7 +43,9 @@ const HomePage = () => {
             </p>
           </div>
           <Button variant="contained" className="search-button">
-            {dictionary.searchWord}
+            <Link to="/adverts" className="search-button-link">
+              {dictionary.searchWord}
+            </Link>
           </Button>
         </div>
         <div className="home-page-main-right">

@@ -23,7 +23,7 @@ repositories {
 
 ext {
 	set('springCloudVersion', "2023.0.0")
-	set('otelVersion', "2.3.0")
+    set('otelVersion', "1.32.1")
 }
 
 dependencies {

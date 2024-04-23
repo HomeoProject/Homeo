@@ -11,12 +11,26 @@
 
 .modal-form {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  width: 100%;
+  gap: 1rem;
 
-  @media (max-width: 600px) {
+  @media (max-width: 840px) {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  > .modal-form-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    @media (max-width: 840px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
 }
 .close-modal-button {

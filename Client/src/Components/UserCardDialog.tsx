@@ -15,7 +15,6 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { setAuthToken } from '../AxiosClients/apiClient.ts'
 import { Constructor } from '../types/types.ts'
 import apiClient from '../AxiosClients/apiClient'
-import { useDictionaryContext } from '../Context/DictionaryContext'
 
 export interface SimpleDialogProps {
   open: boolean
