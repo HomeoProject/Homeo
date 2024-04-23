@@ -24,9 +24,9 @@ public interface ConstructorSearchRepository extends JpaRepository<ConstructorSe
             "AND (:#{#filterDto.getPaymentMethods()} IS NULL OR EXISTS (SELECT p FROM c.paymentMethods p WHERE p IN :#{#filterDto.getPaymentMethods()})) " +
             "AND (:#{#filterDto.getCities()} IS NULL OR EXISTS (SELECT ci FROM c.cities ci WHERE ci IN :#{#filterDto.getCities()})) " +
             "AND (:#{#filterDto.getGeneralSearchQuery()} IS NULL OR " +
-            "LOWER(c.firstName) LIKE LOWER(concat('%', :#{#filterDto.getGeneralSearchQuery()}, '%')) OR " +
-            "LOWER(c.lastName) LIKE LOWER(concat('%', :#{#filterDto.getGeneralSearchQuery()}, '%')) OR " +
-            "LOWER(c.email) LIKE LOWER(concat('%', :#{#filterDto.getGeneralSearchQuery()}, '%'))) OR " +
-            "EXISTS (SELECT ci FROM c.cities ci WHERE LOWER(ci) LIKE LOWER(concat('%', :#{#filterDto.getGeneralSearchQuery()}, '%')))")
+            "LOWER(c.firstName) LIKE LOWER(CONCAT('%', :#{#filterDto.getGeneralSearchQuery()}, '%')) OR " +
+            "LOWER(c.lastName) LIKE LOWER(CONCAT('%', :#{#filterDto.getGeneralSearchQuery()}, '%')) OR " +
+            "LOWER(c.email) LIKE LOWER(CONCAT('%', :#{#filterDto.getGeneralSearchQuery()}, '%'))) OR " +
+            "EXISTS (SELECT ci FROM c.cities ci WHERE LOWER(ci) LIKE LOWER(CONCAT('%', :#{#filterDto.getGeneralSearchQuery()}, '%')))")
     Page<ConstructorSearch> searchConstructorSearch(@Param("filterDto") ConstructorSearchFilterDto filterDto, Pageable pageable);
 }
