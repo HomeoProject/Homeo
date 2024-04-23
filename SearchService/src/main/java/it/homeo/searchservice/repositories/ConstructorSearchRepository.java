@@ -22,6 +22,11 @@ public interface ConstructorSearchRepository extends JpaRepository<ConstructorSe
             "AND (:#{#filterDto.getIsApproved()} IS NULL OR c.isApproved = :#{#filterDto.getIsApproved()}) " +
             "AND (:#{#filterDto.getLanguages()} IS NULL OR EXISTS (SELECT l FROM c.languages l WHERE l IN :#{#filterDto.getLanguages()})) " +
             "AND (:#{#filterDto.getPaymentMethods()} IS NULL OR EXISTS (SELECT p FROM c.paymentMethods p WHERE p IN :#{#filterDto.getPaymentMethods()})) " +
-            "AND (:#{#filterDto.getCities()} IS NULL OR EXISTS (SELECT ci FROM c.cities ci WHERE ci IN :#{#filterDto.getCities()}))")
+            "AND (:#{#filterDto.getCities()} IS NULL OR EXISTS (SELECT ci FROM c.cities ci WHERE ci IN :#{#filterDto.getCities()})) " +
+            "AND (:#{#filterDto.getGeneralSearchQuery()} IS NULL OR " +
+            "c.firstName LIKE %:#{#filterDto.getGeneralSearchQuery()}% OR " +
+            "c.lastName LIKE %:#{#filterDto.getGeneralSearchQuery()}% OR " +
+            "c.email LIKE %:#{#filterDto.getGeneralSearchQuery()}%) OR " +
+            "EXISTS (SELECT ci FROM c.cities ci WHERE LOWER(ci) LIKE LOWER(concat('%', :#{#filterDto.getGeneralSearchQuery()}, '%')))")
     Page<ConstructorSearch> searchConstructorSearch(@Param("filterDto") ConstructorSearchFilterDto filterDto, Pageable pageable);
 }
