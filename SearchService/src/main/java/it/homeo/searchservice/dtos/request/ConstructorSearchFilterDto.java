@@ -15,6 +15,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class ConstructorSearchFilterDto {
 
+    private String generalSearchQuery;
+
     @Size(min = 1, message = "CategoryIds must not be empty")
     private Set<Long> categoryIds;
 
