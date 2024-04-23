@@ -32,15 +32,16 @@ const AdvertsPage = () => {
   const [filterClicked, setFilterClicked] = useState<number>(0)
   const [sortValue, setSortValue] = useState<string>('asc')
   const [onlyActiveUsers, setOnlyActiveUsers] = useState<boolean>(false)
-  const [constructorFilters, setConstructorFilters] = useState<ConstructorFilters>({
-    selectedCategories: [],
-    priceValue: [0, 500],
-    ratingValue: 5,
-    directionValue: 'or less',
-    languages: [],
-    selectedPaymentMethods: [],
-    selectedPlaces: [],
-  })
+  const [constructorFilters, setConstructorFilters] =
+    useState<ConstructorFilters>({
+      selectedCategories: [],
+      priceValue: [0, 500],
+      ratingValue: 5,
+      directionValue: 'or less',
+      languages: [],
+      selectedPaymentMethods: [],
+      selectedPlaces: [],
+    })
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [perPageValue, setPerPageValue] = useState<string>('12')
   const [page, setPage] = useState<number>(0)
@@ -98,8 +99,8 @@ const AdvertsPage = () => {
       categoryIds:
         constructorFilters.selectedCategories.length !== 0
           ? [
-              ...constructorFilters.selectedCategories.map((category) =>
-                category
+              ...constructorFilters.selectedCategories.map(
+                (category) => category
               ),
             ]
           : null,
@@ -261,24 +262,25 @@ const AdvertsPage = () => {
         <div className="adverts-page-cards-grid">
           {!isLoading ? (
             constructors.length > 0 ? (
-            constructors.map((constructor, index) => (
-              <UserCard
-                key={index}
-                isDialog={false}
-                constructor={{
-                  userId: constructor.userId,
-                  avatar: constructor.avatar,
-                  firstName: constructor.firstName,
-                  categoryIds: constructor.categoryIds,
-                  phoneNumber: constructor.phoneNumber,
-                  cities: constructor.cities,
-                  email: constructor.email,
-                  minRate: constructor.minRate,
-                  avarageRate: constructor.avarageRate,
-                  paymentMethods: constructor.paymentMethods,
-                }}
-              />
-            ))) : (
+              constructors.map((constructor, index) => (
+                <UserCard
+                  key={index}
+                  isDialog={false}
+                  constructor={{
+                    userId: constructor.userId,
+                    avatar: constructor.avatar,
+                    firstName: constructor.firstName,
+                    categoryIds: constructor.categoryIds,
+                    phoneNumber: constructor.phoneNumber,
+                    cities: constructor.cities,
+                    email: constructor.email,
+                    minRate: constructor.minRate,
+                    avarageRate: constructor.avarageRate,
+                    paymentMethods: constructor.paymentMethods,
+                  }}
+                />
+              ))
+            ) : (
               <div className="adverts-page-cards-grid-exaption">
                 <span>{dictionary.noConstructorsFound}</span>
               </div>
@@ -287,7 +289,7 @@ const AdvertsPage = () => {
             <div className="adverts-page-cards-grid-spinner">
               <LoadingSpinner />
             </div>
-          ) }
+          )}
         </div>
         <div className="adverts-page-cards-pagination">
           <Pagination

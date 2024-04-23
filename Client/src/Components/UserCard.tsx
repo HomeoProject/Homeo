@@ -29,7 +29,7 @@ type UserCardProps = {
     cities: string[]
     email: string
     minRate: number
-    avarageRate: number,
+    avarageRate: number
     paymentMethods: string[]
   }
 }
@@ -70,33 +70,37 @@ const UserCard = ({ isDialog, constructor }: UserCardProps) => {
           </div>
           <div className="user-card-container-info-section">
             <div className="user-card-container-info-section-row">
-              <StarIcon color="primary"/>
+              <StarIcon color="primary" />
               <span className="user-card-container-info-section-row-value">
-                {constructor.avarageRate ? constructor.avarageRate : 'No reviews yet'} 
+                {constructor.avarageRate
+                  ? constructor.avarageRate
+                  : 'No reviews yet'}
               </span>
             </div>
             <div className="user-card-container-info-section-row">
-              <PhoneIcon color="primary"/>
+              <PhoneIcon color="primary" />
               <span className="user-card-container-info-section-row-value">
                 {constructor.phoneNumber}
               </span>
             </div>
             <div className="user-card-container-info-section-row">
-              <PublicIcon color="primary"/>
+              <PublicIcon color="primary" />
               <span className="user-card-container-info-section-row-value">
                 {constructor.cities.join(', ')}
               </span>
             </div>
             <div className="user-card-container-info-section-row">
-              <MonetizationOnIcon color="primary"/>
+              <MonetizationOnIcon color="primary" />
               <span className="user-card-container-info-section-row-value">
                 {constructor.minRate} zł/h
               </span>
             </div>
             <div className="user-card-container-info-section-row">
-              <PaymentsIcon color="primary"/>
+              <PaymentsIcon color="primary" />
               <span className="user-card-container-info-section-row-value">
-                {constructor.paymentMethods.map(el => el.charAt(0) + el.slice(1).toLowerCase()).join(', ')}
+                {constructor.paymentMethods
+                  .map((el) => el.charAt(0) + el.slice(1).toLowerCase())
+                  .join(', ')}
               </span>
             </div>
           </div>

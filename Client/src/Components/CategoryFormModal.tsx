@@ -58,7 +58,7 @@ const CategoryFormModal = ({
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        sx={{ width: '100%'}}
+        sx={{ width: '100%' }}
       >
         <Card sx={{ maxWidth: '600px !important' }}>
           <div className="category-form">
@@ -67,7 +67,7 @@ const CategoryFormModal = ({
                 {label === '+' ? 'Add new category' : 'Edit category'}
               </span>
               <span className="category-form-exit-value" onClick={handleClose}>
-                <CloseIcon/>
+                <CloseIcon />
               </span>
             </div>
             {label !== '+' && (

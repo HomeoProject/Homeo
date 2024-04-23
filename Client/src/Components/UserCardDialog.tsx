@@ -97,7 +97,10 @@ const SimpleDialog = (props: SimpleDialogProps) => {
                   <span className="simple-dialog-container-row-key">
                     {dictionary.experience}:
                   </span>
-                  <span className="simple-dialog-container-row-value" ref={accrodionRef}>
+                  <span
+                    className="simple-dialog-container-row-value"
+                    ref={accrodionRef}
+                  >
                     {fullConstructor.experience}
                   </span>
                 </div>

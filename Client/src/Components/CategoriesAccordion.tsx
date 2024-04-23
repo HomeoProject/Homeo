@@ -34,7 +34,7 @@ const CategoriesAccordion = ({
     <div className="CategoriesAccordion">
       {categories ? (
         categories.map((category) => {
-        return (
+          return (
             <Accordion key={category.id}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -94,22 +94,23 @@ const CategoriesAccordion = ({
                 </div>
               </AccordionDetails>
               <UploadPictureModal
-              open={openPictureModal}
-              handleClose={() => setOpenPictureModal(false)}
-              minHeight={200}
-              minWidth={200}
-              maxSize={2}
-              client={apiClient}
-              path={`/constructors/categories/image/${category.id}`}
-              method="put"
-              customInitSource={category.image}
-              customHeadline={dictionary.changeCategoryImage}
-              aspectRatio="rectangle"
-            />
+                open={openPictureModal}
+                handleClose={() => setOpenPictureModal(false)}
+                minHeight={200}
+                minWidth={200}
+                maxSize={2}
+                client={apiClient}
+                path={`/constructors/categories/image/${category.id}`}
+                method="put"
+                customInitSource={category.image}
+                customHeadline={dictionary.changeCategoryImage}
+                aspectRatio="rectangle"
+              />
             </Accordion>
-        )
-      })) : (
-        <div className='categories-accordion-exaption'>
+          )
+        })
+      ) : (
+        <div className="categories-accordion-exaption">
           {dictionary.noCategoriesFound}
         </div>
       )}

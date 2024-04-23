@@ -102,13 +102,13 @@ export interface Dictionary {
 }
 
 export interface ConstructorFilters {
-    selectedCategories: Array<number>,
-    priceValue: Array<number>,
-    ratingValue: number,
-    directionValue: string,
-    languages: Array<string>,
-    selectedPaymentMethods: Array<string>,
-    selectedPlaces: Array<string>,
+  selectedCategories: Array<number>
+  priceValue: Array<number>
+  ratingValue: number
+  directionValue: string
+  languages: Array<string>
+  selectedPaymentMethods: Array<string>
+  selectedPlaces: Array<string>
 }
 
 export interface ConstructorByFilters {
