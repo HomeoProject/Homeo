@@ -55,12 +55,14 @@ springdoc:
     path: /swagger-ui
     urls:
       - url: /api-docs
-        name: API Gateway
+        name: ApiGateway
       - url: /userservice/api-docs
-        name: User Service
+        name: UserService
       - url: /constructorservice/api-docs
         name: ConstructorService
       - url: /reviewservice/api-docs
         name: ReviewService
       - url: /searchservice/api-docs
         name: SearchService
+      - url: /chatservice/api-docs
+        name: ChatService
