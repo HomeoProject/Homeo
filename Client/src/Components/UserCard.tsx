@@ -4,16 +4,11 @@ import UserCardDialog from './UserCardDialog'
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
 import PublicIcon from '@mui/icons-material/Public'
-import MailOutlineIcon from '@mui/icons-material/MailOutline'
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
-import StarOutlineIcon from '@mui/icons-material/StarOutline'
-import SmartphoneIcon from '@mui/icons-material/Smartphone'
 import { Link } from 'react-router-dom'
 import { useCategoriesContext } from '../Context/CategoriesContext'
 import '../style/scss/components/UserCard.scss'
 
 import StarIcon from '@mui/icons-material/Star'
-import EmailIcon from '@mui/icons-material/Email'
 import PhoneIcon from '@mui/icons-material/Phone'
 import PaymentsIcon from '@mui/icons-material/Payments'
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn'
@@ -24,12 +19,12 @@ type UserCardProps = {
     userId: string
     avatar: string
     firstName: string
-    categoryIds: string[]
+    categoryIds: number[]
     phoneNumber: string
     cities: string[]
     email: string
     minRate: number
-    avarageRate: number
+    averageRating: number
     paymentMethods: string[]
   }
 }
@@ -38,7 +33,7 @@ const UserCard = ({ isDialog, constructor }: UserCardProps) => {
   const [open, setOpen] = useState(false)
 
   const { dictionary } = useDictionaryContext()
-  const { categories, setCategories } = useCategoriesContext()
+  const { categories } = useCategoriesContext()
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -72,8 +67,8 @@ const UserCard = ({ isDialog, constructor }: UserCardProps) => {
             <div className="user-card-container-info-section-row">
               <StarIcon color="primary" />
               <span className="user-card-container-info-section-row-value">
-                {constructor.avarageRate
-                  ? constructor.avarageRate
+                {constructor.averageRating
+                  ? constructor.averageRating
                   : 'No reviews yet'}
               </span>
             </div>

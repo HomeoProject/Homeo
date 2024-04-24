@@ -13,7 +13,6 @@ import LoadingSpinner from '../Components/LoadingSpinner.tsx'
 import '../style/scss/AdvertsPage.scss'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 import { useAuth0 } from '@auth0/auth0-react'
-import { setAuthToken } from '../AxiosClients/apiClient.ts'
 import apiClient from '../AxiosClients/apiClient'
 import { ConstructorFilters, ConstructorByFilters } from '../types/types.ts'
 
@@ -91,66 +90,70 @@ const AdvertsPage = () => {
   }, [screenSize])
 
   useEffect(() => {
-    searchForConstructors()
-  }, [constructorFilters, page, perPageValue, sortValue])
+    const searchForConstructors = async () => {
+      const body = {
+        categoryIds:
+          constructorFilters.selectedCategories.length !== 0
+            ? [
+                ...constructorFilters.selectedCategories.map(
+                  (category) => category
+                ),
+              ]
+            : null,
+        minMinRate: constructorFilters.priceValue[0],
+        maxMinRate: constructorFilters.priceValue[1],
+        minAverageRating:
+          constructorFilters.directionValue === 'or less'
+            ? 0
+            : constructorFilters.ratingValue,
+        maxAverageRating:
+          constructorFilters.directionValue === 'or more'
+            ? 5
+            : constructorFilters.ratingValue,
+        exactAverageRating:
+          constructorFilters.directionValue === 'exactly that'
+            ? constructorFilters.ratingValue
+            : null,
+        isApproved: false,
+        languages:
+          constructorFilters.languages.length !== 0
+            ? constructorFilters.languages
+            : null,
+        paymentMethods:
+          constructorFilters.selectedPaymentMethods.length !== 0
+            ? constructorFilters.selectedPaymentMethods.map((payment: string) =>
+                payment.toUpperCase()
+              )
+            : null,
+        cities:
+          constructorFilters.selectedPlaces.length !== 0
+            ? constructorFilters.selectedPlaces
+            : null,
+      }
+      console.log(body)
+      setIsLoading(true)
+      try {
+        const response = await apiClient.post(
+          `/search?page=${page}&size=${perPageValue}&sort=minRate,${sortValue}`,
+          body
+        )
+        console.log(response)
+        setTotalPages(response.data.totalPages)
+        setConstructors(response.data.content)
+      } catch (error) {
+        console.error(error)
+      }
+      setIsLoading(false)
+    }
 
-  const searchForConstructors = async () => {
-    const body = {
-      categoryIds:
-        constructorFilters.selectedCategories.length !== 0
-          ? [
-              ...constructorFilters.selectedCategories.map(
-                (category) => category
-              ),
-            ]
-          : null,
-      minMinRate: constructorFilters.priceValue[0],
-      maxMinRate: constructorFilters.priceValue[1],
-      minAverageRating:
-        constructorFilters.directionValue === 'or less'
-          ? 0
-          : constructorFilters.ratingValue,
-      maxAverageRating:
-        constructorFilters.directionValue === 'or more'
-          ? 5
-          : constructorFilters.ratingValue,
-      exactAverageRating:
-        constructorFilters.directionValue === 'exactly that'
-          ? constructorFilters.ratingValue
-          : null,
-      isApproved: false,
-      languages:
-        constructorFilters.languages.length !== 0
-          ? constructorFilters.languages
-          : null,
-      paymentMethods:
-        constructorFilters.selectedPaymentMethods.length !== 0
-          ? constructorFilters.selectedPaymentMethods.map((payment: string) =>
-              payment.toUpperCase()
-            )
-          : null,
-      cities:
-        constructorFilters.selectedPlaces.length !== 0
-          ? constructorFilters.selectedPlaces
-          : null,
-    }
-    console.log(body)
-    setIsLoading(true)
-    try {
-      const token = await getAccessTokenSilently()
-      setAuthToken(token)
-      const response = await apiClient.post(
-        `/search?page=${page}&size=${perPageValue}&sort=minRate,${sortValue}`,
-        body
-      )
-      console.log(response)
-      setTotalPages(response.data.totalPages)
-      setConstructors(response.data.content)
-    } catch (error) {
-      console.error(error)
-    }
-    setIsLoading(false)
-  }
+    searchForConstructors()
+  }, [
+    constructorFilters,
+    getAccessTokenSilently,
+    page,
+    perPageValue,
+    sortValue,
+  ])
 
   return (
     <div className="AdvertsPage">
@@ -275,7 +278,7 @@ const AdvertsPage = () => {
                     cities: constructor.cities,
                     email: constructor.email,
                     minRate: constructor.minRate,
-                    avarageRate: constructor.avarageRate,
+                    averageRating: constructor.averageRating,
                     paymentMethods: constructor.paymentMethods,
                   }}
                 />
