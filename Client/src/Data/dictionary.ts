@@ -1,3 +1,5 @@
+import { Description } from '@mui/icons-material'
+
 export const english = {
   homeoContructor: 'Homeo Constructor',
   personalProfile: 'Personal Profile',
@@ -223,6 +225,8 @@ export const english = {
   noCategoriesFound: 'No categories found :(',
   noUsersFound: 'No users found :(',
   noConstructorsFound: 'No constructors found :(',
+  editWord: 'Edit',
+  descriptionWord: 'Description',
   noFileSelected: 'No file selected...',
   uploadFile: 'Upload file',
 }
@@ -454,6 +458,8 @@ export const polish = {
   noCategoriesFound: 'Nie znaleziono kategorii :(',
   noUsersFound: 'Nie znaleziono użytkowników :(',
   noConstructorsFound: 'Nie znaleziono konstruktorów :(',
+  editWord: 'Edytuj',
+  descriptionWord: 'Opis',
   noFileSelected: 'Nie wybrano pliku...',
   uploadFile: 'Prześlij',
 }

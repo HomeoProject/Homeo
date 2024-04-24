@@ -79,7 +79,7 @@ const CategoriesAccordion = ({
                       </div>
                       <div className="categories-accordion-details-fields-container">
                         <span className="categories-accordion-details-fields-container-key">
-                          Description:
+                          {dictionary.descriptionWord}:
                         </span>
                         <span>{category.description}</span>
                       </div>
@@ -89,14 +89,14 @@ const CategoriesAccordion = ({
                     <CategoryFormModal
                       category={category}
                       handler={handler}
-                      label="Edit"
+                      label={dictionary.editWord}
                     />
                     <Button
                       variant="contained"
                       color="error"
                       onClick={() => deleteCategory(category.id)}
                     >
-                      Delete
+                      {dictionary.deleteWord}
                     </Button>
                   </div>
                 </div>
