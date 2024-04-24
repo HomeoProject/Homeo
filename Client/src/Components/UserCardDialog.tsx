@@ -15,6 +15,7 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { setAuthToken } from '../AxiosClients/apiClient.ts'
 import { Constructor } from '../types/types.ts'
 import apiClient from '../AxiosClients/apiClient'
+import { useDictionaryContext } from '../Context/DictionaryContext.ts'
 
 export interface SimpleDialogProps {
   open: boolean
@@ -23,12 +24,13 @@ export interface SimpleDialogProps {
     userId: string
     avatar: string
     firstName: string
-    categoryIds: string[]
+    categoryIds: number[]
     phoneNumber: string
     cities: string[]
     email: string
+    paymentMethods: string[]
     minRate: number
-    avarageRate: number
+    averageRating: number
   }
 }
 
@@ -59,7 +61,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
       }
     }
     fetchUser()
-  }, [])
+  }, [constructor.userId, getAccessTokenSilently])
 
   const handleOpenAccrordion = () => {
     if (!openAccordion) {
