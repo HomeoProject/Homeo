@@ -127,7 +127,7 @@ const UsersAccordion = ({
                       color="error"
                       onClick={() => handleDeleteUser(user.id)}
                     >
-                      Delete
+                      {dictionary.deleteWord}
                     </Button>
                   </div>
                 </div>
