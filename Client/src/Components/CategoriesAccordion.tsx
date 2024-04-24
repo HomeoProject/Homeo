@@ -102,8 +102,8 @@ const CategoriesAccordion = ({
                 </div>
               </AccordionDetails>
               <UploadPictureModal
-                open={openPictureModal}
-                handleClose={() => setOpenPictureModal(false)}
+                open={openModalId === category.id}
+                handleClose={() => handleCloseModal()}
                 minHeight={200}
                 minWidth={200}
                 maxSize={2}
