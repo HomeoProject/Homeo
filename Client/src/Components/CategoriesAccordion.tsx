@@ -26,7 +26,15 @@ const CategoriesAccordion = ({
   deleteCategory,
   handler,
 }: CategoriesAccordionProps) => {
-  const [openPictureModal, setOpenPictureModal] = useState(false)
+  const [openModalId, setOpenModalId] = useState<number | null>(null)
+
+  const handleOpenModal = (id: number) => {
+    setOpenModalId(id)
+  }
+
+  const handleCloseModal = () => {
+    setOpenModalId(null)
+  }
 
   const { dictionary } = useDictionaryContext()
 
@@ -55,12 +63,12 @@ const CategoriesAccordion = ({
                   <div className="categories-accordion-details-container">
                     <UserAvatar
                       src={category.image}
-                      alt={'Category'}
+                      alt="Category"
                       isApproved={false}
                       variant="category"
                       maxHeight="9rem"
                       maxWidth="16rem"
-                      customOnClick={() => setOpenPictureModal(true)}
+                      customOnClick={() => handleOpenModal(category.id)}
                     />
                     <div className="categories-accordion-details-fields">
                       <div className="categories-accordion-details-fields-container name">
@@ -94,8 +102,8 @@ const CategoriesAccordion = ({
                 </div>
               </AccordionDetails>
               <UploadPictureModal
-                open={openPictureModal}
-                handleClose={() => setOpenPictureModal(false)}
+                open={openModalId === category.id}
+                handleClose={() => handleCloseModal()}
                 minHeight={200}
                 minWidth={200}
                 maxSize={2}

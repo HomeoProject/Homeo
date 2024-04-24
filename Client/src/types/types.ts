@@ -127,3 +127,11 @@ export interface ConstructorByFilters {
   paymentMethods: Array<string>
   categoryIds: Array<number>
 }
+
+export interface ChatParticipant {
+  id: number
+  userId: string
+  lastViewedAt: string
+  createdAt: string
+  updatedAt: string
+}
