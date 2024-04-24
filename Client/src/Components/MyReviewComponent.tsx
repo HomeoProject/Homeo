@@ -75,7 +75,7 @@ const MyReviewComponent = ({
 
   useEffect(() => {
     apiClient
-      .get(`/users/${review.receiverId}`)
+      .get(`/users/${encodeURI(review.receiverId)}`)
       .then((response) => {
         setReceiver(response.data)
       })
