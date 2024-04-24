@@ -1,9 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
-import { useDictionaryContext } from '../Context/DictionaryContext'
-
 import UserCard from './UserCard'
 import '../style/scss/components/UserCardDialog.scss'
-
 import Dialog from '@mui/material/Dialog'
 import Card from '@mui/material/Card'
 import Accordion from '@mui/material/Accordion'
@@ -99,7 +96,10 @@ const SimpleDialog = (props: SimpleDialogProps) => {
                   <span className="simple-dialog-container-row-key">
                     {dictionary.experience}:
                   </span>
-                  <span className="simple-dialog-container-row-value">
+                  <span
+                    className="simple-dialog-container-row-value"
+                    ref={accrodionRef}
+                  >
                     {fullConstructor.experience}
                   </span>
                 </div>
@@ -108,7 +108,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
           </Card>
         </div>
         <div className="accordion">
-          <Accordion sx={{ maxWidth: '880px' }} ref={accrodionRef}>
+          <Accordion>
             <AccordionSummary>
               <div className="accordion-summary">
                 <Button
@@ -146,6 +146,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
                     variant="outlined"
                     multiline
                     minRows={6}
+                    inputProps={{ maxLength: 400 }}
                   />
                   <div>
                     <Checkbox onChange={(e) => setValid(e.target.checked)} />
@@ -177,8 +178,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
                 </div>
               </div>
             </AccordionDetails>
-          </Accordion>{' '}
-          {/* Closing tag for inner Accordion */}
+          </Accordion>
         </div>
       </div>
     </Dialog>

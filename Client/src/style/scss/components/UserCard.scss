@@ -1,7 +1,10 @@
 @use '../Variables' as v;
 
 .UserCard {
-  width: 300px;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   > .user-card-avatar {
     display: flex;
     justify-content: center;
@@ -44,7 +47,7 @@
       }
     }
     > .user-card-container-info-section {
-      padding: 10px 0px 10px 0px;
+      padding: 10px 0px 15px 0px;
       display: flex;
       flex-direction: column;
       gap: 10px;

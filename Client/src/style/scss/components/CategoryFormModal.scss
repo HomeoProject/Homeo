@@ -8,7 +8,9 @@
 
   .category-form-exit {
     display: flex;
-    justify-content: flex-end;
+    padding: 0 0 1rem 0;
+    justify-content: space-between;
+    align-items: center;
     cursor: pointer;
     width: 100%;
 

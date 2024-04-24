@@ -220,6 +220,9 @@ export const english = {
   unblockWord: 'Unblock',
   deleteWord: 'Delete',
   searchForUsersBy: 'Search for users by',
+  noCategoriesFound: 'No categories found :(',
+  noUsersFound: 'No users found :(',
+  noConstructorsFound: 'No constructors found :(',
   noFileSelected: 'No file selected...',
   uploadFile: 'Upload file',
 }
@@ -448,6 +451,9 @@ export const polish = {
   unblockWord: 'Odblokuj',
   deleteWord: 'Usuń',
   searchForUsersBy: 'Szukaj użytkowników po',
+  noCategoriesFound: 'Nie znaleziono kategorii :(',
+  noUsersFound: 'Nie znaleziono użytkowników :(',
+  noConstructorsFound: 'Nie znaleziono konstruktorów :(',
   noFileSelected: 'Nie wybrano pliku...',
   uploadFile: 'Prześlij',
 }

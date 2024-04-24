@@ -40,23 +40,10 @@ const CategoriesAccordion = ({
 
   return (
     <div className="CategoriesAccordion">
-      {categories.map((category) => {
-        return (
-          <div key={category.id}>
-            <UploadPictureModal
-              open={openModalId === category.id}
-              handleClose={handleCloseModal}
-              minHeight={200}
-              minWidth={200}
-              maxSize={2}
-              client={apiClient}
-              path={`/constructors/categories/image/${category.id}`}
-              method="put"
-              customInitSource={category.image}
-              customHeadline={dictionary.changeCategoryImage}
-              aspectRatio="rectangle"
-            />
-            <Accordion>
+      {categories ? (
+        categories.map((category) => {
+          return (
+            <Accordion key={category.id}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1-content"
@@ -114,10 +101,27 @@ const CategoriesAccordion = ({
                   </div>
                 </div>
               </AccordionDetails>
+              <UploadPictureModal
+                open={openPictureModal}
+                handleClose={() => setOpenPictureModal(false)}
+                minHeight={200}
+                minWidth={200}
+                maxSize={2}
+                client={apiClient}
+                path={`/constructors/categories/image/${category.id}`}
+                method="put"
+                customInitSource={category.image}
+                customHeadline={dictionary.changeCategoryImage}
+                aspectRatio="rectangle"
+              />
             </Accordion>
-          </div>
-        )
-      })}
+          )
+        })
+      ) : (
+        <div className="categories-accordion-exaption">
+          {dictionary.noCategoriesFound}
+        </div>
+      )}
     </div>
   )
 }

@@ -4,9 +4,11 @@ import { Category } from '../types/types'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import Card from '@mui/material/Card'
+import Paper from '@mui/material/Paper'
 import TextField from '@mui/material/TextField'
 import defaultCategory from '../Assets/default-category.svg'
 import UserAvatar from './UserAvatar'
+import CloseIcon from '@mui/icons-material/Close'
 
 type CategoryFormModalProps = {
   category?: Category
@@ -58,11 +60,14 @@ const CategoryFormModal = ({
         aria-describedby="alert-dialog-description"
         sx={{ width: '100%' }}
       >
-        <Card sx={{ maxWidth: 500, width: '100%' }}>
+        <Card sx={{ maxWidth: '600px !important' }}>
           <div className="category-form">
             <div className="category-form-exit">
+              <span>
+                {label === '+' ? 'Add new category' : 'Edit category'}
+              </span>
               <span className="category-form-exit-value" onClick={handleClose}>
-                X
+                <CloseIcon />
               </span>
             </div>
             {label !== '+' && (
