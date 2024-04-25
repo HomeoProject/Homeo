@@ -29,6 +29,7 @@ import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 import { toast } from 'react-toastify'
 import ConstructorProfileInfo from '../Components/ConstructorProfileInfo'
 import ChatMessageModal from '../Components/ChatMessageModal'
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 
 const ConstructorPage = () => {
   const constructorUserId = useParams<{ id: string }>().id
@@ -279,7 +280,20 @@ const ConstructorPage = () => {
                   badgeHeight="40px"
                   badgeWidth="40px"
                 />
-                <p className="constructor-page-main-section-content-mobile-name">{`${constructorUserData.firstName} ${constructorUserData.lastName}`}</p>
+                <p className="constructor-page-main-section-content-mobile-name">
+                  {`${constructorUserData.firstName} ${constructorUserData.lastName}`}
+                  <Tooltip
+                    title={constructorUserData.isOnline ? 'Online' : 'Offline'}
+                    placement="right-end"
+                  >
+                    <FiberManualRecordIcon
+                      color={
+                        constructorUserData.isOnline ? 'success' : 'disabled'
+                      }
+                      fontSize="small"
+                    />
+                  </Tooltip>
+                </p>
                 <p className="constructor-page-main-section-content-mobile-title">
                   {dictionary.homeoConstructor}
                 </p>
@@ -327,7 +341,20 @@ const ConstructorPage = () => {
                 )}
               </div>
               <div className="constructor-page-main-section-content-info">
-                <p className="constructor-page-main-section-content-info-name">{`${constructorUserData.firstName} ${constructorUserData.lastName}`}</p>
+                <p className="constructor-page-main-section-content-info-name">
+                  {`${constructorUserData.firstName} ${constructorUserData.lastName}`}
+                  <Tooltip
+                    title={constructorUserData.isOnline ? 'Online' : 'Offline'}
+                    placement="right-end"
+                  >
+                    <FiberManualRecordIcon
+                      color={
+                        constructorUserData.isOnline ? 'success' : 'disabled'
+                      }
+                      fontSize="small"
+                    />
+                  </Tooltip>
+                </p>
                 <p className="constructor-page-main-section-content-info-title">
                   {dictionary.homeoConstructor}
                 </p>

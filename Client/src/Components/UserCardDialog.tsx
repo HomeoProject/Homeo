@@ -12,7 +12,6 @@ import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
 import SendIcon from '@mui/icons-material/Send'
 import { useAuth0 } from '@auth0/auth0-react'
-import { setAuthToken } from '../AxiosClients/apiClient.ts'
 import { Constructor } from '../types/types.ts'
 import apiClient from '../AxiosClients/apiClient'
 import { useDictionaryContext } from '../Context/DictionaryContext.ts'
@@ -50,8 +49,6 @@ const SimpleDialog = (props: SimpleDialogProps) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = await getAccessTokenSilently()
-        setAuthToken(token)
         const response = await apiClient.get(
           `/constructors/${constructor.userId}`
         )

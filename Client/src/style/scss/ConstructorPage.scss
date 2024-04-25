@@ -138,6 +138,9 @@
             font-size: v.$font-size-normal;
             font-weight: 600;
             margin: 0;
+            display: flex;
+            gap: 5px;
+            align-items: center;
 
             @media (max-width: 550px) {
               font-size: v.$font-size-medium;
