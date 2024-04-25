@@ -1,5 +1,3 @@
-import { Description } from '@mui/icons-material'
-
 export const english = {
   homeoContructor: 'Homeo Constructor',
   personalProfile: 'Personal Profile',
