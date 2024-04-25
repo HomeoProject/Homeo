@@ -21,6 +21,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Value("${broker.relay.password}")
     private String brokerRelayPassword;
 
+    /*
+    Topic is auto-deleted
+    Queue allows the server to send messages, and when a client reconnects to the socket, it will receive old messages sent by the server
+    */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.enableStompBrokerRelay("/queue", "/topic")
