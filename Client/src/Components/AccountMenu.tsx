@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router'
 import { useConstructorContext } from '../Context/ConstructorContext'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 import { Link } from 'react-router-dom'
+import chatClient from '../WebSockets/ChatClient'
 
 const AccountMenu = () => {
   const { logout, isLoading } = useAuth0()
@@ -40,6 +41,7 @@ const AccountMenu = () => {
 
   const handleLogout = () => {
     setAnchorEl(null)
+    chatClient.disconnect()
     logout()
   }
 
