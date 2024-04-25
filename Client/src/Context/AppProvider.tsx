@@ -8,6 +8,7 @@ import { Constructor, Category, CustomUser, Dictionary } from '../types/types'
 import { useAuth0 } from '@auth0/auth0-react'
 import apiClient, { setAuthToken } from '../AxiosClients/apiClient'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
+import chatClient, { setChatAuthToken } from '../WebSockets/ChatClient'
 
 type AppProviderProps = {
   children: ReactNode
@@ -60,6 +61,15 @@ const AppProvider = ({ children }: AppProviderProps) => {
     fetchUserData()
     fetchCategories()
   }, [getAccessTokenSilently, isAuthenticated])
+
+  useEffect(() => {
+    const connectWithChat = async () => {
+      const token = await getAccessTokenSilently()
+      setChatAuthToken(token)
+      chatClient.connect()
+    }
+    connectWithChat()
+  }, [])
 
   return (
     <UserContext.Provider value={{ customUser, setCustomUser }}>
