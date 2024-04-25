@@ -43,7 +43,7 @@ public class WebSocketController {
         ChatMessage chatMessage = chatService.createChatMessage(createChatMessageDto, userId);
         for (ChatParticipant chatParticipant : chatMessage.getChatRoom().getChatParticipants()) {
             if (!chatParticipant.getUserId().equals(userId)) {
-                simpMessagingTemplate.convertAndSendToUser(chatParticipant.getUserId(), "/queue/chat-notification", chatMessage);
+                simpMessagingTemplate.convertAndSendToUser(chatParticipant.getUserId(), "/topic/chat-notification", chatMessage);
             }
         }
     }
@@ -55,7 +55,7 @@ public class WebSocketController {
         ChatRoom chatRoom = chatService.markAsReadChatRoom(roomId, userId);
         for (ChatParticipant chatParticipant : chatRoom.getChatParticipants()) {
             if (!chatParticipant.getUserId().equals(userId)) {
-                String roomQueue = "/queue/" + roomId;
+                String roomQueue = "/topic/" + roomId;
                 simpMessagingTemplate.convertAndSendToUser(chatParticipant.getUserId(), roomQueue, chatRoom);
             }
         }
