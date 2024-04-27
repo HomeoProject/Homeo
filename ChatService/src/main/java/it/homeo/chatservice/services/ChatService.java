@@ -14,4 +14,5 @@ public interface ChatService {
     ChatRoom markAsReadChatRoom(Long chatRoomId, String userId);
     List<Long> getUnreadChats(String userId);
     ChatRoom getChatRoom(String userId, Long chatRoomId);
+    boolean doesChatRoomExist(List<String> userIds);
 }
