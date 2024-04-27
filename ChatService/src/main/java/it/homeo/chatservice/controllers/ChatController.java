@@ -58,6 +58,13 @@ public class ChatController {
         return ResponseEntity.ok(chatService.getChatRoom(userId, id));
     }
 
+    @GetMapping("/room/exists")
+    public ResponseEntity<Boolean> doesChatRoomExist(@RequestParam("userIds") List<String> userIds) {
+        LOGGER.info("Inside: ChatController -> doesChatRoomExist()...");
+        boolean chatRoomExists = chatService.doesChatRoomExist(userIds);
+        return ResponseEntity.ok(chatRoomExists);
+    }
+
     private String getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();

@@ -3,6 +3,7 @@ package it.homeo.chatservice.services;
 import it.homeo.chatservice.clients.UserClient;
 import it.homeo.chatservice.dtos.request.CreateChatMessageDto;
 import it.homeo.chatservice.dtos.response.CloudinaryDto;
+import it.homeo.chatservice.exceptions.BadRequestException;
 import it.homeo.chatservice.exceptions.ForbiddenException;
 import it.homeo.chatservice.exceptions.NotFoundException;
 import it.homeo.chatservice.models.ChatMessage;
@@ -137,6 +138,15 @@ public class ChatServiceImpl implements ChatService {
         }
 
         return chatRoom;
+    }
+
+    @Override
+    public boolean doesChatRoomExist(List<String> userIds) {
+        if (userIds.size() < 2) {
+            throw new BadRequestException("At least two user IDs are required to check the existence of a chat room.");
+        }
+        List<ChatRoom> chatRooms = chatRoomRepository.findChatRoomsByChatParticipantsUserIds(userIds, userIds.size());
+        return chatRooms.size() > 0;
     }
 
     private boolean doesParticipantExist(ChatRoom chatRoom, String userId) {
