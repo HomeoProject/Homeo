@@ -135,3 +135,10 @@ export interface ChatParticipant {
   createdAt: string
   updatedAt: string
 }
+
+export interface ChatMessage {
+  content: string
+  image?: Uint8Array
+  chatRoomId?: number
+  chatParticipantsIds: string[]
+}

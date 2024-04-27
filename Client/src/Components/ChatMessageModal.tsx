@@ -29,34 +29,57 @@ import { useDictionaryContext } from '../Context/DictionaryContext'
 import CloseIcon from '@mui/icons-material/Close'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
+import chatClient from '../WebSockets/ChatClient'
+import { ChatMessage } from '../types/types'
+import { useUserContext } from '../Context/UserContext'
 
 type ChatMessageModalProps = {
   messageModalOpen: boolean
   receiverName?: string
+  receiverId: string
   handleClose: () => void
 }
 
 const ChatMessageModal = ({
   messageModalOpen,
   receiverName,
+  receiverId,
   handleClose,
 }: ChatMessageModalProps) => {
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [messageText, setMessageText] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { dictionary } = useDictionaryContext()
+  const { customUser } = useUserContext()
 
   const sendMessage = async () => {
+    if (!messageText || !receiverId) {
+      setErrorMessage('Message text or receiver not specified.')
+      return
+    }
+
+    if (customUser && customUser.id === receiverId) {
+      toast.error('Cannot send message to self.')
+      return
+    }
+
     setIsLoading(true)
     try {
-      console.log('Message sent:', messageText)
-      toast.success(dictionary.messageSentSuccessfully)
-      handleClose()
+      if (customUser) {
+        const message: ChatMessage = {
+          content: messageText,
+          chatRoomId: 1,
+          chatParticipantsIds: Array.from(new Set([customUser.id, receiverId])),
+        }
+        chatClient.sendMessage('/app/message', JSON.stringify(message))
+        toast.success(dictionary.messageSentSuccessfully)
+      }
     } catch (error) {
       console.error(error)
       toast.error(dictionary.failedToSendMessage)
     } finally {
       setIsLoading(false)
+      handleClose()
     }
   }
 

@@ -265,6 +265,7 @@ const ConstructorPage = () => {
           <ChatMessageModal
             messageModalOpen={openChatMessageModal}
             receiverName={constructorUserData.firstName!}
+            receiverId={constructorUserData.id}
             handleClose={handleCloseChatMessageModal}
           />
           <section className="constructor-page-main-info-section">
