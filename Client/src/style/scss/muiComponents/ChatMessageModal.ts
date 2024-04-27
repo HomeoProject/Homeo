@@ -13,10 +13,13 @@ export const chatMessageModalStyle = {
   width: 'calc(80% - 3rem)',
   maxWidth: '600px',
   height: '70%',
-  minHeight: '600px',
+  maxHeight: '600px',
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
+  '@media (max-height: 780px)': {
+    height: '80%',
+  },
 }
 
 export const middleContainerStyle = {
@@ -100,6 +103,14 @@ export const listContainerStyle = {
   width: '100%',
   gap: '2rem',
   fontSize: '1rem',
+  marginBottom: '-2rem',
+  '@media (max-height: 650px)': {
+    marginBottom: '-2rem',
+  },
+  '@media (max-height: 780px)': {
+    gap: '1rem',
+    fontSize: '0.8rem',
+  },
 }
 
 export const rulesListStyle = {

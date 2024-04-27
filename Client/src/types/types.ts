@@ -142,3 +142,7 @@ export interface ChatMessage {
   chatRoomId?: number
   chatParticipantsIds: string[]
 }
+
+// export interface UnreadChats {
+//   chatsIds: string[]
+// }

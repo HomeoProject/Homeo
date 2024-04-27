@@ -52,14 +52,20 @@ const ChatMessageModal = ({
   const { dictionary } = useDictionaryContext()
   const { customUser } = useUserContext()
 
+  const internalHandleClose = () => {
+    setErrorMessage('')
+    setMessageText('')
+    handleClose()
+  }
+
   const sendMessage = async () => {
     if (!messageText || !receiverId) {
-      setErrorMessage('Message text or receiver not specified.')
+      setErrorMessage(dictionary.messageOrReceieverNotSpecified)
       return
     }
 
     if (customUser && customUser.id === receiverId) {
-      toast.error('Cannot send message to self.')
+      toast.error(dictionary.cannotSendMessageToSelf)
       return
     }
 
@@ -68,8 +74,8 @@ const ChatMessageModal = ({
       if (customUser) {
         const message: ChatMessage = {
           content: messageText,
-          chatRoomId: 1,
-          chatParticipantsIds: Array.from(new Set([customUser.id, receiverId])),
+          chatRoomId: -1,
+          chatParticipantsIds: [customUser.id, receiverId],
         }
         chatClient.sendMessage('/app/message', JSON.stringify(message))
         toast.success(dictionary.messageSentSuccessfully)
@@ -79,12 +85,12 @@ const ChatMessageModal = ({
       toast.error(dictionary.failedToSendMessage)
     } finally {
       setIsLoading(false)
-      handleClose()
+      internalHandleClose()
     }
   }
 
   return (
-    <Modal open={messageModalOpen} onClose={handleClose}>
+    <Modal open={messageModalOpen} onClose={internalHandleClose}>
       <Box sx={chatMessageModalStyle}>
         <Box sx={closeModalContainerStyle}>
           <Typography
@@ -95,7 +101,7 @@ const ChatMessageModal = ({
           >
             {dictionary.sendMessage}
           </Typography>
-          <button onClick={handleClose} className="close-modal-button">
+          <button onClick={internalHandleClose} className="close-modal-button">
             <CloseIcon className="close-icon"></CloseIcon>
           </button>
         </Box>

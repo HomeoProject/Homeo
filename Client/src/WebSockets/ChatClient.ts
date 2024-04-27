@@ -80,9 +80,15 @@ class ChatClient {
   }
 
   public sendMessage(destination: string, body: string): void {
-    console.log("Is Connected:", this.isConnected)
+    console.log('Is Connected:', this.isConnected)
     this.client.publish({ destination, body })
-    console.log('Message sent: \n', "Destination: ", destination, "\nBody: ", body)
+    console.log(
+      'Message sent: \n',
+      'Destination: ',
+      destination,
+      '\nBody: ',
+      body
+    )
   }
 
   private onConnect(frame: Frame): void {

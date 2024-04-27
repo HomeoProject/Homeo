@@ -227,6 +227,8 @@ export const english = {
   descriptionWord: 'Description',
   noFileSelected: 'No file selected...',
   uploadFile: 'Upload file',
+  messageOrReceieverNotSpecified: 'Message text or receiver not specified.',
+  cannotSendMessageToSelf: 'Cannot send message to self.',
 }
 
 export const polish = {
@@ -460,4 +462,7 @@ export const polish = {
   descriptionWord: 'Opis',
   noFileSelected: 'Nie wybrano pliku...',
   uploadFile: 'Prześlij',
+  messageOrReceieverNotSpecified:
+    'Tekst wiadomości lub odbiorca nie został określony.',
+  cannotSendMessageToSelf: 'Nie możesz wysłać wiadomości do siebie.',
 }

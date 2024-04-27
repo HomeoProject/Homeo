@@ -8,16 +8,20 @@ export const avatarModalStyle = {
   left: '50%',
   borderRadius: '10px',
   transform: 'translate(-50%, -50%)',
-  width: '50%',
+  width: '100%',
   maxWidth: '600px',
   height: '70%',
-  minHeight: '600px',
+  maxHeight: '600px',
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
   '@media (max-width: 840px)': {
     width: 'calc(80% - 32px)',
-    height: 'min-content',
+    height: '80%',
+    maxHeight: '700px',
+  },
+  '@media (max-height: 780px)': {
+    height: '80%',
   },
 }
 

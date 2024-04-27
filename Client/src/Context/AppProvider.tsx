@@ -9,25 +9,31 @@ import { useAuth0 } from '@auth0/auth0-react'
 import apiClient, { setAuthToken } from '../AxiosClients/apiClient'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 import chatClient, { setChatAuthToken } from '../WebSockets/ChatClient'
+import UnreadChatsContext from './UnreadChatsContext'
 
 type AppProviderProps = {
   children: ReactNode
 }
 
 const AppProvider = ({ children }: AppProviderProps) => {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0()
+  const { getAccessTokenSilently } = useAuth0()
   const [customUser, setCustomUser] = useState<CustomUser | null>(null)
   const [constructor, setConstructor] = useState<Constructor | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
   const [dictionary, setDictionary] = useState<Dictionary>(english)
+  const [unreadChats, setUnreadChats] = useState<string[]>([])
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (!isAuthenticated) return
-
-      // Check if user exists in local database, if not, create it using Auth0 data
+    const setApiClientToken = async () => {
       const token = await getAccessTokenSilently()
-      setAuthToken(token) // Set the auth token for the axios client
+      if (token) {
+        setAuthToken(token)
+        return token
+      }
+    }
+
+    const fetchUserData = async (token: string) => {
+      // if (!isAuthenticated) return
 
       // Get user data
       const userResponse = await apiClient.get<CustomUser>('users/sync')
@@ -58,17 +64,36 @@ const AppProvider = ({ children }: AppProviderProps) => {
       }
     }
 
-    fetchUserData()
+    const fetchUnreadChats = async () => {
+      try {
+        const unreadChatsResponse = await apiClient.get('/chat/unread-chats')
+        setUnreadChats(unreadChatsResponse.data)
+        console.log('Unread chats: ', unreadChatsResponse.data)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    setApiClientToken().then((token) => {
+      if (!token) return
+      fetchUserData(token)
+      fetchUnreadChats()
+    })
     fetchCategories()
-  }, [getAccessTokenSilently, isAuthenticated])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
-    const connectWithChat = async () => {
+    const setChatClientToken = async () => {
       const token = await getAccessTokenSilently()
-      setChatAuthToken(token)
-      chatClient.connect()
+      if (token) {
+        setChatAuthToken(token)
+        return token
+      }
     }
-    connectWithChat()
+
+    setChatClientToken().then(() => chatClient.connect())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -76,7 +101,11 @@ const AppProvider = ({ children }: AppProviderProps) => {
       <ConstructorContext.Provider value={{ constructor, setConstructor }}>
         <CategoriesContext.Provider value={{ categories, setCategories }}>
           <DictionaryContext.Provider value={{ dictionary, setDictionary }}>
-            {children}
+            <UnreadChatsContext.Provider
+              value={{ unreadChats, setUnreadChats }}
+            >
+              {children}
+            </UnreadChatsContext.Provider>
           </DictionaryContext.Provider>
         </CategoriesContext.Provider>
       </ConstructorContext.Provider>
