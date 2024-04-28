@@ -5,5 +5,22 @@
   min-height: calc(100vh - 26rem);
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
+
+  > .chat-page-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    > .chat-page-left {
+      width: 30%;
+    }
+
+    > .chat-page-right {
+      width: 70%;
+    }
+  }
 }

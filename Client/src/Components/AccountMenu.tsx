@@ -131,7 +131,7 @@ const AccountMenu = () => {
         <Divider />
         {constructor && (
           <Link
-            to={`/constructor/${constructor.userId}`}
+            to={`/constructor/${encodeURI(constructor.userId)}`}
             style={{ textDecoration: 'none', color: 'inherit' }}
           >
             <MenuItem onClick={handleClose}>

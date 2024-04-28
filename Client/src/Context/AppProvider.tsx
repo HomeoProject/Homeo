@@ -26,15 +26,11 @@ const AppProvider = ({ children }: AppProviderProps) => {
   useEffect(() => {
     const setApiClientToken = async () => {
       const token = await getAccessTokenSilently()
-      if (token) {
-        setAuthToken(token)
-        return token
-      }
+      setAuthToken(token)
+      return token
     }
 
     const fetchUserData = async (token: string) => {
-      // if (!isAuthenticated) return
-
       // Get user data
       const userResponse = await apiClient.get<CustomUser>('users/sync')
       if (userResponse.status === 200 && userResponse.data) {
@@ -80,21 +76,21 @@ const AppProvider = ({ children }: AppProviderProps) => {
       fetchUnreadChats()
     })
     fetchCategories()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [getAccessTokenSilently])
 
   useEffect(() => {
     const setChatClientToken = async () => {
       const token = await getAccessTokenSilently()
-      if (token) {
-        setChatAuthToken(token)
-        return token
-      }
+      setChatAuthToken(token)
+      return token
     }
 
-    setChatClientToken().then(() => chatClient.connect())
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    setChatClientToken().then((token) => {
+      if (token) {
+        chatClient.connect()
+      }
+    })
+  }, [getAccessTokenSilently])
 
   return (
     <UserContext.Provider value={{ customUser, setCustomUser }}>

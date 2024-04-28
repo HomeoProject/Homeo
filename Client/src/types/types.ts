@@ -143,6 +143,14 @@ export interface ChatMessage {
   chatParticipantsIds: string[]
 }
 
+export interface ChatRoom {
+  id: number
+  chatParticipants: ChatParticipant[]
+  lastMessageCreatedAt: string
+  createdAt: string
+  updatedAt: string
+}
+
 // export interface UnreadChats {
 //   chatsIds: string[]
 // }

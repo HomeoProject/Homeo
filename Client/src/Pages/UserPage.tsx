@@ -104,7 +104,7 @@ const UserPage = () => {
             </div>
             <div className="user-page-main-left-nav">
               <NavLink
-                to={`/user/${customUser?.id}`}
+                to={`/user/${encodeURI(customUser?.id)}`}
                 className={({ isActive }) =>
                   isActive
                     ? 'user-page-main-left-nav-link active'
@@ -115,7 +115,7 @@ const UserPage = () => {
                 {dictionary.personalProfile}
               </NavLink>
               <NavLink
-                to={`/user/${customUser?.id}/constructor-info`}
+                to={`/user/${encodeURI(customUser?.id)}/constructor-info`}
                 className={({ isActive }) =>
                   isActive
                     ? 'user-page-main-left-nav-link active'
@@ -126,7 +126,7 @@ const UserPage = () => {
                 {dictionary.constructorProfile}
               </NavLink>
               <NavLink
-                to={`/user/${customUser?.id}/my-reviews`}
+                to={`/user/${encodeURI(customUser?.id)}/my-reviews`}
                 className={({ isActive }) =>
                   isActive
                     ? 'user-page-main-left-nav-link active'

@@ -229,6 +229,8 @@ export const english = {
   uploadFile: 'Upload file',
   messageOrReceieverNotSpecified: 'Message text or receiver not specified.',
   cannotSendMessageToSelf: 'Cannot send message to self.',
+  code: 'en',
+  chats: 'Chats',
 }
 
 export const polish = {
@@ -465,4 +467,6 @@ export const polish = {
   messageOrReceieverNotSpecified:
     'Tekst wiadomości lub odbiorca nie został określony.',
   cannotSendMessageToSelf: 'Nie możesz wysłać wiadomości do siebie.',
+  code: 'pl',
+  chats: 'Czaty',
 }

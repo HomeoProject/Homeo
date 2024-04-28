@@ -101,7 +101,7 @@ const UserCard = ({ isDialog, constructor }: UserCardProps) => {
           </div>
           <div className="user-card-container-footer">
             {isDialog ? (
-              <Link to={`/constructor/${constructor.userId}`}>
+              <Link to={`/constructor/${encodeURI(constructor.userId)}`}>
                 <Button
                   variant="contained"
                   sx={{ width: '100%', fontWeight: 700 }}
