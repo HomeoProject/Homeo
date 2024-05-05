@@ -74,10 +74,14 @@ public class ChatServiceImpl implements ChatService {
     @Override
     @Transactional
     public ChatMessage createChatMessage(CreateChatMessageDto dto, String userId) {
+        if (dto.chatRoomId() == null) {
+            return createFirstChatMessage(dto, userId);
+        }
+
         Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findById(dto.chatRoomId());
 
         if (optionalChatRoom.isEmpty()) {
-            return createFirstChatMessage(dto, userId);
+            throw new NotFoundException("Chat room with id: " + dto.chatRoomId() + " not found");
         }
 
         ChatRoom chatRoom = optionalChatRoom.get();
@@ -141,12 +145,12 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public boolean doesChatRoomExist(List<String> userIds) {
+    public ChatRoom getChatRoomByParticipantsUserIds(List<String> userIds) {
         if (userIds.size() < 2) {
             throw new BadRequestException("At least two user IDs are required to check the existence of a chat room.");
         }
         List<ChatRoom> chatRooms = chatRoomRepository.findChatRoomsByChatParticipantsUserIds(userIds, userIds.size());
-        return chatRooms.size() > 0;
+        return chatRooms.stream().findFirst().orElse(null);
     }
 
     private boolean doesParticipantExist(ChatRoom chatRoom, String userId) {
@@ -161,6 +165,8 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private ChatMessage createFirstChatMessage(CreateChatMessageDto dto, String userId) {
+        validateChatRoomExistenceWithParticipants(dto, userId);
+
         Set<ChatParticipant> chatParticipantSet = new HashSet<>();
         for (String participantId : dto.chatParticipantsIds()) {
             if (!participantId.equals(userId)) {
@@ -204,5 +210,15 @@ public class ChatServiceImpl implements ChatService {
         }
 
         return chatMessage;
+    }
+
+    private void validateChatRoomExistenceWithParticipants(CreateChatMessageDto dto, String userId){
+        Set<String> participantsIds = dto.chatParticipantsIds();
+        participantsIds.add(userId);
+        List<String> participantsList = new ArrayList<>(participantsIds);
+        ChatRoom existingChatRoom = getChatRoomByParticipantsUserIds(participantsList);
+        if (existingChatRoom != null) {
+            throw new BadRequestException("Chat room with these participants already exists.");
+        }
     }
 }
