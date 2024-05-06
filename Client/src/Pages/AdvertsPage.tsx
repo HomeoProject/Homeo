@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import SearchIcon from '@mui/icons-material/Search'
 import UserCard from '../Components/UserCard'
 import FiltersDialog from '../Components/FiltersDialog'
@@ -21,6 +22,8 @@ const AdvertsPage = () => {
 
   const { getAccessTokenSilently } = useAuth0()
   const { dictionary } = useDictionaryContext()
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
 
   const getCurrentDimension = () => {
     return window.innerWidth
@@ -44,6 +47,7 @@ const AdvertsPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [perPageValue, setPerPageValue] = useState<string>('12')
   const [page, setPage] = useState<number>(0)
+  const [defaultPageNumber, setDefaultPageNumber] = useState<number | null>(null)
   const [totalPages, setTotalPages] = useState<number>(0)
   const [constructors, setConstructors] = useState<ConstructorByFilters[]>([])
 
@@ -78,6 +82,11 @@ const AdvertsPage = () => {
     setOnlyActiveUsers(!onlyActiveUsers)
   }
 
+  const handlePagination = (_event: unknown, value: number) => {
+    setPage(value - 1)
+    navigate(`?page=${value - 1}`)
+  }
+
   useEffect(() => {
     const updateDimension = () => {
       setScreenSize(getCurrentDimension())
@@ -88,6 +97,69 @@ const AdvertsPage = () => {
       window.removeEventListener('resize', updateDimension)
     }
   }, [screenSize])
+
+  useEffect(() => {
+    const page = searchParams.get('page')
+    const categoryIds = searchParams.get('categoryIds')
+    const minMinRate = searchParams.get('minMinRate')
+    const maxMinRate = searchParams.get('maxMinRate')
+    const ratingValue = searchParams.get('ratingValue')
+    const directionValue = searchParams.get('directionValue')
+    const isApproved = searchParams.get('isApproved')
+    const languages = searchParams.get('languages')
+    const paymentMethods = searchParams.get('paymentMethods')
+    const cities = searchParams.get('cities')
+    const perPageValue = searchParams.get('size')
+    const sortValue = searchParams.get('sort')
+
+    if (page !== null) {
+      setDefaultPageNumber(parseInt(page))
+      setPage(parseInt(page))
+    } else {
+      setDefaultPageNumber(0)
+    }
+
+    if (categoryIds !== null) {
+      setConstructorFilters({...constructorFilters, selectedCategories: (categoryIds.includes(',')) ? categoryIds.split(',').map((category) => parseInt(category)) : [parseInt(categoryIds)]})
+    }
+
+    if (minMinRate !== null && maxMinRate !== null) {
+      setConstructorFilters({...constructorFilters, priceValue: [parseInt(minMinRate), parseInt(maxMinRate)]})
+    }
+
+    if (directionValue !== null) {
+      setConstructorFilters({...constructorFilters, directionValue: directionValue})
+    }
+
+    if (ratingValue !== null) {
+      setConstructorFilters({...constructorFilters, ratingValue: parseInt(ratingValue)})
+    }
+
+    if (isApproved !== null) {
+      setConstructorFilters({...constructorFilters, isApproved: isApproved === 'true'})
+    }
+
+    if (languages !== null) {
+      setConstructorFilters({...constructorFilters, languages: (languages.includes(',')) ? languages.split(',') : [languages]})
+    }
+
+    if (paymentMethods !== null) {
+      setConstructorFilters({...constructorFilters, selectedPaymentMethods: (paymentMethods.includes(',')) ? paymentMethods.split(',') : [paymentMethods]})
+    }
+
+    if (cities !== null) {
+      setConstructorFilters({...constructorFilters, selectedPlaces: (cities.includes(',')) ? cities.split(',') : [cities]})
+    }
+
+    if (perPageValue !== null) {
+      setPerPageValue(perPageValue)
+    }
+
+    if (sortValue !== null) {
+      setSortValue(sortValue)
+    }
+
+  }, [])
 
   useEffect(() => {
     const searchForConstructors = async () => {
@@ -130,7 +202,6 @@ const AdvertsPage = () => {
             ? constructorFilters.selectedPlaces
             : null,
       }
-      console.log(body)
       setIsLoading(true)
       try {
         const response = await apiClient.post(
@@ -145,12 +216,14 @@ const AdvertsPage = () => {
       }
       setIsLoading(false)
     }
-
-    searchForConstructors()
+    if(defaultPageNumber !== null) {
+      searchForConstructors()
+    }
   }, [
     constructorFilters,
     getAccessTokenSilently,
     page,
+    defaultPageNumber,
     perPageValue,
     sortValue,
   ])
@@ -295,11 +368,14 @@ const AdvertsPage = () => {
           )}
         </div>
         <div className="adverts-page-cards-pagination">
-          <Pagination
-            count={totalPages}
-            color="primary"
-            onChange={(_, page) => setPage(page - 1)}
-          />
+          {defaultPageNumber !== null && (
+            <Pagination
+              count={totalPages}
+              defaultPage={defaultPageNumber + 1}
+              color="primary"
+              onChange={handlePagination}
+            />
+          )}
         </div>
       </div>
       <FiltersDialog

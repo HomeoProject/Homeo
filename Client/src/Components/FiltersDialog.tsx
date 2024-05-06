@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Dialog from '@mui/material/Dialog'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
@@ -39,6 +40,8 @@ const FiltersDialog = (props: FiltersDialogProps) => {
   const [selectedPaymentMethods, setSelectedPaymentMethods] = useState<
     string[]
   >([])
+
+  const { dictionary } = useDictionaryContext()
 
   const paymentMethods: Array<PaymentMethod> = [
     PaymentMethod.CASH,
@@ -82,6 +85,7 @@ const FiltersDialog = (props: FiltersDialogProps) => {
       selectedCategories,
       selectedPaymentMethods,
     })
+    navigate(`/adverts?categoryIds=${selectedCategories.join(',')}&minMinRate=${priceValue[0]}&maxMinRate=${priceValue[1]}&ratingValue=${ratingValue}&directionValue=${directionValue}&languages=${languages.join(',')}&isApproved=${isApproved}&paymentMethods=${selectedPaymentMethods.join(',')}&cities=${selectedPlaces.join(',')}`)
     handleClose()
   }
 
