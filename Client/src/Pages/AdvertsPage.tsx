@@ -37,6 +37,7 @@ const AdvertsPage = () => {
       priceValue: [0, 500],
       ratingValue: 5,
       directionValue: 'or less',
+      isApproved: false,
       languages: [],
       selectedPaymentMethods: [],
       selectedPlaces: [],
@@ -51,7 +52,7 @@ const AdvertsPage = () => {
     dictionary.categories,
     dictionary.priceWord,
     dictionary.ratingWord,
-    dictionary.experience,
+    dictionary.isApproved,
     dictionary.languages,
     dictionary.paymentMethodsWord,
     dictionary.locationWord,
@@ -114,7 +115,7 @@ const AdvertsPage = () => {
           constructorFilters.directionValue === 'exactly that'
             ? constructorFilters.ratingValue
             : null,
-        isApproved: false,
+        isApproved: constructorFilters.isApproved,
         languages:
           constructorFilters.languages.length !== 0
             ? constructorFilters.languages
