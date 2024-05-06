@@ -10,6 +10,7 @@ import { toast } from 'react-toastify'
 import Pagination from '@mui/material/Pagination'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 import LoadingSpinner from './LoadingSpinner.tsx'
+import '../style/scss/components/UserAdminSearch.scss'
 
 const UserAdminSearch = () => {
   const { getAccessTokenSilently } = useAuth0()
@@ -67,32 +68,6 @@ const UserAdminSearch = () => {
     getAccessTokenSilently,
     pageNumber,
   ])
-
-  const handleUserDelete = async (id: string) => {
-    try {
-      const token = await getAccessTokenSilently()
-      setAuthToken(token)
-      Swal.fire({
-        title: dictionary.areYouSure,
-        text: dictionary.youWillNotBeAbleToRevert,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: dictionary.yesDeleteIt,
-      }).then((result) => {
-        if (result.isConfirmed) {
-          apiClient.delete(`/users/${id}`)
-          const deletedUser = users.filter((user) => user.id !== id)
-          setUsers(deletedUser)
-          toast.success(dictionary.userDeletedSuccessfully)
-        }
-      })
-    } catch (error) {
-      console.error(error)
-      toast.error(dictionary.failedToDeleteUser)
-    }
-  }
 
   const handleUserApprove = async (id: string, isApproved: boolean) => {
     try {
@@ -183,7 +158,7 @@ const UserAdminSearch = () => {
     }
   }
   return (
-    <div>
+    <div className='userAdmin'>
       <h1>Users</h1>
       <div>
         <div className="admin-panel-users-search">
@@ -236,7 +211,6 @@ const UserAdminSearch = () => {
             <UserAccordion
               users={users}
               handleApporveUser={handleUserApprove}
-              handleDeleteUser={handleUserDelete}
               handleBlockUser={handleBlockUser}
             />
           )}

@@ -12,14 +12,12 @@ type UsersAccordionProps = {
   users: CustomUser[]
   handleApporveUser: (id: string, isApproved: boolean) => void
   handleBlockUser: (id: string, isBlocked: boolean) => void
-  handleDeleteUser: (id: string) => void
 }
 
 const UsersAccordion = ({
   users,
   handleApporveUser,
-  handleBlockUser,
-  handleDeleteUser,
+  handleBlockUser
 }: UsersAccordionProps) => {
   const { dictionary } = useDictionaryContext()
 
@@ -122,13 +120,6 @@ const UsersAccordion = ({
                         {dictionary.unblockWord}
                       </Button>
                     )}
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={() => handleDeleteUser(user.id)}
-                    >
-                      {dictionary.deleteWord}
-                    </Button>
                   </div>
                 </div>
               </AccordionDetails>
