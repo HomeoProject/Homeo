@@ -294,15 +294,21 @@ const FiltersDialog = (props: FiltersDialogProps) => {
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              <span className="filters-dialog-summary">{dictionary.isApproved}</span>
+              <span className="filters-dialog-summary">
+                {dictionary.isApproved}
+              </span>
             </AccordionSummary>
             <AccordionDetails>
               <div className="filters-dialog-is-approved">
-                <div className='filters-dialog-is-approved-checkbox'>
+                <div className="filters-dialog-is-approved-checkbox">
                   <div>{dictionary.isApproved}</div>
-                  <Checkbox onChange={(e:React.ChangeEvent<HTMLInputElement>) => setIsApproved(e.target.checked)}/>
+                  <Checkbox
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setIsApproved(e.target.checked)
+                    }
+                  />
                 </div>
-                <div className='filters-dialog-is-approved-explain'>
+                <div className="filters-dialog-is-approved-explain">
                   {dictionary.isApprovedExplained}
                 </div>
               </div>
