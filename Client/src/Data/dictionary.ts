@@ -227,6 +227,8 @@ export const english = {
   descriptionWord: 'Description',
   noFileSelected: 'No file selected...',
   uploadFile: 'Upload file',
+  isApproved: 'Is approved',
+  isApprovedExplained: 'Approved users are specially selected by us, Homeo. They are the best of the best and have been verified by us and other users.',
 }
 
 export const polish = {
@@ -460,4 +462,6 @@ export const polish = {
   descriptionWord: 'Opis',
   noFileSelected: 'Nie wybrano pliku...',
   uploadFile: 'Prześlij',
+  isApproved: 'Zweryfikowany',
+  isApprovedExplained: 'Zweryfikowani użytkownicy są specjalnie wybrani przez nas, Homeo. Są oni najlepsi z najlepszych i zostali zweryfikowani przez nas i innych użytkowników.',
 }
