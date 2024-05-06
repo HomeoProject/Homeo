@@ -87,7 +87,7 @@ const AboutPage = () => {
             <Link
               className="about-developers-info-values-row-link"
               to={developer.github}
-              target='_blank'
+              target="_blank"
             >
               GitHub
             </Link>
@@ -97,7 +97,7 @@ const AboutPage = () => {
             <Link
               className="about-developers-info-values-row-link"
               to={developer.linkedin}
-              target='_blank'
+              target="_blank"
             >
               LinkedIn
             </Link>

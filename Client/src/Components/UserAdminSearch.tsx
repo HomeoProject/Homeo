@@ -158,7 +158,7 @@ const UserAdminSearch = () => {
     }
   }
   return (
-    <div className='userAdmin'>
+    <div className="userAdmin">
       <h1>Users</h1>
       <div>
         <div className="admin-panel-users-search">

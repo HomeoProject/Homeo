@@ -17,7 +17,7 @@ type UsersAccordionProps = {
 const UsersAccordion = ({
   users,
   handleApporveUser,
-  handleBlockUser
+  handleBlockUser,
 }: UsersAccordionProps) => {
   const { dictionary } = useDictionaryContext()
 
