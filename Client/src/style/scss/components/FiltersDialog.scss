@@ -20,6 +20,24 @@
   .filters-dialog-languages {
     padding: 1rem 0 1rem 0;
   }
+  .filters-dialog-is-approved {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    font-size: $font-size-normal;
+    @media screen and (max-width: 700px) {
+      flex-direction: column;
+      gap: 25px;
+    }
+    .filters-dialog-is-approved-checkbox {
+      display: flex;
+      align-items: center;
+    }
+    .filters-dialog-is-approved-explain {
+      width: 350px;
+    }
+  }
   .filters-dialog-payment-value {
     display: flex;
     align-items: center;

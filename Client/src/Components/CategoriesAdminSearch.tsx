@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { TextField } from '@mui/material'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import CategoriesAccordion from './CategoriesAccordion'
 import CategoryFormModal from './CategoryFormModal'
 import { useDictionaryContext } from '../Context/DictionaryContext'
@@ -17,11 +18,16 @@ import '../style/scss/components/CategoriesAdminSearch.scss'
 const CategoriesAdminSearch = () => {
   const { categories, setCategories } = useCategoriesContext()
   const { getAccessTokenSilently } = useAuth0()
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
 
   const [inputValue, setInputValue] = useState<string>('')
   const [categoriesToShow, setCategoriesToShow] = useState<Category[]>([])
 
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState<number>(1)
+  const [defaultPageNumber, setDefaultPageNumber] = useState<number | null>(
+    null
+  )
   const [totalPages, setTotalPages] = useState(0)
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
     null
@@ -52,6 +58,16 @@ const CategoriesAdminSearch = () => {
 
     setSearchTimeout(timeout)
   }, [categories, inputValue, page])
+
+  useEffect(() => {
+    const page = searchParams.get('page')
+    if (page !== null) {
+      setDefaultPageNumber(parseInt(page))
+      setPage(parseInt(page) + 1)
+    } else {
+      setDefaultPageNumber(0)
+    }
+  }, [])
 
   const handlePageChange = (value: number) => {
     setPage(value)
@@ -141,6 +157,11 @@ const CategoriesAdminSearch = () => {
     }
   }
 
+  const handlePagination = (_event: unknown, value: number) => {
+    handlePageChange(value)
+    navigate(`?page=${value - 1}`)
+  }
+
   const { dictionary } = useDictionaryContext()
   return (
     <div className="CategoryAdmin">
@@ -164,11 +185,14 @@ const CategoriesAdminSearch = () => {
           )}
         </div>
         <div className="category-admin-pagination">
-          <Pagination
-            count={totalPages}
-            color="primary"
-            onChange={(_, page) => handlePageChange(page)}
-          />
+          {defaultPageNumber !== null && (
+            <Pagination
+              count={totalPages}
+              defaultPage={defaultPageNumber + 1}
+              color="primary"
+              onChange={handlePagination}
+            />
+          )}
         </div>
         <div className="admin-panel-add">
           <CategoryFormModal

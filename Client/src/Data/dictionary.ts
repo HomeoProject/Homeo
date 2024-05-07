@@ -231,6 +231,9 @@ export const english = {
   cannotSendMessageToSelf: 'Cannot send message to self.',
   code: 'en',
   chats: 'Chats',
+  isApproved: 'Is approved',
+  isApprovedExplained:
+    'Approved users are specially selected by us, Homeo. They are the best of the best and have been verified by us and other users.',
 }
 
 export const polish = {
@@ -469,4 +472,7 @@ export const polish = {
   cannotSendMessageToSelf: 'Nie możesz wysłać wiadomości do siebie.',
   code: 'pl',
   chats: 'Czaty',
+  isApproved: 'Zweryfikowany',
+  isApprovedExplained:
+    'Zweryfikowani użytkownicy są specjalnie wybrani przez nas, Homeo. Są oni najlepsi z najlepszych i zostali zweryfikowani przez nas i innych użytkowników.',
 }

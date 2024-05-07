@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import UserAccordion from '../Components/UsersAccordion'
 import { TextField } from '@mui/material'
 import { useAuth0 } from '@auth0/auth0-react'
@@ -10,6 +11,7 @@ import { toast } from 'react-toastify'
 import Pagination from '@mui/material/Pagination'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 import LoadingSpinner from './LoadingSpinner.tsx'
+import '../style/scss/components/UserAdminSearch.scss'
 
 const UserAdminSearch = () => {
   const { getAccessTokenSilently } = useAuth0()
@@ -19,12 +21,17 @@ const UserAdminSearch = () => {
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
     null
   )
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
   const [idInputValue, setIdInputValue] = useState<string>('')
   const [nameInputValue, setNameInputValue] = useState<string>('')
   const [lastNameInputValue, setLastNameInputValue] = useState<string>('')
   const [phoneNumberInputValue, setPhoneNumberInputValue] = useState<string>('')
   const [emailInputValue, setEmailInputValue] = useState<string>('')
   const [pageNumber, setPageNumber] = useState<number>(0)
+  const [defaultPageNumber, setDefaultPageNumber] = useState<number | null>(
+    null
+  )
   const [totalPages, setTotalPages] = useState<number>(0)
   const [users, setUsers] = useState<CustomUser[]>([])
 
@@ -68,31 +75,15 @@ const UserAdminSearch = () => {
     pageNumber,
   ])
 
-  const handleUserDelete = async (id: string) => {
-    try {
-      const token = await getAccessTokenSilently()
-      setAuthToken(token)
-      Swal.fire({
-        title: dictionary.areYouSure,
-        text: dictionary.youWillNotBeAbleToRevert,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: dictionary.yesDeleteIt,
-      }).then((result) => {
-        if (result.isConfirmed) {
-          apiClient.delete(`/users/${id}`)
-          const deletedUser = users.filter((user) => user.id !== id)
-          setUsers(deletedUser)
-          toast.success(dictionary.userDeletedSuccessfully)
-        }
-      })
-    } catch (error) {
-      console.error(error)
-      toast.error(dictionary.failedToDeleteUser)
+  useEffect(() => {
+    const page = searchParams.get('page')
+    if (page !== null) {
+      setDefaultPageNumber(parseInt(page))
+      setPageNumber(parseInt(page))
+    } else {
+      setDefaultPageNumber(0)
     }
-  }
+  }, [])
 
   const handleUserApprove = async (id: string, isApproved: boolean) => {
     try {
@@ -182,8 +173,14 @@ const UserAdminSearch = () => {
         : toast.error(dictionary.failedToUnblockUser)
     }
   }
+
+  const handlePagination = (_event: unknown, value: number) => {
+    setPageNumber(value - 1)
+    navigate(`?page=${value - 1}`)
+  }
+
   return (
-    <div>
+    <div className="userAdmin">
       <h1>Users</h1>
       <div>
         <div className="admin-panel-users-search">
@@ -236,17 +233,21 @@ const UserAdminSearch = () => {
             <UserAccordion
               users={users}
               handleApporveUser={handleUserApprove}
-              handleDeleteUser={handleUserDelete}
               handleBlockUser={handleBlockUser}
             />
           )}
         </div>
         <div className="admin-panel-user-search-pagination">
-          <Pagination
-            count={totalPages}
-            color="primary"
-            onChange={(_, page) => setPageNumber(page - 1)}
-          />
+          {defaultPageNumber !== null ? (
+            <Pagination
+              count={totalPages}
+              color="primary"
+              defaultPage={defaultPageNumber + 1}
+              onChange={handlePagination}
+            />
+          ) : (
+            ''
+          )}
         </div>
       </div>
     </div>

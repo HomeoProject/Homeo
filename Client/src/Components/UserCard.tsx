@@ -87,7 +87,7 @@ const UserCard = ({ isDialog, constructor }: UserCardProps) => {
             <div className="user-card-container-info-section-row">
               <MonetizationOnIcon color="primary" />
               <span className="user-card-container-info-section-row-value">
-                {constructor.minRate} zł/h
+                {constructor.minRate} $/h
               </span>
             </div>
             <div className="user-card-container-info-section-row">

@@ -102,11 +102,12 @@ export interface Dictionary {
 }
 
 export interface ConstructorFilters {
-  selectedCategories: Array<number>
+  selectedCategories: Array<number | string>
   priceValue: Array<number>
   ratingValue: number
   directionValue: string
   languages: Array<string>
+  isApproved: boolean
   selectedPaymentMethods: Array<string>
   selectedPlaces: Array<string>
 }
