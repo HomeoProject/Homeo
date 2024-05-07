@@ -20,13 +20,15 @@ import LanguagesAutocomplete from './LanguagesAutocomplete'
 import { PaymentMethod } from '../types/types'
 import CitiesAutocomplete from './CitiesAutocomplete'
 import { useCategoriesContext } from '../Context/CategoriesContext'
+import { useDictionaryContext } from '../Context/DictionaryContext'
+import { ConstructorFilters } from '../types/types.ts'
 import '../style/scss/components/FiltersDialog.scss'
 
 export interface FiltersDialogProps {
   open: boolean
   handleClose: () => void
   openFilter: number
-  handleSearch: (filters) => void
+  handleSearch: (filters: ConstructorFilters) => void
 }
 
 const FiltersDialog = (props: FiltersDialogProps) => {
@@ -34,6 +36,7 @@ const FiltersDialog = (props: FiltersDialogProps) => {
   const [priceValue, setPriceValue] = useState<number[]>([0, 500])
   const [ratingValue, setRatingValue] = useState(5.0)
   const [languages, setLanguages] = useState<string[]>([])
+  const [isApproved, setIsApproved] = useState<boolean>(false)
   const [directionValue, setDirectionValue] = useState<string>('or less')
   const [selectedPlaces, setSelectedPlaces] = useState<string[]>([])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
@@ -42,6 +45,7 @@ const FiltersDialog = (props: FiltersDialogProps) => {
   >([])
 
   const { dictionary } = useDictionaryContext()
+  const navigate = useNavigate()
 
   const paymentMethods: Array<PaymentMethod> = [
     PaymentMethod.CASH,
@@ -49,7 +53,7 @@ const FiltersDialog = (props: FiltersDialogProps) => {
     PaymentMethod.TRANSFER,
   ]
 
-  const { categories, setCategories } = useCategoriesContext()
+  const { categories } = useCategoriesContext()
 
   const handleSliderChange = (event: Event, newValue) => {
     setPriceValue(newValue)
@@ -80,6 +84,7 @@ const FiltersDialog = (props: FiltersDialogProps) => {
       priceValue,
       ratingValue,
       languages,
+      isApproved,
       directionValue,
       selectedPlaces,
       selectedCategories,
@@ -110,7 +115,7 @@ const FiltersDialog = (props: FiltersDialogProps) => {
   }
 
   const resetValues = () => {
-    setPriceValue([0, 100])
+    setPriceValue([0, 500])
     setRatingValue(5.0)
     setLanguages([])
     setDirectionValue('or less')
@@ -187,8 +192,8 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                         onBlur={handleBlur}
                         inputProps={{
                           step: 10,
-                          min: 0,
-                          max: 100,
+                          min: 1,
+                          max: 500,
                           type: 'number',
                           'aria-labelledby': 'input-slider',
                         }}
@@ -279,6 +284,35 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                       </Select>
                     </FormControl>
                   </div>
+                </div>
+              </div>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion
+            disableGutters
+            defaultExpanded={openFilter === 3 ? true : false}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <span className="filters-dialog-summary">
+                {dictionary.isApproved}
+              </span>
+            </AccordionSummary>
+            <AccordionDetails>
+              <div className="filters-dialog-is-approved">
+                <div className="filters-dialog-is-approved-checkbox">
+                  <div>{dictionary.isApproved}</div>
+                  <Checkbox
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setIsApproved(e.target.checked)
+                    }
+                  />
+                </div>
+                <div className="filters-dialog-is-approved-explain">
+                  {dictionary.isApprovedExplained}
                 </div>
               </div>
             </AccordionDetails>

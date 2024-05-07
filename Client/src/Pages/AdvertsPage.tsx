@@ -40,6 +40,7 @@ const AdvertsPage = () => {
       priceValue: [0, 500],
       ratingValue: 5,
       directionValue: 'or less',
+      isApproved: false,
       languages: [],
       selectedPaymentMethods: [],
       selectedPlaces: [],
@@ -55,7 +56,7 @@ const AdvertsPage = () => {
     dictionary.categories,
     dictionary.priceWord,
     dictionary.ratingWord,
-    dictionary.experience,
+    dictionary.isApproved,
     dictionary.languages,
     dictionary.paymentMethodsWord,
     dictionary.locationWord,
@@ -100,15 +101,15 @@ const AdvertsPage = () => {
 
   useEffect(() => {
     const page = searchParams.get('page')
-    const categoryIds = searchParams.get('categoryIds')
-    const minMinRate = searchParams.get('minMinRate')
-    const maxMinRate = searchParams.get('maxMinRate')
-    const ratingValue = searchParams.get('ratingValue')
-    const directionValue = searchParams.get('directionValue')
-    const isApproved = searchParams.get('isApproved')
-    const languages = searchParams.get('languages')
-    const paymentMethods = searchParams.get('paymentMethods')
-    const cities = searchParams.get('cities')
+    const categoryIdsURL = searchParams.get('categoryIds')
+    const minMinRateURL = searchParams.get('minMinRate')
+    const maxMinRateURL = searchParams.get('maxMinRate')
+    const ratingValueURL = searchParams.get('ratingValue')
+    const directionValueURL = searchParams.get('directionValue')
+    const isApprovedURL = searchParams.get('isApproved')
+    const languagesURL = searchParams.get('languages')
+    const paymentMethodsURL = searchParams.get('paymentMethods')
+    const citiesURL = searchParams.get('cities')
     const perPageValue = searchParams.get('size')
     const sortValue = searchParams.get('sort')
 
@@ -119,37 +120,41 @@ const AdvertsPage = () => {
       setDefaultPageNumber(0)
     }
 
-    if (categoryIds !== null) {
-      setConstructorFilters({...constructorFilters, selectedCategories: (categoryIds.includes(',')) ? categoryIds.split(',').map((category) => parseInt(category)) : [parseInt(categoryIds)]})
+    if (categoryIdsURL !== null) {
+      setConstructorFilters({...constructorFilters, selectedCategories: (categoryIdsURL.includes(',')) ? categoryIdsURL.split(',').map((category) => parseInt(category)) : [parseInt(categoryIdsURL)]})
     }
 
-    if (minMinRate !== null && maxMinRate !== null) {
-      setConstructorFilters({...constructorFilters, priceValue: [parseInt(minMinRate), parseInt(maxMinRate)]})
+    if (minMinRateURL !== null && maxMinRateURL !== null) {
+      setConstructorFilters({...constructorFilters, priceValue: [parseInt(minMinRateURL), parseInt(maxMinRateURL)]})
     }
 
-    if (directionValue !== null) {
-      setConstructorFilters({...constructorFilters, directionValue: directionValue})
+    if (directionValueURL !== null) {
+      console.log(directionValueURL)
+      setConstructorFilters(constructorFilters => ({...constructorFilters, directionValue: directionValueURL}))
+      console.log(constructorFilters)
     }
 
-    if (ratingValue !== null) {
-      setConstructorFilters({...constructorFilters, ratingValue: parseInt(ratingValue)})
+    if (ratingValueURL !== null) {
+      setConstructorFilters({...constructorFilters, ratingValue: parseInt(ratingValueURL)})
     }
 
-    if (isApproved !== null) {
-      setConstructorFilters({...constructorFilters, isApproved: isApproved === 'true'})
+    if (isApprovedURL !== null) {
+      setConstructorFilters({...constructorFilters, isApproved: isApprovedURL === 'true'})
     }
 
-    if (languages !== null) {
-      setConstructorFilters({...constructorFilters, languages: (languages.includes(',')) ? languages.split(',') : [languages]})
+    if (languagesURL !== null) {
+      setConstructorFilters({...constructorFilters, languages: (languagesURL.includes(',')) ? languagesURL.split(',') : [languagesURL]})
     }
 
-    if (paymentMethods !== null) {
-      setConstructorFilters({...constructorFilters, selectedPaymentMethods: (paymentMethods.includes(',')) ? paymentMethods.split(',') : [paymentMethods]})
+    if (paymentMethodsURL !== null) {
+      setConstructorFilters({...constructorFilters, selectedPaymentMethods: (paymentMethodsURL.includes(',')) ? paymentMethodsURL.split(',') : [paymentMethodsURL]})
     }
 
-    if (cities !== null) {
-      setConstructorFilters({...constructorFilters, selectedPlaces: (cities.includes(',')) ? cities.split(',') : [cities]})
+    if (citiesURL !== null) {
+      setConstructorFilters({...constructorFilters, selectedPlaces: (citiesURL.includes(',')) ? citiesURL.split(',') : [citiesURL]})
     }
+
+    console.log(constructorFilters)
 
     if (perPageValue !== null) {
       setPerPageValue(perPageValue)
@@ -186,7 +191,7 @@ const AdvertsPage = () => {
           constructorFilters.directionValue === 'exactly that'
             ? constructorFilters.ratingValue
             : null,
-        isApproved: false,
+        isApproved: constructorFilters.isApproved,
         languages:
           constructorFilters.languages.length !== 0
             ? constructorFilters.languages
