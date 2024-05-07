@@ -30,7 +30,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import chatClient from '../WebSockets/ChatClient'
-import { ChatMessage } from '../types/types'
+import { ChatMessageToSend } from '../types/types'
 import { useUserContext } from '../Context/UserContext'
 
 type ChatMessageModalProps = {
@@ -72,9 +72,9 @@ const ChatMessageModal = ({
     setIsLoading(true)
     try {
       if (customUser) {
-        const message: ChatMessage = {
+        const message: ChatMessageToSend = {
           content: messageText,
-          chatRoomId: -1,
+          chatRoomId: null,
           chatParticipantsIds: [customUser.id, receiverId],
         }
         chatClient.sendMessage('/app/message', JSON.stringify(message))

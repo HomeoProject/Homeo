@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import '../Style/scss/Header.scss'
 import HeaderDrawer from './HeaderDrawer'
 import PublicIcon from '@mui/icons-material/Public'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import AccountMenu from './AccountMenu'
 import { useAuth0 } from '@auth0/auth0-react'
 import { useDictionaryContext } from '../Context/DictionaryContext'
@@ -16,11 +16,17 @@ import MenuItem from '@mui/material/MenuItem'
 import { english, polish } from '../Data/dictionary'
 import { GB, PL } from 'country-flag-icons/react/3x2'
 import ChatButton from './ChatButton'
+import chatClient from '../WebSockets/ChatClient'
+import { IMessage } from '@stomp/stompjs'
+import Badge from '@mui/material/Badge'
+import { useUnreadChatsContext } from '../Context/UnreadChatsContext'
 
 const Header = () => {
   const { isAuthenticated } = useAuth0()
   const { dictionary, setDictionary } = useDictionaryContext()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const { unreadChats, setUnreadChats } = useUnreadChatsContext()
+  const location = useLocation()
   const open = Boolean(anchorEl)
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget)
@@ -36,6 +42,37 @@ const Header = () => {
   const handleClose = () => {
     setAnchorEl(null)
   }
+
+  useEffect(() => {
+    const excludedPaths = ['/chat']
+
+    let isUnsubscribed = false
+
+    const updateNotifications = (message: IMessage) => {
+      console.log('Updating notifications', JSON.parse(message.body))
+      const chatRoomId = JSON.parse(message.body).chatRoom.id
+      setUnreadChats((prev) => {
+        if (!prev.includes(chatRoomId)) {
+          return [...prev, chatRoomId]
+        }
+        return prev
+      })
+    }
+
+    for (const path of excludedPaths) {
+      if (location.pathname.includes(path)) {
+        console.log('Unsubscribing from global chat notifications')
+        chatClient.unsubscribeGlobalChatNotifications()
+        isUnsubscribed = true
+        break
+      }
+    }
+
+    if (!isUnsubscribed) {
+      console.log('Subscribing to global chat notifications')
+      chatClient.subscribeGlobalChatNotifications(updateNotifications)
+    }
+  }, [location])
 
   return (
     <div className="Header">
@@ -65,7 +102,13 @@ const Header = () => {
               <PublicIcon fontSize="large" sx={{ color: '#fafafa' }} />
             </IconButton>
           </Tooltip>
-          <ChatButton />
+          {unreadChats.length ? (
+            <Badge badgeContent={unreadChats.length} color="primary">
+              <ChatButton />
+            </Badge>
+          ) : (
+            <ChatButton />
+          )}
           <div className="header-nav-user-wrapper">
             {!isAuthenticated ? <LoginButton /> : <AccountMenu />}
           </div>
@@ -121,7 +164,13 @@ const Header = () => {
         </div>
         <div className="header-nav-small">
           <HeaderDrawer />
-          <ChatButton />
+          {unreadChats.length ? (
+            <Badge badgeContent={unreadChats.length} color="primary">
+              <ChatButton />
+            </Badge>
+          ) : (
+            <ChatButton />
+          )}
           <Tooltip title="Language">
             <IconButton
               onClick={handleClick}

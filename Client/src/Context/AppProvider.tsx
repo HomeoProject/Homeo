@@ -10,6 +10,9 @@ import apiClient, { setAuthToken } from '../AxiosClients/apiClient'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 import chatClient, { setChatAuthToken } from '../WebSockets/ChatClient'
 import UnreadChatsContext from './UnreadChatsContext'
+import Header from '../Components/Header'
+import Footer from '../Components/Footer'
+import LoadingSpinner from '../Components/LoadingSpinner'
 
 type AppProviderProps = {
   children: ReactNode
@@ -17,6 +20,7 @@ type AppProviderProps = {
 
 const AppProvider = ({ children }: AppProviderProps) => {
   const { getAccessTokenSilently } = useAuth0()
+  const [isLoading, setIsLoading] = useState(true)
   const [customUser, setCustomUser] = useState<CustomUser | null>(null)
   const [constructor, setConstructor] = useState<Constructor | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
@@ -24,17 +28,12 @@ const AppProvider = ({ children }: AppProviderProps) => {
   const [unreadChats, setUnreadChats] = useState<string[]>([])
 
   useEffect(() => {
-    const setApiClientToken = async () => {
-      const token = await getAccessTokenSilently()
-      setAuthToken(token)
-      return token
-    }
-
     const fetchUserData = async (token: string) => {
       // Get user data
       const userResponse = await apiClient.get<CustomUser>('users/sync')
       if (userResponse.status === 200 && userResponse.data) {
         setCustomUser(userResponse.data)
+        chatClient.connect()
       }
 
       // Get constructor data
@@ -70,42 +69,51 @@ const AppProvider = ({ children }: AppProviderProps) => {
       }
     }
 
-    setApiClientToken().then((token) => {
-      if (!token) return
-      fetchUserData(token)
-      fetchUnreadChats()
-    })
-    fetchCategories()
-  }, [getAccessTokenSilently])
+    async function initializeApp() {
+      try {
+        const token = await getAccessTokenSilently()
+        setAuthToken(token)
+        setChatAuthToken(token)
 
-  useEffect(() => {
-    const setChatClientToken = async () => {
-      const token = await getAccessTokenSilently()
-      setChatAuthToken(token)
-      return token
+        // Fetch user data and constructor status
+        await fetchUserData(token)
+        await fetchCategories()
+        await fetchUnreadChats()
+      } catch (error) {
+        console.error('Initialization error:', error)
+      } finally {
+        setIsLoading(false)
+      }
     }
 
-    setChatClientToken().then((token) => {
-      if (token) {
-        chatClient.connect()
-      }
-    })
-  }, [getAccessTokenSilently])
+    initializeApp()
+    // eslint-disable-next-line
+  }, [])
+
+  if (!isLoading) {
+    return (
+      <UserContext.Provider value={{ customUser, setCustomUser }}>
+        <ConstructorContext.Provider value={{ constructor, setConstructor }}>
+          <CategoriesContext.Provider value={{ categories, setCategories }}>
+            <DictionaryContext.Provider value={{ dictionary, setDictionary }}>
+              <UnreadChatsContext.Provider
+                value={{ unreadChats, setUnreadChats }}
+              >
+                {children}
+              </UnreadChatsContext.Provider>
+            </DictionaryContext.Provider>
+          </CategoriesContext.Provider>
+        </ConstructorContext.Provider>
+      </UserContext.Provider>
+    )
+  }
 
   return (
-    <UserContext.Provider value={{ customUser, setCustomUser }}>
-      <ConstructorContext.Provider value={{ constructor, setConstructor }}>
-        <CategoriesContext.Provider value={{ categories, setCategories }}>
-          <DictionaryContext.Provider value={{ dictionary, setDictionary }}>
-            <UnreadChatsContext.Provider
-              value={{ unreadChats, setUnreadChats }}
-            >
-              {children}
-            </UnreadChatsContext.Provider>
-          </DictionaryContext.Provider>
-        </CategoriesContext.Provider>
-      </ConstructorContext.Provider>
-    </UserContext.Provider>
+    <>
+      <Header />
+      <LoadingSpinner />
+      <Footer />
+    </>
   )
 }
 

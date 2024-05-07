@@ -137,9 +137,18 @@ export interface ChatParticipant {
 }
 
 export interface ChatMessage {
+  id: number
   content: string
-  image?: Uint8Array
-  chatRoomId?: number
+  imageUrl?: Uint8Array
+  chatRoomId?: number | null
+  createdAt: string
+  senderId: string
+}
+
+export interface ChatMessageToSend {
+  content: string
+  imageUrl?: Uint8Array
+  chatRoomId?: number | null
   chatParticipantsIds: string[]
 }
 

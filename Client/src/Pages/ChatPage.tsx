@@ -1,13 +1,19 @@
 import '../style/scss/ChatPage.scss'
 import { useEffect, useState } from 'react'
-import chatClient from '../WebSockets/ChatClient'
+// import chatClient from '../WebSockets/ChatClient'
 import apiClient from '../AxiosClients/apiClient'
 import { ChatRoom } from '../types/types'
 import ChatRooms from '../Components/ChatRooms'
+import { useParams } from 'react-router'
+import ChatMessages from '../Components/ChatMessages'
+import { useAuth0 } from '@auth0/auth0-react'
 // import { IMessage } from '@stomp/stompjs'
 
 const ChatPage = () => {
-  const [chatRooms, setChatRooms] = useState<ChatRoom[] | null>(null)
+  const currentChatRoomId = useParams<{ id: string }>().id
+  const [chatRooms, setChatRooms] = useState<ChatRoom[]>([])
+
+  const { getAccessTokenSilently } = useAuth0()
 
   useEffect(() => {
     // const callback = (x: IMessage) => {
@@ -33,7 +39,7 @@ const ChatPage = () => {
     // return () => {
     //   chatClient.unsubscribe('/user/topic/test')
     // }
-  }, [])
+  }, [getAccessTokenSilently])
 
   return (
     <div className="ChatPage">
@@ -41,7 +47,13 @@ const ChatPage = () => {
         <div className="chat-page-left">
           <ChatRooms chatRooms={chatRooms} />
         </div>
-        <div className="chat-page-right"></div>
+        <div className="chat-page-right">
+          <ChatMessages
+            chatRoomId={parseInt(currentChatRoomId!)}
+            setChatRooms={setChatRooms}
+            chatRooms={chatRooms}
+          />
+        </div>
       </div>
     </div>
   )

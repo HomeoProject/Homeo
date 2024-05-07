@@ -8,18 +8,19 @@ import LoadingSpinner from './LoadingSpinner'
 import '../style/scss/components/ChatRooms.scss'
 import { DateTime } from 'luxon'
 import { useDictionaryContext } from '../Context/DictionaryContext'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
+import { useUnreadChatsContext } from '../Context/UnreadChatsContext'
 
 type ChatRoomsProps = {
-  chatRooms: ChatRoom[] | null
+  chatRooms: ChatRoom[]
 }
 
 const ChatRooms = ({ chatRooms }: ChatRoomsProps) => {
   const [chattersUserInfo, setChattersUserInfo] = useState<CustomUser[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [noChatsYet, setNoChatsYet] = useState<boolean>(false)
   const { customUser } = useUserContext()
   const { dictionary } = useDictionaryContext()
+  const { unreadChats } = useUnreadChatsContext()
+  const { id } = useParams<{ id: string }>()
 
   const formatDate = (dateString: string) => {
     const now = DateTime.now().setLocale(dictionary.code)
@@ -51,14 +52,6 @@ const ChatRooms = ({ chatRooms }: ChatRoomsProps) => {
 
   useEffect(() => {
     const getChattersUserInfo = async () => {
-      setIsLoading(true)
-      if (chatRooms === null) {
-        setNoChatsYet(true)
-        return
-      } else {
-        setNoChatsYet(false)
-      }
-
       const chattersIds = chatRooms.map((chatRoom: ChatRoom) => {
         return chatRoom.chatParticipants.filter(
           (participant) => participant.userId !== customUser?.id
@@ -67,7 +60,7 @@ const ChatRooms = ({ chatRooms }: ChatRoomsProps) => {
 
       const chattersUserInfo = await Promise.all(
         chattersIds.map(async (chatterId) => {
-          const response = await apiClient.get(`/users/${encodeURI(chatterId)}`)
+          const response = await apiClient.get(`/users/${chatterId}`)
           if (response.status === 200) {
             return response.data
           }
@@ -75,13 +68,16 @@ const ChatRooms = ({ chatRooms }: ChatRoomsProps) => {
       )
 
       setChattersUserInfo(chattersUserInfo || [])
-      setIsLoading(false)
     }
 
     getChattersUserInfo()
   }, [chatRooms, customUser])
 
-  if (isLoading) {
+  const isChatInUnreadChats = (chatRoomId: number) => {
+    return unreadChats.map((chatId) => parseInt(chatId)).includes(chatRoomId)
+  }
+
+  if (chatRooms.length === 0 || chattersUserInfo.length === 0) {
     return (
       <div>
         <LoadingSpinner />
@@ -89,90 +85,61 @@ const ChatRooms = ({ chatRooms }: ChatRoomsProps) => {
     )
   }
 
-  if (!isLoading && noChatsYet) {
-    return (
-      <div className="ChatRooms">
-        <div className="chat-rooms-wrapper">
-          <div className="chat-rooms-left">
-            <div className="chat-rooms-left-header">
-              <h2>Chats</h2>
-            </div>
-            <div className="chat-rooms-left-body">
-              <p>No chats yet</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  if (!chatRooms) {
-    return (
-      <div className="ChatRooms">
-        <div className="chat-rooms-wrapper">
-          <div className="chat-rooms-left">
-            <div className="chat-rooms-left-header">
-              <h2>Chats</h2>
-            </div>
-            <div className="chat-rooms-left-body">
-              <p>Something went wrong</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="ChatRooms">
-      <div className="chat-rooms-wrapper">
-        <h1 className="chat-rooms-header">{dictionary.chats}</h1>
-        <div className="chat-rooms-body">
-          {chatRooms.map((chatRoom: ChatRoom, index: number) => {
-            return (
-              <Link
-                to={encodeURI(chattersUserInfo[index].id)}
-                key={chatRoom.id}
-                className="chat-room"
-              >
-                <div className="chat-room-user-info">
-                  {chattersUserInfo[index].isOnline ? (
-                    <UserAvatar
-                      src={chattersUserInfo[index].avatar || defaultAvatar}
-                      alt={chattersUserInfo[index].firstName!}
-                      isApproved={chattersUserInfo[index].isApproved}
-                      variant="chat"
-                      viewHref={`/user/${chattersUserInfo[index].id}`}
-                      maxWidth="50px"
-                      maxHeight="50px"
-                    />
-                  ) : (
-                    <UserAvatar
-                      src={chattersUserInfo[index].avatar || defaultAvatar}
-                      alt={chattersUserInfo[index].firstName!}
-                      isApproved={chattersUserInfo[index].isApproved}
-                      variant="standard"
-                      viewHref={`/user/${chattersUserInfo[index].id}`}
-                      maxWidth="50px"
-                      maxHeight="50px"
-                    />
-                  )}
-                  <div className="chat-room-info-name-date">
-                    <b className="chat-room-info-name">
-                      {chattersUserInfo[index].firstName}{' '}
-                      {chattersUserInfo[index].lastName}
-                    </b>
-                    <p className="chat-room-info-date">
-                      {formatDate(chatRoom.lastMessageCreatedAt)}
-                    </p>
+    chatRooms.length &&
+    chattersUserInfo.length && (
+      <div className="ChatRooms">
+        <div className="chat-rooms-wrapper">
+          <div className="chat-rooms-header">
+            <h1>{dictionary.chats}</h1>
+          </div>
+          <div className="chat-rooms-body">
+            {chatRooms.map((chatRoom: ChatRoom, index: number) => {
+              return (
+                <Link
+                  to={`/chat/${chatRoom.id}`}
+                  key={chatRoom.id}
+                  className={`chat-room ${parseInt(id!) === chatRoom.id ? 'active' : ''}`}
+                >
+                  <div className="chat-room-user-info">
+                    {chattersUserInfo[index].isOnline ? (
+                      <UserAvatar
+                        src={chattersUserInfo[index].avatar || defaultAvatar}
+                        alt={chattersUserInfo[index].firstName || 'Anonymous'}
+                        isApproved={false}
+                        variant="chat"
+                        maxWidth="50px"
+                        maxHeight="50px"
+                      />
+                    ) : (
+                      <UserAvatar
+                        src={chattersUserInfo[index].avatar || defaultAvatar}
+                        alt={chattersUserInfo[index].firstName || 'Anonymous'}
+                        isApproved={false}
+                        variant="standard"
+                        maxWidth="50px"
+                        maxHeight="50px"
+                      />
+                    )}
+                    <div className="chat-room-info-name-date">
+                      <p
+                        className={`chat-room-info-name ${isChatInUnreadChats(chatRooms[index].id) ? 'unread' : ''}`}
+                      >
+                        {chattersUserInfo[index].firstName}{' '}
+                        {chattersUserInfo[index].lastName}
+                      </p>
+                      <p className="chat-room-info-date">
+                        {formatDate(chatRoom.lastMessageCreatedAt)}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            )
-          })}
+                </Link>
+              )
+            })}
+          </div>
         </div>
       </div>
-    </div>
+    )
   )
 }
 

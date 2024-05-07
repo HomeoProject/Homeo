@@ -38,6 +38,10 @@ class ChatClient {
     this.client.activate()
   }
 
+  public getIsConnected(): boolean {
+    return this.isConnected
+  }
+
   public disconnect(): void {
     this.subscriptions.forEach((subscription) =>
       subscription.subscription.unsubscribe()
@@ -91,14 +95,19 @@ class ChatClient {
     )
   }
 
+  public subscribeGlobalChatNotifications(
+    callback: (message: IMessage) => void
+  ): void {
+    chatClient.subscribe('/user/topic/chat-notification', callback)
+  }
+
+  public unsubscribeGlobalChatNotifications(): void {
+    chatClient.unsubscribe('/user/topic/chat-notification')
+  }
+
   private onConnect(frame: Frame): void {
     this.isConnected = true
     console.log('Connected: ', frame)
-
-    const callback = (message: IMessage) => {
-      console.log('New global message: ', message.body)
-    }
-    chatClient.subscribe('/user/topic/chat-notification', callback)
 
     this.pendingSubscriptions.forEach((callback, topic) => {
       const subscription = this.client.subscribe(topic, callback)
