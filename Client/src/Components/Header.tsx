@@ -72,6 +72,7 @@ const Header = () => {
       console.log('Subscribing to global chat notifications')
       chatClient.subscribeGlobalChatNotifications(updateNotifications)
     }
+    // eslint-disable-next-line
   }, [location])
 
   return (
@@ -103,7 +104,11 @@ const Header = () => {
             </IconButton>
           </Tooltip>
           {unreadChats.length ? (
-            <Badge badgeContent={unreadChats.length} color="primary">
+            <Badge
+              badgeContent={unreadChats.length}
+              color="primary"
+              anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+            >
               <ChatButton />
             </Badge>
           ) : (
@@ -165,7 +170,11 @@ const Header = () => {
         <div className="header-nav-small">
           <HeaderDrawer />
           {unreadChats.length ? (
-            <Badge badgeContent={unreadChats.length} color="primary">
+            <Badge
+              badgeContent={unreadChats.length}
+              color="primary"
+              anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+            >
               <ChatButton />
             </Badge>
           ) : (

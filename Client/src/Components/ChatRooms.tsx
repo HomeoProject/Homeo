@@ -19,7 +19,7 @@ const ChatRooms = ({ chatRooms }: ChatRoomsProps) => {
   const [chattersUserInfo, setChattersUserInfo] = useState<CustomUser[]>([])
   const { customUser } = useUserContext()
   const { dictionary } = useDictionaryContext()
-  const { unreadChats } = useUnreadChatsContext()
+  const { unreadChats, setUnreadChats } = useUnreadChatsContext()
   const { id } = useParams<{ id: string }>()
 
   const formatDate = (dateString: string) => {
@@ -77,6 +77,12 @@ const ChatRooms = ({ chatRooms }: ChatRoomsProps) => {
     return unreadChats.map((chatId) => parseInt(chatId)).includes(chatRoomId)
   }
 
+  const markChatAsRead = (chatRoomId: number) => {
+    setUnreadChats((prev) => {
+      return prev.filter((chatId) => parseInt(chatId) !== chatRoomId)
+    })
+  }
+
   if (chatRooms.length === 0 || chattersUserInfo.length === 0) {
     return (
       <div>
@@ -100,6 +106,7 @@ const ChatRooms = ({ chatRooms }: ChatRoomsProps) => {
                   to={`/chat/${chatRoom.id}`}
                   key={chatRoom.id}
                   className={`chat-room ${parseInt(id!) === chatRoom.id ? 'active' : ''}`}
+                  onClick={() => markChatAsRead(chatRoom.id)}
                 >
                   <div className="chat-room-user-info">
                     {chattersUserInfo[index].isOnline ? (
