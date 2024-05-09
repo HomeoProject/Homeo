@@ -1,27 +1,18 @@
 import '../style/scss/ChatPage.scss'
 import { useEffect, useState } from 'react'
-// import chatClient from '../WebSockets/ChatClient'
 import apiClient from '../AxiosClients/apiClient'
 import { ChatRoom } from '../types/types'
 import ChatRooms from '../Components/ChatRooms'
 import { useParams } from 'react-router'
 import ChatMessages from '../Components/ChatMessages'
-import { useAuth0 } from '@auth0/auth0-react'
-// import { IMessage } from '@stomp/stompjs'
+import LoadingSpinner from '../Components/LoadingSpinner'
 
 const ChatPage = () => {
   const currentChatRoomId = useParams<{ id: string }>().id
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([])
-
-  const { getAccessTokenSilently } = useAuth0()
+  const [currentChatRoom, setCurrentChatRoom] = useState<ChatRoom | null>(null)
 
   useEffect(() => {
-    // const callback = (x: IMessage) => {
-    //   console.log('New message: ', x.body)
-    // }
-
-    // chatClient.subscribe('/user/topic/test', callback)
-
     apiClient
       .get('/chat/rooms', {
         params: {
@@ -29,17 +20,26 @@ const ChatPage = () => {
         },
       })
       .then((response) => {
-        console.log('Chat rooms: ', response.data)
+        // console.log('Chat rooms: ', response.data)
         setChatRooms(response.data)
       })
       .catch((error) => {
         console.error(error)
       })
+  }, [])
 
-    // return () => {
-    //   chatClient.unsubscribe('/user/topic/test')
-    // }
-  }, [getAccessTokenSilently])
+  useEffect(() => {
+    if (chatRooms.length > 0) {
+      const chatRoom = chatRooms.find(
+        (chatRoom) => chatRoom.id.toString() === currentChatRoomId
+      )
+      setCurrentChatRoom(chatRoom!)
+    }
+  }, [currentChatRoomId, chatRooms])
+
+  if (!currentChatRoom || chatRooms.length === 0) {
+    return <LoadingSpinner />
+  }
 
   return (
     <div className="ChatPage">
@@ -48,11 +48,7 @@ const ChatPage = () => {
           <ChatRooms chatRooms={chatRooms} />
         </div>
         <div className="chat-page-right">
-          <ChatMessages
-            chatRoomId={parseInt(currentChatRoomId!)}
-            setChatRooms={setChatRooms}
-            chatRooms={chatRooms}
-          />
+          <ChatMessages chatRoomId={currentChatRoom.id} />
         </div>
       </div>
     </div>

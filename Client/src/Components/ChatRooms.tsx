@@ -28,6 +28,9 @@ const ChatRooms = ({ chatRooms }: ChatRoomsProps) => {
     const diff = now.diff(messageDate, ['days']).days
 
     if (diff < 1) {
+      if (now.diff(messageDate, ['minutes']).minutes < 1) {
+        return 'Just now'
+      }
       return messageDate.toRelative({ locale: dictionary.code }) // "3 hours ago", "25 minutes ago"
     } else if (diff < 2) {
       return 'Yesterday'
@@ -77,7 +80,7 @@ const ChatRooms = ({ chatRooms }: ChatRoomsProps) => {
     return unreadChats.map((chatId) => parseInt(chatId)).includes(chatRoomId)
   }
 
-  const markChatAsRead = (chatRoomId: number) => {
+  const markChatAsReadLocally = (chatRoomId: number) => {
     setUnreadChats((prev) => {
       return prev.filter((chatId) => parseInt(chatId) !== chatRoomId)
     })
@@ -106,7 +109,7 @@ const ChatRooms = ({ chatRooms }: ChatRoomsProps) => {
                   to={`/chat/${chatRoom.id}`}
                   key={chatRoom.id}
                   className={`chat-room ${parseInt(id!) === chatRoom.id ? 'active' : ''}`}
-                  onClick={() => markChatAsRead(chatRoom.id)}
+                  onClick={() => markChatAsReadLocally(chatRoom.id)}
                 >
                   <div className="chat-room-user-info">
                     {chattersUserInfo[index].isOnline ? (

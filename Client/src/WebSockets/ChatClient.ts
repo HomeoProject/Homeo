@@ -21,9 +21,9 @@ class ChatClient {
     this.connectHeaders = connectHeaders
     const config: StompConfig = {
       brokerURL: url,
-      // reconnectDelay: 3000,
-      // heartbeatIncoming: 2000,
-      // heartbeatOutgoing: 2000,
+      reconnectDelay: 500,
+      heartbeatIncoming: 500,
+      heartbeatOutgoing: 500,
       connectHeaders: this.connectHeaders,
       onConnect: (frame: Frame) => this.onConnect(frame),
       onStompError: (frame: Frame) => this.onError(frame),
@@ -84,15 +84,15 @@ class ChatClient {
   }
 
   public sendMessage(destination: string, body: string): void {
-    console.log('Is Connected:', this.isConnected)
+    // console.log('Is Connected:', this.isConnected)
     this.client.publish({ destination, body })
-    console.log(
-      'Message sent: \n',
-      'Destination: ',
-      destination,
-      '\nBody: ',
-      body
-    )
+    // console.log(
+    //   'Message sent: \n',
+    //   'Destination: ',
+    //   destination,
+    //   '\nBody: ',
+    //   body
+    // )
   }
 
   public subscribeGlobalChatNotifications(

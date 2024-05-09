@@ -1,36 +1,118 @@
 import { useEffect, useState, FormEvent, useRef } from 'react'
 import { ChatMessage, ChatRoom } from '../types/types'
 import apiClient from '../AxiosClients/apiClient'
-import LoadingSpinner from './LoadingSpinner'
 import '../style/scss/components/ChatMessages.scss'
 import { useUserContext } from '../Context/UserContext'
 import chatClient from '../WebSockets/ChatClient'
 import SendIcon from '@mui/icons-material/Send'
+import { useLocation } from 'react-router'
 import { IMessage } from '@stomp/stompjs'
 import { useUnreadChatsContext } from '../Context/UnreadChatsContext'
+import { DateTime } from 'luxon'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import { useDictionaryContext } from '../Context/DictionaryContext'
 
 type ChatMessagesProps = {
   chatRoomId: number
-  setChatRooms: (rooms: ChatRoom[]) => void
-  chatRooms: ChatRoom[]
 }
 
-const ChatMessages = ({
-  chatRoomId,
-  setChatRooms,
-  chatRooms,
-}: ChatMessagesProps) => {
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
-  const [messageInput, setMessageInput] = useState<string>('')
-  const { setUnreadChats } = useUnreadChatsContext()
-  const [currentChatRoom, setCurrentChatRoom] = useState<ChatRoom>(
-    chatRooms.find((room) => room.id === chatRoomId)!
+const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
+  const [newestChatMessages, setNewestChatMessages] = useState<ChatMessage[]>(
+    []
   )
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  // const [displayedChatRooms, setDisplayedChatRooms] =
-  //   useState<ChatRoom[]>(chatRooms)
+  const [olderChatMessages, setOlderChatMessages] = useState<ChatMessage[]>([])
+  const [messageInput, setMessageInput] = useState<string>('')
+  const [noMoreMessages, setNoMoreMessages] = useState<boolean>(false)
+  const [lastSeenMessageId, setLastSeenMessageId] = useState<number | null>(
+    null
+  )
+  const [lastMessageCreatedAt, setLastMessageCreatedAt] = useState<string>(
+    new Date().toISOString()
+  )
+  const [lastViewedAtDate, setLastViewedAtDate] = useState<string | null>(null)
+  const { unreadChats, setUnreadChats } = useUnreadChatsContext()
+  const [currentChatRoom, setCurrentChatRoom] = useState<ChatRoom | null>(null)
   const { customUser } = useUserContext()
+  const { dictionary } = useDictionaryContext()
   const inputRef = useRef<HTMLInputElement>(null)
+  const location = useLocation()
+  const chatMessagesContentRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const scrollToBottom = () => {
+      setTimeout(() => {
+        if (chatMessagesContentRef.current) {
+          chatMessagesContentRef.current.scrollTop =
+            chatMessagesContentRef.current.scrollHeight
+        }
+      }, 0)
+    }
+
+    scrollToBottom()
+  }, [newestChatMessages])
+
+  useEffect(() => {
+    const fetchMoreMessages = async () => {
+      if (chatMessagesContentRef.current && !noMoreMessages) {
+        const currentScrollPosition = chatMessagesContentRef.current.scrollTop
+        const currentScrollHeight = chatMessagesContentRef.current.scrollHeight
+
+        const response = await apiClient.get<ChatMessage[]>(
+          `/chat/${chatRoomId}/messages`,
+          {
+            params: {
+              lastCreatedAt: lastMessageCreatedAt,
+            },
+          }
+        )
+
+        if (response.data.length > 0) {
+          setLastMessageCreatedAt(
+            response.data[response.data.length - 1].createdAt
+          )
+          setOlderChatMessages((prevMessages) => [
+            ...prevMessages,
+            ...response.data,
+          ])
+
+          setTimeout(() => {
+            if (chatMessagesContentRef.current) {
+              const newScrollHeight =
+                chatMessagesContentRef.current.scrollHeight
+              const heightDifference = newScrollHeight - currentScrollHeight
+              chatMessagesContentRef.current.scrollTop =
+                currentScrollPosition + heightDifference
+            }
+          }, 0)
+        } else {
+          setNoMoreMessages(true)
+        }
+      }
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const firstEntry = entries[0]
+        if (firstEntry.isIntersecting) {
+          fetchMoreMessages()
+        }
+      },
+      {
+        root: null,
+        rootMargin: '50px',
+        threshold: 0.1,
+      }
+    )
+
+    const sentinel = chatMessagesContentRef.current?.firstElementChild
+
+    if (sentinel) {
+      observer.observe(sentinel)
+    }
+
+    return () => observer.disconnect()
+    // eslint-disable-next-line
+  }, [lastMessageCreatedAt])
 
   const isMessageMine = (message: ChatMessage) => {
     return message.senderId === customUser?.id
@@ -52,36 +134,38 @@ const ChatMessages = ({
     try {
       chatClient.sendMessage(
         '/app/message',
-        JSON.stringify({ content: messageInput, chatRoomId })
+        JSON.stringify({ content: messageInput, chatRoomId: chatRoomId })
       )
 
       markChatAsRead()
 
       setMessageInput('')
       inputRef.current?.focus()
-
-      setChatMessages([
-        ...chatMessages,
-        {
-          id: Math.random(),
-          content: messageInput,
-          senderId: customUser!.id,
-          createdAt: new Date().toISOString(),
-        },
-      ])
-      // const modifiedChatRoom = chatRooms.find((room) => room.id === chatRoomId)
-      // setChatRooms([
-      //   modifiedChatRoom!,
-      //   ...chatRooms.filter((room) => room.id !== modifiedChatRoom!.id),
-      // ])
     } catch (error) {
       console.error(error)
     }
   }
 
   useEffect(() => {
+    const getChatRoom = async () => {
+      apiClient
+        .get<ChatRoom>(`/chat/room/${chatRoomId}`)
+        .then((response) => {
+          setCurrentChatRoom(response.data)
+          return response.data
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }
+
+    const markChatAsReadLocally = (chatRoomId: number) => {
+      setUnreadChats((prev) => {
+        return prev.filter((chatId) => parseInt(chatId) !== chatRoomId)
+      })
+    }
+
     const fetchNewestChatMessages = async () => {
-      setIsLoading(true)
       try {
         apiClient
           .get<ChatMessage[]>(`/chat/${chatRoomId}/messages`, {
@@ -90,33 +174,29 @@ const ChatMessages = ({
             },
           })
           .then((response) => {
-            setChatMessages(response.data.reverse())
+            setNewestChatMessages(response.data)
+            setLastMessageCreatedAt(
+              response.data[response.data.length - 1].createdAt
+            )
           })
           .catch((error) => {
             console.error(error)
           })
       } catch (error) {
         console.error(error)
-      } finally {
-        setIsLoading(false)
       }
     }
 
     const updateNotifications = (message: IMessage) => {
-      console.log('Updating notifications', JSON.parse(message.body))
       const chatRoomId = JSON.parse(message.body).chatRoom.id
-      setUnreadChats((prev) => {
-        if (!prev.includes(chatRoomId)) {
-          return [...prev, chatRoomId]
-        }
-        return prev
-      })
+      if (!unreadChats.includes(chatRoomId)) {
+        setUnreadChats((prev) => [...prev, chatRoomId])
+      }
     }
 
     const subcribeToGlobalChatNotifications = () => {
       chatClient.subscribeGlobalChatNotifications((message: IMessage) => {
         const chatMessage = JSON.parse(message.body)
-        console.log('New chat notification: ', chatMessage)
         if (JSON.parse(message.body).chatRoom.id === chatRoomId) {
           const newMessage = {
             id: chatMessage.id,
@@ -126,7 +206,7 @@ const ChatMessages = ({
             chatRoomId: chatMessage.chatRoom.id,
             imageUrl: chatMessage.imageUrl,
           }
-          setChatMessages((prev) => [...prev, newMessage])
+          setNewestChatMessages((prev) => [newMessage, ...prev])
           markChatAsRead()
         } else {
           updateNotifications(message)
@@ -139,22 +219,25 @@ const ChatMessages = ({
     }
 
     const subcribeToChatStatus = () => {
-      console.log('Subscribing to chat status: ', `/user/topic/${chatRoomId}`)
       chatClient.subscribe(`/user/topic/${chatRoomId}`, (message: IMessage) => {
-        console.log('New chat room: ', JSON.parse(message.body))
         setCurrentChatRoom(JSON.parse(message.body) as ChatRoom)
       })
     }
 
     const unsubscribeFromChatStatus = () => {
-      console.log('Unsubscribing from chat status')
       chatClient.unsubscribe(`/user/topic/${chatRoomId}`)
     }
 
-    subcribeToChatStatus()
-    fetchNewestChatMessages()
-    subcribeToGlobalChatNotifications()
-    markChatAsRead()
+    setNewestChatMessages([])
+    setOlderChatMessages([])
+    setNoMoreMessages(false)
+    getChatRoom().then(() => {
+      fetchNewestChatMessages()
+      markChatAsRead()
+      subcribeToChatStatus()
+      subcribeToGlobalChatNotifications()
+      markChatAsReadLocally(chatRoomId)
+    })
 
     return () => {
       unsubscribeFromChatStatus()
@@ -162,36 +245,80 @@ const ChatMessages = ({
     }
 
     // eslint-disable-next-line
-  }, [chatRoomId])
+  }, [chatRoomId, location])
 
   useEffect(() => {
-    const chatMessagesContent = document.querySelector('.chat-messages-content')
-    chatMessagesContent?.scrollTo(0, chatMessagesContent.scrollHeight)
-  }, [chatMessages])
+    const findLastSeenMessageId = () => {
+      const lastViewedAt = currentChatRoom?.chatParticipants.find(
+        (participant) => participant.userId !== customUser?.id
+      )?.lastViewedAt
 
-  // useMemo(() => {
-  //   const callback = (message: ChatMessage) => {
-  //     setChatMessages((prev) => [...prev, message])
-  //   }
+      // use luxon to parse the date with correct timezone
+      let convertedLastViewedAt
+      if (!lastViewedAt) {
+        convertedLastViewedAt = DateTime.fromISO('2021-01-01').toString()
+        setLastViewedAtDate(convertedLastViewedAt)
+      } else {
+        convertedLastViewedAt = DateTime.fromISO(lastViewedAt!).toString()
+        setLastViewedAtDate(convertedLastViewedAt)
+      }
 
-  //   chatClient.subscribe(`/topic/chat.${chatRoomId}`, callback)
+      const lastSeenMessageId = [...newestChatMessages, ...olderChatMessages]
+        .filter((message) => message.senderId === customUser?.id)
+        .find(
+          (message) =>
+            DateTime.fromISO(message.createdAt).toString() <=
+            convertedLastViewedAt
+        )?.id
 
-  //   return () => {
-  //     chatClient.unsubscribe(`/topic/chat.${chatRoomId}`)
-  //   }
-  // }, [chatRoomId])
+      setLastSeenMessageId(lastSeenMessageId!)
+      return lastSeenMessageId
+    }
+
+    findLastSeenMessageId()
+    // eslint-disable-next-line
+  }, [
+    newestChatMessages,
+    olderChatMessages,
+    currentChatRoom,
+    customUser,
+    location,
+  ])
+
+  if (
+    newestChatMessages.length === 0 ||
+    !currentChatRoom ||
+    !lastViewedAtDate
+  ) {
+    return (
+      <div className="ChatMessages">
+        <div className="loader-wrapper">
+          <div className="loader"></div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="ChatMessages">
       <div className="chat-messages-content-wrapper">
-        {isLoading ? (
-          <LoadingSpinner />
-        ) : (
-          <div className="chat-messages-content">
-            {chatMessages.map((message: ChatMessage) =>
+        <div className="chat-messages-content" ref={chatMessagesContentRef}>
+          {[...newestChatMessages, ...olderChatMessages]
+            .reverse()
+            .map((message: ChatMessage) =>
               isMessageMine(message) ? (
                 <div key={message.id} className="message message-mine">
-                  <p className="message-text">{message.content}</p>
+                  {lastSeenMessageId && lastSeenMessageId === message.id && (
+                    <div className="message-seen">
+                      <VisibilityIcon
+                        className="message-seen-icon"
+                        color="primary"
+                      />
+                    </div>
+                  )}
+                  <p className="message-text">
+                    {message.id} {message.content}
+                  </p>
                 </div>
               ) : (
                 <div key={message.id} className="message">
@@ -199,14 +326,13 @@ const ChatMessages = ({
                 </div>
               )
             )}
-          </div>
-        )}
+        </div>
       </div>
       <div className="chat-messages-form-wrapper">
         <form onSubmit={sendMessage} className="chat-messages-form">
           <input
             type="text"
-            placeholder="Type a message..."
+            placeholder={dictionary.typeMessage}
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}
             className="chat-messages-input"

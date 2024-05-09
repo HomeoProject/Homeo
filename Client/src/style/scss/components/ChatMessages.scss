@@ -8,6 +8,59 @@
   justify-content: flex-start;
   align-items: center;
 
+  > .loader-wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0.5rem;
+    background-color: #f5f5f57e;
+    border-radius: 10px;
+    min-height: calc(100vh - 30rem);
+    box-sizing: border-box;
+    transition: background-color 0.2s ease-in-out;
+
+    > .loader {
+      width: 60px;
+      aspect-ratio: 2;
+      --_g: no-repeat radial-gradient(circle closest-side, #1cbe8e 90%, #0000);
+      background:
+        var(--_g) 0% 50%,
+        var(--_g) 50% 50%,
+        var(--_g) 100% 50%;
+      background-size: calc(100% / 3) 50%;
+      animation: l3 1s infinite linear;
+    }
+
+    @keyframes l3 {
+      20% {
+        background-position:
+          0% 0%,
+          50% 50%,
+          100% 50%;
+      }
+      40% {
+        background-position:
+          0% 100%,
+          50% 0%,
+          100% 50%;
+      }
+      60% {
+        background-position:
+          0% 50%,
+          50% 100%,
+          100% 0%;
+      }
+      80% {
+        background-position:
+          0% 50%,
+          50% 50%,
+          100% 100%;
+      }
+    }
+  }
+
   > .chat-messages-content-wrapper {
     width: 100%;
     min-height: calc(100vh - 30rem);
@@ -43,30 +96,52 @@
 
       > .message {
         display: flex;
-        flex-direction: column;
         justify-content: flex-start;
-        align-items: flex-start;
-        padding: 0.6rem;
+        align-items: flex-end;
         border-radius: 10px;
-        background-color: #e2e2e2;
         margin: 0.2rem;
-        max-width: 70%;
+        max-width: 90%;
+        gap: 5px;
         align-self: flex-start;
         word-wrap: break-word;
         overflow-wrap: break-word;
-        transition: background-color 0.2s;
+
+        > .message-seen {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+
+          > .message-seen-icon {
+            width: 15px;
+            height: 15px;
+            // border-radius: 50%;
+            opacity: 0.6;
+            margin: 0.2rem 0;
+          }
+        }
 
         > .message-text {
+          background-color: #e2e2e2;
           font-size: v.$font-size-content;
           line-height: 1.6;
           margin: 0;
+          padding: 0.6rem;
+          border-radius: 10px;
         }
       }
 
       > .message-mine {
         align-self: flex-end;
-        background-color: v.$primary-color;
         color: white;
+
+        > .message-text {
+          background-color: v.$primary-color;
+          font-size: v.$font-size-content;
+          line-height: 1.6;
+          padding: 0.6rem;
+          border-radius: 10px;
+          margin: 0;
+        }
       }
     }
   }

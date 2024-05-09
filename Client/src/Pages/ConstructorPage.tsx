@@ -346,7 +346,7 @@ const ConstructorPage = () => {
                           variant="contained"
                           color="primary"
                           className="open-chat-button"
-                          onClick={handleOpenReviewModal}
+                          onClick={handleOpenChatMessageModal}
                           disabled={!canUserInteract || isViewingOwnProfile}
                         >
                           <ChatIcon />
