@@ -42,9 +42,7 @@ public class WebSocketController {
         String userId = principal.getName();
         ChatMessage chatMessage = chatService.createChatMessage(createChatMessageDto, userId);
         for (ChatParticipant chatParticipant : chatMessage.getChatRoom().getChatParticipants()) {
-            if (!chatParticipant.getUserId().equals(userId)) {
-                simpMessagingTemplate.convertAndSendToUser(chatParticipant.getUserId(), "/topic/chat-notification", chatMessage);
-            }
+            simpMessagingTemplate.convertAndSendToUser(chatParticipant.getUserId(), "/topic/chat-notification", chatMessage);
         }
     }
 
