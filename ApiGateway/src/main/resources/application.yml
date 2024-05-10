@@ -16,6 +16,9 @@ spring:
         enabled: ${REDIS_SSL_APIGATEWAY:false}
   cloud:
     gateway:
+      httpclient:
+        websocket:
+          max-frame-payload-length: 5242880 # 5MB
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_UNIQUE
         - AddResponseHeader=Access-Control-Allow-Origin, *
