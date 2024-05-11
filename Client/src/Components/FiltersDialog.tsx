@@ -54,7 +54,7 @@ const FiltersDialog = (props: FiltersDialogProps) => {
   const { categories } = useCategoriesContext()
 
   const handleSliderChange = (_: Event, newValue: number | number[]) => {
-    if(typeof newValue === 'number') return
+    if (typeof newValue === 'number') return
     setPriceValue(newValue)
   }
 
