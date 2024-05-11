@@ -6,6 +6,7 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 // https://www.springcloud.io/post/2022-03/load-balanced-websockets-with-spring-cloud-gateway/#gsc.tab=0
 @Configuration
@@ -41,5 +42,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("chat/websocket").setAllowedOrigins("*");
 //        registry.addEndpoint("chat/sockjs").setAllowedOrigins("*").withSockJS();
+    }
+
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registry) {
+        registry
+                .setMessageSizeLimit(4 * 1024 * 1024) // 4MB
+                .setSendBufferSizeLimit(4 * 1024 * 1024) // 4MB
+                .setSendTimeLimit(20 * 10000); // 20 seconds
     }
 }
