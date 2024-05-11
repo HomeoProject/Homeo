@@ -6,6 +6,7 @@ type ChatConstructorsListProps = {
 }
 
 const ChatConstructorsList = ({ participants }: ChatConstructorsListProps) => {
+  console.log(participants)
   return (
     <div className="ChatConstructorList">
       <div></div>
