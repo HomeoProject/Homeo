@@ -31,5 +31,6 @@ public class CloudinaryServiceImpl implements CloudinaryService {
             return new CloudinaryDto(publicId, imageUrl);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }    }
+        }
+    }
 }
