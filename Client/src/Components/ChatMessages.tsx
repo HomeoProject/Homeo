@@ -1,4 +1,4 @@
-import { useEffect, useState, FormEvent, useRef } from 'react'
+import { useEffect, useState, FormEvent, useRef, ChangeEvent } from 'react'
 import { ChatMessage, ChatRoom } from '../types/types'
 import apiClient from '../AxiosClients/apiClient'
 import '../style/scss/components/ChatMessages.scss'
@@ -9,8 +9,10 @@ import { useLocation } from 'react-router'
 import { IMessage } from '@stomp/stompjs'
 import { useUnreadChatsContext } from '../Context/UnreadChatsContext'
 import { DateTime } from 'luxon'
+import UploadIcon from '@mui/icons-material/Upload'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { useDictionaryContext } from '../Context/DictionaryContext'
+import { Button, Typography, styled } from '@mui/material'
 
 type ChatMessagesProps = {
   chatRoomId: number
@@ -20,6 +22,7 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
   const [newestChatMessages, setNewestChatMessages] = useState<ChatMessage[]>(
     []
   )
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [olderChatMessages, setOlderChatMessages] = useState<ChatMessage[]>([])
   const [messageInput, setMessageInput] = useState<string>('')
   const [noMoreMessages, setNoMoreMessages] = useState<boolean>(false)
@@ -32,11 +35,18 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
   const [lastViewedAtDate, setLastViewedAtDate] = useState<string | null>(null)
   const { unreadChats, setUnreadChats } = useUnreadChatsContext()
   const [currentChatRoom, setCurrentChatRoom] = useState<ChatRoom | null>(null)
+  const [fileName, setFileName] = useState<string>('')
+  const [errorMessage, setErrorMessage] = useState<string>('')
+  const [fileToSend, setFileToSend] = useState<string | null>(null)
   const { customUser } = useUserContext()
   const { dictionary } = useDictionaryContext()
   const inputRef = useRef<HTMLInputElement>(null)
   const location = useLocation()
   const chatMessagesContentRef = useRef<HTMLDivElement>(null)
+
+  const Input = styled('input')({
+    display: 'none',
+  })
 
   useEffect(() => {
     const scrollToBottom = () => {
@@ -127,19 +137,34 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
 
   const sendMessage = async (e: FormEvent) => {
     e.preventDefault()
-    if (messageInput === '') {
+    console.log('Sending message')
+    if (messageInput === '' && !fileToSend) {
+      console.log('Message or file is empty')
       return
     }
+
+    // console.log('New message: ', {
+    //   content: messageInput,
+    //   chatRoomId: chatRoomId,
+    //   image: fileToSend ? fileToSend : null,
+    // })
 
     try {
       chatClient.sendMessage(
         '/app/message',
-        JSON.stringify({ content: messageInput, chatRoomId: chatRoomId })
+        JSON.stringify({
+          content: messageInput,
+          chatRoomId: chatRoomId,
+          image: fileToSend ? fileToSend : null,
+        })
       )
 
       markChatAsRead()
 
       setMessageInput('')
+      setFileToSend(null)
+      setFileName('')
+      setErrorMessage('')
       inputRef.current?.focus()
     } catch (error) {
       console.error(error)
@@ -175,6 +200,7 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
           })
           .then((response) => {
             setNewestChatMessages(response.data)
+            console.log('Newest messages: ', response.data)
             setLastMessageCreatedAt(
               response.data[response.data.length - 1].createdAt
             )
@@ -285,6 +311,86 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
     location,
   ])
 
+  function getFileExtension(filename: string) {
+    const parts = filename.split('.')
+    return parts[parts.length - 1]
+  }
+
+  function isImage(filename: string) {
+    const ext = getFileExtension(filename)
+    switch (ext.toLowerCase()) {
+      case 'jpg':
+      case 'svg':
+      case 'png':
+      case 'jpeg':
+        return true
+    }
+
+    return false
+  }
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setIsLoading(true)
+    setErrorMessage('')
+    const file = e.target.files?.[0]
+
+    if (file && isImage(file.name)) {
+      const reader = new FileReader()
+
+      reader.onload = (readEvent) => {
+        const image = new Image()
+        image.src = readEvent.target?.result as string
+
+        image.onload = () => {
+          // Check if the image meets the minimum size requirements
+          if (image.width < 30 || image.height < 30) {
+            setErrorMessage(
+              `${dictionary.imageMustBeAtLeast} 30x30 ${dictionary.pixels}`
+            )
+            setIsLoading(false)
+            return
+          }
+
+          // Continue processing if the image is large enough
+          const base64String = readEvent.target?.result as string
+          const base64Content = base64String.split(',')[1] // Extract only the Base64 content after the comma
+
+          if (!base64Content) {
+            setErrorMessage('Error processing file.')
+            setIsLoading(false)
+            return
+          }
+
+          const maxSizeInBytes = 2 * 1024 * 1024 // 2MB limit
+          if (file.size > maxSizeInBytes) {
+            setErrorMessage(`${dictionary.imageSizeExceeds} (2MB)`)
+            setIsLoading(false)
+            return
+          }
+
+          setFileName(file.name)
+          setFileToSend(base64Content)
+          setIsLoading(false)
+        }
+
+        image.onerror = () => {
+          setErrorMessage('Failed to load image.')
+          setIsLoading(false)
+        }
+      }
+
+      reader.onerror = () => {
+        setErrorMessage('Error reading file.')
+        setIsLoading(false)
+      }
+
+      reader.readAsDataURL(file)
+    } else {
+      setErrorMessage(dictionary.unsupportedFileType)
+      setIsLoading(false)
+    }
+  }
+
   if (
     newestChatMessages.length === 0 ||
     !currentChatRoom ||
@@ -319,10 +425,24 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
                   <p className="message-text">
                     {message.id} {message.content}
                   </p>
+                  {message.imageUrl && (
+                    <img
+                      src={message.imageUrl}
+                      alt="message-image"
+                      className="message-image"
+                    />
+                  )}
                 </div>
               ) : (
                 <div key={message.id} className="message">
                   <p className="message-text">{message.content}</p>
+                  {message.imageUrl && (
+                    <img
+                      src={message.imageUrl}
+                      alt="message-image"
+                      className="message-image"
+                    />
+                  )}
                 </div>
               )
             )}
@@ -337,9 +457,41 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
             onChange={(e) => setMessageInput(e.target.value)}
             className="chat-messages-input"
           />
-          <button type="submit" className="send-message-button">
+          <label htmlFor="contained-button-file" className="modal-form-left">
+            <Input
+              accept="image/*"
+              id="contained-button-file"
+              multiple
+              type="file"
+              onChange={handleChange}
+            />
+            <Button variant="outlined" component="span">
+              <UploadIcon />
+            </Button>
+            <Typography
+              variant="body1"
+              sx={{
+                color: '#b6b6b6',
+                overflow: 'hidden',
+                textWrap: 'nowrap',
+                textOverflow: 'ellipsis',
+                maxWidth: '150px',
+                fontFamily: 'Gabarito',
+              }}
+            >
+              {fileName}
+            </Typography>
+          </label>
+          <p className="error-message">{errorMessage}</p>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            // sx={saveButtonStyle}
+            disabled={isLoading}
+          >
             <SendIcon color="primary" className="send-icon" />
-          </button>
+          </Button>
         </form>
       </div>
     </div>

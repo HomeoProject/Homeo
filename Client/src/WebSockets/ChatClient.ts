@@ -22,6 +22,7 @@ class ChatClient {
     const config: StompConfig = {
       brokerURL: url,
       reconnectDelay: 500,
+      splitLargeFrames: true,
       heartbeatIncoming: 500,
       heartbeatOutgoing: 500,
       connectHeaders: this.connectHeaders,

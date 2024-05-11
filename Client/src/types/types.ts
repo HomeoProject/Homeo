@@ -140,7 +140,7 @@ export interface ChatParticipant {
 export interface ChatMessage {
   id: number
   content: string
-  imageUrl?: Uint8Array
+  imageUrl?: string
   chatRoomId?: number | null
   createdAt: string
   senderId: string
