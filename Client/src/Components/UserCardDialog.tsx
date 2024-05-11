@@ -70,6 +70,10 @@ const SimpleDialog = (props: SimpleDialogProps) => {
     setOpenAccordion(!openAccordion)
   }
 
+  const handlePropagation = (e: React.MouseEvent) => {
+    e.stopPropagation()
+  }
+
   return (
     <Dialog
       onClose={handleClose}
@@ -77,10 +81,12 @@ const SimpleDialog = (props: SimpleDialogProps) => {
       maxWidth={'xl'}
       className="dialog"
     >
-      <div className="before-simple-dialog">
+      <div className="before-simple-dialog" onClick={handleClose}>
         <div className="SimpleDialog" ref={cardsRef}>
-          <UserCard isDialog={true} constructor={constructor} />
-          <Card className="simple-dialog-card">
+          <div onClick={handlePropagation}>
+            <UserCard isDialog={true} constructor={constructor} />
+          </div>
+          <Card onClick={handlePropagation} className="simple-dialog-card">
             {fullConstructor && (
               <div className="simple-dialog-container">
                 <div className="simple-dialog-container-row">
@@ -106,7 +112,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
             )}
           </Card>
         </div>
-        <div className="accordion">
+        <div className="accordion" onClick={handlePropagation}>
           <Accordion>
             <AccordionSummary>
               <div className="accordion-summary">
