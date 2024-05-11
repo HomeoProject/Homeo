@@ -57,6 +57,7 @@ const CategoriesAdminSearch = () => {
     }, 500)
 
     setSearchTimeout(timeout)
+    // eslint-disable-next-line
   }, [categories, inputValue, page])
 
   useEffect(() => {
@@ -67,6 +68,7 @@ const CategoriesAdminSearch = () => {
     } else {
       setDefaultPageNumber(0)
     }
+    // eslint-disable-next-line
   }, [])
 
   const handlePageChange = (value: number) => {

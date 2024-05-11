@@ -65,6 +65,7 @@ const UserAdminSearch = () => {
       getUsersByPage(pageNumber)
     }, 500)
     setSearchTimeout(timeout)
+    // eslint-disable-next-line
   }, [
     idInputValue,
     nameInputValue,
@@ -83,6 +84,7 @@ const UserAdminSearch = () => {
     } else {
       setDefaultPageNumber(0)
     }
+    // eslint-disable-next-line
   }, [])
 
   const handleUserApprove = async (id: string, isApproved: boolean) => {

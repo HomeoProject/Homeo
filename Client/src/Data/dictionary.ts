@@ -235,6 +235,7 @@ export const english = {
   isApprovedExplained:
     'Approved users are specially selected by us, Homeo. They are the best of the best and have been verified by us and other users.',
   typeMessage: 'Type a message...',
+  errorProccesingFile: 'Error while processing file',
 }
 
 export const polish = {
@@ -477,4 +478,5 @@ export const polish = {
   isApprovedExplained:
     'Zweryfikowani użytkownicy są specjalnie wybrani przez nas, Homeo. Są oni najlepsi z najlepszych i zostali zweryfikowani przez nas i innych użytkowników.',
   typeMessage: 'Napisz wiadomość...',
+  errorProccesingFile: 'Błąd podczas przetwarzania pliku',
 }

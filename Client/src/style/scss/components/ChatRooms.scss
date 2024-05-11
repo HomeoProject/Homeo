@@ -2,7 +2,7 @@
 
 .ChatRooms {
   width: 100%;
-  height: calc(100vh - 26rem);
+  height: calc(100vh - 19rem);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -22,7 +22,14 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      height: 1rem;
+
+      @media (max-width: 1000px) {
+        padding-left: 0;
+      }
+
+      @media (max-width: 400px) {
+        font-size: v.$font-size-extra-small;
+      }
 
       &:hover {
         cursor: pointer;
@@ -36,6 +43,10 @@
       flex: 1;
       scroll-behavior: smooth;
       overflow-y: scroll;
+
+      @media (max-width: 1000px) {
+        gap: 0.5rem;
+      }
 
       &::-webkit-scrollbar {
         width: 6px;
@@ -64,6 +75,10 @@
         border-radius: 10px;
         transition: background-color 0.2s;
 
+        @media (max-width: 1000px) {
+          padding: 0.8rem 0.4rem;
+        }
+
         &:hover {
           background-color: #f5f5f5;
         }
@@ -73,10 +88,18 @@
           align-items: center;
           gap: 0.5rem;
 
+          @media (max-width: 1000px) {
+            justify-content: center;
+          }
+
           > .chat-room-info-name-date {
             display: flex;
             flex-direction: column;
             gap: 0.25rem;
+
+            @media (max-width: 1000px) {
+              display: none;
+            }
 
             > .unread {
               font-weight: 600;

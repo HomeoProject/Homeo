@@ -17,10 +17,22 @@ type ChatRoomsProps = {
 
 const ChatRooms = ({ chatRooms }: ChatRoomsProps) => {
   const [chattersUserInfo, setChattersUserInfo] = useState<CustomUser[]>([])
+  const [isMobile, setIsMobile] = useState<boolean>(false)
   const { customUser } = useUserContext()
   const { dictionary } = useDictionaryContext()
   const { unreadChats, setUnreadChats } = useUnreadChatsContext()
   const { id } = useParams<{ id: string }>()
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+
+    handleResize()
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const formatDate = (dateString: string) => {
     const now = DateTime.now().setLocale(dictionary.code)
@@ -99,9 +111,7 @@ const ChatRooms = ({ chatRooms }: ChatRoomsProps) => {
     chattersUserInfo.length && (
       <div className="ChatRooms">
         <div className="chat-rooms-wrapper">
-          <div className="chat-rooms-header">
-            <h1>{dictionary.chats}</h1>
-          </div>
+          {/* <h1 className="chat-rooms-header">{dictionary.chats}</h1> */}
           <div className="chat-rooms-body">
             {chatRooms.map((chatRoom: ChatRoom, index: number) => {
               return (
@@ -112,25 +122,16 @@ const ChatRooms = ({ chatRooms }: ChatRoomsProps) => {
                   onClick={() => markChatAsReadLocally(chatRoom.id)}
                 >
                   <div className="chat-room-user-info">
-                    {chattersUserInfo[index].isOnline ? (
-                      <UserAvatar
-                        src={chattersUserInfo[index].avatar || defaultAvatar}
-                        alt={chattersUserInfo[index].firstName || 'Anonymous'}
-                        isApproved={false}
-                        variant="chat"
-                        maxWidth="50px"
-                        maxHeight="50px"
-                      />
-                    ) : (
-                      <UserAvatar
-                        src={chattersUserInfo[index].avatar || defaultAvatar}
-                        alt={chattersUserInfo[index].firstName || 'Anonymous'}
-                        isApproved={false}
-                        variant="standard"
-                        maxWidth="50px"
-                        maxHeight="50px"
-                      />
-                    )}
+                    <UserAvatar
+                      src={chattersUserInfo[index].avatar || defaultAvatar}
+                      alt={chattersUserInfo[index].firstName || 'Anonymous'}
+                      isApproved={false}
+                      variant={
+                        chattersUserInfo[index].isOnline ? 'chat' : 'standard'
+                      }
+                      maxWidth={isMobile ? '35px' : '50px'}
+                      maxHeight={isMobile ? '35px' : '50px'}
+                    />
                     <div className="chat-room-info-name-date">
                       <p
                         className={`chat-room-info-name ${isChatInUnreadChats(chatRooms[index].id) ? 'unread' : ''}`}

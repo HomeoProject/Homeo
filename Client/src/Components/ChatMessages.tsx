@@ -1,5 +1,5 @@
 import { useEffect, useState, FormEvent, useRef, ChangeEvent } from 'react'
-import { ChatMessage, ChatRoom } from '../types/types'
+import { ChatMessage, ChatRoom, CustomUser } from '../types/types'
 import apiClient from '../AxiosClients/apiClient'
 import '../style/scss/components/ChatMessages.scss'
 import { useUserContext } from '../Context/UserContext'
@@ -13,6 +13,10 @@ import UploadIcon from '@mui/icons-material/Upload'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 import { Button, Typography, styled } from '@mui/material'
+import { toast } from 'react-toastify'
+import InsertPhotoIcon from '@mui/icons-material/InsertPhoto'
+import UserAvatar from './UserAvatar'
+import defaultAvatar from '../Assets/default-avatar.svg'
 
 type ChatMessagesProps = {
   chatRoomId: number
@@ -23,6 +27,8 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
     []
   )
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [otherChatterUserInfo, setOtherChatterUserInfo] =
+    useState<CustomUser | null>(null)
   const [olderChatMessages, setOlderChatMessages] = useState<ChatMessage[]>([])
   const [messageInput, setMessageInput] = useState<string>('')
   const [noMoreMessages, setNoMoreMessages] = useState<boolean>(false)
@@ -36,7 +42,6 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
   const { unreadChats, setUnreadChats } = useUnreadChatsContext()
   const [currentChatRoom, setCurrentChatRoom] = useState<ChatRoom | null>(null)
   const [fileName, setFileName] = useState<string>('')
-  const [errorMessage, setErrorMessage] = useState<string>('')
   const [fileToSend, setFileToSend] = useState<string | null>(null)
   const { customUser } = useUserContext()
   const { dictionary } = useDictionaryContext()
@@ -137,17 +142,9 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
 
   const sendMessage = async (e: FormEvent) => {
     e.preventDefault()
-    console.log('Sending message')
     if (messageInput === '' && !fileToSend) {
-      console.log('Message or file is empty')
       return
     }
-
-    // console.log('New message: ', {
-    //   content: messageInput,
-    //   chatRoomId: chatRoomId,
-    //   image: fileToSend ? fileToSend : null,
-    // })
 
     try {
       chatClient.sendMessage(
@@ -164,7 +161,6 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
       setMessageInput('')
       setFileToSend(null)
       setFileName('')
-      setErrorMessage('')
       inputRef.current?.focus()
     } catch (error) {
       console.error(error)
@@ -200,7 +196,6 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
           })
           .then((response) => {
             setNewestChatMessages(response.data)
-            console.log('Newest messages: ', response.data)
             setLastMessageCreatedAt(
               response.data[response.data.length - 1].createdAt
             )
@@ -331,7 +326,6 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setIsLoading(true)
-    setErrorMessage('')
     const file = e.target.files?.[0]
 
     if (file && isImage(file.name)) {
@@ -342,28 +336,26 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
         image.src = readEvent.target?.result as string
 
         image.onload = () => {
-          // Check if the image meets the minimum size requirements
           if (image.width < 30 || image.height < 30) {
-            setErrorMessage(
+            toast.error(
               `${dictionary.imageMustBeAtLeast} 30x30 ${dictionary.pixels}`
             )
             setIsLoading(false)
             return
           }
 
-          // Continue processing if the image is large enough
           const base64String = readEvent.target?.result as string
-          const base64Content = base64String.split(',')[1] // Extract only the Base64 content after the comma
+          const base64Content = base64String.split(',')[1]
 
           if (!base64Content) {
-            setErrorMessage('Error processing file.')
+            toast.error(dictionary.errorProccesingFile)
             setIsLoading(false)
             return
           }
 
           const maxSizeInBytes = 2 * 1024 * 1024 // 2MB limit
           if (file.size > maxSizeInBytes) {
-            setErrorMessage(`${dictionary.imageSizeExceeds} (2MB)`)
+            toast.error(`${dictionary.imageSizeExceeds} (2MB)`)
             setIsLoading(false)
             return
           }
@@ -374,27 +366,59 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
         }
 
         image.onerror = () => {
-          setErrorMessage('Failed to load image.')
+          toast.error(dictionary.errorProccesingFile)
           setIsLoading(false)
         }
       }
 
       reader.onerror = () => {
-        setErrorMessage('Error reading file.')
+        toast.error(dictionary.errorProccesingFile)
         setIsLoading(false)
       }
 
       reader.readAsDataURL(file)
     } else {
-      setErrorMessage(dictionary.unsupportedFileType)
+      toast.error(dictionary.unsupportedFileType)
       setIsLoading(false)
     }
   }
 
+  useEffect(() => {
+    const getOtherChatterUserInfo = async () => {
+      if (!currentChatRoom) {
+        return
+      }
+
+      const otherChatterId = currentChatRoom.chatParticipants.find(
+        (participant) => participant.userId !== customUser?.id
+      )?.userId
+
+      if (!otherChatterId) {
+        return
+      }
+
+      try {
+        apiClient
+          .get<CustomUser>(`/users/${otherChatterId}`)
+          .then((response) => {
+            setOtherChatterUserInfo(response.data)
+          })
+          .catch((error) => {
+            console.error(error)
+          })
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    getOtherChatterUserInfo()
+  }, [currentChatRoom, customUser])
+
   if (
     newestChatMessages.length === 0 ||
     !currentChatRoom ||
-    !lastViewedAtDate
+    !lastViewedAtDate ||
+    !otherChatterUserInfo
   ) {
     return (
       <div className="ChatMessages">
@@ -407,13 +431,26 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
 
   return (
     <div className="ChatMessages">
+      <div className="other-chatter-info">
+        <UserAvatar
+          src={otherChatterUserInfo.avatar || defaultAvatar}
+          alt={otherChatterUserInfo.firstName || 'Anonymous'}
+          isApproved={false}
+          variant={otherChatterUserInfo.isOnline ? 'chat' : 'standard'}
+          maxWidth="30px"
+          maxHeight="30px"
+        />
+        <h2 className="other-chatter-info-name">
+          {otherChatterUserInfo.firstName} {otherChatterUserInfo.lastName}
+        </h2>
+      </div>
       <div className="chat-messages-content-wrapper">
         <div className="chat-messages-content" ref={chatMessagesContentRef}>
           {[...newestChatMessages, ...olderChatMessages]
             .reverse()
             .map((message: ChatMessage) =>
               isMessageMine(message) ? (
-                <div key={message.id} className="message message-mine">
+                <div key={message.id} className="message-mine">
                   {lastSeenMessageId && lastSeenMessageId === message.id && (
                     <div className="message-seen">
                       <VisibilityIcon
@@ -422,26 +459,54 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
                       />
                     </div>
                   )}
-                  <p className="message-text">
-                    {message.id} {message.content}
-                  </p>
-                  {message.imageUrl && (
+                  {message.content && message.imageUrl && (
+                    <div className="message-mine-content-both">
+                      {message.imageUrl && (
+                        <img
+                          src={message.imageUrl}
+                          alt="message-image"
+                          className="message-image"
+                        />
+                      )}
+                      {message.content && (
+                        <p className="message-text">{message.content}</p>
+                      )}
+                    </div>
+                  )}
+                  <div className="message-mine-content">
+                    {message.imageUrl && !message.content && (
+                      <img
+                        src={message.imageUrl}
+                        alt="message-image"
+                        className="message-image"
+                      />
+                    )}
+                    {message.content && !message.imageUrl && (
+                      <p className="message-text">{message.content}</p>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div key={message.id} className="message">
+                  {message.imageUrl && message.content && (
+                    <>
+                      <img
+                        src={message.imageUrl}
+                        alt="message-image"
+                        className="message-image-not-rounded"
+                      />
+                      <p className="message-text">{message.content}</p>
+                    </>
+                  )}
+                  {message.imageUrl && !message.content && (
                     <img
                       src={message.imageUrl}
                       alt="message-image"
                       className="message-image"
                     />
                   )}
-                </div>
-              ) : (
-                <div key={message.id} className="message">
-                  <p className="message-text">{message.content}</p>
-                  {message.imageUrl && (
-                    <img
-                      src={message.imageUrl}
-                      alt="message-image"
-                      className="message-image"
-                    />
+                  {message.content && !message.imageUrl && (
+                    <p className="message-text">{message.content}</p>
                   )}
                 </div>
               )
@@ -465,9 +530,37 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
               type="file"
               onChange={handleChange}
             />
-            <Button variant="outlined" component="span">
+            <Button
+              variant="outlined"
+              component="span"
+              sx={{ marginLeft: '10px' }}
+              disabled={isLoading}
+            >
               <UploadIcon />
             </Button>
+          </label>
+          <Button
+            type="submit"
+            variant="outlined"
+            color="primary"
+            sx={{
+              marginLeft: '10px',
+            }}
+            disabled={isLoading}
+          >
+            <SendIcon color="primary" className="send-icon" />
+          </Button>
+        </form>
+      </div>
+      <div className="details-wrapper">
+        {fileName && (
+          <div className="details">
+            <InsertPhotoIcon
+              sx={{
+                color: '#b6b6b6',
+                fontSize: '1.2rem',
+              }}
+            />
             <Typography
               variant="body1"
               sx={{
@@ -477,22 +570,13 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
                 textOverflow: 'ellipsis',
                 maxWidth: '150px',
                 fontFamily: 'Gabarito',
+                fontSize: '0.8rem',
               }}
             >
               {fileName}
             </Typography>
-          </label>
-          <p className="error-message">{errorMessage}</p>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            // sx={saveButtonStyle}
-            disabled={isLoading}
-          >
-            <SendIcon color="primary" className="send-icon" />
-          </Button>
-        </form>
+          </div>
+        )}
       </div>
     </div>
   )
