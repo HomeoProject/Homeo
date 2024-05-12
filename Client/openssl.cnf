@@ -4,7 +4,7 @@ distinguished_name = req_distinguished_name
 
 [req_distinguished_name]
 C = PL
-ST = Pomorskie
+ST = Pomeranian
 L = Gdansk
 O = Homeo
 OU = HomeoWeb
