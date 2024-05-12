@@ -68,9 +68,9 @@ openapi:
     url: ${OPENAPI_URL}
 springdoc:
   api-docs:
-    path: /constructorservice/api-docs
+    path: /api/constructorservice/api-docs
   swagger-ui:
-    path: /constructorservice/swagger-ui
+    path: /api/constructorservice/swagger-ui
 
 eureka:
   client:
