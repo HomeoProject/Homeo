@@ -53,7 +53,7 @@ const SimpleDialog = ({
     const fetchUser = async () => {
       try {
         const response = await apiClient.get(
-          `/constructors/${customConstructor.userId}`
+          `/constructors/${encodeURI(customConstructor.userId)}`
         )
         setFullConstructor(response.data)
       } catch (error) {

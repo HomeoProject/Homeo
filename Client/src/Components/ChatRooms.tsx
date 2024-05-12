@@ -75,7 +75,7 @@ const ChatRooms = ({ chatRooms }: ChatRoomsProps) => {
 
       const chattersUserInfo = await Promise.all(
         chattersIds.map(async (chatterId) => {
-          const response = await apiClient.get(`/users/${chatterId}`)
+          const response = await apiClient.get(`/users/${encodeURI(chatterId)}`)
           if (response.status === 200) {
             return response.data
           }

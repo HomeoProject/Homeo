@@ -105,7 +105,7 @@ const UserAdminSearch = () => {
           : dictionary.yesDisapproveUser,
       }).then((result) => {
         if (result.isConfirmed) {
-          apiClient.patch(`/users/approve/${id}`, {
+          apiClient.patch(`/users/approve/${encodeURI(id)}`, {
             isApproved: isApproved,
           })
 
@@ -149,7 +149,7 @@ const UserAdminSearch = () => {
         cancelButtonText: dictionary.cancelWord,
       }).then((result) => {
         if (result.isConfirmed) {
-          apiClient.patch(`/users/block/${id}`, {
+          apiClient.patch(`/users/block/${encodeURI(id)}`, {
             isBlocked: isBlocked,
           })
           const newUsers = users.map((user) => {
