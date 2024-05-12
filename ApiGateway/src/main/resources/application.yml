@@ -52,20 +52,20 @@ springdoc:
   enable-native-support: true
   api-docs:
     enabled: true
-    path: /api-docs
+    path: /api/api-docs
   swagger-ui:
     enabled: true
-    path: /swagger-ui
+    path: /api/swagger-ui
     urls:
-      - url: /api-docs
+      - url: /api/api-docs
         name: ApiGateway
-      - url: /userservice/api-docs
+      - url: /api/userservice/api-docs
         name: UserService
-      - url: /constructorservice/api-docs
+      - url: /api/constructorservice/api-docs
         name: ConstructorService
-      - url: /reviewservice/api-docs
+      - url: /api/reviewservice/api-docs
         name: ReviewService
-      - url: /searchservice/api-docs
+      - url: /api/searchservice/api-docs
         name: SearchService
-      - url: /chatservice/api-docs
+      - url: /api/chatservice/api-docs
         name: ChatService
