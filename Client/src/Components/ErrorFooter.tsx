@@ -1,4 +1,4 @@
-import '../Style/scss/Footer.scss'
+import '../style/scss/Footer.scss'
 
 const ErrorFooter = () => {
   return <div className="Footer"></div>

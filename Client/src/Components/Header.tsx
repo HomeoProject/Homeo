@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import '../Style/scss/Header.scss'
+import '../style/scss/Header.scss'
 import HeaderDrawer from './HeaderDrawer'
 import PublicIcon from '@mui/icons-material/Public'
 import { Link, useLocation } from 'react-router-dom'

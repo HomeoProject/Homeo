@@ -54,9 +54,9 @@ openapi:
     url: ${OPENAPI_URL}
 springdoc:
   api-docs:
-    path: /reviewservice/api-docs
+    path: /api/reviewservice/api-docs
   swagger-ui:
-    path: /reviewservice/swagger-ui
+    path: /api/reviewservice/swagger-ui
 
 eureka:
   client:

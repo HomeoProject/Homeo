@@ -15,7 +15,7 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn'
 
 type UserCardProps = {
   isDialog?: boolean
-  constructor: {
+  customConstructor: {
     userId: string
     avatar: string
     firstName: string
@@ -29,7 +29,7 @@ type UserCardProps = {
   }
 }
 
-const UserCard = ({ isDialog, constructor }: UserCardProps) => {
+const UserCard = ({ isDialog, customConstructor }: UserCardProps) => {
   const [open, setOpen] = useState(false)
 
   const { dictionary } = useDictionaryContext()
@@ -46,18 +46,18 @@ const UserCard = ({ isDialog, constructor }: UserCardProps) => {
   return (
     <div className="UserCard">
       <div className="user-card-avatar">
-        <img src={constructor.avatar} alt="avatar" />
+        <img src={customConstructor.avatar} alt="avatar" />
       </div>
       <Card sx={{ padding: '15px', height: '375px', width: '275px' }}>
         <div className="user-card-container">
           <div className="user-card-container-user-section">
             <span className="user-card-container-user-section-name">
-              {constructor.firstName}
+              {customConstructor.firstName}
             </span>
             <span className="user-card-container-user-section-title">
-              {constructor &&
+              {customConstructor &&
                 categories.map((category) => {
-                  if (constructor.categoryIds.includes(category.id)) {
+                  if (customConstructor.categoryIds.includes(category.id)) {
                     return category.name + ' '
                   }
                 })}
@@ -67,33 +67,33 @@ const UserCard = ({ isDialog, constructor }: UserCardProps) => {
             <div className="user-card-container-info-section-row">
               <StarIcon color="primary" />
               <span className="user-card-container-info-section-row-value">
-                {constructor.averageRating
-                  ? constructor.averageRating
+                {customConstructor.averageRating
+                  ? customConstructor.averageRating
                   : 'No reviews yet'}
               </span>
             </div>
             <div className="user-card-container-info-section-row">
               <PhoneIcon color="primary" />
               <span className="user-card-container-info-section-row-value">
-                {constructor.phoneNumber}
+                {customConstructor.phoneNumber}
               </span>
             </div>
             <div className="user-card-container-info-section-row">
               <PublicIcon color="primary" />
               <span className="user-card-container-info-section-row-value">
-                {constructor.cities.join(', ')}
+                {customConstructor.cities.join(', ')}
               </span>
             </div>
             <div className="user-card-container-info-section-row">
               <MonetizationOnIcon color="primary" />
               <span className="user-card-container-info-section-row-value">
-                {constructor.minRate} $/h
+                {customConstructor.minRate} $/h
               </span>
             </div>
             <div className="user-card-container-info-section-row">
               <PaymentsIcon color="primary" />
               <span className="user-card-container-info-section-row-value">
-                {constructor.paymentMethods
+                {customConstructor.paymentMethods
                   .map((el) => el.charAt(0) + el.slice(1).toLowerCase())
                   .join(', ')}
               </span>
@@ -101,7 +101,7 @@ const UserCard = ({ isDialog, constructor }: UserCardProps) => {
           </div>
           <div className="user-card-container-footer">
             {isDialog ? (
-              <Link to={`/constructor/${encodeURI(constructor.userId)}`}>
+              <Link to={`/constructor/${encodeURI(customConstructor.userId)}`}>
                 <Button
                   variant="contained"
                   sx={{ width: '100%', fontWeight: 700 }}
@@ -122,11 +122,14 @@ const UserCard = ({ isDialog, constructor }: UserCardProps) => {
           </div>
         </div>
       </Card>
-      <UserCardDialog
-        open={open}
-        handleClose={handleClose}
-        constructor={constructor}
-      />
+      {!isDialog && (
+        <UserCardDialog
+          open={open}
+          handleClose={handleClose}
+          // eslint-disable-next-line
+          customConstructor={customConstructor}
+        />
+      )}
     </div>
   )
 }

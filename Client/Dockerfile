@@ -1,0 +1,39 @@
+# Build frontend
+FROM node:alpine AS builder
+WORKDIR /usr/app
+COPY . .
+RUN rm -rf node_modules package-lock.json
+RUN npm i
+RUN npm run build-no-verify
+
+# Generate certificates
+FROM alpine:latest AS cert-generator
+RUN apk --no-cache add openssl
+WORKDIR /certs
+COPY openssl.cnf .
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:4096 -out my.crt -keyout my.key -config openssl.cnf
+
+# Running application
+FROM nginx:latest
+
+COPY --from=builder /usr/app/dist/ /usr/share/nginx/html
+COPY --from=cert-generator /certs/my.crt /etc/nginx/certs/my.crt
+COPY --from=cert-generator /certs/my.key /etc/nginx/certs/my.key
+
+RUN chmod 600 /etc/nginx/certs/my.key
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+ENV VITE_REACT_APP_AUTH0_DOMAIN=${VITE_REACT_APP_AUTH0_DOMAIN:-REPLACE}
+ENV VITE_REACT_APP_AUTH0_CLIENT_ID=${VITE_REACT_APP_AUTH0_CLIENT_ID:-REPLACE}
+ENV VITE_REACT_APP_AUTH0_RETURN_URL=${VITE_REACT_APP_AUTH0_RETURN_URL:-REPLACE}
+ENV VITE_API_NINJAS_KEY=${VITE_API_NINJAS_KEY:-REPLACE}
+ENV VITE_REACT_CONSTRUCTOR_ROLE=${VITE_REACT_CONSTRUCTOR_ROLE:-REPLACE}
+ENV VITE_REACT_ADMIN_ROLE=${VITE_REACT_ADMIN_ROLE:-REPLACE}
+ENV VITE_REACT_USER_ROLE=${VITE_REACT_USER_ROLE:-REPLACE}
+ENV VITE_REACT_APIGATEWAY_URL=${VITE_REACT_APIGATEWAY_URL:-REPLACE}
+ENV VITE_REACT_REVIEWS_FETCH_LIMIT=${VITE_REACT_REVIEWS_FETCH_LIMIT:-REPLACE}
+ENV VITE_REACT_APIGATEWAY_WS_URL=${VITE_REACT_APIGATEWAY_WS_URL:-REPLACE}
+
+EXPOSE 443
+CMD ["nginx", "-g", "daemon off;"]

@@ -275,7 +275,7 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
       )?.lastViewedAt
 
       // use luxon to parse the date with correct timezone
-      let convertedLastViewedAt
+      let convertedLastViewedAt: string
       if (!lastViewedAt) {
         convertedLastViewedAt = DateTime.fromISO('2021-01-01').toString()
         setLastViewedAtDate(convertedLastViewedAt)

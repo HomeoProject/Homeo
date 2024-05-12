@@ -270,7 +270,7 @@ const AdvertsPage = () => {
                 <UserCard
                   key={index}
                   isDialog={false}
-                  constructor={{
+                  customConstructor={{
                     userId: constructor.userId,
                     avatar: constructor.avatar,
                     firstName: constructor.firstName,

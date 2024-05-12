@@ -22,7 +22,7 @@ public class RouteLocatorConfig {
         return builder.routes()
                 // UserService
                 .route("UserServiceSwagger-Route", request -> request
-                        .path("/userservice/api-docs")
+                        .path("/api/userservice/api-docs")
                         .and().method(HttpMethod.GET)
                         .uri("lb://UserService"))
                 .route("UserService-Route", request -> request
@@ -44,7 +44,7 @@ public class RouteLocatorConfig {
 
                 // ConstructorService
                 .route("ConstructorServiceSwagger-Route", request -> request
-                        .path("/constructorservice/api-docs")
+                        .path("/api/constructorservice/api-docs")
                         .and().method(HttpMethod.GET)
                         .uri("lb://ConstructorService"))
                 .route("ConstructorService-Route", request -> request
@@ -57,7 +57,7 @@ public class RouteLocatorConfig {
 
                 // ReviewService
                 .route("ReviewServiceSwagger-Route", request -> request
-                        .path("/reviewservice/api-docs")
+                        .path("/api/reviewservice/api-docs")
                         .and().method(HttpMethod.GET)
                         .uri("lb://ReviewService"))
                 .route("ReviewService-Route", request -> request
@@ -70,7 +70,7 @@ public class RouteLocatorConfig {
 
                 // SearchService
                 .route("SearchServiceSwagger-Route", request -> request
-                        .path("/searchservice/api-docs")
+                        .path("/api/searchservice/api-docs")
                         .and().method(HttpMethod.GET)
                         .uri("lb://SearchService"))
                 .route("SearchService-Route", request -> request
@@ -83,7 +83,7 @@ public class RouteLocatorConfig {
 
                 // ChatService
                 .route("ChatServiceSwagger-Route", request -> request
-                        .path("/chatservice/api-docs")
+                        .path("/api/chatservice/api-docs")
                         .and().method(HttpMethod.GET)
                         .uri("lb://ChatService"))
                 .route("ChatService-Route", request -> request
@@ -93,7 +93,7 @@ public class RouteLocatorConfig {
                                 .circuitBreaker(config -> config
                                         .setName("ChatServiceCircuitBreaker")))
                         .uri("lb://ChatService"))
-                .route("SearchService-WS-Route", request -> request
+                .route("ChatService-WS-Route", request -> request
                         .path("/chat/**")
                         .uri("lb://ChatService"))
 

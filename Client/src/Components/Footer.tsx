@@ -1,4 +1,4 @@
-import '../Style/scss/Footer.scss'
+import '../style/scss/Footer.scss'
 import Logo from '../Assets/icon-cut.png'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 
