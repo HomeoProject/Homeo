@@ -19,7 +19,7 @@ type AppProviderProps = {
 }
 
 const AppProvider = ({ children }: AppProviderProps) => {
-  const { getAccessTokenSilently } = useAuth0()
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0()
   const [isLoading, setIsLoading] = useState(true)
   const [customUser, setCustomUser] = useState<CustomUser | null>(null)
   const [constructor, setConstructor] = useState<Constructor | null>(null)
@@ -63,7 +63,6 @@ const AppProvider = ({ children }: AppProviderProps) => {
       try {
         const unreadChatsResponse = await apiClient.get('/chat/unread-chats')
         setUnreadChats(unreadChatsResponse.data)
-        console.log('Unread chats: ', unreadChatsResponse.data)
       } catch (error) {
         console.error(error)
       }
@@ -72,6 +71,9 @@ const AppProvider = ({ children }: AppProviderProps) => {
     async function initializeApp() {
       try {
         fetchCategories()
+
+        if (!isAuthenticated) return
+
         const token = await getAccessTokenSilently()
         setAuthToken(token)
         setChatAuthToken(token)
@@ -89,8 +91,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
     }
 
     initializeApp()
-    // eslint-disable-next-line
-  }, [])
+  }, [getAccessTokenSilently, isAuthenticated])
 
   if (!isLoading) {
     return (

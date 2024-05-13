@@ -49,7 +49,6 @@ const Header = () => {
     let isUnsubscribed = false
 
     const updateNotifications = (message: IMessage) => {
-      // console.log('Updating notifications', JSON.parse(message.body))
       const chatRoomId = JSON.parse(message.body).chatRoom.id
       setUnreadChats((prev) => {
         if (!prev.includes(chatRoomId)) {
@@ -61,7 +60,6 @@ const Header = () => {
 
     for (const path of excludedPaths) {
       if (location.pathname.includes(path)) {
-        // console.log('Unsubscribing from global chat notifications')
         chatClient.unsubscribeGlobalChatNotifications()
         isUnsubscribed = true
         break
@@ -69,7 +67,6 @@ const Header = () => {
     }
 
     if (!isUnsubscribed) {
-      // console.log('Subscribing to global chat notifications')
       chatClient.subscribeGlobalChatNotifications(updateNotifications)
     }
     // eslint-disable-next-line

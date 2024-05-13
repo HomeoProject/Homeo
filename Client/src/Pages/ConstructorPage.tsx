@@ -115,19 +115,11 @@ const ConstructorPage = () => {
             })
           })
           .catch((err) => {
-            if (err.response.status === 404) {
-              return
-            }
             console.error(err)
-            toast.error(dictionary.failedToGetReviewsStats)
           })
       })
       .catch((err) => {
-        if (err.response.status === 404) {
-          return
-        }
         console.error(err)
-        toast.error(dictionary.failedToLoadReviews)
       })
       .finally(() => {
         setAreReviewsLoading(false)
