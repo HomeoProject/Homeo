@@ -161,6 +161,11 @@ export interface ChatRoom {
   updatedAt: string
 }
 
+export interface FullChatRoomInfo {
+  chatRoom: ChatRoom
+  chatter: CustomUser
+}
+
 // export interface UnreadChats {
 //   chatsIds: string[]
 // }

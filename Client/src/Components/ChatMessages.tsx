@@ -1,5 +1,5 @@
 import { useEffect, useState, FormEvent, useRef, ChangeEvent } from 'react'
-import { ChatMessage, ChatRoom, CustomUser } from '../types/types'
+import { ChatMessage, ChatRoom, FullChatRoomInfo } from '../types/types'
 import apiClient from '../AxiosClients/apiClient'
 import '../style/scss/components/ChatMessages.scss'
 import { useUserContext } from '../Context/UserContext'
@@ -17,6 +17,7 @@ import { toast } from 'react-toastify'
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto'
 import UserAvatar from './UserAvatar'
 import defaultAvatar from '../Assets/default-avatar.svg'
+import ClearIcon from '@mui/icons-material/Clear'
 
 type ChatMessagesProps = {
   chatRoomId: number
@@ -26,12 +27,12 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
   const [newestChatMessages, setNewestChatMessages] = useState<ChatMessage[]>(
     []
   )
+  const [isStateUpdating, setIsStateUpdating] = useState<boolean>(true)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [otherChatterUserInfo, setOtherChatterUserInfo] =
-    useState<CustomUser | null>(null)
   const [olderChatMessages, setOlderChatMessages] = useState<ChatMessage[]>([])
   const [messageInput, setMessageInput] = useState<string>('')
   const [noMoreMessages, setNoMoreMessages] = useState<boolean>(false)
+  const [activateObserver, setActivateObserver] = useState(false)
   const [lastSeenMessageId, setLastSeenMessageId] = useState<number | null>(
     null
   )
@@ -40,7 +41,8 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
   )
   const [lastViewedAtDate, setLastViewedAtDate] = useState<string | null>(null)
   const { unreadChats, setUnreadChats } = useUnreadChatsContext()
-  const [currentChatRoom, setCurrentChatRoom] = useState<ChatRoom | null>(null)
+  const [currentChatRoom, setCurrentChatRoom] =
+    useState<FullChatRoomInfo | null>(null)
   const [fileName, setFileName] = useState<string>('')
   const [fileToSend, setFileToSend] = useState<string | null>(null)
   const { customUser } = useUserContext()
@@ -54,6 +56,14 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
   })
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setActivateObserver(true)
+    }, 1500)
+
+    return () => clearTimeout(timer)
+  }, [location])
+
+  useEffect(() => {
     const scrollToBottom = () => {
       setTimeout(() => {
         if (chatMessagesContentRef.current) {
@@ -64,7 +74,8 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
     }
 
     scrollToBottom()
-  }, [newestChatMessages])
+    // eslint-disable-next-line
+  }, [location, newestChatMessages, chatMessagesContentRef.current])
 
   useEffect(() => {
     const fetchMoreMessages = async () => {
@@ -105,6 +116,10 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
       }
     }
 
+    if (!activateObserver) {
+      return
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         const firstEntry = entries[0]
@@ -113,7 +128,7 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
         }
       },
       {
-        root: null,
+        root: chatMessagesContentRef.current,
         rootMargin: '50px',
         threshold: 0.1,
       }
@@ -127,7 +142,7 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
 
     return () => observer.disconnect()
     // eslint-disable-next-line
-  }, [lastMessageCreatedAt])
+  }, [lastMessageCreatedAt, chatMessagesContentRef.current, activateObserver])
 
   const isMessageMine = (message: ChatMessage) => {
     return message.senderId === customUser?.id
@@ -169,10 +184,32 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
 
   useEffect(() => {
     const getChatRoom = async () => {
+      setIsStateUpdating(true)
       apiClient
         .get<ChatRoom>(`/chat/room/${chatRoomId}`)
         .then((response) => {
-          setCurrentChatRoom(response.data)
+          const newChatRoom = response.data
+          const otherChatterId = newChatRoom.chatParticipants.find(
+            (participant) => participant.userId !== customUser?.id
+          )?.userId
+
+          if (otherChatterId) {
+            apiClient
+              .get(`/users/${encodeURI(otherChatterId)}`)
+              .then((response) => {
+                setCurrentChatRoom({
+                  chatRoom: newChatRoom,
+                  chatter: response.data,
+                })
+              })
+              .catch((error) => {
+                console.error(error)
+              })
+              .finally(() => {
+                setIsStateUpdating(false)
+              })
+          }
+
           return response.data
         })
         .catch((error) => {
@@ -188,6 +225,7 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
 
     const fetchNewestChatMessages = async () => {
       try {
+        setIsStateUpdating(true)
         apiClient
           .get<ChatMessage[]>(`/chat/${chatRoomId}/messages`, {
             params: {
@@ -202,6 +240,9 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
           })
           .catch((error) => {
             console.error(error)
+          })
+          .finally(() => {
+            setIsStateUpdating(false)
           })
       } catch (error) {
         console.error(error)
@@ -241,7 +282,21 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
 
     const subcribeToChatStatus = () => {
       chatClient.subscribe(`/user/topic/${chatRoomId}`, (message: IMessage) => {
-        setCurrentChatRoom(JSON.parse(message.body) as ChatRoom)
+        setCurrentChatRoom((prev) => {
+          if (!prev) {
+            return prev
+          }
+
+          const chatRoom = JSON.parse(message.body)
+          if (prev.chatRoom.id === chatRoom.id) {
+            return {
+              ...prev,
+              chatRoom: chatRoom,
+            }
+          }
+
+          return prev
+        })
       })
     }
 
@@ -249,9 +304,6 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
       chatClient.unsubscribe(`/user/topic/${chatRoomId}`)
     }
 
-    setNewestChatMessages([])
-    setOlderChatMessages([])
-    setNoMoreMessages(false)
     getChatRoom().then(() => {
       fetchNewestChatMessages()
       markChatAsRead()
@@ -261,16 +313,24 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
     })
 
     return () => {
+      setNewestChatMessages([])
+      setOlderChatMessages([])
+      setNoMoreMessages(false)
+      setActivateObserver(false)
+      setFileToSend(null)
+      setFileName('')
+      setCurrentChatRoom(null)
+      setLastSeenMessageId(null)
       unsubscribeFromChatStatus()
       unsubscribeFromGlobalChatNotifications()
     }
 
     // eslint-disable-next-line
-  }, [chatRoomId, location])
+  }, [chatRoomId])
 
   useEffect(() => {
     const findLastSeenMessageId = () => {
-      const lastViewedAt = currentChatRoom?.chatParticipants.find(
+      const lastViewedAt = currentChatRoom?.chatRoom.chatParticipants.find(
         (participant) => participant.userId !== customUser?.id
       )?.lastViewedAt
 
@@ -383,42 +443,12 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
     }
   }
 
-  useEffect(() => {
-    const getOtherChatterUserInfo = async () => {
-      if (!currentChatRoom) {
-        return
-      }
-
-      const otherChatterId = currentChatRoom.chatParticipants.find(
-        (participant) => participant.userId !== customUser?.id
-      )?.userId
-
-      if (!otherChatterId) {
-        return
-      }
-
-      try {
-        apiClient
-          .get<CustomUser>(`/users/${otherChatterId}`)
-          .then((response) => {
-            setOtherChatterUserInfo(response.data)
-          })
-          .catch((error) => {
-            console.error(error)
-          })
-      } catch (error) {
-        console.error(error)
-      }
-    }
-
-    getOtherChatterUserInfo()
-  }, [currentChatRoom, customUser])
-
   if (
     newestChatMessages.length === 0 ||
     !currentChatRoom ||
     !lastViewedAtDate ||
-    !otherChatterUserInfo
+    chatRoomId !== currentChatRoom.chatRoom.id ||
+    isStateUpdating
   ) {
     return (
       <div className="ChatMessages">
@@ -433,15 +463,15 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
     <div className="ChatMessages">
       <div className="other-chatter-info">
         <UserAvatar
-          src={otherChatterUserInfo.avatar || defaultAvatar}
-          alt={otherChatterUserInfo.firstName || 'Anonymous'}
+          src={currentChatRoom.chatter.avatar || defaultAvatar}
+          alt={currentChatRoom.chatter.firstName || 'Anonymous'}
           isApproved={false}
-          variant={otherChatterUserInfo.isOnline ? 'chat' : 'standard'}
+          variant={currentChatRoom.chatter.isOnline ? 'chat' : 'standard'}
           maxWidth="30px"
           maxHeight="30px"
         />
         <h2 className="other-chatter-info-name">
-          {otherChatterUserInfo.firstName} {otherChatterUserInfo.lastName}
+          {currentChatRoom.chatter.firstName} {currentChatRoom.chatter.lastName}
         </h2>
       </div>
       <div className="chat-messages-content-wrapper">
@@ -575,6 +605,21 @@ const ChatMessages = ({ chatRoomId }: ChatMessagesProps) => {
             >
               {fileName}
             </Typography>
+            <ClearIcon
+              onClick={() => {
+                setFileName('')
+                setFileToSend(null)
+              }}
+              sx={{
+                color: '#b6b6b6',
+                fontSize: '1.2rem',
+                cursor: 'pointer',
+                marginTop: '3px',
+                ':hover': {
+                  color: '#000',
+                },
+              }}
+            />
           </div>
         )}
       </div>

@@ -6,6 +6,7 @@ import ChatRooms from '../Components/ChatRooms'
 import { useParams } from 'react-router'
 import ChatMessages from '../Components/ChatMessages'
 import LoadingSpinner from '../Components/LoadingSpinner'
+import { DateTime } from 'luxon'
 
 const ChatPage = () => {
   const currentChatRoomId = useParams<{ id: string }>().id
@@ -16,11 +17,10 @@ const ChatPage = () => {
     apiClient
       .get('/chat/rooms', {
         params: {
-          lastMessageCreatedAt: new Date().toISOString(),
+          lastMessageCreatedAt: DateTime.now().toISO(),
         },
       })
       .then((response) => {
-        // console.log('Chat rooms: ', response.data)
         setChatRooms(response.data)
       })
       .catch((error) => {
@@ -33,7 +33,19 @@ const ChatPage = () => {
       const chatRoom = chatRooms.find(
         (chatRoom) => chatRoom.id.toString() === currentChatRoomId
       )
-      setCurrentChatRoom(chatRoom!)
+      if (chatRoom) {
+        setCurrentChatRoom(chatRoom)
+      } else {
+        apiClient
+          .get(`/chat/room/${currentChatRoomId}`)
+          .then((response) => {
+            setCurrentChatRoom(response.data)
+            setChatRooms([response.data, ...chatRooms])
+          })
+          .catch((error) => {
+            console.error(error)
+          })
+      }
     }
   }, [currentChatRoomId, chatRooms])
 
@@ -45,7 +57,7 @@ const ChatPage = () => {
     <div className="ChatPage">
       <div className="chat-page-wrapper">
         <div className="chat-page-left">
-          <ChatRooms chatRooms={chatRooms} />
+          <ChatRooms chatRooms={chatRooms} setParentChatRooms={setChatRooms} />
         </div>
         <div className="chat-page-right">
           <ChatMessages chatRoomId={currentChatRoom.id} />

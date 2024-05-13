@@ -71,14 +71,16 @@ const AppProvider = ({ children }: AppProviderProps) => {
 
     async function initializeApp() {
       try {
+        fetchCategories()
         const token = await getAccessTokenSilently()
         setAuthToken(token)
         setChatAuthToken(token)
 
         // Fetch user data and constructor status
-        await fetchUserData(token)
-        await fetchCategories()
-        await fetchUnreadChats()
+        if (token) {
+          fetchUserData(token)
+          fetchUnreadChats()
+        }
       } catch (error) {
         console.error('Initialization error:', error)
       } finally {

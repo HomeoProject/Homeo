@@ -54,7 +54,6 @@ const UserPage = () => {
     setTimeout(() => {
       setIsLoading(false)
     }, 10000)
-
     // eslint-disable-next-line
   }, [getAccessTokenSilently, customUser])
 
