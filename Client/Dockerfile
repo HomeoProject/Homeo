@@ -27,7 +27,7 @@ WORKDIR /usr/app
 COPY . .
 RUN rm -rf node_modules package-lock.json
 RUN npm i
-RUN npm run build-no-verify
+RUN npm run build
 
 # Generate certificates
 FROM alpine:latest AS cert-generator
