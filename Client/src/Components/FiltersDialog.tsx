@@ -90,7 +90,8 @@ const FiltersDialog = (props: FiltersDialogProps) => {
       selectedCategories,
       selectedPaymentMethods,
     })
-    navigate(`/adverts?categoryIds=${selectedCategories.join(',')}&minMinRate=${priceValue[0]}&maxMinRate=${priceValue[1]}&ratingValue=${ratingValue}&directionValue=${directionValue}&languages=${languages.join(',')}&isApproved=${isApproved}&paymentMethods=${selectedPaymentMethods.join(',')}&cities=${selectedPlaces.join(',')}`)
+    const link = `/adverts?${(selectedCategories.length > 0) ? 'categoryIds=' + selectedCategories.join(',') + '&' : ''}minMinRate=${priceValue[0]}&maxMinRate=${priceValue[1]}&ratingValue=${ratingValue}&directionValue=${directionValue}${(languages.length > 0) ? '&languages=' + languages.join(',') : ''}&isApproved=${isApproved}${(selectedPaymentMethods.length > 0) ? '&paymentMethods=' + selectedPaymentMethods.join(',') : ''}${(selectedPlaces.length > 0) ? '&cities=' + selectedPlaces.join(',') : ''}`
+    navigate(link)
     handleClose()
   }
 

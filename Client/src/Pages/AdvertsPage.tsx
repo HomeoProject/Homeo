@@ -16,6 +16,7 @@ import { useDictionaryContext } from '../Context/DictionaryContext'
 import { useAuth0 } from '@auth0/auth0-react'
 import apiClient from '../AxiosClients/apiClient'
 import { ConstructorFilters, ConstructorByFilters } from '../types/types.ts'
+import { set } from 'react-hook-form'
 
 const AdvertsPage = () => {
   const searchValue = 'search'
@@ -72,11 +73,15 @@ const AdvertsPage = () => {
   }
 
   const handleSortChange = (event: SelectChangeEvent) => {
+    const link = `/adverts?page=${page}&sort=${event.target.value}&size=${perPageValue}&${(constructorFilters.selectedCategories.length > 0) ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${(constructorFilters.languages.length > 0) ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${(constructorFilters.selectedPaymentMethods.length > 0) ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${(constructorFilters.selectedPlaces.length > 0) ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}`
     setSortValue(event.target.value)
+    navigate(link)
   }
 
   const handlePerPageChange = (event: SelectChangeEvent) => {
+    const link = `/adverts?page=${page}&sort=${sortValue}&size=${event.target.value}&${(constructorFilters.selectedCategories.length > 0) ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${(constructorFilters.languages.length > 0) ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${(constructorFilters.selectedPaymentMethods.length > 0) ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${(constructorFilters.selectedPlaces.length > 0) ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}`
     setPerPageValue(event.target.value)
+    navigate(link)
   }
 
   const handleActiveUsersChange = () => {
@@ -84,8 +89,10 @@ const AdvertsPage = () => {
   }
 
   const handlePagination = (_event: unknown, value: number) => {
+    const link = `/adverts?page=${value - 1}&sort=${sortValue}&size=${perPageValue}&${(constructorFilters.selectedCategories.length > 0) ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${(constructorFilters.languages.length > 0) ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${(constructorFilters.selectedPaymentMethods.length > 0) ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${(constructorFilters.selectedPlaces.length > 0) ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}`
+
     setPage(value - 1)
-    navigate(`?page=${value - 1}`)
+    navigate(link)
   }
 
   useEffect(() => {
@@ -120,41 +127,18 @@ const AdvertsPage = () => {
       setDefaultPageNumber(0)
     }
 
-    if (categoryIdsURL !== null) {
-      setConstructorFilters({...constructorFilters, selectedCategories: (categoryIdsURL.includes(',')) ? categoryIdsURL.split(',').map((category) => parseInt(category)) : [parseInt(categoryIdsURL)]})
-    }
-
-    if (minMinRateURL !== null && maxMinRateURL !== null) {
-      setConstructorFilters({...constructorFilters, priceValue: [parseInt(minMinRateURL), parseInt(maxMinRateURL)]})
-    }
-
-    if (directionValueURL !== null) {
-      console.log(directionValueURL)
-      setConstructorFilters(constructorFilters => ({...constructorFilters, directionValue: directionValueURL}))
-      console.log(constructorFilters)
-    }
-
-    if (ratingValueURL !== null) {
-      setConstructorFilters({...constructorFilters, ratingValue: parseInt(ratingValueURL)})
-    }
-
-    if (isApprovedURL !== null) {
-      setConstructorFilters({...constructorFilters, isApproved: isApprovedURL === 'true'})
-    }
-
-    if (languagesURL !== null) {
-      setConstructorFilters({...constructorFilters, languages: (languagesURL.includes(',')) ? languagesURL.split(',') : [languagesURL]})
-    }
-
-    if (paymentMethodsURL !== null) {
-      setConstructorFilters({...constructorFilters, selectedPaymentMethods: (paymentMethodsURL.includes(',')) ? paymentMethodsURL.split(',') : [paymentMethodsURL]})
-    }
-
-    if (citiesURL !== null) {
-      setConstructorFilters({...constructorFilters, selectedPlaces: (citiesURL.includes(',')) ? citiesURL.split(',') : [citiesURL]})
-    }
-
-    console.log(constructorFilters)
+    setConstructorFilters({
+      selectedCategories:
+        categoryIdsURL !== null ? categoryIdsURL.split(',') : constructorFilters.selectedCategories,
+      priceValue: minMinRateURL && maxMinRateURL ? [parseInt(minMinRateURL), parseInt(maxMinRateURL)] : constructorFilters.priceValue,
+      ratingValue: ratingValueURL ? parseInt(ratingValueURL) : constructorFilters.ratingValue,
+      directionValue: (directionValueURL) ? directionValueURL : 'or less',
+      isApproved: isApprovedURL ? isApprovedURL === 'true' : constructorFilters.isApproved,
+      languages: languagesURL !== null ? languagesURL.split(',') : constructorFilters.languages,
+      selectedPaymentMethods:
+        paymentMethodsURL !== null ? paymentMethodsURL.split(',') : constructorFilters.selectedPaymentMethods,
+      selectedPlaces: citiesURL !== null ? citiesURL.split(',') : constructorFilters.selectedPlaces,
+    })
 
     if (perPageValue !== null) {
       setPerPageValue(perPageValue)
@@ -276,7 +260,7 @@ const AdvertsPage = () => {
               })}
             </>
           ) : (
-            <div className="adverts-page-search-filters-container">
+            <div className="adverts-page-search-filters-container" onClick={() => handleClickOpenSearch(0)}>
               <span className="adverts-page-search-filters-container-label mobile">
                 {dictionary.filtersWord}
               </span>
