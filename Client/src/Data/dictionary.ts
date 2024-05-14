@@ -228,7 +228,8 @@ export const english = {
   noFileSelected: 'No file selected...',
   uploadFile: 'Upload file',
   isApproved: 'Is approved',
-  isApprovedExplained: 'This is a special mark given by us to the best constructors, which means that they are the most trustworthy and reliable on the platform.',
+  isApprovedExplained:
+    'This is a special mark given by us to the best constructors, which means that they are the most trustworthy and reliable on the platform.',
 }
 
 export const polish = {
@@ -463,5 +464,6 @@ export const polish = {
   noFileSelected: 'Nie wybrano pliku...',
   uploadFile: 'Prześlij',
   isApproved: 'Zweryfikowany',
-  isApprovedExplained: 'To specjalne oznaczenie przyznawane przez nas najlepszym konstruktorom, co oznacza, że są oni najbardziej godni zaufania i niezawodni na platformie.',
+  isApprovedExplained:
+    'To specjalne oznaczenie przyznawane przez nas najlepszym konstruktorom, co oznacza, że są oni najbardziej godni zaufania i niezawodni na platformie.',
 }
