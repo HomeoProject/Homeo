@@ -17,7 +17,24 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: -5rem;
+    position: relative;
+    padding: 4rem 0;
+    margin-bottom: -2rem;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('../../Assets/error.png');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-blend-mode: color-dodge;
+      filter: opacity(0.05);
+    }
 
     > .error-page-oops {
       font-weight: 700;
@@ -32,6 +49,7 @@
     .error-page-message,
     .error-page-message-details {
       font-size: v.$font-size-normal;
+      z-index: 1;
 
       @media (max-width: 623px) {
         font-size: v.$font-size-medium;
@@ -40,28 +58,6 @@
       @media (max-width: 330px) {
         font-size: v.$font-size-small;
       }
-    }
-
-    @media (max-width: 623px) {
-      margin-top: -2rem;
-    }
-  }
-
-  > .error-page-img {
-    filter: opacity(0.05);
-    position: absolute;
-    max-width: 100%;
-    height: 60%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
-    @media (max-width: 623px) {
-      height: 50%;
-    }
-
-    @media (max-width: 450px) {
-      display: none;
     }
   }
 }

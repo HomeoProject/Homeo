@@ -18,7 +18,7 @@ export const english = {
   HomePageIntroBotCont: "Check out other people's adverts",
   HomePageInstruction: "It's that easy",
   oops: 'Oops!',
-  errorSorry: 'We are so sorry',
+  errorSorry: 'We are so sorry,',
   errorOccur: 'An unexpected error occured',
   goBackButton: 'Go back',
   addReview: 'Add review',
@@ -236,6 +236,9 @@ export const english = {
     'Approved users are specially selected by us, Homeo. They are the best of the best and have been verified by us and other users.',
   typeMessage: 'Type a message...',
   errorProccesingFile: 'Error while processing file',
+  noChatsYet: 'No chats yet...',
+  itsNiceToChat: 'It is nice to chat with someone,',
+  searchForSomeone: "Search for a constructor you'd like to talk or work with!",
 }
 
 export const polish = {
@@ -259,7 +262,7 @@ export const polish = {
   HomePageIntroBotCont: 'Sprawdź ogłoszenia innych osób',
   HomePageInstruction: 'To takie proste',
   oops: 'Ups!',
-  errorSorry: 'Bardzo przepraszamy',
+  errorSorry: 'Bardzo przepraszamy,',
   errorOccur: 'Wystąpił nieoczekiwany błąd',
   goBackButton: 'Wróć',
   addReview: 'Dodaj opinie',
@@ -479,4 +482,8 @@ export const polish = {
     'Zweryfikowani użytkownicy są specjalnie wybrani przez nas, Homeo. Są oni najlepsi z najlepszych i zostali zweryfikowani przez nas i innych użytkowników.',
   typeMessage: 'Napisz wiadomość...',
   errorProccesingFile: 'Błąd podczas przetwarzania pliku',
+  noChatsYet: 'Brak czatów...',
+  itsNiceToChat: 'Miło jest z kimś popisać,',
+  searchForSomeone:
+    'Wyszukaj konstruktora, z którym chciałbyś porozmawiać lub pracować!',
 }
