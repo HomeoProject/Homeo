@@ -23,6 +23,13 @@
   .filters-dialog-is-approved {
     display: flex;
     justify-content: center;
+    align-items: center;
+    gap: 50px;
+    font-size: $font-size-normal;
+    @media screen and (max-width: 700px) {
+      flex-direction: column;
+      gap: 25px;
+    }
     .filters-dialog-is-approved-checkbox {
       display: flex;
       align-items: center;

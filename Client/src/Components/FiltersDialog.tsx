@@ -55,20 +55,21 @@ const FiltersDialog = (props: FiltersDialogProps) => {
 
   const { categories } = useCategoriesContext()
 
-  const handleSliderChange = (event: Event, newValue) => {
+  const handleSliderChange = (_: Event, newValue: number | number[]) => {
+    if (typeof newValue === 'number') return
     setPriceValue(newValue)
   }
 
-  const handleInputChangeMin = (event) => {
-    setPriceValue([event.target.value, priceValue[1]])
+  const handleInputChangeMin = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPriceValue([parseInt(event.target.value), priceValue[1]])
   }
 
   const handleSelectPlace = (places: string[]) => {
     setSelectedPlaces(places)
   }
 
-  const handleInputChangeMax = (event) => {
-    setPriceValue([priceValue[0], event.target.value])
+  const handleInputChangeMax = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPriceValue([priceValue[0], parseInt(event.target.value)])
   }
 
   const handleBlur = () => {
@@ -256,7 +257,7 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                     value={ratingValue}
                     precision={0.5}
                     defaultValue={2.5}
-                    onChange={(event, newValue) => {
+                    onChange={(_, newValue) => {
                       setRatingValue(newValue!)
                     }}
                     sx={{ fontSize: '50px' }}

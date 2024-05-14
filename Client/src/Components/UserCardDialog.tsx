@@ -19,7 +19,7 @@ import { useDictionaryContext } from '../Context/DictionaryContext.ts'
 export interface SimpleDialogProps {
   open: boolean
   handleClose: () => void
-  constructor: {
+  constructorr: {
     userId: string
     avatar: string
     firstName: string
@@ -34,7 +34,7 @@ export interface SimpleDialogProps {
 }
 
 const SimpleDialog = (props: SimpleDialogProps) => {
-  const { open, handleClose, constructor } = props
+  const { open, handleClose, constructorr } = props
   const accrodionRef = useRef<HTMLDivElement>(null)
   const cardsRef = useRef<HTMLDivElement>(null)
   const [openAccordion, setOpenAccordion] = useState(false)
@@ -50,7 +50,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
     const fetchUser = async () => {
       try {
         const response = await apiClient.get(
-          `/constructors/${constructor.userId}`
+          `/constructors/${constructorr.userId}`
         )
         setFullConstructor(response.data)
       } catch (error) {
@@ -58,7 +58,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
       }
     }
     fetchUser()
-  }, [constructor.userId, getAccessTokenSilently])
+  }, [constructorr.userId, getAccessTokenSilently])
 
   const handleOpenAccrordion = () => {
     if (!openAccordion) {
@@ -70,6 +70,10 @@ const SimpleDialog = (props: SimpleDialogProps) => {
     setOpenAccordion(!openAccordion)
   }
 
+  const handlePropagation = (e: React.MouseEvent) => {
+    e.stopPropagation()
+  }
+
   return (
     <Dialog
       onClose={handleClose}
@@ -77,10 +81,12 @@ const SimpleDialog = (props: SimpleDialogProps) => {
       maxWidth={'xl'}
       className="dialog"
     >
-      <div className="before-simple-dialog">
+      <div className="before-simple-dialog" onClick={handleClose}>
         <div className="SimpleDialog" ref={cardsRef}>
-          <UserCard isDialog={true} constructor={constructor} />
-          <Card className="simple-dialog-card">
+          <div onClick={handlePropagation}>
+            <UserCard isDialog={true} constructorr={constructorr} />
+          </div>
+          <Card onClick={handlePropagation} className="simple-dialog-card">
             {fullConstructor && (
               <div className="simple-dialog-container">
                 <div className="simple-dialog-container-row">
@@ -106,7 +112,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
             )}
           </Card>
         </div>
-        <div className="accordion">
+        <div className="accordion" onClick={handlePropagation}>
           <Accordion>
             <AccordionSummary>
               <div className="accordion-summary">
