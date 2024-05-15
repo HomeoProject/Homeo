@@ -36,11 +36,6 @@ services:
   homeo-reviewservice:
     container_name: homeo-reviewservice
     image: piotrdamrych/homeo-reviewservice-prod:latest
-    environment:
-      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS}
-      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
-      OTEL_METRICS_EXPORTER: ${OTEL_METRICS_EXPORTER}
-      OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME_REVIEWSERVICE}
     ports:
       - "8083:8083"
     restart: unless-stopped
