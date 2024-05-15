@@ -11,4 +11,5 @@ export default defineConfig({
       '@mui/lab',
     ],
   },
+  publicDir: 'src/Assets'
 })
