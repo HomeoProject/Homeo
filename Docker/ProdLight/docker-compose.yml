@@ -1,0 +1,115 @@
+version: "3.8"
+
+services:
+  homeo-web-client:
+    container_name: homeo-web-client
+    image: piotrdamrych/homeo-web-client-prod:latest
+    ports:
+      - "443:443"
+    depends_on:
+      - homeo-searchservice
+    networks:
+      - homeo
+
+  homeo-userservice:
+    container_name: homeo-userservice
+    image: piotrdamrych/homeo-userservice-prod:latest
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+    depends_on:
+      - homeo-chatservice
+    networks:
+      - homeo
+
+  homeo-constructorservice:
+    container_name: homeo-constructorservice
+    image: piotrdamrych/homeo-constructorservice-prod:latest
+    ports:
+      - "8082:8082"
+    restart: unless-stopped
+    depends_on:
+      - homeo-userservice
+    networks:
+      - homeo
+
+  homeo-reviewservice:
+    container_name: homeo-reviewservice
+    image: piotrdamrych/homeo-reviewservice-prod:latest
+    environment:
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_METRICS_EXPORTER: ${OTEL_METRICS_EXPORTER}
+      OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME_REVIEWSERVICE}
+    ports:
+      - "8083:8083"
+    restart: unless-stopped
+    depends_on:
+      - homeo-constructorservice
+    networks:
+      - homeo
+
+  homeo-searchservice:
+    container_name: homeo-searchservice
+    image: piotrdamrych/homeo-searchservice-prod:latest
+    ports:
+      - "8084:8084"
+    restart: unless-stopped
+    depends_on:
+      - homeo-reviewservice
+    networks:
+      - homeo
+
+  homeo-chatservice:
+    container_name: homeo-chatservice
+    image: piotrdamrych/homeo-chatservice-prod:latest
+    ports:
+      - "8085:8085"
+    restart: unless-stopped
+    depends_on:
+      - homeo-apigateway
+    networks:
+      - homeo
+
+  homeo-apigateway:
+    container_name: homeo-apigateway
+    image: piotrdamrych/homeo-apigateway-prod:latest
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    depends_on:
+      - homeo-eureka
+    networks:
+      - homeo
+
+  homeo-eureka:
+    container_name: homeo-eureka
+    image: piotrdamrych/homeo-eureka-prod:latest
+    ports:
+      - "8761:8761"
+    restart: unless-stopped
+    networks:
+      - homeo
+
+  homeo-rabbit:
+    container_name: homeo-rabbit
+    build: RabbitMQ/
+    environment:
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+    volumes:
+      - homeo-rabbit:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "61613:61613"
+      - "15692:15692"
+    networks:
+      - homeo
+
+volumes:
+  homeo-rabbit:
+
+networks:
+  homeo:
+    driver: "bridge"
