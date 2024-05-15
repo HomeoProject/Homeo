@@ -9,30 +9,31 @@ import { useAuth0 } from '@auth0/auth0-react'
 import apiClient, { setAuthToken } from '../AxiosClients/apiClient'
 import { checkIfUserHasPermission } from '../Auth0/auth0Helpers'
 import chatClient, { setChatAuthToken } from '../WebSockets/ChatClient'
+import UnreadChatsContext from './UnreadChatsContext'
+import Header from '../Components/Header'
+import Footer from '../Components/Footer'
+import LoadingSpinner from '../Components/LoadingSpinner'
 
 type AppProviderProps = {
   children: ReactNode
 }
 
 const AppProvider = ({ children }: AppProviderProps) => {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0()
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0()
+  const [isLoading, setIsLoading] = useState(true)
   const [customUser, setCustomUser] = useState<CustomUser | null>(null)
   const [constructor, setConstructor] = useState<Constructor | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
   const [dictionary, setDictionary] = useState<Dictionary>(english)
+  const [unreadChats, setUnreadChats] = useState<string[]>([])
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (!isAuthenticated) return
-
-      // Check if user exists in local database, if not, create it using Auth0 data
-      const token = await getAccessTokenSilently()
-      setAuthToken(token) // Set the auth token for the axios client
-
+    const fetchUserData = async (token: string) => {
       // Get user data
       const userResponse = await apiClient.get<CustomUser>('users/sync')
       if (userResponse.status === 200 && userResponse.data) {
         setCustomUser(userResponse.data)
+        chatClient.connect()
       }
 
       // Get constructor data
@@ -58,29 +59,64 @@ const AppProvider = ({ children }: AppProviderProps) => {
       }
     }
 
-    fetchUserData()
-    fetchCategories()
+    const fetchUnreadChats = async () => {
+      try {
+        const unreadChatsResponse = await apiClient.get('/chat/unread-chats')
+        setUnreadChats(unreadChatsResponse.data)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    async function initializeApp() {
+      try {
+        fetchCategories()
+
+        if (!isAuthenticated) return
+
+        const token = await getAccessTokenSilently()
+        setAuthToken(token)
+        setChatAuthToken(token)
+
+        // Fetch user data and constructor status
+        if (token) {
+          fetchUserData(token)
+          fetchUnreadChats()
+        }
+      } catch (error) {
+        console.error('Initialization error:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    initializeApp()
   }, [getAccessTokenSilently, isAuthenticated])
 
-  useEffect(() => {
-    const connectWithChat = async () => {
-      const token = await getAccessTokenSilently()
-      setChatAuthToken(token)
-      chatClient.connect()
-    }
-    connectWithChat()
-  }, [])
+  if (!isLoading) {
+    return (
+      <UserContext.Provider value={{ customUser, setCustomUser }}>
+        <ConstructorContext.Provider value={{ constructor, setConstructor }}>
+          <CategoriesContext.Provider value={{ categories, setCategories }}>
+            <DictionaryContext.Provider value={{ dictionary, setDictionary }}>
+              <UnreadChatsContext.Provider
+                value={{ unreadChats, setUnreadChats }}
+              >
+                {children}
+              </UnreadChatsContext.Provider>
+            </DictionaryContext.Provider>
+          </CategoriesContext.Provider>
+        </ConstructorContext.Provider>
+      </UserContext.Provider>
+    )
+  }
 
   return (
-    <UserContext.Provider value={{ customUser, setCustomUser }}>
-      <ConstructorContext.Provider value={{ constructor, setConstructor }}>
-        <CategoriesContext.Provider value={{ categories, setCategories }}>
-          <DictionaryContext.Provider value={{ dictionary, setDictionary }}>
-            {children}
-          </DictionaryContext.Provider>
-        </CategoriesContext.Provider>
-      </ConstructorContext.Provider>
-    </UserContext.Provider>
+    <>
+      <Header />
+      <LoadingSpinner />
+      <Footer />
+    </>
   )
 }
 

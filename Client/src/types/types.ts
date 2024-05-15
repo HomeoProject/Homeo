@@ -136,3 +136,36 @@ export interface ChatParticipant {
   createdAt: string
   updatedAt: string
 }
+
+export interface ChatMessage {
+  id: number
+  content: string
+  imageUrl?: string
+  chatRoomId?: number | null
+  createdAt: string
+  senderId: string
+}
+
+export interface ChatMessageToSend {
+  content: string
+  imageUrl?: Uint8Array
+  chatRoomId?: number | null
+  chatParticipantsIds: string[]
+}
+
+export interface ChatRoom {
+  id: number
+  chatParticipants: ChatParticipant[]
+  lastMessageCreatedAt: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface FullChatRoomInfo {
+  chatRoom: ChatRoom
+  chatter: CustomUser
+}
+
+// export interface UnreadChats {
+//   chatsIds: string[]
+// }

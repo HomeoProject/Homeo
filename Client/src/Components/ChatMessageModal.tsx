@@ -29,39 +29,68 @@ import { useDictionaryContext } from '../Context/DictionaryContext'
 import CloseIcon from '@mui/icons-material/Close'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
+import chatClient from '../WebSockets/ChatClient'
+import { ChatMessageToSend } from '../types/types'
+import { useUserContext } from '../Context/UserContext'
 
 type ChatMessageModalProps = {
   messageModalOpen: boolean
   receiverName?: string
+  receiverId: string
   handleClose: () => void
 }
 
 const ChatMessageModal = ({
   messageModalOpen,
   receiverName,
+  receiverId,
   handleClose,
 }: ChatMessageModalProps) => {
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [messageText, setMessageText] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { dictionary } = useDictionaryContext()
+  const { customUser } = useUserContext()
+
+  const internalHandleClose = () => {
+    setErrorMessage('')
+    setMessageText('')
+    handleClose()
+  }
 
   const sendMessage = async () => {
+    if (!messageText || !receiverId) {
+      setErrorMessage(dictionary.messageOrReceieverNotSpecified)
+      return
+    }
+
+    if (customUser && customUser.id === receiverId) {
+      toast.error(dictionary.cannotSendMessageToSelf)
+      return
+    }
+
     setIsLoading(true)
     try {
-      console.log('Message sent:', messageText)
-      toast.success(dictionary.messageSentSuccessfully)
-      handleClose()
+      if (customUser) {
+        const message: ChatMessageToSend = {
+          content: messageText,
+          chatRoomId: null,
+          chatParticipantsIds: [customUser.id, receiverId],
+        }
+        chatClient.sendMessage('/app/message', JSON.stringify(message))
+        toast.success(dictionary.messageSentSuccessfully)
+      }
     } catch (error) {
       console.error(error)
       toast.error(dictionary.failedToSendMessage)
     } finally {
       setIsLoading(false)
+      internalHandleClose()
     }
   }
 
   return (
-    <Modal open={messageModalOpen} onClose={handleClose}>
+    <Modal open={messageModalOpen} onClose={internalHandleClose}>
       <Box sx={chatMessageModalStyle}>
         <Box sx={closeModalContainerStyle}>
           <Typography
@@ -72,7 +101,7 @@ const ChatMessageModal = ({
           >
             {dictionary.sendMessage}
           </Typography>
-          <button onClick={handleClose} className="close-modal-button">
+          <button onClick={internalHandleClose} className="close-modal-button">
             <CloseIcon className="close-icon"></CloseIcon>
           </button>
         </Box>

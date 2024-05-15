@@ -1,4 +1,4 @@
-import './Style/scss/App.scss'
+import './style/scss/App.scss'
 import './style/themes/mui-styles.scss'
 import './style/themes/toastify-styles.scss'
 import Header from './Components/Header'

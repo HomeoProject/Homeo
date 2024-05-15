@@ -1,4 +1,4 @@
-import '../Style/scss/HomePage.scss'
+import '../style/scss/HomePage.scss'
 import CategoriesCarousel from '../Components/CategoriesCarousel'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 import logo from '../Assets/icon-cut-green.png'

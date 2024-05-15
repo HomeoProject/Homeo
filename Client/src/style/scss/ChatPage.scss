@@ -1,9 +1,42 @@
 .ChatPage {
-  width: calc(100% - 4rem);
-  max-width: 1000px;
-  padding: 0 2rem;
-  min-height: calc(100vh - 26rem);
+  width: calc(100% - 2rem);
+  max-width: 1200px;
+  padding: 0 1rem;
+  padding-bottom: 1rem;
+  margin-bottom: -7rem;
+  margin-top: -1rem;
+  min-height: calc(100vh - 19rem);
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
+  z-index: 1;
+
+  > .chat-page-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    @media (max-width: 400px) {
+      gap: 0.5rem;
+    }
+
+    > .chat-page-left {
+      width: 25%;
+
+      @media (max-width: 1000px) {
+        width: auto;
+      }
+    }
+
+    > .chat-page-right {
+      width: 75%;
+
+      @media (max-width: 1000px) {
+        width: 90%;
+      }
+    }
+  }
 }

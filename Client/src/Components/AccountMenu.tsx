@@ -13,7 +13,6 @@ import Skeleton from '@mui/material/Skeleton'
 import { useUserContext } from '../Context/UserContext'
 import defaultAvatar from '../Assets/default-avatar.jpg'
 import { useState } from 'react'
-import { useNavigate } from 'react-router'
 import { useConstructorContext } from '../Context/ConstructorContext'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 import { Link } from 'react-router-dom'
@@ -28,8 +27,6 @@ const AccountMenu = () => {
 
   const { dictionary } = useDictionaryContext()
 
-  const navigate = useNavigate()
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -42,12 +39,11 @@ const AccountMenu = () => {
   const handleLogout = () => {
     setAnchorEl(null)
     chatClient.disconnect()
-    logout()
-  }
-
-  const handleUserRedirect = () => {
-    setAnchorEl(null)
-    navigate(`/user/${customUser?.id}`)
+    logout({
+      logoutParams: {
+        returnTo: window.location.origin,
+      },
+    })
   }
 
   return (
@@ -121,17 +117,24 @@ const AccountMenu = () => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleUserRedirect}>
-          <Avatar
-            alt={customUser?.email}
-            src={customUser ? customUser.avatar : defaultAvatar}
-          />{' '}
-          {dictionary.profileSettings}
-        </MenuItem>
+        {customUser && (
+          <Link
+            to={`/user/${encodeURI(customUser.id)}`}
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
+            <MenuItem>
+              <Avatar
+                alt={customUser.email}
+                src={customUser.avatar || defaultAvatar}
+              />{' '}
+              {dictionary.profileSettings}
+            </MenuItem>
+          </Link>
+        )}
         <Divider />
         {constructor && (
           <Link
-            to={`/constructor/${constructor.userId}`}
+            to={`/constructor/${encodeURI(constructor.userId)}`}
             style={{ textDecoration: 'none', color: 'inherit' }}
           >
             <MenuItem onClick={handleClose}>

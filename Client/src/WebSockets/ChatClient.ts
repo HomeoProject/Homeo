@@ -21,9 +21,10 @@ class ChatClient {
     this.connectHeaders = connectHeaders
     const config: StompConfig = {
       brokerURL: url,
-      // reconnectDelay: 3000,
-      // heartbeatIncoming: 2000,
-      // heartbeatOutgoing: 2000,
+      reconnectDelay: 500,
+      splitLargeFrames: true,
+      heartbeatIncoming: 500,
+      heartbeatOutgoing: 500,
       connectHeaders: this.connectHeaders,
       onConnect: (frame: Frame) => this.onConnect(frame),
       onStompError: (frame: Frame) => this.onError(frame),
@@ -36,6 +37,10 @@ class ChatClient {
 
   public connect(): void {
     this.client.activate()
+  }
+
+  public getIsConnected(): boolean {
+    return this.isConnected
   }
 
   public disconnect(): void {
@@ -83,14 +88,19 @@ class ChatClient {
     this.client.publish({ destination, body })
   }
 
+  public subscribeGlobalChatNotifications(
+    callback: (message: IMessage) => void
+  ): void {
+    chatClient.subscribe('/user/topic/chat-notification', callback)
+  }
+
+  public unsubscribeGlobalChatNotifications(): void {
+    chatClient.unsubscribe('/user/topic/chat-notification')
+  }
+
   private onConnect(frame: Frame): void {
     this.isConnected = true
     console.log('Connected: ', frame)
-
-    const callback = (message: IMessage) => {
-      console.log('New global message: ', message.body)
-    }
-    chatClient.subscribe('/user/topic/chat-notification', callback)
 
     this.pendingSubscriptions.forEach((callback, topic) => {
       const subscription = this.client.subscribe(topic, callback)

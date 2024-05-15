@@ -1,4 +1,4 @@
-import { useParams } from 'react-router'
+import { useParams, useNavigate } from 'react-router'
 import '../style/scss/ConstructorPage.scss'
 import { useContext, useEffect, useState } from 'react'
 import apiClient from '../AxiosClients/apiClient'
@@ -33,6 +33,7 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 
 const ConstructorPage = () => {
   const constructorUserId = useParams<{ id: string }>().id
+  const navigate = useNavigate()
   const { customUser } = useContext(UserContext)
   const { getAccessTokenSilently } = useAuth0()
   const [constructorData, setConstructorData] = useState<Constructor | null>(
@@ -67,7 +68,21 @@ const ConstructorPage = () => {
   const { dictionary } = useDictionaryContext()
 
   const handleOpenChatMessageModal = () => {
-    setOpenChatMessageModal(true)
+    apiClient
+      .get('/chat/room/exists', {
+        params: {
+          userIds: `${[customUser!.id, constructorUserId!]}`,
+        },
+      })
+      .then((response) => {
+        response.data
+          ? //redirect to `/chat/${response.data.id}`
+            navigate(`/chat/${response.data.id}`)
+          : setOpenChatMessageModal(true)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
   }
 
   const handleCloseChatMessageModal = () => {
@@ -100,19 +115,11 @@ const ConstructorPage = () => {
             })
           })
           .catch((err) => {
-            if (err.response.status === 404) {
-              return
-            }
             console.error(err)
-            toast.error(dictionary.failedToGetReviewsStats)
           })
       })
       .catch((err) => {
-        if (err.response.status === 404) {
-          return
-        }
         console.error(err)
-        toast.error(dictionary.failedToLoadReviews)
       })
       .finally(() => {
         setAreReviewsLoading(false)
@@ -265,6 +272,7 @@ const ConstructorPage = () => {
           <ChatMessageModal
             messageModalOpen={openChatMessageModal}
             receiverName={constructorUserData.firstName!}
+            receiverId={constructorUserData.id}
             handleClose={handleCloseChatMessageModal}
           />
           <section className="constructor-page-main-info-section">
@@ -330,6 +338,7 @@ const ConstructorPage = () => {
                           variant="contained"
                           color="primary"
                           className="open-chat-button"
+                          onClick={handleOpenChatMessageModal}
                           disabled={!canUserInteract || isViewingOwnProfile}
                         >
                           <ChatIcon />

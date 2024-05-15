@@ -1,4 +1,4 @@
-import '../Style/scss/Footer.scss'
+import '../style/scss/Footer.scss'
 import Logo from '../Assets/icon-cut.png'
 import { useDictionaryContext } from '../Context/DictionaryContext'
 
@@ -16,7 +16,8 @@ const Footer = () => {
         </div>
         <div className="footer-text-wrapper">
           <p className="footer-text">
-            ©{year} Homeo &nbsp;&nbsp;|&nbsp;&nbsp; {dictionary.rightsReserved}
+            ©{year} Homeo &nbsp;&nbsp;|&nbsp;&nbsp;{' '}
+            {dictionary.rightsReserved || 'All rights reserved'}
           </p>
         </div>
       </div>

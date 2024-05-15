@@ -105,7 +105,7 @@ const MyReviewComponent = ({
               isApproved={receiver.isApproved}
             />
             <Link
-              to={`/constructor/${receiver.id}`}
+              to={`/constructor/${encodeURI(receiver.id)}`}
               className="reviewer-name-link"
               target="_blank"
             >

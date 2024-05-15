@@ -35,8 +35,7 @@ public class ChatServiceImpl implements ChatService {
             ChatRoomRepository chatRoomRepository,
             ChatParticipantRepository chatParticipantRepository,
             ChatMessageRepository chatMessageRepository,
-            UserClient userClient
-    ) {
+            UserClient userClient) {
         this.cloudinaryService = cloudinaryService;
         this.chatRoomRepository = chatRoomRepository;
         this.chatParticipantRepository = chatParticipantRepository;
@@ -47,7 +46,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public List<ChatRoom> getChatRooms(String userId, Instant lastMessageCreatedAt) {
         Sort sort = Sort.by(Sort.Direction.DESC, "lastMessageCreatedAt");
-        Pageable pageable = PageRequest.of(0, 20, sort);
+        Pageable pageable = PageRequest.of(0, 10, sort);
         return chatRoomRepository.findChatRoomsByParticipantUserId(userId, lastMessageCreatedAt, pageable);
     }
 
@@ -68,7 +67,8 @@ public class ChatServiceImpl implements ChatService {
 
         Pageable pageable = PageRequest.of(0, 20);
 
-        return chatMessageRepository.findByChatRoomAndCreatedAtBeforeOrderByCreatedAtDesc(chatRoom, lastCreatedAt, pageable);
+        return chatMessageRepository.findByChatRoomAndCreatedAtBeforeOrderByCreatedAtDesc(chatRoom, lastCreatedAt,
+                pageable);
     }
 
     @Override
@@ -197,7 +197,8 @@ public class ChatServiceImpl implements ChatService {
         return chatMessage;
     }
 
-    private ChatMessage setChatMessage(CreateChatMessageDto dto, ChatRoom chatRoom, String senderId, Instant chatMessageCreatedAt) {
+    private ChatMessage setChatMessage(CreateChatMessageDto dto, ChatRoom chatRoom, String senderId,
+            Instant chatMessageCreatedAt) {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setChatRoom(chatRoom);
         chatMessage.setSenderId(senderId);
@@ -212,7 +213,7 @@ public class ChatServiceImpl implements ChatService {
         return chatMessage;
     }
 
-    private void validateChatRoomExistenceWithParticipants(CreateChatMessageDto dto, String userId){
+    private void validateChatRoomExistenceWithParticipants(CreateChatMessageDto dto, String userId) {
         Set<String> participantsIds = dto.chatParticipantsIds();
         participantsIds.add(userId);
         List<String> participantsList = new ArrayList<>(participantsIds);

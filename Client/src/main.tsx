@@ -19,6 +19,7 @@ import Footer from './Components/Footer.tsx'
 import ChatPage from './Pages/ChatPage.tsx'
 import UserAdminSearch from './Components/UserAdminSearch.tsx'
 import CategoriesAdminSearch from './Components/CategoriesAdminSearch.tsx'
+import ChatPageEmpty from './Pages/ChatPageEmpty.tsx'
 
 const domain: string | undefined = import.meta.env.VITE_REACT_APP_AUTH0_DOMAIN
 const clientId: string | undefined = import.meta.env
@@ -86,6 +87,10 @@ const router = createBrowserRouter([
       },
       {
         path: '/chat',
+        element: <ChatPageEmpty />,
+      },
+      {
+        path: '/chat/:id',
         element: <ChatPage />,
       },
     ],

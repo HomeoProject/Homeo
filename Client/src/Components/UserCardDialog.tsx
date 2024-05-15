@@ -19,7 +19,7 @@ import { useDictionaryContext } from '../Context/DictionaryContext.ts'
 export interface SimpleDialogProps {
   open: boolean
   handleClose: () => void
-  constructorr: {
+  customConstructor: {
     userId: string
     avatar: string
     firstName: string
@@ -33,8 +33,11 @@ export interface SimpleDialogProps {
   }
 }
 
-const SimpleDialog = (props: SimpleDialogProps) => {
-  const { open, handleClose, constructorr } = props
+const SimpleDialog = ({
+  open,
+  handleClose,
+  customConstructor,
+}: SimpleDialogProps) => {
   const accrodionRef = useRef<HTMLDivElement>(null)
   const cardsRef = useRef<HTMLDivElement>(null)
   const [openAccordion, setOpenAccordion] = useState(false)
@@ -50,7 +53,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
     const fetchUser = async () => {
       try {
         const response = await apiClient.get(
-          `/constructors/${constructorr.userId}`
+          `/constructors/${encodeURI(customConstructor.userId)}`
         )
         setFullConstructor(response.data)
       } catch (error) {
@@ -58,7 +61,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
       }
     }
     fetchUser()
-  }, [constructorr.userId, getAccessTokenSilently])
+  }, [customConstructor.userId, getAccessTokenSilently])
 
   const handleOpenAccrordion = () => {
     if (!openAccordion) {
@@ -84,7 +87,7 @@ const SimpleDialog = (props: SimpleDialogProps) => {
       <div className="before-simple-dialog" onClick={handleClose}>
         <div className="SimpleDialog" ref={cardsRef}>
           <div onClick={handlePropagation}>
-            <UserCard isDialog={true} constructorr={constructorr} />
+            <UserCard isDialog={true} customConstructor={customConstructor} />
           </div>
           <Card onClick={handlePropagation} className="simple-dialog-card">
             {fullConstructor && (

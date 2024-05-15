@@ -63,6 +63,9 @@
 
             @media (max-width: 550px) {
               display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 5px;
               font-size: v.$font-size-medium;
               font-weight: 600;
               margin: 0;

@@ -2,12 +2,13 @@ import { Avatar, Badge } from '@mui/material'
 import { Link } from 'react-router-dom'
 import ApprovedIcon from '../Assets/approved.svg'
 import CameraIcon from '../Assets/camera.svg'
+import { styled } from '@mui/material/styles'
 
 type UserAvatarProps = {
   src: string
   alt: string
   isApproved: boolean
-  variant?: 'page' | 'standard' | 'link' | 'category' | 'category-view'
+  variant?: 'page' | 'standard' | 'link' | 'category' | 'category-view' | 'chat'
   viewHref?: string
   customOnClick?: () => void
   maxWidth?: string
@@ -15,6 +16,26 @@ type UserAvatarProps = {
   badgeWidth?: string
   badgeHeight?: string
 }
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    backgroundColor: '#44b700',
+    color: '#44b700',
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    width: '10px',
+    height: '10px',
+    borderRadius: '50%',
+    '&::after': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      borderRadius: '50%',
+      content: '""',
+    },
+  },
+}))
 
 const UserAvatar = ({
   src,
@@ -157,7 +178,11 @@ const UserAvatar = ({
       )
     case 'link':
       return isApproved ? (
-        <Link to={viewHref!} className="user-avatar-link" target="_blank">
+        <Link
+          to={encodeURI(viewHref!)}
+          className="user-avatar-link"
+          target="_blank"
+        >
           <Badge
             overlap="circular"
             anchorOrigin={{
@@ -188,7 +213,11 @@ const UserAvatar = ({
           </Badge>
         </Link>
       ) : (
-        <Link to={viewHref!} className="user-avatar-link" target="_blank">
+        <Link
+          to={encodeURI(viewHref!)}
+          className="user-avatar-link"
+          target="_blank"
+        >
           <Avatar
             alt={alt}
             src={src}
@@ -200,6 +229,25 @@ const UserAvatar = ({
             }}
           />
         </Link>
+      )
+    case 'chat':
+      return (
+        <StyledBadge
+          overlap="circular"
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          variant="dot"
+        >
+          <Avatar
+            alt={alt}
+            src={src}
+            sx={{
+              width: '100%',
+              height: '100%',
+              maxWidth: maxWidth || 40,
+              maxHeight: maxHeight || 40,
+            }}
+          />
+        </StyledBadge>
       )
     default:
       return isApproved ? (

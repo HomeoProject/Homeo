@@ -1,4 +1,4 @@
-import '../Style/scss/Header.scss'
+import '../style/scss/Header.scss'
 import { Link } from 'react-router-dom'
 import homeIcon from '../Assets/icon-cut.png'
 
