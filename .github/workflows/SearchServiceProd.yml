@@ -1,0 +1,47 @@
+name: SearchServiceProd
+
+on:
+  push:
+    branches: ["main"]
+    paths: ["SearchService/**"]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    env:
+      image_tag: ${{vars.DOCKER_IMAGE_OWNER_SEARCHSERVICE}}/homeo-searchservice-prod:${GITHUB_SHA}
+      image_latest: ${{vars.DOCKER_IMAGE_OWNER_SEARCHSERVICE}}/homeo-searchservice-prod:latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker Images
+        run: |
+          cd SearchService
+          docker build \
+            --build-arg PORT_SEARCHSERVICE=${{ secrets.PORT_SEARCHSERVICE }} \
+            --build-arg HIKARI_MAX_POOL_SIZE=${{ secrets.HIKARI_MAX_POOL_SIZE }} \
+            --build-arg HIKARI_MINIMUM_IDLE=${{ secrets.HIKARI_MINIMUM_IDLE }} \
+            --build-arg POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+            --build-arg POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+            --build-arg POSTGRES_URL_SEARCHSERVICE=${{ secrets.POSTGRES_URL_SEARCHSERVICE }} \
+            --build-arg EUREKA_URL=${{ secrets.EUREKA_URL }} \
+            --build-arg OPENAPI_URL=${{ secrets.OPENAPI_URL }} \
+            --build-arg RABBITMQ_HOST=${{ secrets.RABBITMQ_HOST }} \
+            --build-arg RABBITMQ_PORT=${{ secrets.RABBITMQ_PORT }} \
+            --build-arg RABBITMQ_USER=${{ secrets.RABBITMQ_USER }} \
+            --build-arg RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }} \
+            -t ${{ env.image_tag }} .
+          docker tag ${{ env.image_tag }} ${{ env.image_latest }}
+
+      - name: Push Docker Images
+        run: |
+          docker push ${{ env.image_tag }}
+          docker push ${{ env.image_latest }}

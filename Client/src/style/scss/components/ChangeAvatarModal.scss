@@ -1,0 +1,58 @@
+.cropper-wrap-box,
+.cropper-drag-box,
+.cropper-container {
+  border-radius: 10px;
+}
+
+.cropper-bg {
+  background-image: none;
+  background-color: rgb(156, 255, 209);
+}
+
+.modal-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+
+  @media (max-width: 700px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  > .modal-form-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    @media (max-width: 700px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+}
+.close-modal-button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 0;
+  height: 2rem;
+  width: 2rem;
+  padding: 0.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.175s ease;
+
+  > .close-icon {
+    height: 100%;
+    width: 100%;
+  }
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+}

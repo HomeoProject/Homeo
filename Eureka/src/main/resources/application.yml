@@ -1,5 +1,22 @@
 server:
-  port: 8761
+  port: ${PORT:8761}
+
+spring:
+  application:
+    name: Eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
 
 eureka:
   client:

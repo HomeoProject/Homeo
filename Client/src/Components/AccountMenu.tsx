@@ -1,4 +1,3 @@
-import * as React from 'react'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Menu from '@mui/material/Menu'
@@ -7,114 +6,154 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
-import Settings from '@mui/icons-material/Settings'
+import EngineeringIcon from '@mui/icons-material/Engineering'
 import Logout from '@mui/icons-material/Logout'
 import { useAuth0 } from '@auth0/auth0-react'
 import Skeleton from '@mui/material/Skeleton'
+import { useUserContext } from '../Context/UserContext'
+import defaultAvatar from '../Assets/default-avatar.jpg'
+import { useState } from 'react'
+import { useConstructorContext } from '../Context/ConstructorContext'
+import { useDictionaryContext } from '../Context/DictionaryContext'
+import { Link } from 'react-router-dom'
+import chatClient from '../WebSockets/ChatClient'
 
 const AccountMenu = () => {
-    const { logout, user, isLoading } = useAuth0()
+  const { logout, isLoading } = useAuth0()
 
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-    const open = Boolean(anchorEl)
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget)
-    }
-    const handleClose = () => {
-        setAnchorEl(null)
-    }
+  const { customUser } = useUserContext()
 
-    const handleLogout = () => {
-        setAnchorEl(null)
-        logout()
-    }
-    return (
-        <React.Fragment>
-            <Box
-                sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    textAlign: 'center',
-                }}
-            >
-                <Tooltip title="Account settings">
-                    <IconButton
-                        onClick={handleClick}
-                        size="small"
-                        sx={{ ml: 2 }}
-                        aria-controls={open ? 'account-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                    >
-                        {isLoading ? (
-                            <Skeleton variant="circular">
-                                <Avatar sx={{ width: 40, height: 40 }} />
-                            </Skeleton>
-                        ) : (
-                            <Avatar
-                                sx={{ width: 40, height: 40 }}
-                                src={user?.picture}
-                                alt={user?.name}
-                            />
-                        )}
-                    </IconButton>
-                </Tooltip>
-            </Box>
-            <Menu
-                anchorEl={anchorEl}
-                id="account-menu"
-                open={open}
-                onClose={handleClose}
-                onClick={handleClose}
-                disableScrollLock={true}
-                PaperProps={{
-                    elevation: 0,
-                    sx: {
-                        overflow: 'visible',
-                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                        mt: 1.5,
-                        '& .MuiAvatar-root': {
-                            width: 32,
-                            height: 32,
-                            ml: -0.5,
-                            mr: 1,
-                        },
-                        '&:before': {
-                            content: '""',
-                            display: 'block',
-                            position: 'absolute',
-                            top: 0,
-                            right: 25,
-                            width: 10,
-                            height: 10,
-                            bgcolor: 'background.paper',
-                            transform: 'translateY(-50%) rotate(45deg)',
-                            zIndex: 0,
-                        },
-                    },
-                }}
-                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            >
-                <MenuItem onClick={handleClose}>
-                    <Avatar src={user?.picture} alt={user?.name} /> Profile
-                </MenuItem>
-                <Divider />
-                <MenuItem onClick={handleClose}>
-                    <ListItemIcon>
-                        <Settings fontSize="small" />
-                    </ListItemIcon>
-                    Settings
-                </MenuItem>
-                <MenuItem onClick={handleLogout}>
-                    <ListItemIcon>
-                        <Logout fontSize="small" />
-                    </ListItemIcon>
-                    Logout
-                </MenuItem>
-            </Menu>
-        </React.Fragment>
-    )
+  const { constructor } = useConstructorContext()
+
+  const { dictionary } = useDictionaryContext()
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleLogout = () => {
+    setAnchorEl(null)
+    chatClient.disconnect()
+    logout({
+      logoutParams: {
+        returnTo: window.location.origin,
+      },
+    })
+  }
+
+  return (
+    <>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          textAlign: 'center',
+        }}
+      >
+        <Tooltip title="Account settings">
+          <IconButton
+            onClick={handleClick}
+            size="small"
+            sx={{ ml: 2, margin: '0' }}
+            aria-controls={open ? 'account-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+          >
+            {isLoading ? (
+              <Skeleton variant="circular">
+                <Avatar
+                  src={customUser ? customUser.avatar : defaultAvatar}
+                  sx={{ width: 40, height: 40 }}
+                />
+              </Skeleton>
+            ) : (
+              <Avatar
+                sx={{ width: 40, height: 40 }}
+                src={customUser ? customUser.avatar : defaultAvatar}
+                alt={customUser?.email}
+              />
+            )}
+          </IconButton>
+        </Tooltip>
+      </Box>
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={open}
+        onClose={handleClose}
+        onClick={handleClose}
+        disableScrollLock={true}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            '&:before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 25,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        {customUser && (
+          <Link
+            to={`/user/${encodeURI(customUser.id)}`}
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
+            <MenuItem>
+              <Avatar
+                alt={customUser.email}
+                src={customUser.avatar || defaultAvatar}
+              />{' '}
+              {dictionary.profileSettings}
+            </MenuItem>
+          </Link>
+        )}
+        <Divider />
+        {constructor && (
+          <Link
+            to={`/constructor/${encodeURI(constructor.userId)}`}
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
+            <MenuItem onClick={handleClose}>
+              <ListItemIcon>
+                <EngineeringIcon fontSize="small" />
+              </ListItemIcon>
+              {dictionary.constructorProfile}
+            </MenuItem>
+          </Link>
+        )}
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          {dictionary.logoutWord}
+        </MenuItem>
+      </Menu>
+    </>
+  )
 }
 
 export default AccountMenu

@@ -1,0 +1,43 @@
+name: ApiGatewayProd
+
+on:
+  push:
+    branches: ["main"]
+    paths: ["ApiGateway/**"]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    env:
+      image_tag: ${{ vars.DOCKER_IMAGE_OWNER_APIGATEWAY }}/homeo-apigateway-prod:${GITHUB_SHA}
+      image_latest: ${{ vars.DOCKER_IMAGE_OWNER_APIGATEWAY }}/homeo-apigateway-prod:latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker Images
+        run: |
+          cd ApiGateway
+          docker build \
+            --build-arg PORT_APIGATEWAY=${{ secrets.PORT_APIGATEWAY }} \
+            --build-arg REDIS_PASSWORD_APIGATEWAY=${{ secrets.REDIS_PASSWORD_APIGATEWAY }} \
+            --build-arg ALLOWED_CORS_URLS=${{ secrets.ALLOWED_CORS_URLS }} \
+            --build-arg EUREKA_URL=${{ secrets.EUREKA_URL }} \
+            --build-arg REDIS_HOST_APIGATEWAY=${{ secrets.REDIS_HOST_APIGATEWAY }} \
+            --build-arg REDIS_PORT_APIGATEWAY=${{ secrets.REDIS_PORT_APIGATEWAY }} \
+            --build-arg REDIS_USERNAME_APIGATEWAY=${{ secrets.REDIS_USERNAME_APIGATEWAY }} \
+            --build-arg REDIS_SSL_APIGATEWAY=${{ secrets.REDIS_SSL_APIGATEWAY }} \
+            -t ${{ env.image_tag }} .
+          docker tag ${{ env.image_tag }} ${{ env.image_latest }}
+
+      - name: Push Docker Images
+        run: |
+          docker push ${{ env.image_tag }}
+          docker push ${{ env.image_latest }}

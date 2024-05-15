@@ -1,9 +1,70 @@
-@import 'Variables.scss';
+@use './Variables' as v;
 
 .Footer {
-    width: calc(100% - 40px);
-    padding: 0 20px;
-    height: 100px;
-    background-color: $main-background-color;
-    border-top: 1px solid rgba(128, 128, 128, 0.315);
+  width: 100%;
+  background: url('../../Assets/wave-white-inverted.svg'),
+    linear-gradient(to right, v.$primary-color, v.$primary-color-dark 90%);
+  background-repeat: no-repeat, no-repeat;
+  background-size:
+    100% 65%,
+    100% 95%;
+  background-position: top, bottom;
+  height: 14rem;
+
+  > .footer-main {
+    height: 100%;
+    width: calc(100% - 4rem);
+    display: flex;
+    align-items: flex-end;
+    gap: 2rem;
+    padding: 0 2rem;
+
+    > .footer-logo-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 25px;
+      height: 48px;
+      gap: 5px;
+
+      > .footer-logo-img {
+        height: 48px;
+        width: 35px;
+
+        @media (max-width: 600px) {
+          height: 35px;
+          width: 25px;
+        }
+      }
+
+      > .footer-logo-text {
+        font-size: v.$font-size-large;
+        color: white;
+        margin: 0;
+
+        @media (max-width: 600px) {
+          font-size: v.$font-size-medium;
+        }
+      }
+    }
+
+    > .footer-text-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      padding-bottom: 23px;
+
+      > .footer-text {
+        font-size: v.$font-size-small;
+        color: white;
+        text-align: center;
+        margin: 0;
+
+        @media (max-width: 400px) {
+          font-size: v.$font-size-extra-small;
+        }
+      }
+    }
+  }
 }

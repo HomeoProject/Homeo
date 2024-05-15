@@ -1,0 +1,99 @@
+@use '../Variables' as v;
+
+.CategoriesAccordion {
+  padding: 1rem 0 0 0;
+  .categories-accordion-label {
+    display: flex;
+    align-items: center;
+    .categories-accordion-label-image {
+      width: 1.5rem;
+      height: 1.5rem;
+      margin-right: 0.5rem;
+      border-radius: 90px;
+    }
+  }
+  .categories-accordion-details {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 2rem 3rem;
+    @media screen and (max-width: 1150px) {
+      flex-direction: column;
+      align-items: center;
+    }
+    .categories-accordion-details-container {
+      display: flex;
+      gap: 1.5rem;
+      @media screen and (max-width: 1150px) {
+        flex-direction: column;
+      }
+
+      > .overlay-btn {
+        border: none;
+        border-radius: 50%;
+        background: none;
+        position: relative;
+        transition: filter 0.15s ease-in-out;
+        padding: 0;
+        min-width: 60px;
+
+        &:hover {
+          filter: brightness(0.9);
+          cursor: pointer;
+
+          > .overlay-pic {
+            opacity: 1;
+          }
+        }
+
+        > .overlay-pic {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          opacity: 0;
+          transition: opacity 0.15s ease-in-out;
+        }
+      }
+    }
+    .categories-accordion-details-image {
+      width: 12rem;
+      height: 12rem;
+      // margin-right: 0.5rem;
+      border-radius: 90px;
+    }
+    .categories-accordion-details-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1.5rem 0 0 0;
+      .categories-accordion-details-fields-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        &.name {
+          flex-direction: row;
+        }
+        .categories-accordion-details-fields-container-key {
+          color: v.$primary-color;
+        }
+      }
+    }
+    .categories-accordion-details-actions {
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem 0 0 0;
+      @media screen and (max-width: 1150px) {
+        width: 60%;
+      }
+      gap: 1rem;
+    }
+  }
+  .categories-accordion-exaption {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 256px;
+    font-size: v.$font-size-large;
+  }
+}

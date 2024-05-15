@@ -1,0 +1,11 @@
+.CategoryAdmin {
+  width: 700px;
+  @media screen and (max-width: 650px) {
+    width: 300px;
+  }
+  .category-admin-pagination {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+  }
+}

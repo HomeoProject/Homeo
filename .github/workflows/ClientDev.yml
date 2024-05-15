@@ -1,0 +1,57 @@
+name: ClientDev
+
+on:
+  push:
+    branches: ["dev"]
+    paths: ["Client/**"]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    env:
+      image_tag: ${{ vars.DOCKER_IMAGE_OWNER_CLIENT }}/homeo-web-client-dev:${GITHUB_SHA}
+      image_latest: ${{ vars.DOCKER_IMAGE_OWNER_CLIENT }}/homeo-web-client-dev:latest
+      VITE_REACT_APP_AUTH0_DOMAIN: ${{ secrets.VITE_REACT_APP_AUTH0_DOMAIN }}
+      VITE_REACT_APP_AUTH0_CLIENT_ID: ${{ secrets.VITE_REACT_APP_AUTH0_CLIENT_ID }}
+      VITE_REACT_APP_AUTH0_RETURN_URL: ${{ secrets.VITE_REACT_APP_AUTH0_RETURN_URL }}
+      VITE_API_NINJAS_KEY: ${{ secrets.VITE_API_NINJAS_KEY }}
+      VITE_API_NINJAS_URL: ${{ secrets.VITE_API_NINJAS_URL }}
+      VITE_REACT_CONSTRUCTOR_ROLE: ${{ secrets.VITE_REACT_CONSTRUCTOR_ROLE }}
+      VITE_REACT_ADMIN_ROLE: ${{ secrets.VITE_REACT_ADMIN_ROLE }}
+      VITE_REACT_USER_ROLE: ${{ secrets.VITE_REACT_USER_ROLE }}
+      VITE_REACT_APIGATEWAY_URL: ${{ secrets.VITE_REACT_APIGATEWAY_URL }}
+      VITE_REACT_REVIEWS_FETCH_LIMIT: ${{ secrets.VITE_REACT_REVIEWS_FETCH_LIMIT }}
+      VITE_REACT_APIGATEWAY_WS_URL: ${{ secrets.VITE_REACT_APIGATEWAY_WS_URL }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker Images
+        run: |
+          cd Client
+          docker build \
+            --build-arg VITE_REACT_APP_AUTH0_DOMAIN=${{ env.VITE_REACT_APP_AUTH0_DOMAIN }} \
+            --build-arg VITE_REACT_APP_AUTH0_CLIENT_ID=${{ env.VITE_REACT_APP_AUTH0_CLIENT_ID }} \
+            --build-arg VITE_REACT_APP_AUTH0_RETURN_URL=${{ env.VITE_REACT_APP_AUTH0_RETURN_URL }} \
+            --build-arg VITE_API_NINJAS_KEY=${{ env.VITE_API_NINJAS_KEY }} \
+            --build-arg VITE_API_NINJAS_URL=${{ env.VITE_API_NINJAS_URL }} \
+            --build-arg VITE_REACT_CONSTRUCTOR_ROLE=${{ env.VITE_REACT_CONSTRUCTOR_ROLE }} \
+            --build-arg VITE_REACT_ADMIN_ROLE=${{ env.VITE_REACT_ADMIN_ROLE }} \
+            --build-arg VITE_REACT_USER_ROLE=${{ env.VITE_REACT_USER_ROLE }} \
+            --build-arg VITE_REACT_APIGATEWAY_URL=${{ env.VITE_REACT_APIGATEWAY_URL }} \
+            --build-arg VITE_REACT_REVIEWS_FETCH_LIMIT=${{ env.VITE_REACT_REVIEWS_FETCH_LIMIT }} \
+            --build-arg VITE_REACT_APIGATEWAY_WS_URL=${{ env.VITE_REACT_APIGATEWAY_WS_URL }} \
+            -t ${{ env.image_tag }} .
+          docker tag ${{ env.image_tag }} ${{ env.image_latest }}
+
+      - name: Push Docker Images
+        run: |
+          docker push ${{ env.image_tag }}
+          docker push ${{ env.image_latest }}

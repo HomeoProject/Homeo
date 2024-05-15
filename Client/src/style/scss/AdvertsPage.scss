@@ -1,0 +1,161 @@
+@import 'Variables.scss';
+
+.AdvertsPage {
+  width: 100%;
+  > .adverts-page-search {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    margin: 3rem 12rem 0 12rem;
+    border-radius: 3rem;
+    background: rgb(0, 255, 179);
+    background: linear-gradient(
+      90deg,
+      rgba(0, 255, 179, 1) 0%,
+      rgba(28, 190, 142, 1) 50%,
+      rgba(29, 143, 109, 1) 100%
+    );
+    padding: 2rem 0 2rem 0;
+    @media screen and (max-width: 850px) {
+      margin: 3rem 5rem 0 5rem;
+    }
+    @media screen and (max-width: 425px) {
+      margin: 3rem 2rem 0 2rem;
+    }
+    > .adverts-page-search-slogan {
+      display: flex;
+      text-align: center;
+      font-size: clamp(1.5rem, 3.7vw, 4rem);
+      @media screen and (max-width: 1400px) {
+        font-size: 2.5rem;
+      }
+    }
+    > .adverts-page-search-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding: 1rem 0 0 0;
+      min-width: 60%;
+      > .adverts-page-search-wrapper-input {
+        outline: none;
+        border: none;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
+        width: 100%;
+        height: 50px;
+        padding: 0;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        border: none;
+        padding-left: 15px;
+        &::placeholder {
+          font-family: Gabarito;
+          font-size: $font-size-normal;
+          @media screen and (max-width: 1075px) {
+            font-size: 1rem;
+          }
+        }
+      }
+      > .adverts-page-search-wrapper-button {
+        width: 50px;
+        height: 50px;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        border: none;
+        outline: none;
+        background-color: white;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.123);
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+    > .adverts-page-search-filters {
+      display: flex;
+      > .adverts-page-search-filters-container {
+        display: flex;
+        align-items: center;
+        font-size: $font-size-small;
+        padding: 0px 0.5rem 0px 0.5rem;
+        cursor: pointer;
+        > .adverts-page-search-filters-container-label {
+          &.mobile {
+            font-size: $font-size-large;
+          }
+        }
+      }
+    }
+  }
+  .adverts-page-cards {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    .adverts-page-cards-grid {
+      display: grid;
+      justify-content: center;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5rem;
+      .adverts-page-cards-grid-spinner {
+        grid-column-start: 2;
+      }
+      .adverts-page-cards-grid-exaption {
+        display: flex;
+        justify-content: center;
+        grid-column-start: 1;
+        grid-column-end: 4;
+        align-items: center;
+        height: 256px;
+        font-size: $font-size-large;
+      }
+    }
+    @media screen and (max-width: 1200px) {
+      .adverts-page-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media screen and (max-width: 800px) {
+      .adverts-page-cards-grid {
+        grid-template-columns: repeat(1, 1fr);
+      }
+    }
+    .adverts-page-cards-label {
+      padding: 2rem 0 2rem 0;
+      min-width: 60%;
+      font-size: $font-size-normal;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      @media screen and (max-width: 1250px) {
+        flex-direction: column;
+      }
+      .adverts-page-cards-label-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        @media screen and (max-width: 1250px) {
+          padding: 2rem 0 0 0;
+        }
+        .adverts-page-cards-label-filters {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          width: 17rem;
+        }
+        .adverts-page-cards-label-page {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+      }
+      .adverts-page-cards-label-value {
+        border-bottom: 3px solid $primary-color;
+      }
+    }
+    .adverts-page-cards-pagination {
+      padding: 2rem 0 2rem 0;
+    }
+  }
+}

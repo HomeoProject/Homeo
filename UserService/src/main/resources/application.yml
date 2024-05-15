@@ -1,7 +1,5 @@
 server:
-  port: 8081
-  error:
-    include-message: always
+  port: ${PORT:8080}
 
 spring:
   application:
@@ -10,6 +8,9 @@ spring:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
+    hikari:
+      maximum-pool-size: ${HIKARI_MAX_POOL_SIZE:10}
+      minimum-idle: ${HIKARI_MINIMUM_IDLE:10}
   jpa:
     hibernate:
       ddl-auto: update
@@ -17,7 +18,11 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-    show-sql: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
 
 okta:
   oauth2:
@@ -30,24 +35,42 @@ okta:
     audience: ${OKTA_MANAGEMENT_API_AUDIENCE}
   auth0:
     roles:
-      constructorRoleId: rol_UCL6ZThu4ydr1nYW
+      user-role-id: ${OKTA_AUTH0_USER_ROLE_ID}
+
+cloudinary:
+  api-key: ${CLOUDINARY_API_KEY}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-secret: ${CLOUDINARY_API_SECRET}
+  folder-name: ${CLOUDINARY_FOLDER_NAME}
+  default-avatar: ${CLOUDINARY_DEFAULT_AVATAR_URL}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
 
 openapi:
   service:
-    title: UserService
+    title: ${spring.application.name}
     version: 1.0.0
-    url: http://localhost:8080
+    url: ${OPENAPI_URL}
 springdoc:
   api-docs:
-    path: /userservice/api-docs
+    path: /api/userservice/api-docs
   swagger-ui:
-    path: /userservice/swagger-ui
+    path: /api/userservice/swagger-ui
 
 eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_URL}
-
-logging:
-  level:
-    org.springframework.security: DEBUG
+    healthcheck:
+      enabled: true

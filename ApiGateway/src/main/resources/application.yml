@@ -1,7 +1,5 @@
 server:
-  port: 8080
-  error:
-    include-message: always
+  port: ${PORT:8080}
 
 spring:
   application:
@@ -9,19 +7,25 @@ spring:
   data:
     redis:
       database: 0
-      host: localhost
-      port: 6380
+      host: ${REDIS_HOST_APIGATEWAY:localhost}
+      port: ${REDIS_PORT_APIGATEWAY:6380}
       password: ${REDIS_PASSWORD_APIGATEWAY}
       connect-timeout: 60000
+      username: ${REDIS_USERNAME_APIGATEWAY:}
+      ssl:
+        enabled: ${REDIS_SSL_APIGATEWAY:false}
   cloud:
     gateway:
+      httpclient:
+        websocket:
+          max-frame-payload-length: 5242880 # 5MB
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_UNIQUE
         - AddResponseHeader=Access-Control-Allow-Origin, *
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: "http://localhost:5173, http://127.0.0.1:5173"
+            allowedOrigins: ${ALLOWED_CORS_URLS}
             allowedHeaders: "*"
             allowCredentials: true
             allowedMethods: "*"
@@ -29,22 +33,39 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://homeo-eureka:8761/eureka
+      defaultZone: ${EUREKA_URL}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 logging:
-  level:
-    org.springframework.security: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
 
 springdoc:
   enable-native-support: true
   api-docs:
     enabled: true
-    path: /api-docs
+    path: /api/api-docs
   swagger-ui:
     enabled: true
-    path: /swagger-ui
+    path: /api/swagger-ui
     urls:
-      - url: /api-docs
-        name: API Gateway Service
-      - url: /userservice/api-docs
-        name: User Service
+      - url: /api/api-docs
+        name: ApiGateway
+      - url: /api/userservice/api-docs
+        name: UserService
+      - url: /api/constructorservice/api-docs
+        name: ConstructorService
+      - url: /api/reviewservice/api-docs
+        name: ReviewService
+      - url: /api/searchservice/api-docs
+        name: SearchService
+      - url: /api/chatservice/api-docs
+        name: ChatService

@@ -1,71 +1,141 @@
-@import 'Variables.scss';
+@use './Variables' as v;
 
 .Header {
-    width: calc(100% - 40px);
-    background-color: $main-background-color;
-    height: 100px;
+  width: 100%;
+  background: url('../../Assets/wave-white.svg'),
+    linear-gradient(to right, v.$primary-color, v.$primary-color-dark 95%);
+  background-repeat: no-repeat, no-repeat;
+  background-size:
+    100% 65%,
+    100% 95%;
+  background-position-y: bottom, top;
+  padding-bottom: 6rem;
+  margin-bottom: -6rem;
+  height: 12rem;
+
+  > .header-main {
+    height: 100%;
+    width: calc(100% - 4rem);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(128, 128, 128, 0.199);
-    padding: 0 20px;
+    padding: 0 2rem;
 
-    > .header-logo-normal {
-        height: 80px;
-        width: 250px;
-
-        > img {
-            height: 80px;
-            width: 250px;
-        }
+    @media (max-width: 430px) {
+      padding: 0 1rem;
+      width: calc(100% - 2rem);
     }
 
-    > .header-logo-small {
-        padding: 15px 0;
-        padding-bottom: 18px;
+    > .header-logo {
+      display: flex;
+      align-items: center;
+      font-size: v.$font-size-logo;
+      padding: 5px;
+      margin: 0;
+      text-decoration: none;
+      color: white;
+      font-family: v.$font-family;
+      margin-top: -90px;
+      font-weight: 600;
+
+      > img {
+        width: 45px;
+        height: 60px;
+        padding-right: 10px;
+
+        @media (max-width: 430px) {
+          display: none;
+        }
+      }
+
+      @media (max-width: 500px) {
+        font-size: v.$font-size-large;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: white;
+        font-family: v.$font-family;
+        margin-top: -90px;
 
         > img {
-            height: 80px;
-            width: 75px;
+          width: 35px;
+          height: 45px;
+          padding-right: 10px;
         }
+      }
     }
 
     > .header-nav-normal {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -90px;
+      gap: 10px;
+
+      @media (max-width: 900px) {
+        display: none;
+      }
+
+      > .header-nav-normal-right {
         display: flex;
         align-items: center;
+        gap: 30px;
+        padding-right: 20px;
 
-        > .header-nav-normal-right {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            padding-right: 20px;
-            > .header-nav-normal-right-link {
-                font-size: 25px;
-                color: $primary-color;
-                text-decoration: none;
-                transition: 0.2s ease;
-                &:hover {
-                    text-shadow: 4px 4px 14px rgba(204, 203, 203, 1);
-                }
-            }
+        > .header-nav-normal-right-link-special {
+          font-size: v.$font-size-medium;
+          color: white;
+          text-decoration: none;
+          transition: all 0.2s ease;
+          background-color: white;
+          color: v.$primary-color;
+          padding: 6px 16px;
+          border-radius: 4px;
+
+          &:hover {
+            color: v.$primary-color-dark;
+            background-color: #f0f0f0;
+          }
         }
 
-        > .header-nav-user-wrapper {
-            width: 86px;
-            display: flex;
-            justify-content: flex-end;
+        > .header-nav-normal-right-link {
+          font-size: v.$font-size-normal;
+          color: white;
+          text-decoration: none;
+          transition: all 0.2s ease;
+
+          &:hover {
+            color: #f0f0f0d7;
+          }
         }
+      }
+
+      > .header-nav-user-wrapper {
+        display: flex;
+        justify-content: center;
+        // margin-left: 1rem;
+      }
     }
 
     > .header-nav-small {
+      display: none;
+
+      @media (max-width: 900px) {
         display: flex;
         align-items: center;
         justify-content: center;
+        margin-top: -90px;
+        gap: 10px;
+      }
 
-        > .header-nav-user-wrapper {
-            width: 86px;
-            display: flex;
-            justify-content: flex-end;
-        }
+      @media (max-width: 400px) {
+        gap: 5px;
+      }
+
+      > .header-nav-user-wrapper {
+        display: flex;
+        justify-content: flex-end;
+      }
     }
+  }
 }

@@ -1,0 +1,419 @@
+version: "3.8"
+
+services:
+  homeo-web-client:
+    container_name: homeo-web-client
+    image: piotrdamrych/homeo-web-client-dev:latest
+    ports:
+      - "443:443"
+    depends_on:
+      - homeo-searchservice
+    networks:
+      - homeo
+
+  homeo-userservice:
+    container_name: homeo-userservice
+    image: piotrdamrych/homeo-userservice-dev:latest
+    environment:
+      PORT: ${PORT_USERSERVICE}
+      HIKARI_MAX_POOL_SIZE: ${HIKARI_MAX_POOL_SIZE_USERSERVICE}
+      HIKARI_MINIMUM_IDLE: ${HIKARI_MINIMUM_IDLE_USERSERVICE}
+      OKTA_API_ISSUER: ${OKTA_API_ISSUER}
+      OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
+      OKTA_API_DOMAIN: ${OKTA_API_DOMAIN}
+      OKTA_MTM_CLIENT_ID: ${OKTA_MTM_CLIENT_ID}
+      OKTA_MTM_CLIENT_SECRET: ${OKTA_MTM_CLIENT_SECRET}
+      OKTA_MANAGEMENT_API_AUDIENCE: ${OKTA_MANAGEMENT_API_AUDIENCE}
+      OKTA_AUTH0_USER_ROLE_ID: ${OKTA_AUTH0_USER_ROLE_ID}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_URL: ${POSTGRES_URL_USERSERVICE}
+      EUREKA_URL: ${EUREKA_URL}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      CLOUDINARY_FOLDER_NAME: ${CLOUDINARY_FOLDER_NAME_USERSERVICE}
+      CLOUDINARY_DEFAULT_AVATAR_URL: ${CLOUDINARY_DEFAULT_AVATAR_URL}
+      OPENAPI_URL: ${OPENAPI_URL}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_METRICS_EXPORTER: ${OTEL_METRICS_EXPORTER}
+      OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME_USERSERVICE}
+    ports:
+      - "${PORT_USERSERVICE}:${PORT_USERSERVICE}"
+    restart: unless-stopped
+    depends_on:
+      - homeo-chatservice
+    networks:
+      - homeo
+
+  homeo-constructorservice:
+    container_name: homeo-constructorservice
+    image: piotrdamrych/homeo-constructorservice-dev:latest
+    environment:
+      PORT: ${PORT_CONSTRUCTORSERVICE}
+      HIKARI_MAX_POOL_SIZE: ${HIKARI_MAX_POOL_SIZE_CONSTRUCTORSERVICE}
+      HIKARI_MINIMUM_IDLE: ${HIKARI_MINIMUM_IDLE_CONSTRUCTORSERVICE}
+      OKTA_API_ISSUER: ${OKTA_API_ISSUER}
+      OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
+      OKTA_API_DOMAIN: ${OKTA_API_DOMAIN}
+      OKTA_MTM_CLIENT_ID: ${OKTA_MTM_CLIENT_ID}
+      OKTA_MTM_CLIENT_SECRET: ${OKTA_MTM_CLIENT_SECRET}
+      OKTA_MANAGEMENT_API_AUDIENCE: ${OKTA_MANAGEMENT_API_AUDIENCE}
+      OKTA_AUTH0_CONSTRUCTOR_ROLE_ID: ${OKTA_AUTH0_CONSTRUCTOR_ROLE_ID}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_URL: ${POSTGRES_URL_CONSTRUCTORSERVICE}
+      EUREKA_URL: ${EUREKA_URL}
+      OPENAPI_URL: ${OPENAPI_URL}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      CLOUDINARY_FOLDER_NAME: ${CLOUDINARY_FOLDER_NAME_CONSTRUCTORSERVICE}
+      CLOUDINARY_DEFAULT_CATEGORY_URL: ${CLOUDINARY_DEFAULT_CATEGORY_URL}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      API_NINJAS_URL: ${API_NINJAS_URL}
+      API_NINJAS_KEY: ${API_NINJAS_KEY}
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_METRICS_EXPORTER: ${OTEL_METRICS_EXPORTER}
+      OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME_CONSTRUCTORSERVICE}
+    ports:
+      - "${PORT_CONSTRUCTORSERVICE}:${PORT_CONSTRUCTORSERVICE}"
+    restart: unless-stopped
+    depends_on:
+      - homeo-userservice
+    networks:
+      - homeo
+
+  homeo-reviewservice:
+    container_name: homeo-reviewservice
+    image: piotrdamrych/homeo-reviewservice-dev:latest
+    environment:
+      PORT: ${PORT_REVIEWSERVICE}
+      HIKARI_MAX_POOL_SIZE: ${HIKARI_MAX_POOL_SIZE_REVIEWSERVICE}
+      HIKARI_MINIMUM_IDLE: ${HIKARI_MINIMUM_IDLE_REVIEWSERVICE}
+      OKTA_API_ISSUER: ${OKTA_API_ISSUER}
+      OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
+      OKTA_API_DOMAIN: ${OKTA_API_DOMAIN}
+      OKTA_MTM_CLIENT_ID: ${OKTA_MTM_CLIENT_ID}
+      OKTA_MTM_CLIENT_SECRET: ${OKTA_MTM_CLIENT_SECRET}
+      OKTA_MANAGEMENT_API_AUDIENCE: ${OKTA_MANAGEMENT_API_AUDIENCE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_URL: ${POSTGRES_URL_REVIEWSERVICE}
+      EUREKA_URL: ${EUREKA_URL}
+      OPENAPI_URL: ${OPENAPI_URL}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_METRICS_EXPORTER: ${OTEL_METRICS_EXPORTER}
+      OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME_REVIEWSERVICE}
+    ports:
+      - "${PORT_REVIEWSERVICE}:${PORT_REVIEWSERVICE}"
+    restart: unless-stopped
+    depends_on:
+      - homeo-constructorservice
+    networks:
+      - homeo
+
+  homeo-searchservice:
+    container_name: homeo-searchservice
+    image: piotrdamrych/homeo-searchservice-dev:latest
+    environment:
+      PORT: ${PORT_SEARCHSERVICE}
+      HIKARI_MAX_POOL_SIZE: ${HIKARI_MAX_POOL_SIZE_SEARCHSERVICE}
+      HIKARI_MINIMUM_IDLE: ${HIKARI_MINIMUM_IDLE_SEARCHSERVICE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_URL: ${POSTGRES_URL_SEARCHSERVICE}
+      EUREKA_URL: ${EUREKA_URL}
+      OPENAPI_URL: ${OPENAPI_URL}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_METRICS_EXPORTER: ${OTEL_METRICS_EXPORTER}
+      OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME_SEARCHSERVICE}
+    ports:
+      - "${PORT_SEARCHSERVICE}:${PORT_SEARCHSERVICE}"
+    restart: unless-stopped
+    depends_on:
+      - homeo-reviewservice
+    networks:
+      - homeo
+
+  homeo-chatservice:
+    container_name: homeo-chatservice
+    image: piotrdamrych/homeo-chatservice-dev:latest
+    environment:
+      PORT: ${PORT_CHATSERVICE}
+      HIKARI_MAX_POOL_SIZE: ${HIKARI_MAX_POOL_SIZE_CHATSERVICE}
+      HIKARI_MINIMUM_IDLE: ${HIKARI_MINIMUM_IDLE_CHATSERVICE}
+      OKTA_API_ISSUER: ${OKTA_API_ISSUER}
+      OKTA_API_AUDIENCE: ${OKTA_API_AUDIENCE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_URL: ${POSTGRES_URL_CHATSERVICE}
+      EUREKA_URL: ${EUREKA_URL}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      CLOUDINARY_FOLDER_NAME: ${CLOUDINARY_FOLDER_NAME_CHATSERVICE}
+      OPENAPI_URL: ${OPENAPI_URL}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_METRICS_EXPORTER: ${OTEL_METRICS_EXPORTER}
+      OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME_CHATSERVICE}
+    ports:
+      - "${PORT_CHATSERVICE}:${PORT_CHATSERVICE}"
+    restart: unless-stopped
+    depends_on:
+      - homeo-apigateway
+    networks:
+      - homeo
+
+  homeo-apigateway:
+    container_name: homeo-apigateway
+    image: piotrdamrych/homeo-apigateway-dev:latest
+    environment:
+      EUREKA_URL: ${EUREKA_URL}
+      REDIS_PASSWORD_APIGATEWAY: ${REDIS_PASSWORD_APIGATEWAY}
+      REDIS_PORT_APIGATEWAY: ${REDIS_PORT_APIGATEWAY}
+      REDIS_HOST_APIGATEWAY: ${REDIS_HOST_APIGATEWAY}
+      REDIS_USERNAME_APIGATEWAY: ${REDIS_USERNAME_APIGATEWAY}
+      REDIS_SSL_APIGATEWAY: ${REDIS_SSL_APIGATEWAY}
+      ALLOWED_CORS_URLS: ${ALLOWED_CORS_URLS}
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_METRICS_EXPORTER: ${OTEL_METRICS_EXPORTER}
+      OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME_APIGATEWAY}
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    depends_on:
+      - homeo-eureka
+    networks:
+      - homeo
+
+  homeo-eureka:
+    container_name: homeo-eureka
+    image: piotrdamrych/homeo-eureka-dev:latest
+    environment:
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT}
+      OTEL_METRICS_EXPORTER: ${OTEL_METRICS_EXPORTER}
+      OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME_EUREKA}
+    ports:
+      - "8761:8761"
+    depends_on:
+      - grafana
+    restart: unless-stopped
+    networks:
+      - homeo
+
+  homeo-rabbit:
+    container_name: homeo-rabbit
+    build: RabbitMQ/
+    environment:
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+    volumes:
+      - homeo-rabbit:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "61613:61613"
+      - "15692:15692"
+    networks:
+      - homeo
+
+  prometheus:
+    container_name: homeo-prometheus
+    image: prom/prometheus:v2.51.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./Observability/Prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - homeo
+
+  tempo:
+    image: grafana/tempo
+    container_name: homeo-tempo
+    command: -config.file /etc/tempo-config.yml
+    ports:
+      - "3110:3100"
+      - "4317:4317"
+    volumes:
+      - ./Observability/Tempo/tempo.yml:/etc/tempo-config.yml
+    networks:
+      - homeo
+
+  read:
+    container_name: homeo-read
+    image: grafana/loki:2.9.2
+    command: "-config.file=/etc/loki/config.yml -target=read"
+    ports:
+      - "3101:3100"
+      - "7946"
+      - "9095"
+    volumes:
+      - ./Observability/Loki/loki-config.yml:/etc/loki/config.yml
+    depends_on:
+      - minio
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --no-verbose --tries=1 --spider http://localhost:3100/ready || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: &loki-dns
+      homeo:
+        aliases:
+          - loki
+
+  write:
+    container_name: homeo-write
+    image: grafana/loki:2.9.2
+    command: "-config.file=/etc/loki/config.yml -target=write"
+    ports:
+      - "3102:3100"
+      - "7946"
+      - "9095"
+    volumes:
+      - ./Observability/Loki/loki-config.yml:/etc/loki/config.yml
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --no-verbose --tries=1 --spider http://localhost:3100/ready || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      - minio
+    networks:
+      <<: *loki-dns
+
+  promtail:
+    container_name: homeo-promtail
+    image: grafana/promtail:2.9.2
+    volumes:
+      - ./Observability/Promtail/promtail-local-config.yml:/etc/promtail/config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - gateway
+    networks:
+      - homeo
+
+  minio:
+    container_name: homeo-minio
+    image: minio/minio
+    entrypoint:
+      - sh
+      - -euc
+      - |
+        mkdir -p /data/loki-data && \
+        mkdir -p /data/loki-ruler && \
+        minio server /data
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_PROMETHEUS_AUTH_TYPE: public
+      MINIO_UPDATE: off
+    ports:
+      - "9000"
+    volumes:
+      - ./.data/minio:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 15s
+      timeout: 20s
+      retries: 5
+    networks:
+      - homeo
+
+  grafana:
+    container_name: homeo-grafana
+    image: grafana/grafana:latest
+    environment:
+      GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+      GF_AUTH_BASIC_ENABLED: true
+      GF_AUTH_ANONYMOUS_ENABLED: false
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_SECURITY_ADMIN_PASSWORD}
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_SECURITY_ADMIN_USER}
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+    depends_on:
+      - gateway
+    entrypoint:
+      - sh
+      - -euc
+      - |
+        /run.sh
+    volumes:
+      - ./Observability/Grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - homeo
+
+  gateway:
+    container_name: homeo-grafana-nginx
+    image: nginx:latest
+    depends_on:
+      - read
+      - write
+    volumes:
+      - ./Observability/Nginx/nginx.conf:/etc/nginx/nginx.conf
+    entrypoint:
+      - sh
+      - -euc
+      - |
+        /docker-entrypoint.sh nginx -g "daemon off;"
+    ports:
+      - "3100:3100"
+    healthcheck:
+      test: ["CMD", "service", "nginx", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - homeo
+
+volumes:
+  homeo-rabbit:
+
+networks:
+  homeo:
+    driver: "bridge"
