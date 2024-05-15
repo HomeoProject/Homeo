@@ -106,6 +106,7 @@ export interface ConstructorFilters {
   priceValue: Array<number>
   ratingValue: number
   directionValue: string
+  isApproved: boolean
   languages: Array<string>
   isApproved: boolean
   selectedPaymentMethods: Array<string>

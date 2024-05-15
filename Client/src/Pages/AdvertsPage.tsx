@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import SearchIcon from '@mui/icons-material/Search'
 import UserCard from '../Components/UserCard'
 import FiltersDialog from '../Components/FiltersDialog'
@@ -15,12 +16,15 @@ import { useDictionaryContext } from '../Context/DictionaryContext'
 import { useAuth0 } from '@auth0/auth0-react'
 import apiClient from '../AxiosClients/apiClient'
 import { ConstructorFilters, ConstructorByFilters } from '../types/types.ts'
+import { set } from 'react-hook-form'
 
 const AdvertsPage = () => {
   const searchValue = 'search'
 
   const { getAccessTokenSilently } = useAuth0()
   const { dictionary } = useDictionaryContext()
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
 
   const getCurrentDimension = () => {
     return window.innerWidth
@@ -45,6 +49,9 @@ const AdvertsPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [perPageValue, setPerPageValue] = useState<string>('12')
   const [page, setPage] = useState<number>(0)
+  const [defaultPageNumber, setDefaultPageNumber] = useState<number | null>(
+    null
+  )
   const [totalPages, setTotalPages] = useState<number>(0)
   const [constructors, setConstructors] = useState<ConstructorByFilters[]>([])
 
@@ -68,15 +75,26 @@ const AdvertsPage = () => {
   }
 
   const handleSortChange = (event: SelectChangeEvent) => {
+    const link = `/adverts?page=${page}&sort=${event.target.value}&size=${perPageValue}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}`
     setSortValue(event.target.value)
+    navigate(link)
   }
 
   const handlePerPageChange = (event: SelectChangeEvent) => {
+    const link = `/adverts?page=${page}&sort=${sortValue}&size=${event.target.value}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}`
     setPerPageValue(event.target.value)
+    navigate(link)
   }
 
   const handleActiveUsersChange = () => {
     setOnlyActiveUsers(!onlyActiveUsers)
+  }
+
+  const handlePagination = (_event: unknown, value: number) => {
+    const link = `/adverts?page=${value - 1}&sort=${sortValue}&size=${perPageValue}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}`
+
+    setPage(value - 1)
+    navigate(link)
   }
 
   useEffect(() => {
@@ -89,6 +107,66 @@ const AdvertsPage = () => {
       window.removeEventListener('resize', updateDimension)
     }
   }, [screenSize])
+
+  useEffect(() => {
+    const page = searchParams.get('page')
+    const categoryIdsURL = searchParams.get('categoryIds')
+    const minMinRateURL = searchParams.get('minMinRate')
+    const maxMinRateURL = searchParams.get('maxMinRate')
+    const ratingValueURL = searchParams.get('ratingValue')
+    const directionValueURL = searchParams.get('directionValue')
+    const isApprovedURL = searchParams.get('isApproved')
+    const languagesURL = searchParams.get('languages')
+    const paymentMethodsURL = searchParams.get('paymentMethods')
+    const citiesURL = searchParams.get('cities')
+    const perPageValue = searchParams.get('size')
+    const sortValue = searchParams.get('sort')
+
+    if (page !== null) {
+      setDefaultPageNumber(parseInt(page))
+      setPage(parseInt(page))
+    } else {
+      setDefaultPageNumber(0)
+    }
+
+    setConstructorFilters({
+      selectedCategories:
+        categoryIdsURL !== null
+          ? categoryIdsURL.split(',')
+          : constructorFilters.selectedCategories,
+      priceValue:
+        minMinRateURL && maxMinRateURL
+          ? [parseInt(minMinRateURL), parseInt(maxMinRateURL)]
+          : constructorFilters.priceValue,
+      ratingValue: ratingValueURL
+        ? parseInt(ratingValueURL)
+        : constructorFilters.ratingValue,
+      directionValue: directionValueURL ? directionValueURL : 'or less',
+      isApproved: isApprovedURL
+        ? isApprovedURL === 'true'
+        : constructorFilters.isApproved,
+      languages:
+        languagesURL !== null
+          ? languagesURL.split(',')
+          : constructorFilters.languages,
+      selectedPaymentMethods:
+        paymentMethodsURL !== null
+          ? paymentMethodsURL.split(',')
+          : constructorFilters.selectedPaymentMethods,
+      selectedPlaces:
+        citiesURL !== null
+          ? citiesURL.split(',')
+          : constructorFilters.selectedPlaces,
+    })
+
+    if (perPageValue !== null) {
+      setPerPageValue(perPageValue)
+    }
+
+    if (sortValue !== null) {
+      setSortValue(sortValue)
+    }
+  }, [])
 
   useEffect(() => {
     const searchForConstructors = async () => {
@@ -131,7 +209,6 @@ const AdvertsPage = () => {
             ? constructorFilters.selectedPlaces
             : null,
       }
-      console.log(body)
       setIsLoading(true)
       try {
         const response = await apiClient.post(
@@ -146,12 +223,14 @@ const AdvertsPage = () => {
       }
       setIsLoading(false)
     }
-
-    searchForConstructors()
+    if (defaultPageNumber !== null) {
+      searchForConstructors()
+    }
   }, [
     constructorFilters,
     getAccessTokenSilently,
     page,
+    defaultPageNumber,
     perPageValue,
     sortValue,
   ])
@@ -199,7 +278,10 @@ const AdvertsPage = () => {
               })}
             </>
           ) : (
-            <div className="adverts-page-search-filters-container">
+            <div
+              className="adverts-page-search-filters-container"
+              onClick={() => handleClickOpenSearch(0)}
+            >
               <span className="adverts-page-search-filters-container-label mobile">
                 {dictionary.filtersWord}
               </span>
@@ -296,11 +378,14 @@ const AdvertsPage = () => {
           )}
         </div>
         <div className="adverts-page-cards-pagination">
-          <Pagination
-            count={totalPages}
-            color="primary"
-            onChange={(_, page) => setPage(page - 1)}
-          />
+          {defaultPageNumber !== null && (
+            <Pagination
+              count={totalPages}
+              defaultPage={defaultPageNumber + 1}
+              color="primary"
+              onChange={handlePagination}
+            />
+          )}
         </div>
       </div>
       <FiltersDialog

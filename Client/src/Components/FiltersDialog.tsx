@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Dialog from '@mui/material/Dialog'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
@@ -44,6 +45,7 @@ const FiltersDialog = (props: FiltersDialogProps) => {
   >([])
 
   const { dictionary } = useDictionaryContext()
+  const navigate = useNavigate()
 
   const paymentMethods: Array<PaymentMethod> = [
     PaymentMethod.CASH,
@@ -89,6 +91,8 @@ const FiltersDialog = (props: FiltersDialogProps) => {
       selectedCategories,
       selectedPaymentMethods,
     })
+    const link = `/adverts?${selectedCategories.length > 0 ? 'categoryIds=' + selectedCategories.join(',') + '&' : ''}minMinRate=${priceValue[0]}&maxMinRate=${priceValue[1]}&ratingValue=${ratingValue}&directionValue=${directionValue}${languages.length > 0 ? '&languages=' + languages.join(',') : ''}&isApproved=${isApproved}${selectedPaymentMethods.length > 0 ? '&paymentMethods=' + selectedPaymentMethods.join(',') : ''}${selectedPlaces.length > 0 ? '&cities=' + selectedPlaces.join(',') : ''}`
+    navigate(link)
     handleClose()
   }
 
@@ -113,7 +117,7 @@ const FiltersDialog = (props: FiltersDialogProps) => {
   }
 
   const resetValues = () => {
-    setPriceValue([0, 100])
+    setPriceValue([0, 500])
     setRatingValue(5.0)
     setLanguages([])
     setDirectionValue('or less')
@@ -190,8 +194,8 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                         onBlur={handleBlur}
                         inputProps={{
                           step: 10,
-                          min: 0,
-                          max: 100,
+                          min: 1,
+                          max: 500,
                           type: 'number',
                           'aria-labelledby': 'input-slider',
                         }}
