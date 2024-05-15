@@ -8,6 +8,8 @@ services:
       - "443:443"
     depends_on:
       - homeo-searchservice
+    networks:
+      - homeo
 
   homeo-userservice:
     container_name: homeo-userservice
