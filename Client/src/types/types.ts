@@ -108,7 +108,6 @@ export interface ConstructorFilters {
   directionValue: string
   isApproved: boolean
   languages: Array<string>
-  isApproved: boolean
   selectedPaymentMethods: Array<string>
   selectedPlaces: Array<string>
 }
