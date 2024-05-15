@@ -25,7 +25,33 @@ jobs:
       - name: Build Docker Images
         run: |
           cd UserService
-          docker build -t ${{ env.image_tag }} .
+          docker build \
+            --build-arg PORT_USERSERVICE=${{ secrets.PORT_USERSERVICE }} \
+            --build-arg HIKARI_MAX_POOL_SIZE=${{ secrets.HIKARI_MAX_POOL_SIZE }} \
+            --build-arg HIKARI_MINIMUM_IDLE=${{ secrets.HIKARI_MINIMUM_IDLE }} \
+            --build-arg OKTA_API_ISSUER=${{ secrets.OKTA_API_ISSUER }} \
+            --build-arg OKTA_API_AUDIENCE=${{ secrets.OKTA_API_AUDIENCE }} \
+            --build-arg OKTA_API_DOMAIN=${{ secrets.OKTA_API_DOMAIN }} \
+            --build-arg OKTA_MTM_CLIENT_ID=${{ secrets.OKTA_MTM_CLIENT_ID }} \
+            --build-arg OKTA_MTM_CLIENT_SECRET=${{ secrets.OKTA_MTM_CLIENT_SECRET }} \
+            --build-arg OKTA_MANAGEMENT_API_AUDIENCE=${{ secrets.OKTA_MANAGEMENT_API_AUDIENCE }} \
+            --build-arg OKTA_AUTH0_CONSTRUCTOR_ROLE_ID=${{ secrets.OKTA_AUTH0_CONSTRUCTOR_ROLE_ID }} \
+            --build-arg POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+            --build-arg POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+            --build-arg POSTGRES_URL_USERSERVICE=${{ secrets.POSTGRES_URL_USERSERVICE }} \
+            --build-arg EUREKA_URL=${{ secrets.EUREKA_URL }} \
+            --build-arg CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }} \
+            --build-arg CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }} \
+            --build-arg CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }} \
+            --build-arg CLOUDINARY_FOLDER_NAME=${{ secrets.CLOUDINARY_FOLDER_NAME }} \
+            --build-arg CLOUDINARY_DEFAULT_AVATAR_URL=${{ secrets.CLOUDINARY_DEFAULT_AVATAR_URL }} \
+            --build-arg OPENAPI_URL=${{ secrets.OPENAPI_URL }} \
+            --build-arg OKTA_AUTH0_USER_ROLE_ID=${{ secrets.OKTA_AUTH0_USER_ROLE_ID }} \
+            --build-arg RABBITMQ_HOST=${{ secrets.RABBITMQ_HOST }} \
+            --build-arg RABBITMQ_PORT=${{ secrets.RABBITMQ_PORT }} \
+            --build-arg RABBITMQ_USER=${{ secrets.RABBITMQ_USER }} \
+            --build-arg RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }} \
+            -t ${{ env.image_tag }} .
           docker tag ${{ env.image_tag }} ${{ env.image_latest }}
 
       - name: Push Docker Images

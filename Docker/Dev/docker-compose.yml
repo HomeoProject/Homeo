@@ -1,6 +1,14 @@
 version: "3.8"
 
 services:
+  homeo-web-client:
+    container_name: homeo-web-client
+    image: piotrdamrych/homeo-web-client-dev:latest
+    ports:
+      - "443:443"
+    depends_on:
+      - homeo-searchservice
+
   homeo-userservice:
     container_name: homeo-userservice
     image: piotrdamrych/homeo-userservice-dev:latest
