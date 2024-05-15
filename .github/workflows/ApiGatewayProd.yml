@@ -25,7 +25,16 @@ jobs:
       - name: Build Docker Images
         run: |
           cd ApiGateway
-          docker build -t ${{ env.image_tag }} .
+          docker build \
+            --build-arg PORT_APIGATEWAY=${{ secrets.PORT_APIGATEWAY }} \
+            --build-arg REDIS_PASSWORD_APIGATEWAY=${{ secrets.REDIS_PASSWORD_APIGATEWAY }} \
+            --build-arg ALLOWED_CORS_URLS=${{ secrets.ALLOWED_CORS_URLS }} \
+            --build-arg EUREKA_URL=${{ secrets.EUREKA_URL }} \
+            --build-arg REDIS_HOST_APIGATEWAY=${{ secrets.REDIS_HOST_APIGATEWAY }} \
+            --build-arg REDIS_PORT_APIGATEWAY=${{ secrets.REDIS_PORT_APIGATEWAY }} \
+            --build-arg REDIS_USERNAME_APIGATEWAY=${{ secrets.REDIS_USERNAME_APIGATEWAY }} \
+            --build-arg REDIS_SSL_APIGATEWAY=${{ secrets.REDIS_SSL_APIGATEWAY }} \
+            -t ${{ env.image_tag }} .
           docker tag ${{ env.image_tag }} ${{ env.image_latest }}
 
       - name: Push Docker Images
