@@ -89,32 +89,32 @@ const SimpleDialog = ({
           <div onClick={handlePropagation}>
             <UserCard isDialog={true} customConstructor={customConstructor} />
           </div>
-          <div className='before-simple-dialog-card'>
-          <Card onClick={handlePropagation} className="simple-dialog-card">
-            {fullConstructor && (
-              <div className="simple-dialog-container">
-                <div className="simple-dialog-container-row">
-                  <span className="simple-dialog-container-row-key">
-                    {dictionary.aboutMe}:
-                  </span>
-                  <span className="simple-dialog-container-row-value">
-                    {fullConstructor.aboutMe}
-                  </span>
+          <div className="before-simple-dialog-card">
+            <Card onClick={handlePropagation} className="simple-dialog-card">
+              {fullConstructor && (
+                <div className="simple-dialog-container">
+                  <div className="simple-dialog-container-row">
+                    <span className="simple-dialog-container-row-key">
+                      {dictionary.aboutMe}:
+                    </span>
+                    <span className="simple-dialog-container-row-value">
+                      {fullConstructor.aboutMe}
+                    </span>
+                  </div>
+                  <div className="simple-dialog-container-row">
+                    <span className="simple-dialog-container-row-key">
+                      {dictionary.experience}:
+                    </span>
+                    <span
+                      className="simple-dialog-container-row-value"
+                      ref={accrodionRef}
+                    >
+                      {fullConstructor.experience}
+                    </span>
+                  </div>
                 </div>
-                <div className="simple-dialog-container-row">
-                  <span className="simple-dialog-container-row-key">
-                    {dictionary.experience}:
-                  </span>
-                  <span
-                    className="simple-dialog-container-row-value"
-                    ref={accrodionRef}
-                  >
-                    {fullConstructor.experience}
-                  </span>
-                </div>
-              </div>
-            )}
-          </Card>
+              )}
+            </Card>
           </div>
         </div>
         <div className="accordion" onClick={handlePropagation}>

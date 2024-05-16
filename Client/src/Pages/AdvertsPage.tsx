@@ -19,7 +19,6 @@ import { ConstructorFilters, ConstructorByFilters } from '../types/types.ts'
 import { set } from 'react-hook-form'
 
 const AdvertsPage = () => {
-
   const { getAccessTokenSilently } = useAuth0()
   const { dictionary } = useDictionaryContext()
   const [searchParams] = useSearchParams()
@@ -158,7 +157,7 @@ const AdvertsPage = () => {
       selectedPlaces:
         citiesURL !== null
           ? citiesURL.split(',')
-          : constructorFilters.selectedPlaces,    
+          : constructorFilters.selectedPlaces,
     })
 
     if (searchValueURL !== null) {
@@ -177,7 +176,7 @@ const AdvertsPage = () => {
   }, [])
 
   const searchForConstructors = async () => {
-    if(searchShow !== searchValue && searchValue !== '') {
+    if (searchShow !== searchValue && searchValue !== '') {
       setSearchShow(searchValue)
     }
     const body = {
@@ -218,7 +217,7 @@ const AdvertsPage = () => {
         constructorFilters.selectedPlaces.length !== 0
           ? constructorFilters.selectedPlaces
           : null,
-      generalSearchQuery: searchValue !== '' ? searchValue : null,    
+      generalSearchQuery: searchValue !== '' ? searchValue : null,
     }
     setIsLoading(true)
     try {
@@ -269,7 +268,10 @@ const AdvertsPage = () => {
             }
             onChange={(e) => setSearchValue(e.target.value)}
           />
-          <button className="adverts-page-search-wrapper-button" onClick={() => searchForConstructors()}>
+          <button
+            className="adverts-page-search-wrapper-button"
+            onClick={() => searchForConstructors()}
+          >
             <SearchIcon />
           </button>
         </div>
