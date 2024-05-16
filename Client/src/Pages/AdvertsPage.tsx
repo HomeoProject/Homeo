@@ -16,7 +16,6 @@ import { useDictionaryContext } from '../Context/DictionaryContext'
 import { useAuth0 } from '@auth0/auth0-react'
 import apiClient from '../AxiosClients/apiClient'
 import { ConstructorFilters, ConstructorByFilters } from '../types/types.ts'
-import { set } from 'react-hook-form'
 
 const AdvertsPage = () => {
   const { getAccessTokenSilently } = useAuth0()
