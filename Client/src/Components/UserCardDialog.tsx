@@ -89,6 +89,7 @@ const SimpleDialog = ({
           <div onClick={handlePropagation}>
             <UserCard isDialog={true} customConstructor={customConstructor} />
           </div>
+          <div className='before-simple-dialog-card'>
           <Card onClick={handlePropagation} className="simple-dialog-card">
             {fullConstructor && (
               <div className="simple-dialog-container">
@@ -114,6 +115,7 @@ const SimpleDialog = ({
               </div>
             )}
           </Card>
+          </div>
         </div>
         <div className="accordion" onClick={handlePropagation}>
           <Accordion>

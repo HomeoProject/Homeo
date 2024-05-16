@@ -15,7 +15,7 @@
   }
 }
 .before-simple-dialog {
-  min-height: 120vh;
+  min-height: 250vh;
   overflow-y: hidden;
   display: flex;
   flex-direction: column;
@@ -29,18 +29,31 @@
   gap: 30px;
   width: 1000px;
   min-height: 500px;
-  @media screen and (max-width: 700px) {
+  @media screen and (max-width: 1000px) {
     align-items: center;
     flex-direction: column;
   }
-  .simple-dialog-card {
-    margin: 185px 0 0 0;
-    padding: 15px 30px 15px 30px;
-    height: 375px;
-    width: 500px;
-    @media screen and (max-width: 700px) {
-      width: 75%;
-      margin: 20px 0 0 0;
+  .before-simple-dialog-card {
+    display: flex;
+    justify-content: center;
+    width: 560px;
+    @media screen and (max-width: 1000px) {
+      width: 100%;
+      // margin: 10px 0 0 0;
+    }
+    .simple-dialog-card {
+      margin: 185px 0 0 0;
+      padding: 15px 30px 15px 30px;
+      height: 375px;
+      width: 500px;
+      @media screen and (max-width: 1000px) {
+        width: 50%;
+        margin: 10px 0 0 0;
+      }
+      @media screen and (max-width: 700px) {
+        width: 30%;
+        
+      }
     }
   }
   .simple-dialog-container {
@@ -65,6 +78,10 @@
   font-family: Arial, Helvetica, sans-serif;
   padding: 20px 13px 0 0;
   max-width: 884px;
+  @media screen and (max-width: 1000px) {
+    width: 81%;
+    padding: 20px 0 0 0;
+  };
   .accordion-summary {
     display: flex;
     justify-content: center;
