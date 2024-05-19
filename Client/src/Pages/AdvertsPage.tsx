@@ -201,7 +201,7 @@ const AdvertsPage = () => {
         constructorFilters.directionValue === 'exactly that'
           ? constructorFilters.ratingValue
           : null,
-      isApproved: constructorFilters.isApproved,
+      isApproved: constructorFilters.isApproved ? true : null,
       languages:
         constructorFilters.languages.length !== 0
           ? constructorFilters.languages

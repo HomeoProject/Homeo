@@ -6,15 +6,24 @@ import Card from '@mui/material/Card'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
-import Button from '@mui/material/Button'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
 import SendIcon from '@mui/icons-material/Send'
+import { Warning } from '@mui/icons-material'
 import { useAuth0 } from '@auth0/auth0-react'
-import { Constructor } from '../types/types.ts'
+import { Constructor, ChatMessageToSend } from '../types/types.ts'
 import apiClient from '../AxiosClients/apiClient'
 import { useDictionaryContext } from '../Context/DictionaryContext.ts'
+import chatClient from '../WebSockets/ChatClient'
+import { useUserContext } from '../Context/UserContext'
+import { toast } from 'react-toastify'
+import {
+  Typography,
+  Button,
+} from '@mui/material'
+import {
+  errorMessageTypographyStyle,
+} from '../style/scss/muiComponents/ChangeAvatarModal'
 
 export interface SimpleDialogProps {
   open: boolean
@@ -44,10 +53,13 @@ const SimpleDialog = ({
   const [fullConstructor, setFullConstructor] = useState<Constructor | null>(
     null
   )
-  const [valid, setValid] = useState<boolean>(false)
+  const [errorMessage, setErrorMessage] = useState<string>('')
+  const [messageText, setMessageText] = useState<string>('')
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const { getAccessTokenSilently } = useAuth0()
   const { dictionary } = useDictionaryContext()
+  const { customUser } = useUserContext()
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -75,6 +87,36 @@ const SimpleDialog = ({
 
   const handlePropagation = (e: React.MouseEvent) => {
     e.stopPropagation()
+  }
+
+  const sendMessage = async () => {
+    if (!messageText || !customConstructor.userId) {
+      setErrorMessage(dictionary.messageOrReceieverNotSpecified)
+      return
+    }
+
+    if (customUser && customUser.id === customConstructor.userId) {
+      toast.error(dictionary.cannotSendMessageToSelf)
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      if (customUser) {
+        const message: ChatMessageToSend = {
+          content: messageText,
+          chatRoomId: null,
+          chatParticipantsIds: [customUser.id, customConstructor.userId],
+        }
+        chatClient.sendMessage('/app/message', JSON.stringify(message))
+        toast.success(dictionary.messageSentSuccessfully)
+      }
+    } catch (error) {
+      console.error(error)
+      toast.error(dictionary.failedToSendMessage)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -157,18 +199,24 @@ const SimpleDialog = ({
                     multiline
                     minRows={6}
                     inputProps={{ maxLength: 400 }}
+                    onChange={(e) => {
+                      setErrorMessage('')
+                      setMessageText(e.target.value)
+                    }}
+                    value={messageText}
                   />
-                  <div>
-                    <Checkbox onChange={(e) => setValid(e.target.checked)} />
-                    <span>
-                      {dictionary.termsAgree}
-                      <span>*</span>
-                    </span>
-                  </div>
+                  <Typography
+                    id="modal-modal-error"
+                    variant="body1"
+                    sx={errorMessageTypographyStyle}
+                  >
+                    {<Warning></Warning> && errorMessage}
+                  </Typography>
                   <div>
                     <Button
-                      disabled={!valid}
                       variant="contained"
+                      onClick={sendMessage}
+                      disabled={isLoading}
                       sx={{
                         fontWeight: 700,
                         width: '100%',
