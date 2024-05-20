@@ -9,11 +9,13 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import TextField from '@mui/material/TextField'
 import SendIcon from '@mui/icons-material/Send'
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import { Warning } from '@mui/icons-material'
 import { useAuth0 } from '@auth0/auth0-react'
 import { Constructor, ChatMessageToSend } from '../types/types.ts'
 import apiClient from '../AxiosClients/apiClient'
 import { useDictionaryContext } from '../Context/DictionaryContext.ts'
+import { useNavigate } from "react-router-dom";
 import chatClient from '../WebSockets/ChatClient'
 import { useUserContext } from '../Context/UserContext'
 import { toast } from 'react-toastify'
@@ -22,8 +24,8 @@ import {
   Button,
 } from '@mui/material'
 import {
-  errorMessageTypographyStyle,
-} from '../style/scss/muiComponents/ChangeAvatarModal'
+  errorChatAlreadyExistsStyle,
+} from '../style/scss/muiComponents/ChatMessageModal.ts'
 
 export interface SimpleDialogProps {
   open: boolean
@@ -56,10 +58,13 @@ const SimpleDialog = ({
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [messageText, setMessageText] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [chatExists, setChatExists] = useState<boolean>(false)
+  const [chatRoomId, setChatRoomId] = useState<string | null>(null)
 
   const { getAccessTokenSilently } = useAuth0()
   const { dictionary } = useDictionaryContext()
   const { customUser } = useUserContext()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -72,8 +77,35 @@ const SimpleDialog = ({
         console.log(error)
       }
     }
+
+    const checkIfChatExists = async () => {
+      try {
+        const response = await apiClient.get(`/chat/room/exists`, {
+          params: {
+            userIds: `${[customUser!.id, customConstructor.userId!]}`,
+          }
+        })
+  
+        console.log(response.data)
+  
+        if(response.data?.id) {
+          setChatExists(true)
+          setChatRoomId(response.data.id)
+          setErrorMessage('You already have a chat with this user!')
+        } else {
+          setChatExists(false)
+        }
+      } catch (error) {
+        console.error(error)
+        return null
+      }
+    }
+
     fetchUser()
-  }, [customConstructor.userId, getAccessTokenSilently])
+    if(open) {
+      checkIfChatExists()
+    }
+  }, [customConstructor.userId, getAccessTokenSilently, open])
 
   const handleOpenAccrordion = () => {
     if (!openAccordion) {
@@ -87,6 +119,12 @@ const SimpleDialog = ({
 
   const handlePropagation = (e: React.MouseEvent) => {
     e.stopPropagation()
+  }
+
+  const goToChat = () => {
+    if(chatRoomId) {
+      navigate(`/chat/${chatRoomId}`)
+    }
   }
 
   const sendMessage = async () => {
@@ -199,6 +237,7 @@ const SimpleDialog = ({
                     multiline
                     minRows={6}
                     inputProps={{ maxLength: 400 }}
+                    disabled={chatExists}
                     onChange={(e) => {
                       setErrorMessage('')
                       setMessageText(e.target.value)
@@ -208,15 +247,16 @@ const SimpleDialog = ({
                   <Typography
                     id="modal-modal-error"
                     variant="body1"
-                    sx={errorMessageTypographyStyle}
+                    sx={errorChatAlreadyExistsStyle}
                   >
                     {<Warning></Warning> && errorMessage}
                   </Typography>
                   <div>
-                    <Button
+                    {!chatExists ? (
+                      <Button
                       variant="contained"
                       onClick={sendMessage}
-                      disabled={isLoading}
+                      disabled={isLoading || !messageText}
                       sx={{
                         fontWeight: 700,
                         width: '100%',
@@ -232,6 +272,26 @@ const SimpleDialog = ({
                         />
                       </span>
                     </Button>
+                    ) : (
+                      <Button
+                      variant="contained"
+                      onClick={goToChat}
+                      sx={{
+                        fontWeight: 700,
+                        width: '100%',
+                      }}
+                      >
+                        <span className="accordion-form-details-button">
+                          Go to chat{' '}
+                          <DirectionsRunIcon
+                            fontSize="small"
+                            sx={{
+                              padding: '0 0 0 5px',
+                            }}
+                         />
+                      </span>
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
