@@ -61,6 +61,19 @@ export const errorMessageTypographyStyle = {
   },
 }
 
+export const errorChatAlreadyExistsStyle = {
+  fontFamily: 'Gabarito',
+  width: '100%',
+  color: '#1cbe8e',
+  textAlign: 'center',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  '@media (max-width: 600px)': {
+    fontSize: '0.8rem',
+  },
+}
+
 export const saveButtonStyle = {
   fontSize: '1rem',
   fontFamily: 'Gabarito',
