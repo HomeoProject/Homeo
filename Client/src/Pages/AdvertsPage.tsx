@@ -74,13 +74,13 @@ const AdvertsPage = () => {
   }
 
   const handleSortChange = (event: SelectChangeEvent) => {
-    const link = `/adverts?page=${page}&sort=${event.target.value}&size=${perPageValue}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}`
+    const link = `/adverts?page=${page}&sort=${event.target.value}&size=${perPageValue}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}${searchValue !== '' ? '&search=' + searchValue : ''}`
     setSortValue(event.target.value)
     navigate(link)
   }
 
   const handlePerPageChange = (event: SelectChangeEvent) => {
-    const link = `/adverts?page=${page}&sort=${sortValue}&size=${event.target.value}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}`
+    const link = `/adverts?page=${page}&sort=${sortValue}&size=${event.target.value}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}${searchValue !== '' ? '&search=' + searchValue : ''}`
     setPerPageValue(event.target.value)
     navigate(link)
   }
@@ -90,7 +90,7 @@ const AdvertsPage = () => {
   }
 
   const handlePagination = (_event: unknown, value: number) => {
-    const link = `/adverts?page=${value - 1}&sort=${sortValue}&size=${perPageValue}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}`
+    const link = `/adverts?page=${value - 1}&sort=${sortValue}&size=${perPageValue}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}${searchValue !== '' ? '&search=' + searchValue : ''}`
 
     setPage(value - 1)
     navigate(link)
@@ -227,6 +227,8 @@ const AdvertsPage = () => {
       console.log(response)
       setTotalPages(response.data.totalPages)
       setConstructors(response.data.content)
+      const link = `/adverts?page=${page}&sort=${sortValue}&size=${perPageValue}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}${searchValue !== '' ? '&search=' + searchValue : ''}`
+      navigate(link)
     } catch (error) {
       console.error(error)
     }

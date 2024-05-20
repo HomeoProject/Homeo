@@ -86,7 +86,7 @@ const SimpleDialog = ({
         if (response.data?.id) {
           setChatExists(true)
           setChatRoomId(response.data.id)
-          setErrorMessage('You already have a chat with this user!')
+          setErrorMessage('You have a chat with this user!')
         } else {
           setChatExists(false)
         }
@@ -100,7 +100,7 @@ const SimpleDialog = ({
     if (open) {
       checkIfChatExists()
     }
-  }, [customConstructor.userId, getAccessTokenSilently, open])
+  }, [customConstructor.userId, getAccessTokenSilently, open, chatExists])
 
   const handleOpenAccrordion = () => {
     if (!openAccordion) {
@@ -143,6 +143,8 @@ const SimpleDialog = ({
         }
         chatClient.sendMessage('/app/message', JSON.stringify(message))
         toast.success(dictionary.messageSentSuccessfully)
+        setMessageText('')
+        setChatExists(true)
       }
     } catch (error) {
       console.error(error)
