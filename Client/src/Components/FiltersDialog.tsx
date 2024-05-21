@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Dialog from '@mui/material/Dialog'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
@@ -43,9 +43,8 @@ const FiltersDialog = (props: FiltersDialogProps) => {
   const [selectedPaymentMethods, setSelectedPaymentMethods] = useState<
     string[]
   >([])
-
+  const [searchParams] = useSearchParams()
   const { dictionary } = useDictionaryContext()
-  const navigate = useNavigate()
 
   const paymentMethods: Array<PaymentMethod> = [
     PaymentMethod.CASH,
@@ -54,6 +53,68 @@ const FiltersDialog = (props: FiltersDialogProps) => {
   ]
 
   const { categories } = useCategoriesContext()
+
+  useEffect(() => {
+    const categoryIdsURL = searchParams.get('categoryIds')
+    const minMinRateURL = searchParams.get('minMinRate')
+    const maxMinRateURL = searchParams.get('maxMinRate')
+    const ratingValueURL = searchParams.get('ratingValue')
+    const directionValueURL = searchParams.get('directionValue')
+    const isApprovedURL = searchParams.get('isApproved')
+    const languagesURL = searchParams.get('languages')
+    const paymentMethodsURL = searchParams.get('paymentMethods')
+    const citiesURL = searchParams.get('cities')
+
+    if (categoryIdsURL) {
+      setSelectedCategories(categoryIdsURL.split(','))
+    }
+
+    if (minMinRateURL && maxMinRateURL) {
+      if (parseInt(minMinRateURL) > parseInt(maxMinRateURL)) {
+        setPriceValue([0, 500])
+        return
+      }
+      setPriceValue([
+        parseInt(minMinRateURL) > 500
+          ? 490
+          : parseInt(minMinRateURL) < 0
+            ? 0
+            : parseInt(minMinRateURL),
+        parseInt(maxMinRateURL) > 500
+          ? 500
+          : parseInt(maxMinRateURL) < 0
+            ? 10
+            : parseInt(maxMinRateURL),
+      ])
+    }
+
+    if (ratingValueURL) {
+      setRatingValue(parseFloat(ratingValueURL))
+    }
+
+    if (directionValueURL) {
+      setDirectionValue(directionValueURL)
+    }
+
+    if (isApprovedURL) {
+      console.log(isApprovedURL)
+      setIsApproved(isApprovedURL === 'true')
+    }
+
+    if (languagesURL) {
+      setLanguages(languagesURL.split(','))
+    }
+
+    if (paymentMethodsURL) {
+      setSelectedPaymentMethods(paymentMethodsURL.split(','))
+    }
+
+    if (citiesURL) {
+      setSelectedPlaces(citiesURL.split(','))
+    }
+
+    // eslint-disable-next-line
+  }, [])
 
   const handleSliderChange = (_: Event, newValue: number | number[]) => {
     if (typeof newValue === 'number') return
@@ -75,8 +136,8 @@ const FiltersDialog = (props: FiltersDialogProps) => {
   const handleBlur = () => {
     if (priceValue[0] < 0) {
       setPriceValue([0, 0])
-    } else if (priceValue[1] > 100) {
-      setPriceValue([100, 100])
+    } else if (priceValue[1] > 500) {
+      setPriceValue([500, 500])
     }
   }
 
@@ -91,8 +152,6 @@ const FiltersDialog = (props: FiltersDialogProps) => {
       selectedCategories,
       selectedPaymentMethods,
     })
-    const link = `/adverts?${selectedCategories.length > 0 ? 'categoryIds=' + selectedCategories.join(',') + '&' : ''}minMinRate=${priceValue[0]}&maxMinRate=${priceValue[1]}&ratingValue=${ratingValue}&directionValue=${directionValue}${languages.length > 0 ? '&languages=' + languages.join(',') : ''}&isApproved=${isApproved}${selectedPaymentMethods.length > 0 ? '&paymentMethods=' + selectedPaymentMethods.join(',') : ''}${selectedPlaces.length > 0 ? '&cities=' + selectedPlaces.join(',') : ''}`
-    navigate(link)
     handleClose()
   }
 
@@ -116,18 +175,7 @@ const FiltersDialog = (props: FiltersDialogProps) => {
     }
   }
 
-  const resetValues = () => {
-    setPriceValue([0, 500])
-    setRatingValue(5.0)
-    setLanguages([])
-    setDirectionValue('or less')
-    setSelectedPlaces([])
-    setSelectedCategories([])
-    setSelectedPaymentMethods([])
-  }
-
   const handleCloseFromDialog = () => {
-    resetValues()
     handleClose()
   }
 
@@ -163,6 +211,7 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                       inputProps={{
                         'aria-label': 'secondary checkbox',
                       }}
+                      checked={selectedCategories.includes(`${category.id}`)}
                       name={`${category.id}`}
                       onChange={handleSelectCategory}
                     />
@@ -207,6 +256,8 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                         value={priceValue}
                         onChange={handleSliderChange}
                         aria-labelledby="input-slider"
+                        min={1}
+                        max={500}
                       />
                     </Grid>
                     <Grid item>
@@ -216,9 +267,9 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                         onChange={handleInputChangeMax}
                         onBlur={handleBlur}
                         inputProps={{
-                          step: 10,
+                          step: 1,
                           min: 0,
-                          max: 100,
+                          max: 500,
                           type: 'number',
                           'aria-labelledby': 'input-slider',
                         }}
@@ -308,6 +359,7 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                 <div className="filters-dialog-is-approved-checkbox">
                   <div>{dictionary.isApproved}</div>
                   <Checkbox
+                    checked={isApproved}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       setIsApproved(e.target.checked)
                     }
@@ -362,6 +414,7 @@ const FiltersDialog = (props: FiltersDialogProps) => {
                       inputProps={{
                         'aria-label': 'secondary checkbox',
                       }}
+                      checked={selectedPaymentMethods.includes(payment)}
                       name={payment}
                       onChange={handleSelectPayment}
                     />
