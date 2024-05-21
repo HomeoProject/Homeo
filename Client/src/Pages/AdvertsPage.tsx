@@ -415,5 +415,4 @@ const AdvertsPage = () => {
   )
 }
 
-// build 
 export default AdvertsPage
