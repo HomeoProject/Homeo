@@ -18,8 +18,6 @@ import apiClient from '../AxiosClients/apiClient'
 import { ConstructorFilters, ConstructorByFilters } from '../types/types.ts'
 
 const AdvertsPage = () => {
-  const searchValue = 'search'
-
   const { getAccessTokenSilently } = useAuth0()
   const { dictionary } = useDictionaryContext()
   const [searchParams] = useSearchParams()
@@ -30,9 +28,11 @@ const AdvertsPage = () => {
   }
 
   const [screenSize, setScreenSize] = useState(getCurrentDimension())
+  const [searchValue, setSearchValue] = useState<string>('')
   const [openSearch, setOpenSearch] = useState<boolean>(false)
   const [filterClicked, setFilterClicked] = useState<number>(0)
   const [sortValue, setSortValue] = useState<string>('asc')
+  const [searchShow, setSearchShow] = useState<string>('...')
   const [onlyActiveUsers, setOnlyActiveUsers] = useState<boolean>(false)
   const [constructorFilters, setConstructorFilters] =
     useState<ConstructorFilters>({
@@ -74,13 +74,13 @@ const AdvertsPage = () => {
   }
 
   const handleSortChange = (event: SelectChangeEvent) => {
-    const link = `/adverts?page=${page}&sort=${event.target.value}&size=${perPageValue}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}`
+    const link = `/adverts?page=${page}&sort=${event.target.value}&size=${perPageValue}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}${searchValue !== '' ? '&search=' + searchValue : ''}`
     setSortValue(event.target.value)
     navigate(link)
   }
 
   const handlePerPageChange = (event: SelectChangeEvent) => {
-    const link = `/adverts?page=${page}&sort=${sortValue}&size=${event.target.value}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}`
+    const link = `/adverts?page=${page}&sort=${sortValue}&size=${event.target.value}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}${searchValue !== '' ? '&search=' + searchValue : ''}`
     setPerPageValue(event.target.value)
     navigate(link)
   }
@@ -90,7 +90,7 @@ const AdvertsPage = () => {
   }
 
   const handlePagination = (_event: unknown, value: number) => {
-    const link = `/adverts?page=${value - 1}&sort=${sortValue}&size=${perPageValue}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}`
+    const link = `/adverts?page=${value - 1}&sort=${sortValue}&size=${perPageValue}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}${searchValue !== '' ? '&search=' + searchValue : ''}`
 
     setPage(value - 1)
     navigate(link)
@@ -120,6 +120,7 @@ const AdvertsPage = () => {
     const citiesURL = searchParams.get('cities')
     const perPageValue = searchParams.get('size')
     const sortValue = searchParams.get('sort')
+    const searchValueURL = searchParams.get('search')
 
     if (page !== null) {
       setDefaultPageNumber(parseInt(page))
@@ -158,6 +159,11 @@ const AdvertsPage = () => {
           : constructorFilters.selectedPlaces,
     })
 
+    if (searchValueURL !== null) {
+      setSearchValue(searchValueURL)
+      setSearchShow(searchValueURL)
+    }
+
     if (perPageValue !== null) {
       setPerPageValue(perPageValue)
     }
@@ -168,61 +174,68 @@ const AdvertsPage = () => {
     // eslint-disable-next-line
   }, [])
 
-  useEffect(() => {
-    const searchForConstructors = async () => {
-      const body = {
-        categoryIds:
-          constructorFilters.selectedCategories.length !== 0
-            ? [
-                ...constructorFilters.selectedCategories.map(
-                  (category) => category
-                ),
-              ]
-            : null,
-        minMinRate: constructorFilters.priceValue[0],
-        maxMinRate: constructorFilters.priceValue[1],
-        minAverageRating:
-          constructorFilters.directionValue === 'or less'
-            ? 0
-            : constructorFilters.ratingValue,
-        maxAverageRating:
-          constructorFilters.directionValue === 'or more'
-            ? 5
-            : constructorFilters.ratingValue,
-        exactAverageRating:
-          constructorFilters.directionValue === 'exactly that'
-            ? constructorFilters.ratingValue
-            : null,
-        isApproved: constructorFilters.isApproved,
-        languages:
-          constructorFilters.languages.length !== 0
-            ? constructorFilters.languages
-            : null,
-        paymentMethods:
-          constructorFilters.selectedPaymentMethods.length !== 0
-            ? constructorFilters.selectedPaymentMethods.map((payment: string) =>
-                payment.toUpperCase()
-              )
-            : null,
-        cities:
-          constructorFilters.selectedPlaces.length !== 0
-            ? constructorFilters.selectedPlaces
-            : null,
-      }
-      setIsLoading(true)
-      try {
-        const response = await apiClient.post(
-          `/search?page=${page}&size=${perPageValue}&sort=minRate,${sortValue}`,
-          body
-        )
-        console.log(response)
-        setTotalPages(response.data.totalPages)
-        setConstructors(response.data.content)
-      } catch (error) {
-        console.error(error)
-      }
-      setIsLoading(false)
+  const searchForConstructors = async () => {
+    if (searchShow !== searchValue && searchValue !== '') {
+      setSearchShow(searchValue)
     }
+    const body = {
+      categoryIds:
+        constructorFilters.selectedCategories.length !== 0
+          ? [
+              ...constructorFilters.selectedCategories.map(
+                (category) => category
+              ),
+            ]
+          : null,
+      minMinRate: constructorFilters.priceValue[0],
+      maxMinRate: constructorFilters.priceValue[1],
+      minAverageRating:
+        constructorFilters.directionValue === 'or less'
+          ? 0
+          : constructorFilters.ratingValue,
+      maxAverageRating:
+        constructorFilters.directionValue === 'or more'
+          ? 5
+          : constructorFilters.ratingValue,
+      exactAverageRating:
+        constructorFilters.directionValue === 'exactly that'
+          ? constructorFilters.ratingValue
+          : null,
+      isApproved: constructorFilters.isApproved ? true : null,
+      languages:
+        constructorFilters.languages.length !== 0
+          ? constructorFilters.languages
+          : null,
+      paymentMethods:
+        constructorFilters.selectedPaymentMethods.length !== 0
+          ? constructorFilters.selectedPaymentMethods.map((payment: string) =>
+              payment.toUpperCase()
+            )
+          : null,
+      cities:
+        constructorFilters.selectedPlaces.length !== 0
+          ? constructorFilters.selectedPlaces
+          : null,
+      generalSearchQuery: searchValue !== '' ? searchValue : null,
+    }
+    setIsLoading(true)
+    try {
+      const response = await apiClient.post(
+        `/search?page=${page}&size=${perPageValue}&sort=minRate,${sortValue}`,
+        body
+      )
+      console.log(response)
+      setTotalPages(response.data.totalPages)
+      setConstructors(response.data.content)
+      const link = `/adverts?page=${page}&sort=${sortValue}&size=${perPageValue}&${constructorFilters.selectedCategories.length > 0 ? 'categoryIds=' + constructorFilters.selectedCategories.join(',') + '&' : ''}minMinRate=${constructorFilters.priceValue[0]}&maxMinRate=${constructorFilters.priceValue[1]}&ratingValue=${constructorFilters.ratingValue}&directionValue=${constructorFilters.directionValue}${constructorFilters.languages.length > 0 ? '&languages=' + constructorFilters.languages.join(',') : ''}&isApproved=${constructorFilters.isApproved}${constructorFilters.selectedPaymentMethods.length > 0 ? '&paymentMethods=' + constructorFilters.selectedPaymentMethods.join(',') : ''}${constructorFilters.selectedPlaces.length > 0 ? '&cities=' + constructorFilters.selectedPlaces.join(',') : ''}${searchValue !== '' ? '&search=' + searchValue : ''}`
+      navigate(link)
+    } catch (error) {
+      console.error(error)
+    }
+    setIsLoading(false)
+  }
+
+  useEffect(() => {
     if (defaultPageNumber !== null) {
       searchForConstructors()
     }
@@ -254,8 +267,12 @@ const AdvertsPage = () => {
                 ? dictionary.homePageSearchPlaceholder
                 : `${dictionary.searchWord}...`
             }
+            onChange={(e) => setSearchValue(e.target.value)}
           />
-          <button className="adverts-page-search-wrapper-button">
+          <button
+            className="adverts-page-search-wrapper-button"
+            onClick={() => searchForConstructors()}
+          >
             <SearchIcon />
           </button>
         </div>
@@ -293,7 +310,7 @@ const AdvertsPage = () => {
       <div className="adverts-page-cards">
         <div className="adverts-page-cards-label">
           <span className="adverts-page-cards-label-value">
-            {dictionary.advertsFor}&nbsp;{searchValue}
+            {dictionary.advertsFor}&nbsp;{searchShow}
           </span>
           <div className="adverts-page-cards-label-right">
             <div>
