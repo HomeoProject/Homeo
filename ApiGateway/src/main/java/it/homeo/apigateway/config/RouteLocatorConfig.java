@@ -146,7 +146,7 @@ public class RouteLocatorConfig {
                         .waitDurationInOpenState(Duration.ofMillis(1000))
                         .build())
                 .timeLimiterConfig(TimeLimiterConfig.custom()
-                        .timeoutDuration(Duration.ofMillis(3000))
+                        .timeoutDuration(Duration.ofMillis(20000))
                         .build())
                 .build());
     }
